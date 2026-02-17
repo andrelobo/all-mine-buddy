@@ -4,6 +4,7 @@ import { formatCNPJ, formatCEP, formatPhone, validateCNPJ } from '@/utils/valida
 import { toast } from 'sonner';
 
 interface PrestadorData {
+  nomeEmpresarial: string;
   nomeFantasia: string;
   cnpj: string;
   inscricaoMunicipal: string;
@@ -57,6 +58,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
       const result = await fetchCNPJData(cleaned);
       const updated: PrestadorData = {
         ...data,
+        nomeEmpresarial: result.razao_social || data.nomeEmpresarial,
         nomeFantasia: result.nome_fantasia || data.nomeFantasia,
         cep: result.cep ? formatCEP(result.cep) : data.cep,
         logradouro: result.logradouro || data.logradouro,
@@ -88,7 +90,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         Dados do Prestador
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <div>
           <label className="field-label">CNPJ *</label>
           <div className="flex gap-2">
@@ -115,11 +117,21 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           </div>
         </div>
 
-        <div className="lg:col-span-2">
+        <div className="md:col-span-2 lg:col-span-2">
+          <label className="field-label">Nome Empresarial / Razão Social</label>
+          <input
+            className="field-input"
+            placeholder="Razão social da empresa"
+            value={data.nomeEmpresarial}
+            onChange={(e) => update('nomeEmpresarial', e.target.value)}
+          />
+        </div>
+
+        <div>
           <label className="field-label">Nome Fantasia</label>
           <input
             className="field-input"
-            placeholder="Nome fantasia da empresa"
+            placeholder="Nome fantasia"
             value={data.nomeFantasia}
             onChange={(e) => update('nomeFantasia', e.target.value)}
           />
