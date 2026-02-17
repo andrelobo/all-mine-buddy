@@ -28,9 +28,49 @@ interface Props {
 
 async function fetchCNPJData(cnpj: string) {
   const cleaned = cnpj.replace(/\D/g, '');
+
+  // Tenta ReceitaWS primeiro (dados atualizados em tempo real)
+  try {
+    const res = await fetch(`https://www.receitaws.com.br/v1/cnpj/${cleaned}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.status !== 'ERROR') {
+        return {
+          razao_social: data.nome || '',
+          nome_fantasia: data.fantasia || '',
+          cep: data.cep?.replace(/[.\-]/g, '') || '',
+          logradouro: data.logradouro || '',
+          numero: data.numero || '',
+          complemento: data.complemento || '',
+          bairro: data.bairro || '',
+          municipio: data.municipio || '',
+          uf: data.uf || '',
+          email: data.email || '',
+          telefone: data.telefone?.replace(/[^\d]/g, '') || '',
+        };
+      }
+    }
+  } catch {
+    // fallback abaixo
+  }
+
+  // Fallback: BrasilAPI
   const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleaned}`);
   if (!res.ok) throw new Error('CNPJ não encontrado');
-  return res.json();
+  const data = await res.json();
+  return {
+    razao_social: data.razao_social || '',
+    nome_fantasia: data.nome_fantasia || '',
+    cep: data.cep || '',
+    logradouro: data.logradouro || '',
+    numero: data.numero || '',
+    complemento: data.complemento || '',
+    bairro: data.bairro || '',
+    municipio: data.municipio || '',
+    uf: data.uf || '',
+    email: data.email || '',
+    telefone: data.ddd_telefone_1?.replace(/\D/g, '') || '',
+  };
 }
 
 const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
@@ -69,8 +109,8 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           ? `${result.municipio} - ${result.uf}`
           : data.localidadeUf,
         email: result.email || data.email,
-        whatsapp: result.ddd_telefone_1
-          ? formatPhone(result.ddd_telefone_1.replace(/\D/g, ''))
+        whatsapp: result.telefone
+          ? formatPhone(result.telefone)
           : data.whatsapp,
       };
       onChange(updated);
