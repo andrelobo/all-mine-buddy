@@ -90,8 +90,8 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         Dados do Prestador
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr_2fr] lg:grid-cols-[1fr_3fr_2fr] gap-4">
-        <div className="max-w-[200px]">
+      <div className="grid grid-cols-1 md:grid-cols-[1.5fr_3fr_2fr] gap-4">
+        <div>
           <label className="field-label">CNPJ *</label>
           <div className="flex gap-2">
             <input
