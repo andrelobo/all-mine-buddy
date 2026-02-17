@@ -58,7 +58,9 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             onChange={(e) => update('nomeEmpresarial', e.target.value)}
           />
         </div>
+      </div>
 
+      <div className="grid grid-cols-3 gap-4 mt-4">
         <div>
           <label className="field-label">Inscrição Municipal</label>
           <input
@@ -68,7 +70,6 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             onChange={(e) => update('inscricaoMunicipal', e.target.value)}
           />
         </div>
-
         <div>
           <label className="field-label">Inscrição Estadual</label>
           <input
@@ -78,7 +79,6 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             onChange={(e) => update('inscricaoEstadual', e.target.value)}
           />
         </div>
-
         <div>
           <label className="field-label">SUFRAMA</label>
           <input
