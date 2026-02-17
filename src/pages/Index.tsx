@@ -8,6 +8,7 @@ import { validateCNPJ, validateEmail } from '@/utils/validators';
 
 
 const INITIAL_PRESTADOR = {
+  nomeEmpresarial: '',
   nomeFantasia: '',
   cnpj: '',
   inscricaoMunicipal: '',
