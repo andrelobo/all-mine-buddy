@@ -216,7 +216,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           />
         </div>
         <div>
-          <label className="field-label">SUFRAMA</label>
+          <label className="field-label">Inscrição Suframa</label>
           <input
             className="field-input"
             placeholder="Nº SUFRAMA (opcional)"
