@@ -38,16 +38,6 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2">
-          <label className="field-label">Nome Empresarial / Razão Social</label>
-          <input
-            className="field-input"
-            placeholder="Razão social da empresa"
-            value={data.nomeEmpresarial}
-            onChange={(e) => update('nomeEmpresarial', e.target.value)}
-          />
-        </div>
-
         <div>
           <label className="field-label">CNPJ *</label>
           <input
@@ -56,6 +46,16 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             value={data.cnpj}
             onChange={(e) => update('cnpj', formatCNPJ(e.target.value))}
             maxLength={18}
+          />
+        </div>
+
+        <div className="lg:col-span-2">
+          <label className="field-label">Nome Empresarial / Razão Social</label>
+          <input
+            className="field-input"
+            placeholder="Razão social da empresa"
+            value={data.nomeEmpresarial}
+            onChange={(e) => update('nomeEmpresarial', e.target.value)}
           />
         </div>
 
