@@ -130,7 +130,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         Dados do Prestador
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_3fr_2fr] gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_3fr] gap-4">
         <div>
           <label className="field-label">CNPJ *</label>
           <div className="flex gap-2">
@@ -176,7 +176,9 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             onChange={(e) => update('nomeEmpresarial', e.target.value)}
           />
         </div>
+      </div>
 
+      <div className="grid grid-cols-3 gap-4 mt-4">
         <div>
           <label className="field-label">Nome Fantasia</label>
           <input
@@ -186,9 +188,6 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             onChange={(e) => update('nomeFantasia', e.target.value)}
           />
         </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 mt-4">
         <div>
           <label className="field-label">Inscrição Estadual</label>
           <input
