@@ -4,7 +4,7 @@ import { formatCNPJ, formatCEP, formatPhone, validateCNPJ } from '@/utils/valida
 import { toast } from 'sonner';
 
 interface PrestadorData {
-  nomeEmpresarial: string;
+  nomeFantasia: string;
   cnpj: string;
   inscricaoMunicipal: string;
   inscricaoEstadual: string;
@@ -57,7 +57,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
       const result = await fetchCNPJData(cleaned);
       const updated: PrestadorData = {
         ...data,
-        nomeEmpresarial: result.razao_social || data.nomeEmpresarial,
+        nomeFantasia: result.nome_fantasia || data.nomeFantasia,
         cep: result.cep ? formatCEP(result.cep) : data.cep,
         logradouro: result.logradouro || data.logradouro,
         numero: result.numero || data.numero,
@@ -116,12 +116,12 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         </div>
 
         <div className="lg:col-span-2">
-          <label className="field-label">Nome Empresarial / Razão Social</label>
+          <label className="field-label">Nome Fantasia</label>
           <input
             className="field-input"
-            placeholder="Razão social da empresa"
-            value={data.nomeEmpresarial}
-            onChange={(e) => update('nomeEmpresarial', e.target.value)}
+            placeholder="Nome fantasia da empresa"
+            value={data.nomeFantasia}
+            onChange={(e) => update('nomeFantasia', e.target.value)}
           />
         </div>
       </div>
