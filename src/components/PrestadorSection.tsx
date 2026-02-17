@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Building2, MapPin, Mail, Loader2 } from 'lucide-react';
+import { Building2, MapPin, Mail, Loader2, CheckCircle, XCircle, HelpCircle } from 'lucide-react';
 import { formatCNPJ, formatCEP, formatPhone, validateCNPJ } from '@/utils/validators';
 import { toast } from 'sonner';
 
@@ -43,6 +43,8 @@ async function fetchCNPJData(cnpj: string) {
     uf: data.uf || '',
     email: data.email || '',
     telefone: data.ddd_telefone_1?.replace(/\D/g, '') || '',
+    opcao_pelo_simples: data.opcao_pelo_simples ?? null,
+    opcao_pelo_mei: data.opcao_pelo_mei ?? null,
   };
 }
 
@@ -62,6 +64,8 @@ async function fetchCEPData(cep: string) {
 const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
   const [loadingCNPJ, setLoadingCNPJ] = useState(false);
   const [loadingCEP, setLoadingCEP] = useState(false);
+  const [simplesStatus, setSimplesStatus] = useState<{ simples: boolean | null; mei: boolean | null }>({ simples: null, mei: null });
+  const [simplesChecked, setSimplesChecked] = useState(false);
   const lastFetchedCNPJ = useRef('');
   const lastFetchedCEP = useRef('');
   const dataRef = useRef(data);
@@ -100,8 +104,11 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
       };
       onChange(updated);
       onAutosave();
+      setSimplesStatus({ simples: result.opcao_pelo_simples, mei: result.opcao_pelo_mei });
+      setSimplesChecked(true);
       toast.success('Dados do CNPJ preenchidos automaticamente!');
     } catch {
+      setSimplesChecked(false);
       toast.error('Não foi possível consultar o CNPJ.');
     } finally {
       setLoadingCNPJ(false);
@@ -196,7 +203,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <div>
           <label className="field-label">Nome Fantasia</label>
           <input
@@ -225,6 +232,36 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           />
         </div>
       </div>
+
+      {/* Simples Nacional */}
+      {simplesChecked && (
+        <div className="mt-4 p-3 rounded-lg border border-border bg-muted/30 flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            {simplesStatus.simples === true ? (
+              <CheckCircle className="w-4 h-4 text-green-600" />
+            ) : simplesStatus.simples === false ? (
+              <XCircle className="w-4 h-4 text-destructive" />
+            ) : (
+              <HelpCircle className="w-4 h-4 text-muted-foreground" />
+            )}
+            <span className="text-sm font-medium text-foreground">
+              Simples Nacional: {simplesStatus.simples === true ? 'Optante' : simplesStatus.simples === false ? 'Não optante' : 'Indeterminado'}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            {simplesStatus.mei === true ? (
+              <CheckCircle className="w-4 h-4 text-green-600" />
+            ) : simplesStatus.mei === false ? (
+              <XCircle className="w-4 h-4 text-muted-foreground" />
+            ) : (
+              <HelpCircle className="w-4 h-4 text-muted-foreground" />
+            )}
+            <span className="text-sm text-muted-foreground">
+              MEI: {simplesStatus.mei === true ? 'Sim' : simplesStatus.mei === false ? 'Não' : 'Indeterminado'}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Endereço */}
       <div className="mt-5 pt-5 border-t border-border">
