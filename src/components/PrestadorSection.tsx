@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { Building2, MapPin, Mail, Loader2, Search } from 'lucide-react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Building2, MapPin, Mail, Loader2 } from 'lucide-react';
 import { formatCNPJ, formatCEP, formatPhone, validateCNPJ } from '@/utils/validators';
 import { toast } from 'sonner';
 
@@ -28,33 +28,6 @@ interface Props {
 
 async function fetchCNPJData(cnpj: string) {
   const cleaned = cnpj.replace(/\D/g, '');
-
-  // Tenta ReceitaWS primeiro (dados atualizados em tempo real)
-  try {
-    const res = await fetch(`https://www.receitaws.com.br/v1/cnpj/${cleaned}`);
-    if (res.ok) {
-      const data = await res.json();
-      if (data.status !== 'ERROR') {
-        return {
-          razao_social: data.nome || '',
-          nome_fantasia: data.fantasia || '',
-          cep: data.cep?.replace(/[.\-]/g, '') || '',
-          logradouro: data.logradouro || '',
-          numero: data.numero || '',
-          complemento: data.complemento || '',
-          bairro: data.bairro || '',
-          municipio: data.municipio || '',
-          uf: data.uf || '',
-          email: data.email || '',
-          telefone: data.telefone?.replace(/[^\d]/g, '') || '',
-        };
-      }
-    }
-  } catch {
-    // fallback abaixo
-  }
-
-  // Fallback: BrasilAPI
   const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleaned}`);
   if (!res.ok) throw new Error('CNPJ não encontrado');
   const data = await res.json();
@@ -73,55 +46,108 @@ async function fetchCNPJData(cnpj: string) {
   };
 }
 
+async function fetchCEPData(cep: string) {
+  const cleaned = cep.replace(/\D/g, '');
+  const res = await fetch(`https://brasilapi.com.br/api/cep/v2/${cleaned}`);
+  if (!res.ok) throw new Error('CEP não encontrado');
+  const data = await res.json();
+  return {
+    logradouro: data.street || '',
+    bairro: data.neighborhood || '',
+    municipio: data.city || '',
+    uf: data.state || '',
+  };
+}
+
 const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
-  const [loading, setLoading] = useState(false);
+  const [loadingCNPJ, setLoadingCNPJ] = useState(false);
+  const [loadingCEP, setLoadingCEP] = useState(false);
+  const lastFetchedCNPJ = useRef('');
+  const lastFetchedCEP = useRef('');
+  const dataRef = useRef(data);
+  dataRef.current = data;
 
   const update = (field: keyof PrestadorData, value: string) => {
     onChange({ ...data, [field]: value });
     onAutosave();
   };
 
+  const buscarCNPJ = useCallback(async (cnpjValue: string) => {
+    const cleaned = cnpjValue.replace(/\D/g, '');
+    if (cleaned.length !== 14 || !validateCNPJ(cleaned)) return;
+    if (lastFetchedCNPJ.current === cleaned) return;
+    lastFetchedCNPJ.current = cleaned;
+    setLoadingCNPJ(true);
+    try {
+      const result = await fetchCNPJData(cleaned);
+      const current = dataRef.current;
+      const updated: PrestadorData = {
+        ...current,
+        nomeEmpresarial: result.razao_social || current.nomeEmpresarial,
+        nomeFantasia: result.nome_fantasia || current.nomeFantasia,
+        cep: result.cep ? formatCEP(result.cep) : current.cep,
+        logradouro: result.logradouro || current.logradouro,
+        numero: result.numero || current.numero,
+        complemento: result.complemento || current.complemento,
+        bairro: result.bairro || current.bairro,
+        localidadeUf: result.municipio && result.uf
+          ? `${result.municipio} - ${result.uf}`
+          : current.localidadeUf,
+        email: result.email || current.email,
+        whatsapp: result.telefone
+          ? formatPhone(result.telefone)
+          : current.whatsapp,
+      };
+      onChange(updated);
+      onAutosave();
+      toast.success('Dados do CNPJ preenchidos automaticamente!');
+    } catch {
+      toast.error('Não foi possível consultar o CNPJ.');
+    } finally {
+      setLoadingCNPJ(false);
+    }
+  }, [onChange, onAutosave]);
+
+  const buscarCEP = useCallback(async (cepValue: string) => {
+    const cleaned = cepValue.replace(/\D/g, '');
+    if (cleaned.length !== 8) return;
+    if (lastFetchedCEP.current === cleaned) return;
+    lastFetchedCEP.current = cleaned;
+    setLoadingCEP(true);
+    try {
+      const result = await fetchCEPData(cleaned);
+      const current = dataRef.current;
+      const updated: PrestadorData = {
+        ...current,
+        logradouro: result.logradouro || current.logradouro,
+        bairro: result.bairro || current.bairro,
+        localidadeUf: result.municipio && result.uf
+          ? `${result.municipio} - ${result.uf}`
+          : current.localidadeUf,
+      };
+      onChange(updated);
+      onAutosave();
+      toast.success('Endereço preenchido automaticamente!');
+    } catch {
+      toast.error('Não foi possível consultar o CEP.');
+    } finally {
+      setLoadingCEP(false);
+    }
+  }, [onChange, onAutosave]);
+
   const handleCNPJChange = (value: string) => {
     const formatted = formatCNPJ(value);
     onChange({ ...data, cnpj: formatted });
     onAutosave();
+    buscarCNPJ(formatted);
   };
 
-  const buscarCNPJ = useCallback(async () => {
-    const cleaned = data.cnpj.replace(/\D/g, '');
-    if (!validateCNPJ(cleaned)) {
-      toast.error('Informe um CNPJ válido para buscar.');
-      return;
-    }
-    setLoading(true);
-    try {
-      const result = await fetchCNPJData(cleaned);
-      const updated: PrestadorData = {
-        ...data,
-        nomeEmpresarial: result.razao_social || data.nomeEmpresarial,
-        nomeFantasia: result.nome_fantasia || data.nomeFantasia,
-        cep: result.cep ? formatCEP(result.cep) : data.cep,
-        logradouro: result.logradouro || data.logradouro,
-        numero: result.numero || data.numero,
-        complemento: result.complemento || data.complemento,
-        bairro: result.bairro || data.bairro,
-        localidadeUf: result.municipio && result.uf
-          ? `${result.municipio} - ${result.uf}`
-          : data.localidadeUf,
-        email: result.email || data.email,
-        whatsapp: result.telefone
-          ? formatPhone(result.telefone)
-          : data.whatsapp,
-      };
-      onChange(updated);
-      onAutosave();
-      toast.success('Dados preenchidos automaticamente!');
-    } catch {
-      toast.error('Não foi possível consultar o CNPJ. Verifique e tente novamente.');
-    } finally {
-      setLoading(false);
-    }
-  }, [data, onChange, onAutosave]);
+  const handleCEPChange = (value: string) => {
+    const formatted = formatCEP(value);
+    onChange({ ...data, cep: formatted });
+    onAutosave();
+    buscarCEP(formatted);
+  };
 
   return (
     <div className="section-card">
@@ -141,19 +167,11 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
               onChange={(e) => handleCNPJChange(e.target.value)}
               maxLength={18}
             />
-            <button
-              type="button"
-              onClick={buscarCNPJ}
-              disabled={loading}
-              className="btn-outline shrink-0 flex items-center gap-1.5 px-3"
-              title="Buscar dados do CNPJ"
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Search className="w-4 h-4" />
-              )}
-            </button>
+            {loadingCNPJ && (
+              <div className="flex items-center px-2">
+                <Loader2 className="w-4 h-4 animate-spin text-primary" />
+              </div>
+            )}
           </div>
         </div>
 
@@ -221,9 +239,12 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
               className="field-input"
               placeholder="00000-000"
               value={data.cep}
-              onChange={(e) => update('cep', formatCEP(e.target.value))}
+              onChange={(e) => handleCEPChange(e.target.value)}
               maxLength={9}
             />
+            {loadingCEP && (
+              <Loader2 className="w-4 h-4 animate-spin text-primary mt-2" />
+            )}
           </div>
           <div className="lg:col-span-2">
             <label className="field-label">Logradouro</label>
