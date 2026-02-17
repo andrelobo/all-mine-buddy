@@ -236,10 +236,10 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
       {/* Simples Nacional */}
       <div className="mt-4 p-3 rounded-lg border border-border bg-muted/30 flex items-center gap-2">
         <span className={`w-3 h-3 rounded-full inline-block ${
-          simplesStatus.simples === true ? 'bg-green-500' : simplesStatus.simples === false ? 'bg-red-500' : 'bg-muted-foreground/40'
+          simplesChecked ? (simplesStatus.simples === true ? 'bg-green-500' : 'bg-red-500') : 'bg-muted-foreground/40'
         }`} />
         <span className="text-sm font-medium text-foreground">
-          Simples Nacional: {simplesStatus.simples === true ? 'Optante' : simplesStatus.simples === false ? 'Não optante' : 'Aguardando consulta'}
+          Simples Nacional: {simplesChecked ? (simplesStatus.simples === true ? 'Optante' : 'Não optante') : 'Aguardando consulta'}
         </span>
       </div>
 
