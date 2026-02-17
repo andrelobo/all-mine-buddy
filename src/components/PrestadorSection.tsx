@@ -234,34 +234,24 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
       </div>
 
       {/* Simples Nacional */}
-      {simplesChecked && (
-        <div className="mt-4 p-3 rounded-lg border border-border bg-muted/30 flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            {simplesStatus.simples === true ? (
-              <CheckCircle className="w-4 h-4 text-green-600" />
-            ) : simplesStatus.simples === false ? (
-              <XCircle className="w-4 h-4 text-destructive" />
-            ) : (
-              <HelpCircle className="w-4 h-4 text-muted-foreground" />
-            )}
-            <span className="text-sm font-medium text-foreground">
-              Simples Nacional: {simplesStatus.simples === true ? 'Optante' : simplesStatus.simples === false ? 'Não optante' : 'Indeterminado'}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            {simplesStatus.mei === true ? (
-              <CheckCircle className="w-4 h-4 text-green-600" />
-            ) : simplesStatus.mei === false ? (
-              <XCircle className="w-4 h-4 text-muted-foreground" />
-            ) : (
-              <HelpCircle className="w-4 h-4 text-muted-foreground" />
-            )}
-            <span className="text-sm text-muted-foreground">
-              MEI: {simplesStatus.mei === true ? 'Sim' : simplesStatus.mei === false ? 'Não' : 'Indeterminado'}
-            </span>
-          </div>
+      <div className="mt-4 p-3 rounded-lg border border-border bg-muted/30 flex flex-wrap items-center gap-4">
+        <div className="flex items-center gap-2">
+          <span className={`w-3 h-3 rounded-full inline-block ${
+            simplesStatus.simples === true ? 'bg-green-500' : simplesStatus.simples === false ? 'bg-red-500' : 'bg-muted-foreground/40'
+          }`} />
+          <span className="text-sm font-medium text-foreground">
+            Simples Nacional: {simplesStatus.simples === true ? 'Optante' : simplesStatus.simples === false ? 'Não optante' : 'Aguardando consulta'}
+          </span>
         </div>
-      )}
+        <div className="flex items-center gap-2">
+          <span className={`w-3 h-3 rounded-full inline-block ${
+            simplesStatus.mei === true ? 'bg-green-500' : simplesStatus.mei === false ? 'bg-red-500' : 'bg-muted-foreground/40'
+          }`} />
+          <span className="text-sm text-muted-foreground">
+            MEI: {simplesStatus.mei === true ? 'Sim' : simplesStatus.mei === false ? 'Não' : 'Aguardando consulta'}
+          </span>
+        </div>
+      </div>
 
       {/* Endereço */}
       <div className="mt-5 pt-5 border-t border-border">
