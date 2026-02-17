@@ -118,7 +118,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         </div>
 
         <div className="md:col-span-2 lg:col-span-2">
-          <label className="field-label">Nome Empresarial / Razão Social</label>
+          <label className="field-label">Nome Empresarial</label>
           <input
             className="field-input"
             placeholder="Razão social da empresa"
