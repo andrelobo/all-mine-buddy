@@ -115,7 +115,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
               {(['federal', 'estadual', 'municipal'] as const).map((campo) => (
                 <div key={campo}>
                   <label className="field-label whitespace-nowrap capitalize">{campo}</label>
-                  <div className="relative w-[72px]">
+                  <div className="relative w-[52px]">
                     <input
                       className="field-input pr-7 border-primary"
                       type="text"
