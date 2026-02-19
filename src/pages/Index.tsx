@@ -27,14 +27,11 @@ const INITIAL_PRESTADOR = {
 const Index = () => {
   const [prestador, setPrestador] = useState(INITIAL_PRESTADOR);
   const [regime, setRegime] = useState<RegimeTributario>(null);
-  const [regimeApuracaoSN, setRegimeApuracaoSN] = useState(false);
+  const [regimeApuracaoSN, setRegimeApuracaoSN] = useState('');
   const [informarAliquotaSN, setInformarAliquotaSN] = useState(false);
   const [aliquotaSN, setAliquotaSN] = useState('');
   const [preencherValores, setPreencherValores] = useState(false);
   const [configurarPercentuais, setConfigurarPercentuais] = useState(false);
-  const [federal, setFederal] = useState('');
-  const [estadual, setEstadual] = useState('');
-  const [municipal, setMunicipal] = useState('');
   const [ctn, setCtn] = useState<string | null>(null);
   const [configValida, setConfigValida] = useState(false);
 
@@ -128,12 +125,6 @@ const Index = () => {
           onPreencherValoresChange={setPreencherValores}
           configurarPercentuais={configurarPercentuais}
           onConfigurarPercentuaisChange={setConfigurarPercentuais}
-          federal={federal}
-          onFederalChange={setFederal}
-          estadual={estadual}
-          onEstadualChange={setEstadual}
-          municipal={municipal}
-          onMunicipalChange={setMunicipal}
           onAutosave={autosave}
         />
 

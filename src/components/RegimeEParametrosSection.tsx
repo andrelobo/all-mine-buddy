@@ -6,8 +6,8 @@ export type RegimeTributario = 'simples' | 'presumido' | 'real' | null;
 interface Props {
   regime: RegimeTributario;
   onRegimeChange: (r: RegimeTributario) => void;
-  regimeApuracaoSN: boolean;
-  onRegimeApuracaoChange: (v: boolean) => void;
+  regimeApuracaoSN: string;
+  onRegimeApuracaoChange: (v: string) => void;
   informarAliquotaSN: boolean;
   onInformarAliquotaChange: (v: boolean) => void;
   aliquotaSN: string;
@@ -16,12 +16,6 @@ interface Props {
   onPreencherValoresChange: (v: boolean) => void;
   configurarPercentuais: boolean;
   onConfigurarPercentuaisChange: (v: boolean) => void;
-  federal: string;
-  onFederalChange: (v: string) => void;
-  estadual: string;
-  onEstadualChange: (v: string) => void;
-  municipal: string;
-  onMunicipalChange: (v: string) => void;
   onAutosave: () => void;
 }
 
@@ -49,9 +43,6 @@ const RegimeEParametrosSection: React.FC<Props> = ({
   aliquotaSN, onAliquotaSNChange,
   preencherValores, onPreencherValoresChange,
   configurarPercentuais, onConfigurarPercentuaisChange,
-  federal, onFederalChange,
-  estadual, onEstadualChange,
-  municipal, onMunicipalChange,
   onAutosave,
 }) => {
   const regimes: { value: RegimeTributario; label: string; desc: string }[] = [
@@ -136,57 +127,35 @@ const RegimeEParametrosSection: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Parâmetros adicionais */}
-      <div className="space-y-4 pt-4 border-t border-border">
-        <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-          <Percent className="w-4 h-4" />
-          Parâmetros de Valores e Percentuais
-        </h3>
+      {/* Regime de Apuração */}
+      {regime === 'simples' && (
+        <div className="space-y-3 pt-4 border-t border-border">
+          <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+            <Percent className="w-4 h-4" />
+            Regime de Apuração dos Tributos no Simples Nacional
+          </h3>
 
-        <Toggle
-          checked={preencherValores}
-          onChange={(v) => { onPreencherValoresChange(v); onAutosave(); }}
-          label="Preencher valores de deduções automaticamente"
-        />
-
-        <Toggle
-          checked={configurarPercentuais}
-          onChange={(v) => { onConfigurarPercentuaisChange(v); onAutosave(); }}
-          label="Configurar percentuais de tributos manualmente"
-        />
-
-        {configurarPercentuais && (
-          <div className="ml-12 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl">
-            <div>
-              <label className="field-label">Federal (%)</label>
-              <input
-                className="field-input"
-                placeholder="0.00"
-                value={federal}
-                onChange={(e) => { onFederalChange(e.target.value); onAutosave(); }}
-              />
-            </div>
-            <div>
-              <label className="field-label">Estadual (%)</label>
-              <input
-                className="field-input"
-                placeholder="0.00"
-                value={estadual}
-                onChange={(e) => { onEstadualChange(e.target.value); onAutosave(); }}
-              />
-            </div>
-            <div>
-              <label className="field-label">Municipal (%)</label>
-              <input
-                className="field-input"
-                placeholder="0.00"
-                value={municipal}
-                onChange={(e) => { onMunicipalChange(e.target.value); onAutosave(); }}
-              />
-            </div>
-          </div>
-        )}
-      </div>
+          {[
+            { value: 'federal_municipal', label: 'Regime de apuração dos tributos federais e municipal pelo Simples Nacional.' },
+            { value: 'federal_issqn', label: 'Regime de apuração dos tributos federais pelo Simples Nacional e o ISSQN pela NFS-e conforme respectiva legislação municipal do tributo.' },
+            { value: 'nfse', label: 'Regime de apuração dos tributos federais e municipal pela NFS-e conforme respectivas legislações federal e municipal de cada tributo.' },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { onRegimeApuracaoChange(opt.value); onAutosave(); }}
+              className={`radio-card text-left w-full ${regimeApuracaoSN === opt.value ? 'radio-card-selected' : ''}`}
+            >
+              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                regimeApuracaoSN === opt.value ? 'border-primary' : 'border-muted-foreground/40'
+              }`}>
+                {regimeApuracaoSN === opt.value && <div className="w-2 h-2 rounded-full bg-primary" />}
+              </div>
+              <span className="text-sm text-foreground">{opt.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
