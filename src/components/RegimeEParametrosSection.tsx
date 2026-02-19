@@ -137,8 +137,8 @@ const RegimeEParametrosSection: React.FC<Props> = ({
 
           {[
             { value: 'federal_municipal', label: 'Regime de apuração dos tributos federais e municipal pelo Simples Nacional.' },
-            { value: 'federal_issqn', label: 'Regime de apuração dos tributos federais pelo Simples Nacional e o ISSQN pela NFS-e conforme respectiva legislação municipal do tributo.' },
             { value: 'nfse', label: 'Regime de apuração dos tributos federais e municipal pela NFS-e conforme respectivas legislações federal e municipal de cada tributo.' },
+            { value: 'federal_issqn', label: 'Regime de apuração dos tributos federais pelo Simples Nacional e o ISSQN pela NFS-e conforme respectiva legislação municipal do tributo.' },
           ].map((opt) => (
             <button
               key={opt.value}
