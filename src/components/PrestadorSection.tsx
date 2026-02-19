@@ -205,42 +205,16 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <div>
-          <label className="field-label">Nome Fantasia</label>
-          <input
-            className="field-input"
-            placeholder="Nome fantasia"
-            value={data.nomeFantasia}
-            onChange={(e) => update('nomeFantasia', e.target.value)}
-          />
+          <label className="field-label">Simples Nacional</label>
+          <div className="field-input flex items-center gap-2 cursor-default">
+            <span className={`w-3 h-3 rounded-full inline-block ${
+              simplesChecked ? (simplesStatus.simples === true ? 'bg-green-500' : 'bg-red-500') : 'bg-muted-foreground/40'
+            }`} />
+            <span className="text-sm text-foreground">
+              {simplesChecked ? (simplesStatus.simples === true ? 'Optante' : 'Não optante') : 'Aguardando consulta'}
+            </span>
+          </div>
         </div>
-        <div>
-          <label className="field-label">Inscrição Estadual</label>
-          <input
-            className="field-input"
-            placeholder="Nº inscrição estadual"
-            value={data.inscricaoEstadual}
-            onChange={(e) => update('inscricaoEstadual', e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="field-label">Inscrição Suframa</label>
-          <input
-            className="field-input"
-            placeholder="Nº SUFRAMA (opcional)"
-            value={data.suframa}
-            onChange={(e) => update('suframa', e.target.value)}
-          />
-        </div>
-      </div>
-
-      {/* Simples Nacional */}
-      <div className="mt-4 p-3 rounded-lg border border-border bg-muted/30 flex items-center gap-2">
-        <span className={`w-3 h-3 rounded-full inline-block ${
-          simplesChecked ? (simplesStatus.simples === true ? 'bg-green-500' : 'bg-red-500') : 'bg-muted-foreground/40'
-        }`} />
-        <span className="text-sm font-medium text-foreground">
-          Simples Nacional: {simplesChecked ? (simplesStatus.simples === true ? 'Optante' : 'Não optante') : 'Aguardando consulta'}
-        </span>
       </div>
 
       {/* Endereço */}
