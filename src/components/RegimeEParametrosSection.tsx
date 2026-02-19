@@ -85,6 +85,14 @@ const RegimeEParametrosSection: React.FC<Props> = ({
         ))}
       </div>
 
+      {/* Parâmetro Fiscal */}
+      {regime && (
+        <h3 className="text-sm font-bold text-muted-foreground flex items-center gap-2 mb-3">
+          <Percent className="w-4 h-4 text-primary" />
+          Parâmetro Fiscal
+        </h3>
+      )}
+
       {/* Simples Nacional options */}
       {regime === 'simples' && (
         <div className="space-y-4 p-4 rounded-lg bg-muted/50 border border-border mb-5">
