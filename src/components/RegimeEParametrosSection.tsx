@@ -114,7 +114,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
           {informarAliquotaSN && (
             <div>
               <label className="field-label whitespace-nowrap">Alíquota Simples Nacional</label>
-              <div className="relative w-[60px]">
+              <div className="relative w-[55px]">
                 <input
                   className="field-input pr-7"
                   type="text"
