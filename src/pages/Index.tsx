@@ -30,6 +30,7 @@ const Index = () => {
   const [informarAliquotaSN, setInformarAliquotaSN] = useState(false);
   const [aliquotaSN, setAliquotaSN] = useState('');
   const [preencherValores, setPreencherValores] = useState(false);
+  const [regimeApuracaoSNParametro, setRegimeApuracaoSNParametro] = useState(false);
   const [configurarPercentuais, setConfigurarPercentuais] = useState(false);
   const [percentuais, setPercentuais] = useState<PercentuaisTributarios>({ federal: '', estadual: '', municipal: '' });
   const [configValida, setConfigValida] = useState(false);
@@ -131,6 +132,8 @@ const Index = () => {
           onAliquotaSNChange={setAliquotaSN}
           preencherValores={preencherValores}
           onPreencherValoresChange={setPreencherValores}
+          regimeApuracaoSNParametro={regimeApuracaoSNParametro}
+          onRegimeApuracaoSNParametroChange={setRegimeApuracaoSNParametro}
           configurarPercentuais={configurarPercentuais}
           onConfigurarPercentuaisChange={setConfigurarPercentuais}
           percentuais={percentuais}
