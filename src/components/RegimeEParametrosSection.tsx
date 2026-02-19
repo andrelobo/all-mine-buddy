@@ -116,7 +116,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
               <label className="field-label whitespace-nowrap">Alíquota Simples Nacional</label>
               <div className="relative w-[52px]">
                 <input
-                  className="field-input pr-7"
+                  className="field-input pr-7 border-primary"
                   type="text"
                   placeholder="00,00"
                   maxLength={5}
