@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { Shield, FileText, Save, X, CheckCircle } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
-import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
+import RegimeEParametrosSection, { type RegimeTributario, type PercentuaisTributarios } from '@/components/RegimeEParametrosSection';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 
 
@@ -31,6 +31,7 @@ const Index = () => {
   const [aliquotaSN, setAliquotaSN] = useState('');
   const [preencherValores, setPreencherValores] = useState(false);
   const [configurarPercentuais, setConfigurarPercentuais] = useState(false);
+  const [percentuais, setPercentuais] = useState<PercentuaisTributarios>({ federal: '', estadual: '', municipal: '' });
   const [configValida, setConfigValida] = useState(false);
 
   const checkValidity = useCallback(() => {
@@ -132,6 +133,8 @@ const Index = () => {
           onPreencherValoresChange={setPreencherValores}
           configurarPercentuais={configurarPercentuais}
           onConfigurarPercentuaisChange={setConfigurarPercentuais}
+          percentuais={percentuais}
+          onPercentuaisChange={setPercentuais}
           onAutosave={autosave}
         />
 

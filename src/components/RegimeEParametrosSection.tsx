@@ -3,6 +3,12 @@ import { Settings, Percent } from 'lucide-react';
 
 export type RegimeTributario = 'simples' | 'presumido' | 'real' | null;
 
+export interface PercentuaisTributarios {
+  federal: string;
+  estadual: string;
+  municipal: string;
+}
+
 interface Props {
   regime: RegimeTributario;
   onRegimeChange: (r: RegimeTributario) => void;
@@ -16,6 +22,8 @@ interface Props {
   onPreencherValoresChange: (v: boolean) => void;
   configurarPercentuais: boolean;
   onConfigurarPercentuaisChange: (v: boolean) => void;
+  percentuais: PercentuaisTributarios;
+  onPercentuaisChange: (p: PercentuaisTributarios) => void;
   onAutosave: () => void;
 }
 
@@ -43,6 +51,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
   aliquotaSN, onAliquotaSNChange,
   preencherValores, onPreencherValoresChange,
   configurarPercentuais, onConfigurarPercentuaisChange,
+  percentuais, onPercentuaisChange,
   onAutosave,
 }) => {
   const regimes: { value: RegimeTributario; label: string; desc: string }[] = [
@@ -101,6 +110,31 @@ const RegimeEParametrosSection: React.FC<Props> = ({
             onChange={(v) => { onPreencherValoresChange(v); onAutosave(); }}
             label="Preencher os valores monetários em cada NFS-e emitida"
           />
+          {configurarPercentuais && (
+            <div className="grid grid-cols-3 gap-3 pt-1">
+              {(['federal', 'estadual', 'municipal'] as const).map((campo) => (
+                <div key={campo}>
+                  <label className="field-label whitespace-nowrap capitalize">{campo}</label>
+                  <div className="relative w-[72px]">
+                    <input
+                      className="field-input pr-7 border-primary"
+                      type="text"
+                      placeholder="00,00"
+                      maxLength={5}
+                      value={percentuais[campo]}
+                      onChange={(e) => {
+                        let v = e.target.value.replace(/[^\d]/g, '').slice(0, 4);
+                        if (v.length > 2) v = v.slice(0, -2) + ',' + v.slice(-2);
+                        onPercentuaisChange({ ...percentuais, [campo]: v });
+                        onAutosave();
+                      }}
+                    />
+                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
           <Toggle
             checked={configurarPercentuais}
             onChange={(v) => { onConfigurarPercentuaisChange(v); onAutosave(); }}
