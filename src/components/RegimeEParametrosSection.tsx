@@ -140,7 +140,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
         <>
           <h3 className="text-sm font-bold text-muted-foreground flex items-center gap-2 mb-3">
             <Settings className="w-4 h-4 text-primary" />
-            Regime de Apuração dos Tributos no Simples Nacional
+            Apuração Simples Nacional
           </h3>
           <div className="space-y-3 p-4 rounded-lg bg-muted/50 border border-border">
             {[
