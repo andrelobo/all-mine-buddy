@@ -95,7 +95,6 @@ const Index = () => {
               <h1 className="text-lg font-bold text-foreground tracking-tight">
                 Zerä<span className="text-accent">:)</span>
               </h1>
-              <p className="text-xs text-muted-foreground">Parametrização Fiscal — NFS-e</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
