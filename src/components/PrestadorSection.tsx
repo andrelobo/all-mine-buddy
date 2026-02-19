@@ -212,7 +212,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         </div>
 
         <div>
-          <label className="field-label">Inscrição Municipal</label>
+          <label className="field-label">Indicador Municipal</label>
           <input
             className="field-input"
             placeholder="Inscrição"
