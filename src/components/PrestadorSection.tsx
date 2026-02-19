@@ -274,7 +274,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             />
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-4 mt-4">
           <div>
             <label className="field-label">Complemento</label>
             <input
