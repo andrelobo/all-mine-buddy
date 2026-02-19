@@ -108,7 +108,7 @@
   }
 
   .field-label {
-    @apply text-sm font-medium text-foreground mb-1.5 block;
+    @apply text-sm font-bold text-foreground mb-1.5 block;
   }
 
   .field-input {
