@@ -131,7 +131,6 @@ const RegimeEParametrosSection: React.FC<Props> = ({
       {regime === 'simples' && (
         <div className="space-y-3 pt-4 border-t border-border">
           <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-            <Percent className="w-4 h-4" />
             Regime de Apuração dos Tributos no Simples Nacional
           </h3>
 
