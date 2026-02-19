@@ -120,8 +120,14 @@ const RegimeEParametrosSection: React.FC<Props> = ({
                   className="field-input pr-7"
                   type="text"
                   placeholder="00,00"
+                  maxLength={5}
                   value={aliquotaSN}
-                  onChange={(e) => { onAliquotaSNChange(e.target.value); onAutosave(); }}
+                  onChange={(e) => {
+                    let v = e.target.value.replace(/[^\d]/g, '').slice(0, 4);
+                    if (v.length > 2) v = v.slice(0, -2) + ',' + v.slice(-2);
+                    onAliquotaSNChange(v);
+                    onAutosave();
+                  }}
                 />
                 <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">%</span>
               </div>
