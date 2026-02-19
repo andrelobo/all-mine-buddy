@@ -112,9 +112,9 @@ const RegimeEParametrosSection: React.FC<Props> = ({
             label="Informar alíquota do Simples Nacional"
           />
           {informarAliquotaSN && (
-            <div>
+            <div className="text-center">
               <label className="field-label whitespace-nowrap">Alíquota Simples Nacional</label>
-              <div className="relative w-[52px]">
+              <div className="relative w-[52px] mx-auto">
                 <input
                   className="field-input pr-7 border-primary"
                   type="text"
