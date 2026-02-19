@@ -49,6 +49,7 @@ const Index = () => {
     if (isOptante) {
       setRegime('simples');
       setInformarAliquotaSN(true);
+      setRegimeApuracaoSNParametro(true);
     }
   }, []);
 
