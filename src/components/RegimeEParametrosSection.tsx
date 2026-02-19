@@ -69,7 +69,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
     <div className="section-card">
       <h2 className="section-title">
         <Settings className="w-5 h-5 text-primary" />
-        Regime Tributário e Parâmetros
+        Parâmetros Tributários
       </h2>
 
       {/* Regime selection */}
