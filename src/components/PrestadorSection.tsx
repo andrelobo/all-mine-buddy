@@ -24,6 +24,7 @@ interface Props {
   data: PrestadorData;
   onChange: (data: PrestadorData) => void;
   onAutosave: () => void;
+  onSimplesDetected?: (isOptante: boolean) => void;
 }
 
 async function fetchCNPJData(cnpj: string) {
@@ -90,7 +91,7 @@ async function fetchCEPData(cep: string) {
   };
 }
 
-const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
+const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimplesDetected }) => {
   const [loadingCNPJ, setLoadingCNPJ] = useState(false);
   const [loadingCEP, setLoadingCEP] = useState(false);
   const [simplesStatus, setSimplesStatus] = useState<{ simples: boolean | null; mei: boolean | null }>({ simples: null, mei: null });
@@ -135,6 +136,9 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
       onAutosave();
       setSimplesStatus({ simples: result.opcao_pelo_simples, mei: null });
       setSimplesChecked(true);
+      if (result.opcao_pelo_simples === true) {
+        onSimplesDetected?.(true);
+      }
       toast.success('Dados do CNPJ preenchidos automaticamente!');
     } catch {
       setSimplesChecked(false);
