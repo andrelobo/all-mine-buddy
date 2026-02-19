@@ -211,7 +211,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
               simplesChecked ? (simplesStatus.simples === true ? 'bg-green-500' : 'bg-red-500') : 'bg-muted-foreground/40'
             }`} />
             <span className="text-sm text-foreground">
-              {simplesChecked ? (simplesStatus.simples === true ? 'Optante' : 'Não optante') : 'Aguardando consulta'}
+              {simplesChecked ? (simplesStatus.simples === true ? 'Optante' : 'Não optante') : ''}
             </span>
           </div>
         </div>
