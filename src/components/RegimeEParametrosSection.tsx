@@ -18,14 +18,8 @@ interface Props {
   onInformarAliquotaChange: (v: boolean) => void;
   aliquotaSN: string;
   onAliquotaSNChange: (v: string) => void;
-  preencherValores: boolean;
-  onPreencherValoresChange: (v: boolean) => void;
   regimeApuracaoSNParametro: boolean;
   onRegimeApuracaoSNParametroChange: (v: boolean) => void;
-  configurarPercentuais: boolean;
-  onConfigurarPercentuaisChange: (v: boolean) => void;
-  percentuais: PercentuaisTributarios;
-  onPercentuaisChange: (p: PercentuaisTributarios) => void;
   onAutosave: () => void;
 }
 
@@ -51,10 +45,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
   regimeApuracaoSN, onRegimeApuracaoChange,
   informarAliquotaSN, onInformarAliquotaChange,
   aliquotaSN, onAliquotaSNChange,
-  preencherValores, onPreencherValoresChange,
   regimeApuracaoSNParametro, onRegimeApuracaoSNParametroChange,
-  configurarPercentuais, onConfigurarPercentuaisChange,
-  percentuais, onPercentuaisChange,
   onAutosave,
 }) => {
   const regimes: { value: RegimeTributario; label: string; desc: string }[] = [
@@ -105,48 +96,12 @@ const RegimeEParametrosSection: React.FC<Props> = ({
         </h3>
       )}
 
-      {/* Simples Nacional options */}
       {regime === 'simples' && (
         <div className="space-y-4 p-4 rounded-lg bg-muted/50 border border-border mb-5">
-          <Toggle
-            checked={preencherValores}
-            onChange={(v) => { onPreencherValoresChange(v); onAutosave(); }}
-            label="Preencher os valores monetários em cada NFS-e emitida"
-          />
           <Toggle
             checked={regimeApuracaoSNParametro}
             onChange={(v) => { onRegimeApuracaoSNParametroChange(v); onAutosave(); }}
             label="Regime de apuração dos tributos federais e municipal pelo Simples Nacional"
-          />
-          {configurarPercentuais && (
-            <div className="grid grid-cols-3 gap-3 pt-1">
-              {(['federal', 'estadual', 'municipal'] as const).map((campo) => (
-                <div key={campo}>
-                  <label className="field-label whitespace-nowrap capitalize">{campo}</label>
-                  <div className="relative w-[55px]">
-                    <input
-                      className="field-input pr-7 border-primary"
-                      type="text"
-                      placeholder="00,00"
-                      maxLength={5}
-                      value={percentuais[campo]}
-                      onChange={(e) => {
-                        let v = e.target.value.replace(/[^\d]/g, '').slice(0, 4);
-                        if (v.length > 2) v = v.slice(0, -2) + ',' + v.slice(-2);
-                        onPercentuaisChange({ ...percentuais, [campo]: v });
-                        onAutosave();
-                      }}
-                    />
-                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">%</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          <Toggle
-            checked={configurarPercentuais}
-            onChange={(v) => { onConfigurarPercentuaisChange(v); onAutosave(); }}
-            label="Configurar os valores percentuais correspondentes"
           />
           <Toggle
             checked={informarAliquotaSN}
