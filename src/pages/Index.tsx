@@ -3,7 +3,6 @@ import { toast } from 'sonner';
 import { Shield, FileText, Save, X, CheckCircle } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
-import CodigoTributacaoSection from '@/components/CodigoTributacaoSection';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 
 
@@ -32,7 +31,6 @@ const Index = () => {
   const [aliquotaSN, setAliquotaSN] = useState('');
   const [preencherValores, setPreencherValores] = useState(false);
   const [configurarPercentuais, setConfigurarPercentuais] = useState(false);
-  const [ctn, setCtn] = useState<string | null>(null);
   const [configValida, setConfigValida] = useState(false);
 
   const checkValidity = useCallback(() => {
@@ -128,11 +126,6 @@ const Index = () => {
           onAutosave={autosave}
         />
 
-        <CodigoTributacaoSection
-          selected={ctn}
-          onSelect={setCtn}
-          onAutosave={autosave}
-        />
 
         {/* Footer */}
         <div className="section-card">
