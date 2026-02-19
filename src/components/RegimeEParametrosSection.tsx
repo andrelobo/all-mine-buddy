@@ -147,11 +147,10 @@ const RegimeEParametrosSection: React.FC<Props> = ({
               { value: 'nfse', label: 'Regime de apuração dos tributos federais e municipal pela NFS-e conforme respectivas legislações federal e municipal de cada tributo.' },
               { value: 'federal_issqn', label: 'Regime de apuração dos tributos federais pelo Simples Nacional e o ISSQN pela NFS-e conforme respectiva legislação municipal do tributo.' },
             ].map((opt) => (
-              <button
+              <label
                 key={opt.value}
-                type="button"
+                className="flex items-center gap-3 cursor-pointer select-none"
                 onClick={() => { onRegimeApuracaoChange(opt.value); onAutosave(); }}
-                className={`radio-card text-left w-full ${regimeApuracaoSN === opt.value ? 'radio-card-selected' : ''}`}
               >
                 <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
                   regimeApuracaoSN === opt.value ? 'border-primary' : 'border-muted-foreground/40'
@@ -159,7 +158,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
                   {regimeApuracaoSN === opt.value && <div className="w-2 h-2 rounded-full bg-primary" />}
                 </div>
                 <span className="text-sm text-foreground">{opt.label}</span>
-              </button>
+              </label>
             ))}
           </div>
         </>
