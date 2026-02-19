@@ -215,7 +215,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           <label className="field-label">Inscrição Municipal</label>
           <input
             className="field-input"
-            placeholder="Nº inscrição municipal"
+            placeholder="Inscrição"
             value={data.inscricaoMunicipal}
             onChange={(e) => update('inscricaoMunicipal', e.target.value)}
           />
@@ -248,7 +248,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           <label className="field-label">Inscrição Estadual</label>
           <input
             className="field-input"
-            placeholder="Nº inscrição estadual"
+            placeholder="Inscrição"
             value={data.inscricaoEstadual}
             onChange={(e) => update('inscricaoEstadual', e.target.value)}
           />
@@ -257,7 +257,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           <label className="field-label">Inscrição Suframa</label>
           <input
             className="field-input"
-            placeholder="Nº SUFRAMA (opcional)"
+            placeholder="Inscrição"
             value={data.suframa}
             onChange={(e) => update('suframa', e.target.value)}
           />
