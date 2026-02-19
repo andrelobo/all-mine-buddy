@@ -160,7 +160,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
     <div className="section-card">
       <h2 className="section-title">
         <Building2 className="w-5 h-5 text-primary" />
-        Dados do Prestador
+        O Prestador
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_3fr] gap-4">
