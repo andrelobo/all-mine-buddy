@@ -206,7 +206,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <div>
           <label className="field-label">Simples Nacional</label>
-          <div className="field-input flex items-center gap-2 cursor-default">
+          <div className="field-input flex items-center gap-2 cursor-default h-10">
             <span className={`w-3 h-3 rounded-full inline-block ${
               simplesChecked ? (simplesStatus.simples === true ? 'bg-green-500' : 'bg-red-500') : 'bg-muted-foreground/40'
             }`} />
