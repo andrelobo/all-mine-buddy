@@ -215,6 +215,24 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             </span>
           </div>
         </div>
+        <div>
+          <label className="field-label">Inscrição Estadual</label>
+          <input
+            className="field-input"
+            placeholder="Nº inscrição estadual"
+            value={data.inscricaoEstadual}
+            onChange={(e) => update('inscricaoEstadual', e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="field-label">Inscrição Suframa</label>
+          <input
+            className="field-input"
+            placeholder="Nº SUFRAMA (opcional)"
+            value={data.suframa}
+            onChange={(e) => update('suframa', e.target.value)}
+          />
+        </div>
       </div>
 
       {/* Endereço */}
