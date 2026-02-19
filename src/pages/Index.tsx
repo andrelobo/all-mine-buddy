@@ -93,7 +93,7 @@ const Index = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold text-foreground tracking-tight">
-                Zerä<span className="text-accent">:)</span>
+                Zerä Software Ltda
               </h1>
             </div>
           </div>
