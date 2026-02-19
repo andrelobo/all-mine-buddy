@@ -28,6 +28,36 @@ interface Props {
 
 async function fetchCNPJData(cnpj: string) {
   const cleaned = cnpj.replace(/\D/g, '');
+  
+  // Tenta ReceitaWS primeiro (dados mais atualizados)
+  try {
+    const res = await fetch(`https://receitaws.com.br/v1/cnpj/${cleaned}`, {
+      headers: { 'Accept': 'application/json' },
+    });
+    if (res.ok) {
+      const d = await res.json();
+      if (d.status !== 'ERROR') {
+        return {
+          razao_social: d.nome || '',
+          nome_fantasia: d.fantasia || '',
+          cep: d.cep?.replace(/[.\-]/g, '') || '',
+          logradouro: d.logradouro || '',
+          numero: d.numero || '',
+          complemento: d.complemento || '',
+          bairro: d.bairro || '',
+          municipio: d.municipio || '',
+          uf: d.uf || '',
+          email: d.email || '',
+          telefone: d.telefone?.replace(/\D/g, '') || '',
+          opcao_pelo_simples: d.simples?.optante ?? null,
+        };
+      }
+    }
+  } catch {
+    // fallback abaixo
+  }
+
+  // Fallback: BrasilAPI
   const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleaned}`);
   if (!res.ok) throw new Error('CNPJ não encontrado');
   const data = await res.json();
@@ -44,7 +74,6 @@ async function fetchCNPJData(cnpj: string) {
     email: data.email || '',
     telefone: data.ddd_telefone_1?.replace(/\D/g, '') || '',
     opcao_pelo_simples: data.opcao_pelo_simples ?? null,
-    opcao_pelo_mei: data.opcao_pelo_mei ?? null,
   };
 }
 
@@ -104,7 +133,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
       };
       onChange(updated);
       onAutosave();
-      setSimplesStatus({ simples: result.opcao_pelo_simples, mei: result.opcao_pelo_mei });
+      setSimplesStatus({ simples: result.opcao_pelo_simples, mei: null });
       setSimplesChecked(true);
       toast.success('Dados do CNPJ preenchidos automaticamente!');
     } catch {
