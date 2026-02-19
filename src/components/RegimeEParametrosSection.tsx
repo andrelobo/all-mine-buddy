@@ -119,7 +119,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
                 <input
                   className="field-input pr-7"
                   type="text"
-                  placeholder="6.00"
+                  placeholder="00,00"
                   value={aliquotaSN}
                   onChange={(e) => { onAliquotaSNChange(e.target.value); onAutosave(); }}
                 />
