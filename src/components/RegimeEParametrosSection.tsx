@@ -20,6 +20,8 @@ interface Props {
   onAliquotaSNChange: (v: string) => void;
   preencherValores: boolean;
   onPreencherValoresChange: (v: boolean) => void;
+  regimeApuracaoSNParametro: boolean;
+  onRegimeApuracaoSNParametroChange: (v: boolean) => void;
   configurarPercentuais: boolean;
   onConfigurarPercentuaisChange: (v: boolean) => void;
   percentuais: PercentuaisTributarios;
@@ -50,6 +52,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
   informarAliquotaSN, onInformarAliquotaChange,
   aliquotaSN, onAliquotaSNChange,
   preencherValores, onPreencherValoresChange,
+  regimeApuracaoSNParametro, onRegimeApuracaoSNParametroChange,
   configurarPercentuais, onConfigurarPercentuaisChange,
   percentuais, onPercentuaisChange,
   onAutosave,
@@ -109,6 +112,11 @@ const RegimeEParametrosSection: React.FC<Props> = ({
             checked={preencherValores}
             onChange={(v) => { onPreencherValoresChange(v); onAutosave(); }}
             label="Preencher os valores monetários em cada NFS-e emitida"
+          />
+          <Toggle
+            checked={regimeApuracaoSNParametro}
+            onChange={(v) => { onRegimeApuracaoSNParametroChange(v); onAutosave(); }}
+            label="Regime de apuração dos tributos federais e municipal pelo Simples Nacional"
           />
           {configurarPercentuais && (
             <div className="grid grid-cols-3 gap-3 pt-1">
