@@ -46,6 +46,14 @@ const Index = () => {
     // Simula autosave
   }, [checkValidity]);
 
+  const handleSimplesDetected = useCallback((isOptante: boolean) => {
+    if (isOptante) {
+      setRegime('simples');
+      setInformarAliquotaSN(true);
+      setRegimeApuracaoSN('federal_municipal');
+    }
+  }, []);
+
   const handleSalvar = () => {
     if (!validateCNPJ(prestador.cnpj)) {
       toast.error('CNPJ inválido. Verifique o número informado.');
@@ -108,6 +116,7 @@ const Index = () => {
           data={prestador}
           onChange={setPrestador}
           onAutosave={autosave}
+          onSimplesDetected={handleSimplesDetected}
         />
 
         <RegimeEParametrosSection
