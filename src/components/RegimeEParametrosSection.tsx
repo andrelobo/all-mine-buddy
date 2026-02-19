@@ -98,14 +98,19 @@ const RegimeEParametrosSection: React.FC<Props> = ({
       {regime === 'simples' && (
         <div className="space-y-4 p-4 rounded-lg bg-muted/50 border border-border mb-5">
           <Toggle
-            checked={regimeApuracaoSN}
-            onChange={(v) => { onRegimeApuracaoChange(v); onAutosave(); }}
-            label="Regime de apuração do Simples Nacional"
+            checked={preencherValores}
+            onChange={(v) => { onPreencherValoresChange(v); onAutosave(); }}
+            label="Preencher os valores monetários em cada NFS-e emitida"
+          />
+          <Toggle
+            checked={configurarPercentuais}
+            onChange={(v) => { onConfigurarPercentuaisChange(v); onAutosave(); }}
+            label="Configurar os valores percentuais correspondentes"
           />
           <Toggle
             checked={informarAliquotaSN}
             onChange={(v) => { onInformarAliquotaChange(v); onAutosave(); }}
-            label="Informar alíquota do Simples Nacional na NFS-e"
+            label="Informar alíquota do Simples Nacional"
           />
           {informarAliquotaSN && (
             <div className="ml-12 max-w-xs">
