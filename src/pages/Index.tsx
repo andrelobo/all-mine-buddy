@@ -26,7 +26,7 @@ const INITIAL_PRESTADOR = {
 const Index = () => {
   const [prestador, setPrestador] = useState(INITIAL_PRESTADOR);
   const [regime, setRegime] = useState<RegimeTributario>(null);
-  const [regimeApuracaoSN, setRegimeApuracaoSN] = useState('');
+  
   const [informarAliquotaSN, setInformarAliquotaSN] = useState(false);
   const [aliquotaSN, setAliquotaSN] = useState('');
   const [regimeApuracaoSNParametro, setRegimeApuracaoSNParametro] = useState(false);
@@ -49,7 +49,6 @@ const Index = () => {
     if (isOptante) {
       setRegime('simples');
       setInformarAliquotaSN(true);
-      setRegimeApuracaoSN('federal_municipal');
     }
   }, []);
 
@@ -121,8 +120,6 @@ const Index = () => {
         <RegimeEParametrosSection
           regime={regime}
           onRegimeChange={setRegime}
-          regimeApuracaoSN={regimeApuracaoSN}
-          onRegimeApuracaoChange={setRegimeApuracaoSN}
           informarAliquotaSN={informarAliquotaSN}
           onInformarAliquotaChange={setInformarAliquotaSN}
           aliquotaSN={aliquotaSN}
