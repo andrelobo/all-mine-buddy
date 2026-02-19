@@ -113,15 +113,18 @@ const RegimeEParametrosSection: React.FC<Props> = ({
             label="Informar alíquota do Simples Nacional"
           />
           {informarAliquotaSN && (
-            <div className="ml-12 max-w-xs">
-              <label className="field-label">Alíquota do Simples Nacional (%)</label>
-              <input
-                className="field-input"
-                type="text"
-                placeholder="Ex: 6.00"
-                value={aliquotaSN}
-                onChange={(e) => { onAliquotaSNChange(e.target.value); onAutosave(); }}
-              />
+            <div className="ml-12 max-w-[160px]">
+              <label className="field-label">Alíquota do Simples Nacional</label>
+              <div className="relative">
+                <input
+                  className="field-input pr-8"
+                  type="text"
+                  placeholder="Ex: 6.00"
+                  value={aliquotaSN}
+                  onChange={(e) => { onAliquotaSNChange(e.target.value); onAutosave(); }}
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">%</span>
+              </div>
             </div>
           )}
         </div>
