@@ -137,31 +137,32 @@ const RegimeEParametrosSection: React.FC<Props> = ({
 
       {/* Regime de Apuração */}
       {regime === 'simples' && (
-        <div className="space-y-3 p-4 rounded-lg bg-muted/50 border border-border">
-          <h3 className="text-sm font-bold text-muted-foreground flex items-center gap-2">
+        <>
+          <h3 className="text-sm font-bold text-muted-foreground flex items-center gap-2 mb-3">
             Regime de Apuração dos Tributos no Simples Nacional
           </h3>
-
-          {[
-            { value: 'federal_municipal', label: 'Regime de apuração dos tributos federais e municipal pelo Simples Nacional.' },
-            { value: 'nfse', label: 'Regime de apuração dos tributos federais e municipal pela NFS-e conforme respectivas legislações federal e municipal de cada tributo.' },
-            { value: 'federal_issqn', label: 'Regime de apuração dos tributos federais pelo Simples Nacional e o ISSQN pela NFS-e conforme respectiva legislação municipal do tributo.' },
-          ].map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => { onRegimeApuracaoChange(opt.value); onAutosave(); }}
-              className={`radio-card text-left w-full ${regimeApuracaoSN === opt.value ? 'radio-card-selected' : ''}`}
-            >
-              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                regimeApuracaoSN === opt.value ? 'border-primary' : 'border-muted-foreground/40'
-              }`}>
-                {regimeApuracaoSN === opt.value && <div className="w-2 h-2 rounded-full bg-primary" />}
-              </div>
-              <span className="text-sm text-foreground">{opt.label}</span>
-            </button>
-          ))}
-        </div>
+          <div className="space-y-3 p-4 rounded-lg bg-muted/50 border border-border">
+            {[
+              { value: 'federal_municipal', label: 'Regime de apuração dos tributos federais e municipal pelo Simples Nacional.' },
+              { value: 'nfse', label: 'Regime de apuração dos tributos federais e municipal pela NFS-e conforme respectivas legislações federal e municipal de cada tributo.' },
+              { value: 'federal_issqn', label: 'Regime de apuração dos tributos federais pelo Simples Nacional e o ISSQN pela NFS-e conforme respectiva legislação municipal do tributo.' },
+            ].map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => { onRegimeApuracaoChange(opt.value); onAutosave(); }}
+                className={`radio-card text-left w-full ${regimeApuracaoSN === opt.value ? 'radio-card-selected' : ''}`}
+              >
+                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                  regimeApuracaoSN === opt.value ? 'border-primary' : 'border-muted-foreground/40'
+                }`}>
+                  {regimeApuracaoSN === opt.value && <div className="w-2 h-2 rounded-full bg-primary" />}
+                </div>
+                <span className="text-sm text-foreground">{opt.label}</span>
+              </button>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
