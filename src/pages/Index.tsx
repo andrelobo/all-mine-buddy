@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { Shield, FileText, Save, X, CheckCircle } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
-import RegimeEParametrosSection, { type RegimeTributario, type PercentuaisTributarios } from '@/components/RegimeEParametrosSection';
+import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 
 
@@ -29,10 +29,7 @@ const Index = () => {
   const [regimeApuracaoSN, setRegimeApuracaoSN] = useState('');
   const [informarAliquotaSN, setInformarAliquotaSN] = useState(false);
   const [aliquotaSN, setAliquotaSN] = useState('');
-  const [preencherValores, setPreencherValores] = useState(false);
   const [regimeApuracaoSNParametro, setRegimeApuracaoSNParametro] = useState(false);
-  const [configurarPercentuais, setConfigurarPercentuais] = useState(false);
-  const [percentuais, setPercentuais] = useState<PercentuaisTributarios>({ federal: '', estadual: '', municipal: '' });
   const [configValida, setConfigValida] = useState(false);
 
   const checkValidity = useCallback(() => {
@@ -130,14 +127,8 @@ const Index = () => {
           onInformarAliquotaChange={setInformarAliquotaSN}
           aliquotaSN={aliquotaSN}
           onAliquotaSNChange={setAliquotaSN}
-          preencherValores={preencherValores}
-          onPreencherValoresChange={setPreencherValores}
           regimeApuracaoSNParametro={regimeApuracaoSNParametro}
           onRegimeApuracaoSNParametroChange={setRegimeApuracaoSNParametro}
-          configurarPercentuais={configurarPercentuais}
-          onConfigurarPercentuaisChange={setConfigurarPercentuais}
-          percentuais={percentuais}
-          onPercentuaisChange={setPercentuais}
           onAutosave={autosave}
         />
 
