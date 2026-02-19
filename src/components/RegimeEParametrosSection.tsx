@@ -58,7 +58,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
 
   return (
     <div className="section-card">
-      <h2 className="section-title italic">
+      <h2 className="section-title">
         <Settings className="w-5 h-5 text-primary" />
         Regime Tributário
       </h2>
@@ -87,7 +87,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
 
       {/* Parâmetro Fiscal */}
       {regime && (
-        <h3 className="text-sm font-bold italic text-muted-foreground flex items-center gap-2 mb-3">
+        <h3 className="text-sm font-bold text-muted-foreground flex items-center gap-2 mb-3">
           <Settings className="w-4 h-4 text-primary" />
           Parâmetro Fiscal
         </h3>
@@ -138,7 +138,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
       {/* Regime de Apuração */}
       {regime === 'simples' && (
         <>
-          <h3 className="text-sm font-bold italic text-muted-foreground flex items-center gap-2 mb-3">
+          <h3 className="text-sm font-bold text-muted-foreground flex items-center gap-2 mb-3">
             <Settings className="w-4 h-4 text-primary" />
             Apuração Simples Nacional
           </h3>
