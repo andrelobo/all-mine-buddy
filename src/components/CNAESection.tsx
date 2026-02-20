@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Tag, Star, Loader2, AlertCircle, Trash2, CheckCircle2 } from 'lucide-react';
+import { Tag, Star, Loader2, AlertCircle, Trash2, CheckCircle2, FileText } from 'lucide-react';
 import { validateCNPJ } from '@/utils/validators';
+import { getLC116Item } from '@/utils/cnae-lc116';
 
 interface CNAEAtividade {
   codigo: number | string;
@@ -183,8 +184,25 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                             Configuração tributária
                           </span>
                         )}
+                        {(() => {
+                          const lc = getLC116Item(atividade.codigo);
+                          return lc ? (
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium">
+                              <FileText className="w-3 h-3 shrink-0" />
+                              LC 116/2003 – Item {lc.item}
+                            </span>
+                          ) : null;
+                        })()}
                       </div>
                       <p className="text-sm text-foreground mt-1 leading-snug">{atividade.descricao}</p>
+                      {(() => {
+                        const lc = getLC116Item(atividade.codigo);
+                        return lc ? (
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug italic">
+                            {lc.descricao}
+                          </p>
+                        ) : null;
+                      })()}
                     </div>
                   </button>
 
@@ -221,11 +239,28 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
           {selectedActivity && (
             <div className="mt-4 pt-4 border-t border-border">
               <p className="text-xs text-muted-foreground mb-1.5">CNAE para configuração tributária</p>
-              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-primary/5 border border-primary/20">
-                <span className="text-xs font-mono font-semibold text-primary bg-primary/10 px-2 py-1 rounded shrink-0">
+              <div className="flex items-start gap-2 p-2.5 rounded-lg bg-primary/5 border border-primary/20">
+                <span className="text-xs font-mono font-semibold text-primary bg-primary/10 px-2 py-1 rounded shrink-0 mt-0.5">
                   {formatCNAECode(selectedActivity.codigo)}
                 </span>
-                <span className="text-sm text-foreground leading-snug">{selectedActivity.descricao}</span>
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm text-foreground leading-snug block">{selectedActivity.descricao}</span>
+                  {(() => {
+                    const lc = getLC116Item(selectedActivity.codigo);
+                    return lc ? (
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                        <FileText className="w-3 h-3 shrink-0" />
+                        <span>
+                          <strong>LC 116/2003 – Item {lc.item}:</strong> {lc.descricao}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground/60 mt-1 block italic">
+                        Sem correspondência mapeada na LC 116/2003
+                      </span>
+                    );
+                  })()}
+                </div>
               </div>
             </div>
           )}
