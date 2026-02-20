@@ -216,7 +216,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                                   <TooltipTrigger asChild>
                                     <p className="text-xs text-muted-foreground leading-snug cursor-help">
                                       <span className="font-semibold text-foreground/70">CTN {lc.ctn}:</span>
-                                      <span className="ml-1">Código de Tributação Nacional</span>
+                                      <span className="ml-1">{lc.descricao}</span>
                                     </p>
                                   </TooltipTrigger>
                                   <TooltipContent side="top" className="max-w-xs text-xs">
@@ -230,7 +230,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                                   <TooltipTrigger asChild>
                                     <p className="text-xs text-muted-foreground leading-snug cursor-help">
                                       <span className="font-semibold text-foreground/70">NBS {lc.nbs}:</span>
-                                      <span className="ml-1">Nomenclatura Brasileira de Serviços</span>
+                                      <span className="ml-1">{lc.descricao}</span>
                                     </p>
                                   </TooltipTrigger>
                                   <TooltipContent side="top" className="max-w-xs text-xs">
@@ -313,7 +313,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                               <TooltipTrigger asChild>
                                 <p className="text-xs text-muted-foreground leading-snug cursor-help">
                                   <span className="font-semibold text-foreground/70">CTN {lc.ctn}:</span>
-                                  <span className="ml-1">Código de Tributação Nacional</span>
+                                  <span className="ml-1">{lc.descricao}</span>
                                 </p>
                               </TooltipTrigger>
                               <TooltipContent side="top" className="max-w-xs text-xs">
@@ -327,7 +327,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                               <TooltipTrigger asChild>
                                 <p className="text-xs text-muted-foreground leading-snug cursor-help">
                                   <span className="font-semibold text-foreground/70">NBS {lc.nbs}:</span>
-                                  <span className="ml-1">Nomenclatura Brasileira de Serviços</span>
+                                  <span className="ml-1">{lc.descricao}</span>
                                 </p>
                               </TooltipTrigger>
                               <TooltipContent side="top" className="max-w-xs text-xs">
