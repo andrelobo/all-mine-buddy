@@ -168,11 +168,9 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                     }`}>
                       {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 space-y-1">
+                      {/* Badges topo */}
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-mono font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-                          {formatCNAECode(atividade.codigo)}
-                        </span>
                         {atividade.isPrincipal && (
                           <span className="flex items-center gap-1 text-xs text-warning bg-warning/10 px-1.5 py-0.5 rounded font-medium">
                             <Star className="w-3 h-3" />
@@ -185,62 +183,65 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                             Configuração tributária
                           </span>
                         )}
-                        {(() => {
-                          const lc = getLC116Item(atividade.codigo);
-                          return lc ? (
-                            <TooltipProvider delayDuration={200}>
-                              <>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <span className="flex items-center gap-1 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium cursor-help">
-                                      <FileText className="w-3 h-3 shrink-0" />
-                                      LC 116 – Item {lc.item}
-                                    </span>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="top" className="max-w-xs text-xs">
-                                    <p className="font-semibold mb-0.5">Lista de Serviços – LC 116/2003</p>
-                                    <p>Item da lista de serviços tributáveis pelo ISS conforme a Lei Complementar nº 116/2003. Define o enquadramento legal do serviço para fins de incidência do imposto municipal.</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                                {lc.ctn && (
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium font-mono cursor-help">
-                                        CTN {lc.ctn}
-                                      </span>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top" className="max-w-xs text-xs">
-                                      <p className="font-semibold mb-0.5">Código de Tributação Nacional (CTN)</p>
-                                      <p>Código de 6 dígitos utilizado na NFS-e padrão nacional para identificar o tipo de serviço prestado. Derivado do item da LC 116/2003 e exigido pelas prefeituras que adotam o modelo ABRASF.</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                )}
-                                {lc.nbs && (
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium font-mono cursor-help">
-                                        NBS {lc.nbs}
-                                      </span>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top" className="max-w-xs text-xs">
-                                      <p className="font-semibold mb-0.5">Nomenclatura Brasileira de Serviços (NBS)</p>
-                                      <p>Classificação oficial brasileira de serviços, intangíveis e outras operações que produzam variações no patrimônio. Utilizada para fins fiscais, estatísticos e de comércio exterior de serviços.</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                )}
-                              </>
-                            </TooltipProvider>
-                          ) : null;
-                        })()}
                       </div>
-                      <p className="text-sm text-foreground mt-1 leading-snug">{atividade.descricao}</p>
+
+                      {/* Linha CNAE */}
+                      <p className="text-sm text-foreground leading-snug">
+                        <span className="font-semibold text-primary font-mono">{formatCNAECode(atividade.codigo)}</span>
+                        <span className="text-muted-foreground mx-1.5">·</span>
+                        {atividade.descricao}
+                      </p>
+
+                      {/* Linhas LC 116 / CTN / NBS */}
                       {(() => {
                         const lc = getLC116Item(atividade.codigo);
-                        return lc ? (
-                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug italic">
-                            {lc.descricao}
-                          </p>
-                        ) : null;
+                        if (!lc) return null;
+                        return (
+                          <TooltipProvider delayDuration={200}>
+                            <div className="space-y-0.5 pt-0.5">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <p className="text-xs text-muted-foreground leading-snug cursor-help">
+                                    <span className="font-semibold text-foreground/70">LC 116 Item {lc.item}:</span>
+                                    <span className="ml-1">{lc.descricao}</span>
+                                  </p>
+                                </TooltipTrigger>
+                                <TooltipContent side="top" className="max-w-xs text-xs">
+                                  <p className="font-semibold mb-0.5">Lista de Serviços – LC 116/2003</p>
+                                  <p>Item da lista de serviços tributáveis pelo ISS conforme a Lei Complementar nº 116/2003. Define o enquadramento legal do serviço para fins de incidência do imposto municipal.</p>
+                                </TooltipContent>
+                              </Tooltip>
+                              {lc.ctn && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <p className="text-xs text-muted-foreground leading-snug cursor-help">
+                                      <span className="font-semibold text-foreground/70">CTN {lc.ctn}:</span>
+                                      <span className="ml-1">Código de Tributação Nacional</span>
+                                    </p>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="max-w-xs text-xs">
+                                    <p className="font-semibold mb-0.5">Código de Tributação Nacional (CTN)</p>
+                                    <p>Código de 6 dígitos utilizado na NFS-e padrão nacional para identificar o tipo de serviço prestado. Derivado do item da LC 116/2003 e exigido pelas prefeituras que adotam o modelo ABRASF.</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+                              {lc.nbs && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <p className="text-xs text-muted-foreground leading-snug cursor-help">
+                                      <span className="font-semibold text-foreground/70">NBS {lc.nbs}:</span>
+                                      <span className="ml-1">Nomenclatura Brasileira de Serviços</span>
+                                    </p>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="max-w-xs text-xs">
+                                    <p className="font-semibold mb-0.5">Nomenclatura Brasileira de Serviços (NBS)</p>
+                                    <p>Classificação oficial brasileira de serviços, intangíveis e outras operações que produzam variações no patrimônio. Utilizada para fins fiscais, estatísticos e de comércio exterior de serviços.</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+                            </div>
+                          </TooltipProvider>
+                        );
                       })()}
                     </div>
                   </button>
@@ -279,58 +280,64 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
             <div className="mt-4 pt-4 border-t border-border">
               <p className="text-xs text-muted-foreground mb-1.5">CNAE para configuração tributária</p>
               <div className="flex items-start gap-2 p-2.5 rounded-lg bg-primary/5 border border-primary/20">
-                <span className="text-xs font-mono font-semibold text-primary bg-primary/10 px-2 py-1 rounded shrink-0 mt-0.5">
-                  {formatCNAECode(selectedActivity.codigo)}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <span className="text-sm text-foreground leading-snug block">{selectedActivity.descricao}</span>
+                <div className="flex-1 min-w-0 space-y-1">
+                  {/* Linha CNAE */}
+                  <p className="text-sm text-foreground leading-snug">
+                    <span className="font-semibold text-primary font-mono">{formatCNAECode(selectedActivity.codigo)}</span>
+                    <span className="text-muted-foreground mx-1.5">·</span>
+                    {selectedActivity.descricao}
+                  </p>
+                  {/* Linhas LC 116 / CTN / NBS */}
                   {(() => {
                     const lc = getLC116Item(selectedActivity.codigo);
-                    return lc ? (
-                      <div className="mt-1 space-y-1">
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <FileText className="w-3 h-3 shrink-0" />
-                          <span>
-                            <strong>LC 116/2003 – Item {lc.item}:</strong> {lc.descricao}
-                          </span>
-                        </span>
-                        {(lc.ctn || lc.nbs) && (
-                          <TooltipProvider delayDuration={200}>
-                            <div className="flex flex-wrap gap-2 pt-0.5">
-                              {lc.ctn && (
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded font-mono cursor-help">
-                                      <strong className="font-sans not-italic">CTN:</strong> {lc.ctn}
-                                    </span>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="top" className="max-w-xs text-xs">
-                                    <p className="font-semibold mb-0.5">Código de Tributação Nacional (CTN)</p>
-                                    <p>Código de 6 dígitos utilizado na NFS-e padrão nacional para identificar o tipo de serviço prestado. Derivado do item da LC 116/2003 e exigido pelas prefeituras que adotam o modelo ABRASF.</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              )}
-                              {lc.nbs && (
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded font-mono cursor-help">
-                                      <strong className="font-sans not-italic">NBS:</strong> {lc.nbs}
-                                    </span>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="top" className="max-w-xs text-xs">
-                                    <p className="font-semibold mb-0.5">Nomenclatura Brasileira de Serviços (NBS)</p>
-                                    <p>Classificação oficial brasileira de serviços, intangíveis e outras operações que produzam variações no patrimônio. Utilizada para fins fiscais, estatísticos e de comércio exterior de serviços.</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              )}
-                            </div>
-                          </TooltipProvider>
-                        )}
-                      </div>
-                    ) : (
-                      <span className="text-xs text-muted-foreground/60 mt-1 block italic">
-                        Sem correspondência mapeada na LC 116/2003
-                      </span>
+                    if (!lc) return (
+                      <p className="text-xs text-muted-foreground/60 italic">Sem correspondência mapeada na LC 116/2003</p>
+                    );
+                    return (
+                      <TooltipProvider delayDuration={200}>
+                        <div className="space-y-0.5">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <p className="text-xs text-muted-foreground leading-snug cursor-help">
+                                <span className="font-semibold text-foreground/70">LC 116 Item {lc.item}:</span>
+                                <span className="ml-1">{lc.descricao}</span>
+                              </p>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-xs text-xs">
+                              <p className="font-semibold mb-0.5">Lista de Serviços – LC 116/2003</p>
+                              <p>Item da lista de serviços tributáveis pelo ISS conforme a Lei Complementar nº 116/2003. Define o enquadramento legal do serviço para fins de incidência do imposto municipal.</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          {lc.ctn && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <p className="text-xs text-muted-foreground leading-snug cursor-help">
+                                  <span className="font-semibold text-foreground/70">CTN {lc.ctn}:</span>
+                                  <span className="ml-1">Código de Tributação Nacional</span>
+                                </p>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="max-w-xs text-xs">
+                                <p className="font-semibold mb-0.5">Código de Tributação Nacional (CTN)</p>
+                                <p>Código de 6 dígitos utilizado na NFS-e padrão nacional para identificar o tipo de serviço prestado. Derivado do item da LC 116/2003 e exigido pelas prefeituras que adotam o modelo ABRASF.</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                          {lc.nbs && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <p className="text-xs text-muted-foreground leading-snug cursor-help">
+                                  <span className="font-semibold text-foreground/70">NBS {lc.nbs}:</span>
+                                  <span className="ml-1">Nomenclatura Brasileira de Serviços</span>
+                                </p>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="max-w-xs text-xs">
+                                <p className="font-semibold mb-0.5">Nomenclatura Brasileira de Serviços (NBS)</p>
+                                <p>Classificação oficial brasileira de serviços, intangíveis e outras operações que produzam variações no patrimônio. Utilizada para fins fiscais, estatísticos e de comércio exterior de serviços.</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
+                      </TooltipProvider>
                     );
                   })()}
                 </div>
