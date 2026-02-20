@@ -187,10 +187,22 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                         {(() => {
                           const lc = getLC116Item(atividade.codigo);
                           return lc ? (
-                            <span className="flex items-center gap-1 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium">
-                              <FileText className="w-3 h-3 shrink-0" />
-                              LC 116/2003 – Item {lc.item}
-                            </span>
+                            <>
+                              <span className="flex items-center gap-1 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium">
+                                <FileText className="w-3 h-3 shrink-0" />
+                                LC 116 – Item {lc.item}
+                              </span>
+                              {lc.ctn && (
+                                <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium font-mono">
+                                  CTN {lc.ctn}
+                                </span>
+                              )}
+                              {lc.nbs && (
+                                <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium font-mono">
+                                  NBS {lc.nbs}
+                                </span>
+                              )}
+                            </>
                           ) : null;
                         })()}
                       </div>
@@ -248,12 +260,28 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                   {(() => {
                     const lc = getLC116Item(selectedActivity.codigo);
                     return lc ? (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                        <FileText className="w-3 h-3 shrink-0" />
-                        <span>
-                          <strong>LC 116/2003 – Item {lc.item}:</strong> {lc.descricao}
+                      <div className="mt-1 space-y-1">
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <FileText className="w-3 h-3 shrink-0" />
+                          <span>
+                            <strong>LC 116/2003 – Item {lc.item}:</strong> {lc.descricao}
+                          </span>
                         </span>
-                      </span>
+                        {(lc.ctn || lc.nbs) && (
+                          <div className="flex flex-wrap gap-2 pt-0.5">
+                            {lc.ctn && (
+                              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded font-mono">
+                                <strong className="font-sans not-italic">CTN:</strong> {lc.ctn}
+                              </span>
+                            )}
+                            {lc.nbs && (
+                              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded font-mono">
+                                <strong className="font-sans not-italic">NBS:</strong> {lc.nbs}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     ) : (
                       <span className="text-xs text-muted-foreground/60 mt-1 block italic">
                         Sem correspondência mapeada na LC 116/2003
