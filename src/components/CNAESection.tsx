@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Tag, Star, Loader2, AlertCircle, Trash2, CheckCircle2, FileText } from 'lucide-react';
 import { validateCNPJ } from '@/utils/validators';
 import { getLC116Item } from '@/utils/cnae-lc116';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface CNAEAtividade {
   codigo: number | string;
@@ -187,22 +188,48 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                         {(() => {
                           const lc = getLC116Item(atividade.codigo);
                           return lc ? (
-                            <>
-                              <span className="flex items-center gap-1 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium">
-                                <FileText className="w-3 h-3 shrink-0" />
-                                LC 116 – Item {lc.item}
-                              </span>
-                              {lc.ctn && (
-                                <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium font-mono">
-                                  CTN {lc.ctn}
-                                </span>
-                              )}
-                              {lc.nbs && (
-                                <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium font-mono">
-                                  NBS {lc.nbs}
-                                </span>
-                              )}
-                            </>
+                            <TooltipProvider delayDuration={200}>
+                              <>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="flex items-center gap-1 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium cursor-help">
+                                      <FileText className="w-3 h-3 shrink-0" />
+                                      LC 116 – Item {lc.item}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="max-w-xs text-xs">
+                                    <p className="font-semibold mb-0.5">Lista de Serviços – LC 116/2003</p>
+                                    <p>Item da lista de serviços tributáveis pelo ISS conforme a Lei Complementar nº 116/2003. Define o enquadramento legal do serviço para fins de incidência do imposto municipal.</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                                {lc.ctn && (
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium font-mono cursor-help">
+                                        CTN {lc.ctn}
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" className="max-w-xs text-xs">
+                                      <p className="font-semibold mb-0.5">Código de Tributação Nacional (CTN)</p>
+                                      <p>Código de 6 dígitos utilizado na NFS-e padrão nacional para identificar o tipo de serviço prestado. Derivado do item da LC 116/2003 e exigido pelas prefeituras que adotam o modelo ABRASF.</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                )}
+                                {lc.nbs && (
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium font-mono cursor-help">
+                                        NBS {lc.nbs}
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" className="max-w-xs text-xs">
+                                      <p className="font-semibold mb-0.5">Nomenclatura Brasileira de Serviços (NBS)</p>
+                                      <p>Classificação oficial brasileira de serviços, intangíveis e outras operações que produzam variações no patrimônio. Utilizada para fins fiscais, estatísticos e de comércio exterior de serviços.</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                )}
+                              </>
+                            </TooltipProvider>
                           ) : null;
                         })()}
                       </div>
@@ -268,18 +295,36 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                           </span>
                         </span>
                         {(lc.ctn || lc.nbs) && (
-                          <div className="flex flex-wrap gap-2 pt-0.5">
-                            {lc.ctn && (
-                              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded font-mono">
-                                <strong className="font-sans not-italic">CTN:</strong> {lc.ctn}
-                              </span>
-                            )}
-                            {lc.nbs && (
-                              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded font-mono">
-                                <strong className="font-sans not-italic">NBS:</strong> {lc.nbs}
-                              </span>
-                            )}
-                          </div>
+                          <TooltipProvider delayDuration={200}>
+                            <div className="flex flex-wrap gap-2 pt-0.5">
+                              {lc.ctn && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded font-mono cursor-help">
+                                      <strong className="font-sans not-italic">CTN:</strong> {lc.ctn}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="max-w-xs text-xs">
+                                    <p className="font-semibold mb-0.5">Código de Tributação Nacional (CTN)</p>
+                                    <p>Código de 6 dígitos utilizado na NFS-e padrão nacional para identificar o tipo de serviço prestado. Derivado do item da LC 116/2003 e exigido pelas prefeituras que adotam o modelo ABRASF.</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+                              {lc.nbs && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded font-mono cursor-help">
+                                      <strong className="font-sans not-italic">NBS:</strong> {lc.nbs}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="max-w-xs text-xs">
+                                    <p className="font-semibold mb-0.5">Nomenclatura Brasileira de Serviços (NBS)</p>
+                                    <p>Classificação oficial brasileira de serviços, intangíveis e outras operações que produzam variações no patrimônio. Utilizada para fins fiscais, estatísticos e de comércio exterior de serviços.</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+                            </div>
+                          </TooltipProvider>
                         )}
                       </div>
                     ) : (
