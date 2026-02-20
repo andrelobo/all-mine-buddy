@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { Shield, FileText, Save, X, CheckCircle } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
+import CNAESection from '@/components/CNAESection';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 
 
@@ -31,6 +32,8 @@ const Index = () => {
   const [aliquotaSN, setAliquotaSN] = useState('');
   const [regimeApuracaoSNParametro, setRegimeApuracaoSNParametro] = useState(false);
   const [configValida, setConfigValida] = useState(false);
+  const [cnaeEscolhido, setCnaeEscolhido] = useState<string | null>(null);
+  const [cnaeDescricao, setCnaeDescricao] = useState<string>('');
 
   const checkValidity = useCallback(() => {
     const cnpjOk = validateCNPJ(prestador.cnpj);
@@ -51,6 +54,11 @@ const Index = () => {
       setInformarAliquotaSN(true);
       setRegimeApuracaoSNParametro(true);
     }
+  }, []);
+
+  const handleCnaeEscolhido = useCallback((codigo: string, descricao: string) => {
+    setCnaeEscolhido(codigo);
+    setCnaeDescricao(descricao);
   }, []);
 
   const handleSalvar = () => {
@@ -129,6 +137,11 @@ const Index = () => {
           onAutosave={autosave}
         />
 
+        <CNAESection
+          cnpj={prestador.cnpj}
+          cnaeEscolhido={cnaeEscolhido}
+          onCnaeEscolhidoChange={handleCnaeEscolhido}
+        />
 
         {/* Footer */}
         <div className="section-card">
@@ -140,7 +153,7 @@ const Index = () => {
               </div>
             )}
             <div className="flex items-center gap-3 ml-auto">
-              <button onClick={() => { setPrestador(INITIAL_PRESTADOR); setRegime(null); }} className="btn-outline flex items-center gap-2">
+              <button onClick={() => { setPrestador(INITIAL_PRESTADOR); setRegime(null); setCnaeEscolhido(null); }} className="btn-outline flex items-center gap-2">
                 <X className="w-4 h-4" />
                 Cancelar
               </button>
