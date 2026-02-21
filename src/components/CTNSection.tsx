@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Settings, Search, CheckCircle2, AlertCircle, X, Plus, Trash2, PenLine } from 'lucide-react';
-import { getCTNByCode, isValidCTN } from '@/utils/ctn-data';
-import { CNAE_LIST, formatCNAECode, type CNAEEntry } from '@/utils/cnae-lc116';
+import { Settings, Search, CheckCircle2, AlertCircle, X, Plus, Trash2, PenLine, ChevronDown } from 'lucide-react';
+import { getCTNByCode, isValidCTN, searchCTN, getAllNBS } from '@/utils/ctn-data';
+import { CNAE_LIST, formatCNAECode, getLC116Item, type CNAEEntry } from '@/utils/cnae-lc116';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -28,7 +28,26 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   const [manualCtn, setManualCtn] = useState('');
   const [manualNbs, setManualNbs] = useState('');
   const [manualDescricao, setManualDescricao] = useState('');
+  const [ctnQuery, setCtnQuery] = useState('');
+  const [nbsQuery, setNbsQuery] = useState('');
+  const [showCtnDropdown, setShowCtnDropdown] = useState(false);
+  const [showNbsDropdown, setShowNbsDropdown] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const ctnDropdownRef = useRef<HTMLDivElement>(null);
+  const nbsDropdownRef = useRef<HTMLDivElement>(null);
+
+  const ctnResults = useMemo(() => {
+    const q = ctnQuery.trim();
+    if (!q) return searchCTN('', 0);
+    return searchCTN(q, 30);
+  }, [ctnQuery]);
+
+  const allNbs = useMemo(() => getAllNBS(), []);
+  const nbsResults = useMemo(() => {
+    const q = nbsQuery.trim().toLowerCase();
+    if (!q) return allNbs.slice(0, 30);
+    return allNbs.filter(n => n.includes(q)).slice(0, 30);
+  }, [nbsQuery, allNbs]);
 
   const results = useMemo(() => {
     const q = query.trim();
@@ -56,10 +75,36 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
+      if (ctnDropdownRef.current && !ctnDropdownRef.current.contains(e.target as Node)) {
+        setShowCtnDropdown(false);
+      }
+      if (nbsDropdownRef.current && !nbsDropdownRef.current.contains(e.target as Node)) {
+        setShowNbsDropdown(false);
+      }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  // Auto-fill CTN and NBS when CNAE is typed
+  const handleManualCnaeChange = (value: string) => {
+    setManualCnae(value);
+    const digits = value.replace(/\D/g, '');
+    if (digits.length >= 7) {
+      const lc = getLC116Item(digits);
+      if (lc) {
+        if (lc.ctn) {
+          setManualCtn(lc.ctn);
+          setCtnQuery('');
+        }
+        if (lc.nbs) {
+          setManualNbs(lc.nbs);
+          setNbsQuery('');
+        }
+        setManualDescricao(lc.descricao);
+      }
+    }
+  };
 
   const handleAddCNAE = (entry: CNAEEntry) => {
     const novo: CnaeAdicionado = {
@@ -117,6 +162,8 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     setManualCtn('');
     setManualNbs('');
     setManualDescricao('');
+    setCtnQuery('');
+    setNbsQuery('');
     setShowManualForm(false);
   };
 
@@ -156,28 +203,98 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
               <Input
                 placeholder="Ex: 6201500"
                 value={manualCnae}
-                onChange={e => setManualCnae(e.target.value)}
+                onChange={e => handleManualCnaeChange(e.target.value)}
                 className="h-8 text-sm"
               />
             </div>
-            <div className="space-y-1">
+            {/* CTN com dropdown */}
+            <div className="space-y-1" ref={ctnDropdownRef}>
               <Label className="text-xs">CTN (6 dígitos)</Label>
-              <Input
-                placeholder="Ex: 010101"
-                value={manualCtn}
-                onChange={e => setManualCtn(e.target.value)}
-                className="h-8 text-sm"
-                maxLength={6}
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Buscar ou digitar CTN..."
+                  value={showCtnDropdown ? ctnQuery : (manualCtn ? `${formatCTNDisplay(manualCtn)}` : '')}
+                  onChange={e => {
+                    setCtnQuery(e.target.value);
+                    setManualCtn('');
+                    setShowCtnDropdown(true);
+                  }}
+                  onFocus={() => setShowCtnDropdown(true)}
+                  className="h-8 text-sm pr-8"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCtnDropdown(v => !v)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </button>
+                {showCtnDropdown && ctnResults.length > 0 && (
+                  <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                    {ctnResults.map(entry => (
+                      <button
+                        key={entry.codigo}
+                        type="button"
+                        onClick={() => {
+                          setManualCtn(entry.codigo);
+                          setCtnQuery('');
+                          setShowCtnDropdown(false);
+                          if (entry.nbs && !manualNbs) setManualNbs(entry.nbs);
+                        }}
+                        className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
+                      >
+                        <span className="font-mono text-xs font-semibold text-primary">
+                          {formatCTNDisplay(entry.codigo)}
+                        </span>
+                        <span className="text-xs text-muted-foreground ml-2">({entry.itemFormatado})</span>
+                        <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="space-y-1">
+            {/* NBS com dropdown */}
+            <div className="space-y-1" ref={nbsDropdownRef}>
               <Label className="text-xs">NBS</Label>
-              <Input
-                placeholder="Ex: 1.1502.10.00"
-                value={manualNbs}
-                onChange={e => setManualNbs(e.target.value)}
-                className="h-8 text-sm"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Buscar ou digitar NBS..."
+                  value={showNbsDropdown ? nbsQuery : manualNbs}
+                  onChange={e => {
+                    setNbsQuery(e.target.value);
+                    setManualNbs('');
+                    setShowNbsDropdown(true);
+                  }}
+                  onFocus={() => setShowNbsDropdown(true)}
+                  className="h-8 text-sm pr-8"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNbsDropdown(v => !v)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </button>
+                {showNbsDropdown && nbsResults.length > 0 && (
+                  <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                    {nbsResults.map(nbs => (
+                      <button
+                        key={nbs}
+                        type="button"
+                        onClick={() => {
+                          setManualNbs(nbs);
+                          setNbsQuery('');
+                          setShowNbsDropdown(false);
+                        }}
+                        className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
+                      >
+                        <span className="font-mono text-xs font-semibold text-primary">{nbs}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="space-y-1">
               <Label className="text-xs">Descrição</Label>
