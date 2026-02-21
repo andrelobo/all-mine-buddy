@@ -564,6 +564,19 @@ const CNAE_LC116_MAP: Record<string, LC116Item> = {
   '7490106': { item: '37.01', descricao: 'Serviços de artistas, atletas, modelos e manequins.', ...getCtn('37.01') },
 };
 
+export interface CNAEEntry {
+  codigo: string;
+  descricao: string;
+  lc116: LC116Item;
+}
+
+/** Lista de todos os CNAEs mapeados com seus dados LC 116 */
+export const CNAE_LIST: CNAEEntry[] = Object.entries(CNAE_LC116_MAP).map(([codigo, lc]) => ({
+  codigo,
+  descricao: `${lc.item} – ${lc.descricao}`,
+  lc116: lc,
+}));
+
 /**
  * Retorna o item da LC 116/2003 correspondente ao código CNAE informado.
  * Remove pontuação do código antes de buscar.
@@ -571,5 +584,13 @@ const CNAE_LC116_MAP: Record<string, LC116Item> = {
 export function getLC116Item(codigoCnae: string | number): LC116Item | null {
   const cleaned = String(codigoCnae).replace(/\D/g, '');
   return CNAE_LC116_MAP[cleaned] ?? null;
+}
+
+export function formatCNAECode(codigo: string): string {
+  const str = codigo.replace(/\D/g, '').padStart(7, '0');
+  if (str.length >= 7) {
+    return `${str.slice(0, 4)}-${str.slice(4, 5)}/${str.slice(5, 7)}`;
+  }
+  return str;
 }
 
