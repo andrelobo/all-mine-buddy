@@ -8,7 +8,12 @@ import { Label } from '@/components/ui/label';
 
 interface CnaeAdicionado {
   codigo: string;
-  descricao: string;
+  /** Descrição oficial do CNAE (IBGE) */
+  cnaeDescricao: string;
+  /** Descrição do serviço conforme LC 116 */
+  lc116Descricao: string;
+  /** Item da LC 116 (ex: "1.01") */
+  lc116Item: string;
   ctn: string | undefined;
   ctnDescricao?: string;
   nbs?: string;
@@ -112,7 +117,9 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     const ctnEntry = entry.lc116.ctn ? getCTNByCode(entry.lc116.ctn) : null;
     const novo: CnaeAdicionado = {
       codigo: entry.codigo,
-      descricao: entry.descricao,
+      cnaeDescricao: entry.descricao,
+      lc116Descricao: entry.descricaoLC116,
+      lc116Item: entry.lc116.item,
       ctn: entry.lc116.ctn,
       ctnDescricao: ctnEntry?.descricao || entry.lc116.descricao,
       nbs: entry.lc116.nbs || ctnEntry?.nbs,
@@ -150,9 +157,12 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     if (cnaes.some(c => c.codigo === codigo)) return;
     const ctnCode = manualCtn.replace(/\D/g, '') || undefined;
     const ctnEntry = ctnCode ? getCTNByCode(ctnCode) : null;
+    const lc = getLC116Item(codigo);
     const novo: CnaeAdicionado = {
       codigo,
-      descricao: manualDescricao || 'Inclusão manual',
+      cnaeDescricao: manualDescricao || 'Inclusão manual',
+      lc116Descricao: lc?.descricao || manualDescricao || '',
+      lc116Item: lc?.item || '',
       ctn: ctnCode,
       ctnDescricao: ctnEntry?.descricao || (ctnCode ? manualDescricao : undefined),
       nbs: manualNbs || undefined,
@@ -165,7 +175,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       if (ctnEntry) {
         onCtnChange(ctnEntry.codigo, ctnEntry.descricao, ctnEntry.itemFormatado);
       } else {
-        onCtnChange(novo.ctn, novo.descricao, '');
+        onCtnChange(novo.ctn, novo.cnaeDescricao, '');
       }
     }
     setManualCnae('');
@@ -439,8 +449,13 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                     </div>
                     <div className="mt-1 space-y-0.5 text-xs leading-snug">
                       <p className="text-foreground/80 line-clamp-1">
-                        <span className="font-medium text-muted-foreground">Cnaë:</span> {cnae.descricao}
+                        <span className="font-medium text-muted-foreground">Cnaë:</span> {cnae.cnaeDescricao}
                       </p>
+                      {cnae.lc116Item && (
+                        <p className="text-foreground/80 line-clamp-1">
+                          <span className="font-medium text-muted-foreground">LC 116 Item {cnae.lc116Item}:</span> {cnae.lc116Descricao}
+                        </p>
+                      )}
                       {cnae.ctn && (
                         <p className="text-foreground/80 line-clamp-1">
                           <span className="font-medium text-muted-foreground">CTN {formatCTNDisplay(cnae.ctn)}:</span> {cnae.ctnDescricao || '—'}
