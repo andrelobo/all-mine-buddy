@@ -1,11 +1,10 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Settings, Search, CheckCircle2, AlertCircle, X, Plus, Trash2 } from 'lucide-react';
-import { CTN_DATA, getCTNByCode, isValidCTN, type CTNEntry } from '@/utils/ctn-data';
+import { getCTNByCode, isValidCTN } from '@/utils/ctn-data';
 import { CNAE_LIST, formatCNAECode, type CNAEEntry } from '@/utils/cnae-lc116';
 import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-type SearchMode = 'codigo' | 'descricao' | 'cnae';
+
 
 interface CnaeAdicionado {
   codigo: string;
@@ -19,7 +18,6 @@ interface Props {
 }
 
 const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
-  const [mode, setMode] = useState<SearchMode>('cnae');
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [cnaes, setCnaes] = useState<CnaeAdicionado[]>([]);
@@ -30,38 +28,20 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     if (!q) return [];
     const normalized = q.toLowerCase();
 
-    if (mode === 'cnae') {
-      const digits = q.replace(/\D/g, '');
-      const addedCodes = new Set(cnaes.map(c => c.codigo));
-      const matches: CNAEEntry[] = [];
-      for (const entry of CNAE_LIST) {
-        if (matches.length >= 30) break;
-        if (addedCodes.has(entry.codigo)) continue;
-        if (digits && entry.codigo.startsWith(digits)) {
-          matches.push(entry);
-        } else if (!digits && entry.descricao.toLowerCase().includes(normalized)) {
-          matches.push(entry);
-        }
-      }
-      return matches;
-    }
-
-    const ctnMatches: CTNEntry[] = [];
-    for (const entry of CTN_DATA) {
-      if (ctnMatches.length >= 30) break;
-      if (mode === 'codigo') {
-        const digits = q.replace(/\D/g, '');
-        if (digits && (entry.codigo.startsWith(digits) || entry.itemFormatado.includes(q))) {
-          ctnMatches.push(entry);
-        }
-      } else {
-        if (entry.descricao.toLowerCase().includes(normalized)) {
-          ctnMatches.push(entry);
-        }
+    const digits = q.replace(/\D/g, '');
+    const addedCodes = new Set(cnaes.map(c => c.codigo));
+    const matches: CNAEEntry[] = [];
+    for (const entry of CNAE_LIST) {
+      if (matches.length >= 30) break;
+      if (addedCodes.has(entry.codigo)) continue;
+      if (digits && entry.codigo.startsWith(digits)) {
+        matches.push(entry);
+      } else if (!digits && entry.descricao.toLowerCase().includes(normalized)) {
+        matches.push(entry);
       }
     }
-    return ctnMatches;
-  }, [query, mode, cnaes]);
+    return matches;
+  }, [query, cnaes]);
 
   const selectedEntry = ctnSelecionado ? getCTNByCode(ctnSelecionado) : null;
   const isValid = ctnSelecionado ? isValidCTN(ctnSelecionado) : null;
@@ -76,11 +56,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const handleSelect = (entry: CTNEntry) => {
-    onCtnChange(entry.codigo, entry.descricao, entry.itemFormatado);
-    setQuery('');
-    setIsOpen(false);
-  };
 
   const handleAddCNAE = (entry: CNAEEntry) => {
     const novo: CnaeAdicionado = {
@@ -131,44 +106,13 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         Parâmetro Fiscal
       </h2>
 
-      {/* Mode Toggle */}
-      <div className="flex items-center gap-1 mb-3 bg-muted/50 rounded-lg p-1 w-fit">
-        <button
-          type="button"
-          onClick={() => { setMode('cnae'); setQuery(''); setIsOpen(false); }}
-          className={`text-xs px-3 py-1.5 rounded-md transition-colors font-medium ${
-            mode === 'cnae'
-              ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Busque Cnaë
-        </button>
-        <button
-          type="button"
-          onClick={() => { setMode('codigo'); setQuery(''); setIsOpen(false); }}
-          className={`text-xs px-3 py-1.5 rounded-md transition-colors font-medium ${
-            mode === 'codigo' || mode === 'descricao'
-              ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          CodTribNac NFS
-        </button>
-      </div>
 
       {/* Search */}
       <div ref={containerRef} className="relative">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder={
-              mode === 'cnae'
-                ? 'Buscar Cnaë para adicionar (ex: 6201500)'
-                : mode === 'codigo'
-                  ? 'Digite o código CTN (ex: 010101 ou 1.01)'
-                  : 'Digite parte da descrição do serviço'
-            }
+            placeholder="Buscar Cnaë para adicionar (ex: 6201500)"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -191,61 +135,32 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         {/* Dropdown Results */}
         {isOpen && results.length > 0 && (
           <div className="absolute z-20 top-full mt-1 w-full max-h-64 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-            {mode === 'cnae' ? (
-              (results as CNAEEntry[]).map((entry) => (
-                <button
-                  key={entry.codigo}
-                  type="button"
-                  onClick={() => handleAddCNAE(entry)}
-                  className="w-full text-left px-3 py-2.5 border-b border-border/50 last:border-b-0 transition-colors hover:bg-muted/50"
-                >
-                  <div className="flex items-center gap-2">
-                    <Plus className="w-3.5 h-3.5 text-primary shrink-0" />
-                    <span className="font-mono text-xs font-semibold text-primary shrink-0">
-                      {formatCNAECode(entry.codigo)}
+            {(results as CNAEEntry[]).map((entry) => (
+              <button
+                key={entry.codigo}
+                type="button"
+                onClick={() => handleAddCNAE(entry)}
+                className="w-full text-left px-3 py-2.5 border-b border-border/50 last:border-b-0 transition-colors hover:bg-muted/50"
+              >
+                <div className="flex items-center gap-2">
+                  <Plus className="w-3.5 h-3.5 text-primary shrink-0" />
+                  <span className="font-mono text-xs font-semibold text-primary shrink-0">
+                    {formatCNAECode(entry.codigo)}
+                  </span>
+                  {entry.lc116.ctn && (
+                    <span className="text-xs text-muted-foreground shrink-0">
+                      → CTN {formatCTNDisplay(entry.lc116.ctn)}
                     </span>
-                    {entry.lc116.ctn && (
-                      <span className="text-xs text-muted-foreground shrink-0">
-                        → CTN {formatCTNDisplay(entry.lc116.ctn)}
-                      </span>
-                    )}
-                    {!entry.lc116.ctn && (
-                      <span className="text-xs text-destructive/70 shrink-0">Sem CTN vinculado</span>
-                    )}
-                  </div>
-                  <p className="text-xs text-foreground/80 mt-0.5 leading-snug line-clamp-2 pl-5">
-                    {entry.descricao}
-                  </p>
-                </button>
-              ))
-            ) : (
-              (results as CTNEntry[]).map((entry) => {
-                const isSelected = ctnSelecionado === entry.codigo;
-                return (
-                  <button
-                    key={entry.codigo}
-                    type="button"
-                    onClick={() => handleSelect(entry)}
-                    className={`w-full text-left px-3 py-2.5 border-b border-border/50 last:border-b-0 transition-colors ${
-                      isSelected ? 'bg-primary/5' : 'hover:bg-muted/50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-semibold text-primary shrink-0">
-                        {formatCTNDisplay(entry.codigo)}
-                      </span>
-                      <span className="text-xs text-muted-foreground shrink-0">
-                        Item {entry.itemFormatado}
-                      </span>
-                      {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 ml-auto" />}
-                    </div>
-                    <p className="text-xs text-foreground/80 mt-0.5 leading-snug line-clamp-2">
-                      {entry.descricao}
-                    </p>
-                  </button>
-                );
-              })
-            )}
+                  )}
+                  {!entry.lc116.ctn && (
+                    <span className="text-xs text-destructive/70 shrink-0">Sem CTN vinculado</span>
+                  )}
+                </div>
+                <p className="text-xs text-foreground/80 mt-0.5 leading-snug line-clamp-2 pl-5">
+                  {entry.descricao}
+                </p>
+              </button>
+            ))}
           </div>
         )}
 
@@ -253,12 +168,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
           <div className="absolute z-20 top-full mt-1 w-full rounded-lg border border-border bg-card shadow-lg p-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>
-                {mode === 'cnae'
-                  ? 'Nenhum Cnaë encontrado. Verifique o código informado.'
-                  : `Nenhum CTN encontrado. Verifique o ${mode === 'codigo' ? 'código' : 'termo'} informado.`
-                }
-              </span>
+               <span>Nenhum Cnaë encontrado. Verifique o código informado.</span>
             </div>
           </div>
         )}
