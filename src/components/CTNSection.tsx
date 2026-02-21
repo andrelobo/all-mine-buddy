@@ -1,11 +1,12 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Settings, Search, CheckCircle2, AlertCircle, X, Plus, Trash2, PenLine, ChevronDown } from 'lucide-react';
+import { Settings, Search, CheckCircle2, AlertCircle, X, Plus, Trash2, PenLine, ChevronDown, Star } from 'lucide-react';
 import { getCTNByCode, isValidCTN, searchCTN } from '@/utils/ctn-data';
 import { CNAE_LIST, formatCNAECode, getLC116Item, type CNAEEntry } from '@/utils/cnae-lc116';
 import { getNBSDescricao, searchNBS, type NBSEntry } from '@/utils/nbs-data';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface CnaeAdicionado {
   codigo: string;
@@ -20,6 +21,8 @@ interface CnaeAdicionado {
   nbs?: string;
   nbsDescricao?: string;
   isManual?: boolean;
+  isPrincipal?: boolean;
+  vinculadoSN?: boolean;
 }
 
 interface Props {
@@ -36,6 +39,9 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   const [manualCtn, setManualCtn] = useState('');
   const [manualNbs, setManualNbs] = useState('');
   const [manualDescricao, setManualDescricao] = useState('');
+  const [manualIsPrincipal, setManualIsPrincipal] = useState(false);
+  const [manualVincularSN, setManualVincularSN] = useState(false);
+  const [manualCnaeDescricaoIBGE, setManualCnaeDescricaoIBGE] = useState('');
   const [ctnQuery, setCtnQuery] = useState('');
   const [nbsQuery, setNbsQuery] = useState('');
   const [showCtnDropdown, setShowCtnDropdown] = useState(false);
@@ -95,6 +101,9 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   const handleManualCnaeChange = (value: string) => {
     setManualCnae(value);
     const digits = value.replace(/\D/g, '');
+    // Try to find IBGE description from CNAE_LIST
+    const cnaeEntry = CNAE_LIST.find(e => e.codigo === digits);
+    setManualCnaeDescricaoIBGE(cnaeEntry?.descricao || '');
     if (digits.length >= 7) {
       const lc = getLC116Item(digits);
       if (lc) {
@@ -158,7 +167,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     const lc = getLC116Item(codigo);
     const novo: CnaeAdicionado = {
       codigo,
-      cnaeDescricao: manualDescricao || 'Inclusão manual',
+      cnaeDescricao: manualCnaeDescricaoIBGE || manualDescricao || 'Inclusão manual',
       lc116Descricao: lc?.descricao || manualDescricao || '',
       lc116Item: lc?.item || '',
       ctn: ctnCode,
@@ -166,8 +175,16 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       nbs: manualNbs || undefined,
       nbsDescricao: manualNbs ? (getNBSDescricao(manualNbs) || manualNbs) : undefined,
       isManual: true,
+      isPrincipal: manualIsPrincipal,
+      vinculadoSN: manualVincularSN,
     };
-    setCnaes(prev => [...prev, novo]);
+    setCnaes(prev => {
+      // Se marcou como principal, desmarcar os outros
+      if (manualIsPrincipal) {
+        return [...prev.map(c => ({ ...c, isPrincipal: false })), novo];
+      }
+      return [...prev, novo];
+    });
     if (!ctnSelecionado && novo.ctn) {
       const ctnEntry = getCTNByCode(novo.ctn);
       if (ctnEntry) {
@@ -180,6 +197,9 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     setManualCtn('');
     setManualNbs('');
     setManualDescricao('');
+    setManualCnaeDescricaoIBGE('');
+    setManualIsPrincipal(false);
+    setManualVincularSN(false);
     setCtnQuery('');
     setNbsQuery('');
     setShowManualForm(false);
@@ -224,6 +244,11 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                 onChange={e => handleManualCnaeChange(e.target.value)}
                 className="h-8 text-sm"
               />
+              {manualCnaeDescricaoIBGE && (
+                <p className="text-xs text-foreground/70 mt-1 leading-snug">
+                  {manualCnaeDescricaoIBGE}
+                </p>
+              )}
             </div>
             {/* CTN com dropdown */}
             <div className="space-y-1" ref={ctnDropdownRef}>
@@ -323,6 +348,28 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                 onChange={e => setManualDescricao(e.target.value)}
                 className="h-8 text-sm"
               />
+            </div>
+            {/* Checkbox atividade principal */}
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="manual-principal"
+                checked={manualIsPrincipal}
+                onCheckedChange={(checked) => setManualIsPrincipal(checked === true)}
+              />
+              <Label htmlFor="manual-principal" className="text-xs cursor-pointer">
+                Atividade econômica principal
+              </Label>
+            </div>
+            {/* Checkbox vincular ao Simples Nacional */}
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="manual-vincular-sn"
+                checked={manualVincularSN}
+                onCheckedChange={(checked) => setManualVincularSN(checked === true)}
+              />
+              <Label htmlFor="manual-vincular-sn" className="text-xs cursor-pointer">
+                Vincular ao Simples Nacional
+              </Label>
             </div>
           </div>
           <div className="flex justify-end">
@@ -437,6 +484,17 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                       {cnae.isManual && (
                         <span className="text-xs bg-accent text-accent-foreground px-1.5 py-0.5 rounded font-medium">
                           Manual
+                        </span>
+                      )}
+                      {cnae.isPrincipal && (
+                        <span className="flex items-center gap-1 text-xs text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded font-medium">
+                          <Star className="w-3 h-3" />
+                          Principal
+                        </span>
+                      )}
+                      {cnae.vinculadoSN && (
+                        <span className="text-xs bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-medium">
+                          Simples Nacional
                         </span>
                       )}
                       {isLinked && (
