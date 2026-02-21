@@ -217,7 +217,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
           
           <div className="grid grid-cols-1 gap-3">
             <div className="space-y-1">
-              <Label className="text-xs">Atividade Econômica Cnae *</Label>
+              <Label className="text-xs text-[hsl(220,60%,30%)]">CNAE *</Label>
               <Input
                 placeholder="Ex: 6201500"
                 value={manualCnae}
