@@ -608,112 +608,122 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
         </button>
       </div>
 
-      {/* Description */}
-      <div className="mt-1 space-y-0.5 text-xs leading-snug">
-        <p className="text-foreground/80 line-clamp-1">
-          <span className="font-medium text-muted-foreground">Cnaë:</span> {cnae.cnaeDescricao}
-        </p>
-        {cnae.lc116Item && (
-          <p className="text-foreground/80 line-clamp-1">
-            <span className="font-medium text-muted-foreground">LC 116 Item {cnae.lc116Item}:</span> {cnae.lc116Descricao}
+      {/* Atividade Econômica Cnae */}
+      <div className="mt-2 space-y-3">
+        <div>
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-0.5">Atividade Econômica Cnaë</p>
+          <p className="text-xs text-foreground/90">
+            <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>
+            <span className="ml-2">{cnae.cnaeDescricao}</span>
           </p>
-        )}
-      </div>
+          {cnae.lc116Item && (
+            <p className="text-[10px] text-muted-foreground mt-0.5">
+              LC 116 Item {cnae.lc116Item}: {cnae.lc116Descricao}
+            </p>
+          )}
+        </div>
 
-      {/* Inline CTN */}
-      <div className="mt-1.5 flex items-center gap-1.5 text-xs" ref={ctnRef}>
-        <span className="font-medium text-muted-foreground shrink-0">CTN:</span>
-        {!editingCtn ? (
-          <button
-            type="button"
-            onClick={() => { setEditingCtn(true); setCtnInput(''); setCtnSearchOpen(true); }}
-            className="text-foreground/80 hover:text-primary hover:underline transition-colors"
-          >
-            {cnae.ctn ? `${formatCTNDisplay(cnae.ctn)} — ${cnae.ctnDescricao || ''}` : '(adicionar)'}
-          </button>
-        ) : (
-          <div className="relative flex-1 max-w-xs">
-            <Input
-              autoFocus
-              placeholder="Buscar CTN..."
-              value={ctnInput}
-              onChange={e => { setCtnInput(e.target.value); setCtnSearchOpen(true); }}
-              className="h-6 text-xs"
-            />
-            {cnae.ctn && (
-              <button type="button" onClick={() => { onUpdateCTN(''); setEditingCtn(false); }} className="absolute right-1 top-1/2 -translate-y-1/2 text-destructive hover:text-destructive/80">
-                <X className="w-3 h-3" />
-              </button>
-            )}
-            {ctnSearchOpen && ctnSearchResults.length > 0 && (
-              <div className="absolute z-30 top-full mt-1 w-full max-h-36 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-                {ctnSearchResults.map(entry => (
-                  <button
-                    key={entry.codigo}
-                    type="button"
-                    onClick={() => {
-                      onUpdateCTN(entry.codigo);
-                      setEditingCtn(false);
-                      setCtnSearchOpen(false);
-                    }}
-                    className="w-full text-left px-2 py-1.5 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
-                  >
-                    <span className="font-mono text-xs font-semibold text-primary">{formatCTNDisplay(entry.codigo)}</span>
-                    <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+        {/* Código Tributação Nacional (CTN) */}
+        <div ref={ctnRef}>
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-0.5">Código Tributação Nacional (CTN)</p>
+          {!editingCtn ? (
+            <button
+              type="button"
+              onClick={() => { setEditingCtn(true); setCtnInput(''); setCtnSearchOpen(true); }}
+              className="text-xs text-foreground/90 hover:text-primary hover:underline transition-colors text-left"
+            >
+              {cnae.ctn ? (
+                <>
+                  <span className="font-mono font-semibold text-primary">{formatCTNDisplay(cnae.ctn)}</span>
+                  <span className="ml-2">{cnae.ctnDescricao || ''}</span>
+                </>
+              ) : (
+                <span className="text-muted-foreground italic">(clique para adicionar)</span>
+              )}
+            </button>
+          ) : (
+            <div className="relative max-w-xs">
+              <Input
+                autoFocus
+                placeholder="Buscar CTN..."
+                value={ctnInput}
+                onChange={e => { setCtnInput(e.target.value); setCtnSearchOpen(true); }}
+                className="h-7 text-xs"
+              />
+              {cnae.ctn && (
+                <button type="button" onClick={() => { onUpdateCTN(''); setEditingCtn(false); }} className="absolute right-1 top-1/2 -translate-y-1/2 text-destructive hover:text-destructive/80">
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+              {ctnSearchOpen && ctnSearchResults.length > 0 && (
+                <div className="absolute z-30 top-full mt-1 w-full max-h-36 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                  {ctnSearchResults.map(entry => (
+                    <button
+                      key={entry.codigo}
+                      type="button"
+                      onClick={() => { onUpdateCTN(entry.codigo); setEditingCtn(false); setCtnSearchOpen(false); }}
+                      className="w-full text-left px-2 py-1.5 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
+                    >
+                      <span className="font-mono text-xs font-semibold text-primary">{formatCTNDisplay(entry.codigo)}</span>
+                      <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
-      {/* Inline NBS */}
-      <div className="mt-1 flex items-center gap-1.5 text-xs" ref={nbsRef}>
-        <span className="font-medium text-muted-foreground shrink-0">NBS:</span>
-        {!editingNbs ? (
-          <button
-            type="button"
-            onClick={() => { setEditingNbs(true); setNbsInput(''); setNbsSearchOpen(true); }}
-            className="text-foreground/80 hover:text-primary hover:underline transition-colors"
-          >
-            {cnae.nbs ? `${cnae.nbs} — ${cnae.nbsDescricao || ''}` : '(adicionar)'}
-          </button>
-        ) : (
-          <div className="relative flex-1 max-w-xs">
-            <Input
-              autoFocus
-              placeholder="Buscar NBS..."
-              value={nbsInput}
-              onChange={e => { setNbsInput(e.target.value); setNbsSearchOpen(true); }}
-              className="h-6 text-xs"
-            />
-            {cnae.nbs && (
-              <button type="button" onClick={() => { onUpdateNBS(''); setEditingNbs(false); }} className="absolute right-1 top-1/2 -translate-y-1/2 text-destructive hover:text-destructive/80">
-                <X className="w-3 h-3" />
-              </button>
-            )}
-            {nbsSearchOpen && nbsSearchResults.length > 0 && (
-              <div className="absolute z-30 top-full mt-1 w-full max-h-36 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-                {nbsSearchResults.map(entry => (
-                  <button
-                    key={entry.codigo}
-                    type="button"
-                    onClick={() => {
-                      onUpdateNBS(entry.codigo);
-                      setEditingNbs(false);
-                      setNbsSearchOpen(false);
-                    }}
-                    className="w-full text-left px-2 py-1.5 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
-                  >
-                    <span className="font-mono text-xs font-semibold text-primary">{entry.codigo}</span>
-                    <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        {/* Nomenclatura Brasileira Serviços (NBS) */}
+        <div ref={nbsRef}>
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-0.5">Nomenclatura Brasileira Serviços (NBS)</p>
+          {!editingNbs ? (
+            <button
+              type="button"
+              onClick={() => { setEditingNbs(true); setNbsInput(''); setNbsSearchOpen(true); }}
+              className="text-xs text-foreground/90 hover:text-primary hover:underline transition-colors text-left"
+            >
+              {cnae.nbs ? (
+                <>
+                  <span className="font-mono font-semibold text-primary">{cnae.nbs}</span>
+                  <span className="ml-2">{cnae.nbsDescricao || ''}</span>
+                </>
+              ) : (
+                <span className="text-muted-foreground italic">(clique para adicionar)</span>
+              )}
+            </button>
+          ) : (
+            <div className="relative max-w-xs">
+              <Input
+                autoFocus
+                placeholder="Buscar NBS..."
+                value={nbsInput}
+                onChange={e => { setNbsInput(e.target.value); setNbsSearchOpen(true); }}
+                className="h-7 text-xs"
+              />
+              {cnae.nbs && (
+                <button type="button" onClick={() => { onUpdateNBS(''); setEditingNbs(false); }} className="absolute right-1 top-1/2 -translate-y-1/2 text-destructive hover:text-destructive/80">
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+              {nbsSearchOpen && nbsSearchResults.length > 0 && (
+                <div className="absolute z-30 top-full mt-1 w-full max-h-36 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                  {nbsSearchResults.map(entry => (
+                    <button
+                      key={entry.codigo}
+                      type="button"
+                      onClick={() => { onUpdateNBS(entry.codigo); setEditingNbs(false); setNbsSearchOpen(false); }}
+                      className="w-full text-left px-2 py-1.5 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
+                    >
+                      <span className="font-mono text-xs font-semibold text-primary">{entry.codigo}</span>
+                      <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Toggle buttons */}
