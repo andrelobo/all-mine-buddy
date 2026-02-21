@@ -5,6 +5,7 @@ import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 
 import CTNSection from '@/components/CTNSection';
+import SimplesNacionalSection from '@/components/SimplesNacionalSection';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 
 
@@ -136,6 +137,7 @@ const Index = () => {
           onAutosave={autosave}
         />
 
+        <SimplesNacionalSection />
 
 
 
