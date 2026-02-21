@@ -10,7 +10,9 @@ interface CnaeAdicionado {
   codigo: string;
   descricao: string;
   ctn: string | undefined;
+  ctnDescricao?: string;
   nbs?: string;
+  nbsDescricao?: string;
   isManual?: boolean;
 }
 
@@ -107,10 +109,14 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   };
 
   const handleAddCNAE = (entry: CNAEEntry) => {
+    const ctnEntry = entry.lc116.ctn ? getCTNByCode(entry.lc116.ctn) : null;
     const novo: CnaeAdicionado = {
       codigo: entry.codigo,
-      descricao: entry.lc116.descricao,
+      descricao: entry.descricao,
       ctn: entry.lc116.ctn,
+      ctnDescricao: ctnEntry?.descricao || entry.lc116.descricao,
+      nbs: entry.lc116.nbs || ctnEntry?.nbs,
+      nbsDescricao: entry.lc116.nbs ? `NBS ${entry.lc116.nbs}` : undefined,
     };
     setCnaes(prev => [...prev, novo]);
     if (!ctnSelecionado && entry.lc116.ctn) {
@@ -142,11 +148,15 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     const codigo = manualCnae.replace(/\D/g, '');
     if (!codigo) return;
     if (cnaes.some(c => c.codigo === codigo)) return;
+    const ctnCode = manualCtn.replace(/\D/g, '') || undefined;
+    const ctnEntry = ctnCode ? getCTNByCode(ctnCode) : null;
     const novo: CnaeAdicionado = {
       codigo,
       descricao: manualDescricao || 'Inclusão manual',
-      ctn: manualCtn.replace(/\D/g, '') || undefined,
+      ctn: ctnCode,
+      ctnDescricao: ctnEntry?.descricao || (ctnCode ? manualDescricao : undefined),
       nbs: manualNbs || undefined,
+      nbsDescricao: manualNbs ? `NBS ${manualNbs}` : undefined,
       isManual: true,
     };
     setCnaes(prev => [...prev, novo]);
@@ -420,16 +430,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                           Manual
                         </span>
                       )}
-                      {cnae.ctn && (
-                        <span className="text-xs text-muted-foreground">
-                          → CTN {formatCTNDisplay(cnae.ctn)}
-                        </span>
-                      )}
-                      {cnae.nbs && (
-                        <span className="text-xs text-muted-foreground">
-                          | NBS {cnae.nbs}
-                        </span>
-                      )}
                       {isLinked && (
                         <span className="flex items-center gap-1 text-xs text-primary bg-primary/10 px-1.5 py-0.5 rounded font-medium">
                           <CheckCircle2 className="w-3 h-3" />
@@ -437,9 +437,21 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-foreground/70 mt-0.5 leading-snug line-clamp-1">
-                      {cnae.descricao}
-                    </p>
+                    <div className="mt-1 space-y-0.5 text-xs leading-snug">
+                      <p className="text-foreground/80 line-clamp-1">
+                        <span className="font-medium text-muted-foreground">Cnaë:</span> {cnae.descricao}
+                      </p>
+                      {cnae.ctn && (
+                        <p className="text-foreground/80 line-clamp-1">
+                          <span className="font-medium text-muted-foreground">CTN {formatCTNDisplay(cnae.ctn)}:</span> {cnae.ctnDescricao || '—'}
+                        </p>
+                      )}
+                      {cnae.nbs && (
+                        <p className="text-foreground/80 line-clamp-1">
+                          <span className="font-medium text-muted-foreground">NBS {cnae.nbs}:</span> {cnae.nbsDescricao || '—'}
+                        </p>
+                      )}
+                    </div>
                   </button>
                   <button
                     type="button"
