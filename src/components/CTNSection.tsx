@@ -698,11 +698,6 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
             <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>
             <span className="ml-2">{cnae.cnaeDescricao}</span>
           </p>
-          {cnae.lc116Item && (
-            <p className="text-[10px] text-muted-foreground mt-0.5">
-              LC 116 Item {cnae.lc116Item}: {cnae.lc116Descricao}
-            </p>
-          )}
         </div>
 
         {/* Código Tributação Nacional (CTN) */}
