@@ -502,3 +502,17 @@ export function searchCTN(query: string, limit = 20): CTNEntry[] {
   }
   return results;
 }
+
+/** Retorna todos os CTN cadastrados */
+export function getAllCTN(): CTNEntry[] {
+  return CTN_DATA;
+}
+
+/** Retorna todos os NBS únicos da tabela */
+export function getAllNBS(): string[] {
+  const set = new Set<string>();
+  for (const entry of CTN_DATA) {
+    if (entry.nbs) set.add(entry.nbs);
+  }
+  return Array.from(set).sort();
+}
