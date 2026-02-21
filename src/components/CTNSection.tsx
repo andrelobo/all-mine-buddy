@@ -108,28 +108,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       <div className="flex items-center gap-1 mb-3 bg-muted/50 rounded-lg p-1 w-fit">
         <button
           type="button"
-          onClick={() => { setMode('codigo'); setQuery(''); setIsOpen(false); }}
-          className={`text-xs px-3 py-1.5 rounded-md transition-colors font-medium ${
-            mode === 'codigo'
-              ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Por código
-        </button>
-        <button
-          type="button"
-          onClick={() => { setMode('descricao'); setQuery(''); setIsOpen(false); }}
-          className={`text-xs px-3 py-1.5 rounded-md transition-colors font-medium ${
-            mode === 'descricao'
-              ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Por descrição
-        </button>
-        <button
-          type="button"
           onClick={() => { setMode('cnae'); setQuery(''); setIsOpen(false); }}
           className={`text-xs px-3 py-1.5 rounded-md transition-colors font-medium ${
             mode === 'cnae'
@@ -138,6 +116,17 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
           }`}
         >
           Por CNAE
+        </button>
+        <button
+          type="button"
+          onClick={() => { setMode('codigo'); setQuery(''); setIsOpen(false); }}
+          className={`text-xs px-3 py-1.5 rounded-md transition-colors font-medium ${
+            mode === 'codigo' || mode === 'descricao'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          CodTribNac NFS
         </button>
       </div>
 
