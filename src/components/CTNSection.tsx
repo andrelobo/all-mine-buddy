@@ -158,6 +158,42 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     }
   };
 
+  const handleTogglePrincipal = (codigo: string) => {
+    setCnaes(prev => prev.map(c => ({
+      ...c,
+      isPrincipal: c.codigo === codigo ? !c.isPrincipal : false,
+    })));
+  };
+
+  const handleToggleVinculadoSN = (codigo: string) => {
+    setCnaes(prev => prev.map(c =>
+      c.codigo === codigo ? { ...c, vinculadoSN: !c.vinculadoSN } : c
+    ));
+  };
+
+  const handleUpdateCTN = (codigo: string, newCtn: string) => {
+    const ctnEntry = newCtn ? getCTNByCode(newCtn) : null;
+    setCnaes(prev => prev.map(c =>
+      c.codigo === codigo
+        ? {
+            ...c,
+            ctn: newCtn || undefined,
+            ctnDescricao: ctnEntry?.descricao || undefined,
+            nbs: ctnEntry?.nbs || c.nbs,
+            nbsDescricao: ctnEntry?.nbs ? (getNBSDescricao(ctnEntry.nbs) || undefined) : c.nbsDescricao,
+          }
+        : c
+    ));
+  };
+
+  const handleUpdateNBS = (codigo: string, newNbs: string) => {
+    setCnaes(prev => prev.map(c =>
+      c.codigo === codigo
+        ? { ...c, nbs: newNbs || undefined, nbsDescricao: newNbs ? (getNBSDescricao(newNbs) || newNbs) : undefined }
+        : c
+    ));
+  };
+
   const handleAddManual = () => {
     const codigo = manualCnae.replace(/\D/g, '');
     if (!codigo) return;
@@ -462,78 +498,18 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
             {cnaes.map((cnae) => {
               const isLinked = cnae.ctn === ctnSelecionado;
               return (
-                <div
+                <CnaeListItem
                   key={cnae.codigo}
-                  className={`group flex items-center gap-2 p-2.5 rounded-lg border transition-colors ${
-                    isLinked
-                      ? 'border-primary/30 bg-primary/5'
-                      : 'border-border bg-background hover:border-primary/20'
-                  }`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => handleSelectCNAEForCTN(cnae)}
-                    disabled={!cnae.ctn}
-                    className="flex-1 min-w-0 text-left"
-                    title={cnae.ctn ? 'Clique para vincular este Cnaë ao CTN' : 'Sem CTN vinculado'}
-                  >
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-mono text-xs font-semibold text-primary">
-                        {formatCNAECode(cnae.codigo)}
-                      </span>
-                      {cnae.isManual && (
-                        <span className="text-xs bg-accent text-accent-foreground px-1.5 py-0.5 rounded font-medium">
-                          Manual
-                        </span>
-                      )}
-                      {cnae.isPrincipal && (
-                        <span className="flex items-center gap-1 text-xs text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded font-medium">
-                          <Star className="w-3 h-3" />
-                          Principal
-                        </span>
-                      )}
-                      {cnae.vinculadoSN && (
-                        <span className="text-xs bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-medium">
-                          Simples Nacional
-                        </span>
-                      )}
-                      {isLinked && (
-                        <span className="flex items-center gap-1 text-xs text-primary bg-primary/10 px-1.5 py-0.5 rounded font-medium">
-                          <CheckCircle2 className="w-3 h-3" />
-                          Vinculado
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-1 space-y-0.5 text-xs leading-snug">
-                      <p className="text-foreground/80 line-clamp-1">
-                        <span className="font-medium text-muted-foreground">Cnaë:</span> {cnae.cnaeDescricao}
-                      </p>
-                      {cnae.lc116Item && (
-                        <p className="text-foreground/80 line-clamp-1">
-                          <span className="font-medium text-muted-foreground">LC 116 Item {cnae.lc116Item}:</span> {cnae.lc116Descricao}
-                        </p>
-                      )}
-                      {cnae.ctn && (
-                        <p className="text-foreground/80 line-clamp-1">
-                          <span className="font-medium text-muted-foreground">CTN {formatCTNDisplay(cnae.ctn)}:</span> {cnae.ctnDescricao || '—'}
-                        </p>
-                      )}
-                      {cnae.nbs && (
-                        <p className="text-foreground/80 line-clamp-1">
-                          <span className="font-medium text-muted-foreground">NBS {cnae.nbs}:</span> {cnae.nbsDescricao || '—'}
-                        </p>
-                      )}
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveCNAE(cnae.codigo)}
-                    title="Remover CNAE"
-                    className="shrink-0 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                  cnae={cnae}
+                  isLinked={isLinked}
+                  onSelect={() => handleSelectCNAEForCTN(cnae)}
+                  onRemove={() => handleRemoveCNAE(cnae.codigo)}
+                  onTogglePrincipal={() => handleTogglePrincipal(cnae.codigo)}
+                  onToggleVinculadoSN={() => handleToggleVinculadoSN(cnae.codigo)}
+                  onUpdateCTN={(ctn) => handleUpdateCTN(cnae.codigo, ctn)}
+                  onUpdateNBS={(nbs) => handleUpdateNBS(cnae.codigo, nbs)}
+                  formatCTNDisplay={formatCTNDisplay}
+                />
               );
             })}
           </div>
@@ -546,6 +522,227 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
           <span>Nenhum CTN selecionado. Use a busca acima para localizar o código de tributação.</span>
         </div>
       )}
+    </div>
+  );
+};
+
+/* ─── Sub-component for each CNAE list item ─── */
+interface CnaeListItemProps {
+  cnae: CnaeAdicionado;
+  isLinked: boolean;
+  onSelect: () => void;
+  onRemove: () => void;
+  onTogglePrincipal: () => void;
+  onToggleVinculadoSN: () => void;
+  onUpdateCTN: (ctn: string) => void;
+  onUpdateNBS: (nbs: string) => void;
+  formatCTNDisplay: (c: string) => string;
+}
+
+const CnaeListItem: React.FC<CnaeListItemProps> = ({
+  cnae, isLinked, onSelect, onRemove, onTogglePrincipal, onToggleVinculadoSN, onUpdateCTN, onUpdateNBS, formatCTNDisplay
+}) => {
+  const [editingCtn, setEditingCtn] = useState(false);
+  const [editingNbs, setEditingNbs] = useState(false);
+  const [ctnInput, setCtnInput] = useState('');
+  const [nbsInput, setNbsInput] = useState('');
+  const [ctnSearchOpen, setCtnSearchOpen] = useState(false);
+  const [nbsSearchOpen, setNbsSearchOpen] = useState(false);
+  const ctnRef = useRef<HTMLDivElement>(null);
+  const nbsRef = useRef<HTMLDivElement>(null);
+
+  const ctnSearchResults = useMemo(() => searchCTN(ctnInput.trim(), 15), [ctnInput]);
+  const nbsSearchResults = useMemo(() => searchNBS(nbsInput.trim(), 15), [nbsInput]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ctnRef.current && !ctnRef.current.contains(e.target as Node)) {
+        setEditingCtn(false);
+        setCtnSearchOpen(false);
+      }
+      if (nbsRef.current && !nbsRef.current.contains(e.target as Node)) {
+        setEditingNbs(false);
+        setNbsSearchOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div
+      className={`group p-2.5 rounded-lg border transition-colors ${
+        isLinked
+          ? 'border-primary/30 bg-primary/5'
+          : 'border-border bg-background hover:border-primary/20'
+      }`}
+    >
+      {/* Header row */}
+      <div className="flex items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={onSelect}
+          disabled={!cnae.ctn}
+          className="flex items-center gap-2 flex-wrap min-w-0 text-left flex-1"
+          title={cnae.ctn ? 'Clique para vincular este Cnaë ao CTN' : 'Sem CTN vinculado'}
+        >
+          <span className="font-mono text-xs font-semibold text-primary">
+            {formatCNAECode(cnae.codigo)}
+          </span>
+          {cnae.isManual && (
+            <span className="text-xs bg-accent text-accent-foreground px-1.5 py-0.5 rounded font-medium">Manual</span>
+          )}
+          {isLinked && (
+            <span className="flex items-center gap-1 text-xs text-primary bg-primary/10 px-1.5 py-0.5 rounded font-medium">
+              <CheckCircle2 className="w-3 h-3" /> Vinculado
+            </span>
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={onRemove}
+          title="Remover CNAE"
+          className="shrink-0 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {/* Description */}
+      <div className="mt-1 space-y-0.5 text-xs leading-snug">
+        <p className="text-foreground/80 line-clamp-1">
+          <span className="font-medium text-muted-foreground">Cnaë:</span> {cnae.cnaeDescricao}
+        </p>
+        {cnae.lc116Item && (
+          <p className="text-foreground/80 line-clamp-1">
+            <span className="font-medium text-muted-foreground">LC 116 Item {cnae.lc116Item}:</span> {cnae.lc116Descricao}
+          </p>
+        )}
+      </div>
+
+      {/* Inline CTN */}
+      <div className="mt-1.5 flex items-center gap-1.5 text-xs" ref={ctnRef}>
+        <span className="font-medium text-muted-foreground shrink-0">CTN:</span>
+        {!editingCtn ? (
+          <button
+            type="button"
+            onClick={() => { setEditingCtn(true); setCtnInput(''); setCtnSearchOpen(true); }}
+            className="text-foreground/80 hover:text-primary hover:underline transition-colors"
+          >
+            {cnae.ctn ? `${formatCTNDisplay(cnae.ctn)} — ${cnae.ctnDescricao || ''}` : '(adicionar)'}
+          </button>
+        ) : (
+          <div className="relative flex-1 max-w-xs">
+            <Input
+              autoFocus
+              placeholder="Buscar CTN..."
+              value={ctnInput}
+              onChange={e => { setCtnInput(e.target.value); setCtnSearchOpen(true); }}
+              className="h-6 text-xs"
+            />
+            {cnae.ctn && (
+              <button type="button" onClick={() => { onUpdateCTN(''); setEditingCtn(false); }} className="absolute right-1 top-1/2 -translate-y-1/2 text-destructive hover:text-destructive/80">
+                <X className="w-3 h-3" />
+              </button>
+            )}
+            {ctnSearchOpen && ctnSearchResults.length > 0 && (
+              <div className="absolute z-30 top-full mt-1 w-full max-h-36 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                {ctnSearchResults.map(entry => (
+                  <button
+                    key={entry.codigo}
+                    type="button"
+                    onClick={() => {
+                      onUpdateCTN(entry.codigo);
+                      setEditingCtn(false);
+                      setCtnSearchOpen(false);
+                    }}
+                    className="w-full text-left px-2 py-1.5 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
+                  >
+                    <span className="font-mono text-xs font-semibold text-primary">{formatCTNDisplay(entry.codigo)}</span>
+                    <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Inline NBS */}
+      <div className="mt-1 flex items-center gap-1.5 text-xs" ref={nbsRef}>
+        <span className="font-medium text-muted-foreground shrink-0">NBS:</span>
+        {!editingNbs ? (
+          <button
+            type="button"
+            onClick={() => { setEditingNbs(true); setNbsInput(''); setNbsSearchOpen(true); }}
+            className="text-foreground/80 hover:text-primary hover:underline transition-colors"
+          >
+            {cnae.nbs ? `${cnae.nbs} — ${cnae.nbsDescricao || ''}` : '(adicionar)'}
+          </button>
+        ) : (
+          <div className="relative flex-1 max-w-xs">
+            <Input
+              autoFocus
+              placeholder="Buscar NBS..."
+              value={nbsInput}
+              onChange={e => { setNbsInput(e.target.value); setNbsSearchOpen(true); }}
+              className="h-6 text-xs"
+            />
+            {cnae.nbs && (
+              <button type="button" onClick={() => { onUpdateNBS(''); setEditingNbs(false); }} className="absolute right-1 top-1/2 -translate-y-1/2 text-destructive hover:text-destructive/80">
+                <X className="w-3 h-3" />
+              </button>
+            )}
+            {nbsSearchOpen && nbsSearchResults.length > 0 && (
+              <div className="absolute z-30 top-full mt-1 w-full max-h-36 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                {nbsSearchResults.map(entry => (
+                  <button
+                    key={entry.codigo}
+                    type="button"
+                    onClick={() => {
+                      onUpdateNBS(entry.codigo);
+                      setEditingNbs(false);
+                      setNbsSearchOpen(false);
+                    }}
+                    className="w-full text-left px-2 py-1.5 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
+                  >
+                    <span className="font-mono text-xs font-semibold text-primary">{entry.codigo}</span>
+                    <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Toggle buttons */}
+      <div className="mt-2 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onTogglePrincipal}
+          className={`flex items-center gap-1 text-xs px-2 py-1 rounded-md border transition-colors ${
+            cnae.isPrincipal
+              ? 'border-amber-300 bg-amber-50 text-amber-700'
+              : 'border-border text-muted-foreground hover:border-amber-300 hover:text-amber-700'
+          }`}
+        >
+          <Star className={`w-3 h-3 ${cnae.isPrincipal ? 'fill-amber-400' : ''}`} />
+          Principal
+        </button>
+        <button
+          type="button"
+          onClick={onToggleVinculadoSN}
+          className={`flex items-center gap-1 text-xs px-2 py-1 rounded-md border transition-colors ${
+            cnae.vinculadoSN
+              ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
+              : 'border-border text-muted-foreground hover:border-emerald-300 hover:text-emerald-700'
+          }`}
+        >
+          <CheckCircle2 className="w-3 h-3" />
+          Simples Nacional
+        </button>
+      </div>
     </div>
   );
 };
