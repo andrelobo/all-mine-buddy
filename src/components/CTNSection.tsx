@@ -322,65 +322,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         </div>
       )}
 
-      {/* Selected CTN Display */}
-      {selectedEntry && (
-        <TooltipProvider delayDuration={200}>
-          <div className="mt-4 pt-4 border-t border-border">
-            <p className="text-xs text-muted-foreground mb-1.5">CTN selecionado para NFS-e</p>
-            <div className={`flex items-start gap-2 p-3 rounded-lg border ${
-              isValid
-                ? 'bg-primary/5 border-primary/20'
-                : 'bg-destructive/5 border-destructive/20'
-            }`}>
-              {isValid ? (
-                <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-              ) : (
-                <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
-              )}
-              <div className="flex-1 min-w-0 space-y-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-mono text-sm font-bold text-primary">
-                    {formatCTNDisplay(selectedEntry.codigo)}
-                  </span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded cursor-help">
-                        Item {selectedEntry.itemFormatado}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="max-w-xs text-xs">
-                      <p className="font-semibold mb-0.5">Item da LC 116/2003</p>
-                      <p>Código do item da Lista de Serviços da Lei Complementar nº 116/2003, correspondente ao serviço tributável pelo ISS.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  {isValid && (
-                    <span className="text-xs text-primary/80 bg-primary/10 px-1.5 py-0.5 rounded font-medium">
-                      ✓ Validado Portal Nacional NFS-e
-                    </span>
-                  )}
-                </div>
-                <p className="text-sm text-foreground leading-snug">
-                  {selectedEntry.descricao}
-                </p>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <p className="text-xs text-muted-foreground cursor-help">
-                      <span className="font-semibold text-foreground/70">Formato IISSDD:</span>
-                      <span className="ml-1">
-                        Item {selectedEntry.item} · Subitem {selectedEntry.subitem} · Desdobro {selectedEntry.desdobro}
-                      </span>
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-xs text-xs">
-                    <p className="font-semibold mb-0.5">Código de Tributação Nacional (CTN)</p>
-                    <p>Código de 6 dígitos no padrão ABRASF/SPED, composto por Item (II), Subitem (SS) e Desdobro Nacional (DD). Utilizado na NFS-e para identificar o tipo de serviço prestado.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-          </div>
-        </TooltipProvider>
-      )}
 
       {!selectedEntry && !isOpen && cnaes.length === 0 && (
         <div className="flex items-center gap-2 text-xs text-muted-foreground mt-3">
