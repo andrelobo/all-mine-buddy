@@ -15,14 +15,38 @@ export interface CTNEntry {
   descricao: string;
   /** Label formatado: "II.SS" — ex: "1.01" */
   itemFormatado: string;
+  /** NBS principal — Nomenclatura Brasileira de Serviços (fonte: AnexoVIII gov.br) */
+  nbs?: string;
 }
+
+/**
+ * NBS principal por item LC 116 — Fonte: AnexoVIII-CorrelacaoItemNBSIndOpCClassTrib_IBSCBS_V1.00.00
+ * Portal Nacional NFS-e (gov.br) — atualizado 27/10/2025
+ */
+const NBS_BY_ITEM: Record<string, string> = {
+  '01': '1.1502.10.00', '02': '1.1201.11.00', '03': '1.1103.33.00',
+  '04': '1.2301.22.00', '05': '1.1405.12.00', '06': '1.2602.10.00',
+  '07': '1.1402.11.00', '08': '1.2201.11.00', '09': '1.0303.11.00',
+  '10': '1.0906.11.00', '11': '1.0604.30.00', '12': '1.2502.20.00',
+  '13': '1.2501.11.00', '14': '1.2001.10.00', '15': '1.0901.40.00',
+  '16': '1.0401.11.19', '17': '1.1401.11.00', '18': '1.0906.20.00',
+  '19': '1.0905.11.00', '20': '1.0605.10.00', '21': '1.1304.00.00',
+  '22': '1.0604.21.00', '23': '1.1409.21.00', '24': '1.2606.00.00',
+  '25': '1.2603.00.00', '26': '1.0701.00.00', '27': '1.2304.11.00',
+  '28': '1.1404.14.00', '29': '1.1705.10.00', '30': '1.1415.00.00',
+  '31': '1.1415.00.00', '32': '1.1409.90.00', '33': '1.0204.00.00',
+  '34': '1.1802.10.00', '35': '1.1401.31.00', '36': '1.1404.30.00',
+  '37': '1.1806.81.00', '38': '1.2504.11.00', '39': '1.2002.20.00',
+  '40': '1.1109.90.00',
+};
 
 function fmt(item: string, subitem: string): string {
   return `${parseInt(item, 10)}.${subitem}`;
 }
 
 function e(codigo: string, item: string, subitem: string, desdobro: string, descricao: string): CTNEntry {
-  return { codigo, item, subitem, desdobro, descricao, itemFormatado: fmt(item, subitem) };
+  const nbs = NBS_BY_ITEM[item];
+  return { codigo, item, subitem, desdobro, descricao, itemFormatado: fmt(item, subitem), ...(nbs ? { nbs } : {}) };
 }
 
 export const CTN_DATA: CTNEntry[] = [
