@@ -1,15 +1,17 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Settings, Search, CheckCircle2, AlertCircle, X, Plus, Trash2 } from 'lucide-react';
+import { Settings, Search, CheckCircle2, AlertCircle, X, Plus, Trash2, PenLine } from 'lucide-react';
 import { getCTNByCode, isValidCTN } from '@/utils/ctn-data';
 import { CNAE_LIST, formatCNAECode, type CNAEEntry } from '@/utils/cnae-lc116';
 import { Input } from '@/components/ui/input';
-
-
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 
 interface CnaeAdicionado {
   codigo: string;
   descricao: string;
   ctn: string | undefined;
+  nbs?: string;
+  isManual?: boolean;
 }
 
 interface Props {
@@ -21,13 +23,17 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [cnaes, setCnaes] = useState<CnaeAdicionado[]>([]);
+  const [showManualForm, setShowManualForm] = useState(false);
+  const [manualCnae, setManualCnae] = useState('');
+  const [manualCtn, setManualCtn] = useState('');
+  const [manualNbs, setManualNbs] = useState('');
+  const [manualDescricao, setManualDescricao] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
 
   const results = useMemo(() => {
     const q = query.trim();
     if (!q) return [];
     const normalized = q.toLowerCase();
-
     const digits = q.replace(/\D/g, '');
     const addedCodes = new Set(cnaes.map(c => c.codigo));
     const matches: CNAEEntry[] = [];
@@ -44,7 +50,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   }, [query, cnaes]);
 
   const selectedEntry = ctnSelecionado ? getCTNByCode(ctnSelecionado) : null;
-  const isValid = ctnSelecionado ? isValidCTN(ctnSelecionado) : null;
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -56,7 +61,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-
   const handleAddCNAE = (entry: CNAEEntry) => {
     const novo: CnaeAdicionado = {
       codigo: entry.codigo,
@@ -64,8 +68,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       ctn: entry.lc116.ctn,
     };
     setCnaes(prev => [...prev, novo]);
-
-    // Auto-select CTN if it's the first CNAE and no CTN selected
     if (!ctnSelecionado && entry.lc116.ctn) {
       const ctnEntry = getCTNByCode(entry.lc116.ctn);
       if (ctnEntry) {
@@ -74,7 +76,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         onCtnChange(entry.lc116.ctn, entry.lc116.descricao, entry.lc116.item);
       }
     }
-
     setQuery('');
     setIsOpen(false);
   };
@@ -92,6 +93,33 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     }
   };
 
+  const handleAddManual = () => {
+    const codigo = manualCnae.replace(/\D/g, '');
+    if (!codigo) return;
+    if (cnaes.some(c => c.codigo === codigo)) return;
+    const novo: CnaeAdicionado = {
+      codigo,
+      descricao: manualDescricao || 'Inclusão manual',
+      ctn: manualCtn.replace(/\D/g, '') || undefined,
+      nbs: manualNbs || undefined,
+      isManual: true,
+    };
+    setCnaes(prev => [...prev, novo]);
+    if (!ctnSelecionado && novo.ctn) {
+      const ctnEntry = getCTNByCode(novo.ctn);
+      if (ctnEntry) {
+        onCtnChange(ctnEntry.codigo, ctnEntry.descricao, ctnEntry.itemFormatado);
+      } else {
+        onCtnChange(novo.ctn, novo.descricao, '');
+      }
+    }
+    setManualCnae('');
+    setManualCtn('');
+    setManualNbs('');
+    setManualDescricao('');
+    setShowManualForm(false);
+  };
+
   const formatCTNDisplay = (codigo: string) => {
     if (codigo.length === 6) {
       return `${codigo.slice(0, 2)}.${codigo.slice(2, 4)}.${codigo.slice(4, 6)}`;
@@ -101,11 +129,80 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
 
   return (
     <div className="section-card">
-      <h2 className="section-title">
-        <Settings className="w-5 h-5 text-primary" />
-        Parâmetro Fiscal
-      </h2>
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="section-title">
+          <Settings className="w-5 h-5 text-primary" />
+          Parâmetro Fiscal
+        </h2>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setShowManualForm(v => !v)}
+          className="text-xs gap-1.5"
+        >
+          <PenLine className="w-3.5 h-3.5" />
+          {showManualForm ? 'Cancelar' : 'Manual'}
+        </Button>
+      </div>
 
+      {/* Manual Form */}
+      {showManualForm && (
+        <div className="mb-4 p-3 rounded-lg border border-border bg-muted/30 space-y-3">
+          <p className="text-xs font-medium text-muted-foreground">Inclusão manual</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label className="text-xs">CNAE *</Label>
+              <Input
+                placeholder="Ex: 6201500"
+                value={manualCnae}
+                onChange={e => setManualCnae(e.target.value)}
+                className="h-8 text-sm"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">CTN (6 dígitos)</Label>
+              <Input
+                placeholder="Ex: 010101"
+                value={manualCtn}
+                onChange={e => setManualCtn(e.target.value)}
+                className="h-8 text-sm"
+                maxLength={6}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">NBS</Label>
+              <Input
+                placeholder="Ex: 1.1502.10.00"
+                value={manualNbs}
+                onChange={e => setManualNbs(e.target.value)}
+                className="h-8 text-sm"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Descrição</Label>
+              <Input
+                placeholder="Descrição da atividade"
+                value={manualDescricao}
+                onChange={e => setManualDescricao(e.target.value)}
+                className="h-8 text-sm"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleAddManual}
+              disabled={!manualCnae.replace(/\D/g, '')}
+              className="text-xs gap-1.5"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Adicionar
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Search */}
       <div ref={containerRef} className="relative">
@@ -135,7 +232,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         {/* Dropdown Results */}
         {isOpen && results.length > 0 && (
           <div className="absolute z-20 top-full mt-1 w-full max-h-64 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-            {(results as CNAEEntry[]).map((entry) => (
+            {results.map((entry) => (
               <button
                 key={entry.codigo}
                 type="button"
@@ -168,7 +265,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
           <div className="absolute z-20 top-full mt-1 w-full rounded-lg border border-border bg-card shadow-lg p-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <AlertCircle className="w-4 h-4 shrink-0" />
-               <span>Nenhum Cnaë encontrado. Verifique o código informado.</span>
+              <span>Nenhum Cnaë encontrado. Verifique o código informado.</span>
             </div>
           </div>
         )}
@@ -201,9 +298,19 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                       <span className="font-mono text-xs font-semibold text-primary">
                         {formatCNAECode(cnae.codigo)}
                       </span>
+                      {cnae.isManual && (
+                        <span className="text-xs bg-accent text-accent-foreground px-1.5 py-0.5 rounded font-medium">
+                          Manual
+                        </span>
+                      )}
                       {cnae.ctn && (
                         <span className="text-xs text-muted-foreground">
                           → CTN {formatCTNDisplay(cnae.ctn)}
+                        </span>
+                      )}
+                      {cnae.nbs && (
+                        <span className="text-xs text-muted-foreground">
+                          | NBS {cnae.nbs}
                         </span>
                       )}
                       {isLinked && (
@@ -231,7 +338,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
           </div>
         </div>
       )}
-
 
       {!selectedEntry && !isOpen && cnaes.length === 0 && (
         <div className="flex items-center gap-2 text-xs text-muted-foreground mt-3">
