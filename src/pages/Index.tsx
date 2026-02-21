@@ -4,6 +4,7 @@ import { Shield, FileText, Save, X, CheckCircle } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 import CNAESection from '@/components/CNAESection';
+import CTNSection from '@/components/CTNSection';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 
 
@@ -34,6 +35,9 @@ const Index = () => {
   const [configValida, setConfigValida] = useState(false);
   const [cnaeEscolhido, setCnaeEscolhido] = useState<string | null>(null);
   const [cnaeDescricao, setCnaeDescricao] = useState<string>('');
+  const [ctnSelecionado, setCtnSelecionado] = useState<string | null>(null);
+  const [ctnDescricao, setCtnDescricao] = useState<string>('');
+  const [ctnItem, setCtnItem] = useState<string>('');
 
   const checkValidity = useCallback(() => {
     const cnpjOk = validateCNPJ(prestador.cnpj);
@@ -141,6 +145,15 @@ const Index = () => {
           cnpj={prestador.cnpj}
           cnaeEscolhido={cnaeEscolhido}
           onCnaeEscolhidoChange={handleCnaeEscolhido}
+        />
+
+        <CTNSection
+          ctnSelecionado={ctnSelecionado}
+          onCtnChange={(codigo, descricao, itemFormatado) => {
+            setCtnSelecionado(codigo);
+            setCtnDescricao(descricao);
+            setCtnItem(itemFormatado);
+          }}
         />
 
         {/* Footer */}
