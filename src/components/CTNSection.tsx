@@ -142,7 +142,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
-          Busque CNAE
+          Busque Cnaë
         </button>
         <button
           type="button"
@@ -164,7 +164,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
           <Input
             placeholder={
               mode === 'cnae'
-                ? 'Buscar CNAE para adicionar (ex: 6201500)'
+                ? 'Buscar Cnaë para adicionar (ex: 6201500)'
                 : mode === 'codigo'
                   ? 'Digite o código CTN (ex: 010101 ou 1.01)'
                   : 'Digite parte da descrição do serviço'
@@ -255,7 +255,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>
                 {mode === 'cnae'
-                  ? 'Nenhum CNAE encontrado. Verifique o código informado.'
+                  ? 'Nenhum Cnaë encontrado. Verifique o código informado.'
                   : `Nenhum CTN encontrado. Verifique o ${mode === 'codigo' ? 'código' : 'termo'} informado.`
                 }
               </span>
@@ -267,7 +267,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       {/* Lista de CNAEs adicionados */}
       {cnaes.length > 0 && (
         <div className="mt-4 space-y-2">
-          <p className="text-xs text-muted-foreground font-medium">CNAEs adicionados</p>
+          <p className="text-xs text-muted-foreground font-medium">Cnaës adicionados</p>
           <div className="space-y-1.5">
             {cnaes.map((cnae) => {
               const isLinked = cnae.ctn === ctnSelecionado;
@@ -285,7 +285,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                     onClick={() => handleSelectCNAEForCTN(cnae)}
                     disabled={!cnae.ctn}
                     className="flex-1 min-w-0 text-left"
-                    title={cnae.ctn ? 'Clique para vincular este CNAE ao CTN' : 'Sem CTN vinculado'}
+                    title={cnae.ctn ? 'Clique para vincular este Cnaë ao CTN' : 'Sem CTN vinculado'}
                   >
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-mono text-xs font-semibold text-primary">
