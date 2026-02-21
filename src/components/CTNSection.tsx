@@ -72,9 +72,8 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         Parâmetro Fiscal
       </h2>
 
-      <p className="text-xs text-muted-foreground mb-3">
-        Selecione o CTN conforme a tabela oficial do Portal Nacional de NFS-e. Busque por código (6 dígitos) ou descrição do serviço.
-      </p>
+
+
 
       {/* Mode Toggle */}
       <div className="flex items-center gap-1 mb-3 bg-muted/50 rounded-lg p-1 w-fit">
