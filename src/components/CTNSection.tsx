@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Settings, Search, CheckCircle2, AlertCircle, X, Plus, Trash2, PenLine, ChevronDown } from 'lucide-react';
-import { getCTNByCode, isValidCTN, searchCTN, getAllNBS } from '@/utils/ctn-data';
+import { getCTNByCode, isValidCTN, searchCTN } from '@/utils/ctn-data';
 import { CNAE_LIST, formatCNAECode, getLC116Item, type CNAEEntry } from '@/utils/cnae-lc116';
+import { getNBSDescricao, searchNBS, type NBSEntry } from '@/utils/nbs-data';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -49,12 +50,9 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     return searchCTN(q, 30);
   }, [ctnQuery]);
 
-  const allNbs = useMemo(() => getAllNBS(), []);
   const nbsResults = useMemo(() => {
-    const q = nbsQuery.trim().toLowerCase();
-    if (!q) return allNbs.slice(0, 30);
-    return allNbs.filter(n => n.includes(q)).slice(0, 30);
-  }, [nbsQuery, allNbs]);
+    return searchNBS(nbsQuery.trim(), 30);
+  }, [nbsQuery]);
 
   const results = useMemo(() => {
     const q = query.trim();
@@ -123,7 +121,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       ctn: entry.lc116.ctn,
       ctnDescricao: ctnEntry?.descricao || entry.lc116.descricao,
       nbs: entry.lc116.nbs || ctnEntry?.nbs,
-      nbsDescricao: entry.lc116.nbs ? `NBS ${entry.lc116.nbs}` : undefined,
+      nbsDescricao: getNBSDescricao(entry.lc116.nbs || ctnEntry?.nbs || '') || undefined,
     };
     setCnaes(prev => [...prev, novo]);
     if (!ctnSelecionado && entry.lc116.ctn) {
@@ -166,7 +164,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       ctn: ctnCode,
       ctnDescricao: ctnEntry?.descricao || (ctnCode ? manualDescricao : undefined),
       nbs: manualNbs || undefined,
-      nbsDescricao: manualNbs ? `NBS ${manualNbs}` : undefined,
+      nbsDescricao: manualNbs ? (getNBSDescricao(manualNbs) || manualNbs) : undefined,
       isManual: true,
     };
     setCnaes(prev => [...prev, novo]);
@@ -298,18 +296,19 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                 </button>
                 {showNbsDropdown && nbsResults.length > 0 && (
                   <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-                    {nbsResults.map(nbs => (
+                    {nbsResults.map((entry) => (
                       <button
-                        key={nbs}
+                        key={entry.codigo}
                         type="button"
                         onClick={() => {
-                          setManualNbs(nbs);
+                          setManualNbs(entry.codigo);
                           setNbsQuery('');
                           setShowNbsDropdown(false);
                         }}
                         className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
                       >
-                        <span className="font-mono text-xs font-semibold text-primary">{nbs}</span>
+                        <span className="font-mono text-xs font-semibold text-primary">{entry.codigo}</span>
+                        <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
                       </button>
                     ))}
                   </div>
