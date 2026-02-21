@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Hash, Search, CheckCircle2, AlertCircle, X } from 'lucide-react';
+import { Settings, Search, CheckCircle2, AlertCircle, X } from 'lucide-react';
 import { CTN_DATA, getCTNByCode, isValidCTN, type CTNEntry } from '@/utils/ctn-data';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -68,8 +68,8 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   return (
     <div className="section-card">
       <h2 className="section-title">
-        <Hash className="w-5 h-5 text-primary" />
-        Código de Tributação Nacional (CTN)
+        <Settings className="w-5 h-5 text-primary" />
+        Parâmetro Fiscal
       </h2>
 
       <p className="text-xs text-muted-foreground mb-3">
