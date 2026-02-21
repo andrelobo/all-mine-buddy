@@ -142,7 +142,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
-          Por CNAE
+          Busque CNAE
         </button>
         <button
           type="button"
