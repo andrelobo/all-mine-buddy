@@ -34,6 +34,9 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [cnaes, setCnaes] = useState<CnaeAdicionado[]>([]);
+  const [pendingEntry, setPendingEntry] = useState<CNAEEntry | null>(null);
+  const [pendingPrincipal, setPendingPrincipal] = useState(false);
+  const [pendingVincularSN, setPendingVincularSN] = useState(false);
   const [showManualForm, setShowManualForm] = useState(false);
   const [manualCnae, setManualCnae] = useState('');
   const [manualCtn, setManualCtn] = useState('');
@@ -121,6 +124,16 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   };
 
   const handleAddCNAE = (entry: CNAEEntry) => {
+    setPendingEntry(entry);
+    setPendingPrincipal(false);
+    setPendingVincularSN(false);
+    setQuery('');
+    setIsOpen(false);
+  };
+
+  const handleConfirmPending = () => {
+    if (!pendingEntry) return;
+    const entry = pendingEntry;
     const ctnEntry = entry.lc116.ctn ? getCTNByCode(entry.lc116.ctn) : null;
     const novo: CnaeAdicionado = {
       codigo: entry.codigo,
@@ -131,8 +144,15 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       ctnDescricao: ctnEntry?.descricao || entry.lc116.descricao,
       nbs: entry.lc116.nbs || ctnEntry?.nbs,
       nbsDescricao: getNBSDescricao(entry.lc116.nbs || ctnEntry?.nbs || '') || undefined,
+      isPrincipal: pendingPrincipal,
+      vinculadoSN: pendingVincularSN,
     };
-    setCnaes(prev => [...prev, novo]);
+    setCnaes(prev => {
+      if (pendingPrincipal) {
+        return [...prev.map(c => ({ ...c, isPrincipal: false })), novo];
+      }
+      return [...prev, novo];
+    });
     if (!ctnSelecionado && entry.lc116.ctn) {
       const ctnEntry = getCTNByCode(entry.lc116.ctn);
       if (ctnEntry) {
@@ -141,8 +161,11 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         onCtnChange(entry.lc116.ctn, entry.lc116.descricao, entry.lc116.item);
       }
     }
-    setQuery('');
-    setIsOpen(false);
+    setPendingEntry(null);
+  };
+
+  const handleCancelPending = () => {
+    setPendingEntry(null);
   };
 
   const handleRemoveCNAE = (codigo: string) => {
@@ -489,6 +512,65 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
           </div>
         )}
       </div>
+
+      {/* Pending confirmation panel */}
+      {pendingEntry && (
+        <div className="mt-3 p-3 rounded-lg border border-primary/30 bg-primary/5 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold text-foreground">Confirmar adição do Cnaë</p>
+            <button type="button" onClick={handleCancelPending} className="text-muted-foreground hover:text-foreground">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="space-y-1 text-xs">
+            <p className="text-foreground/90">
+              <span className="font-mono font-semibold text-primary">{formatCNAECode(pendingEntry.codigo)}</span>
+              <span className="ml-2">{pendingEntry.descricao}</span>
+            </p>
+            {pendingEntry.lc116.ctn && (
+              <p className="text-muted-foreground">
+                CTN {formatCTNDisplay(pendingEntry.lc116.ctn)}: {pendingEntry.lc116.descricao}
+              </p>
+            )}
+            {(pendingEntry.lc116.nbs || (pendingEntry.lc116.ctn && getCTNByCode(pendingEntry.lc116.ctn)?.nbs)) && (
+              <p className="text-muted-foreground">
+                NBS {pendingEntry.lc116.nbs || getCTNByCode(pendingEntry.lc116.ctn!)?.nbs}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="pending-principal"
+                checked={pendingPrincipal}
+                onCheckedChange={(checked) => setPendingPrincipal(checked === true)}
+              />
+              <Label htmlFor="pending-principal" className="text-xs cursor-pointer">
+                Atividade econômica principal
+              </Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="pending-vincular-sn"
+                checked={pendingVincularSN}
+                onCheckedChange={(checked) => setPendingVincularSN(checked === true)}
+              />
+              <Label htmlFor="pending-vincular-sn" className="text-xs cursor-pointer">
+                Vincular ao Simples Nacional
+              </Label>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" size="sm" onClick={handleCancelPending} className="text-xs">
+              Cancelar
+            </Button>
+            <Button type="button" size="sm" onClick={handleConfirmPending} className="text-xs gap-1.5">
+              <Plus className="w-3.5 h-3.5" />
+              Adicionar
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Lista de CNAEs adicionados */}
       {cnaes.length > 0 && (
