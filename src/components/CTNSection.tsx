@@ -215,7 +215,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       {showManualForm && (
         <div className="mb-4 p-3 rounded-lg border border-border bg-muted/30 space-y-3">
           <p className="text-xs font-medium text-muted-foreground">Inclusão manual</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
             <div className="space-y-1">
               <Label className="text-xs">CNAE *</Label>
               <Input
