@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { Shield, FileText, Save, X, CheckCircle } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
-import CNAESection from '@/components/CNAESection';
+
 import CTNSection from '@/components/CTNSection';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 
@@ -33,8 +33,6 @@ const Index = () => {
   const [aliquotaSN, setAliquotaSN] = useState('');
   const [regimeApuracaoSNParametro, setRegimeApuracaoSNParametro] = useState(false);
   const [configValida, setConfigValida] = useState(false);
-  const [cnaeEscolhido, setCnaeEscolhido] = useState<string | null>(null);
-  const [cnaeDescricao, setCnaeDescricao] = useState<string>('');
   const [ctnSelecionado, setCtnSelecionado] = useState<string | null>(null);
   const [ctnDescricao, setCtnDescricao] = useState<string>('');
   const [ctnItem, setCtnItem] = useState<string>('');
@@ -60,10 +58,7 @@ const Index = () => {
     }
   }, []);
 
-  const handleCnaeEscolhido = useCallback((codigo: string, descricao: string) => {
-    setCnaeEscolhido(codigo);
-    setCnaeDescricao(descricao);
-  }, []);
+
 
   const handleSalvar = () => {
     if (!validateCNPJ(prestador.cnpj)) {
@@ -141,11 +136,8 @@ const Index = () => {
           onAutosave={autosave}
         />
 
-        <CNAESection
-          cnpj={prestador.cnpj}
-          cnaeEscolhido={cnaeEscolhido}
-          onCnaeEscolhidoChange={handleCnaeEscolhido}
-        />
+
+
 
         <CTNSection
           ctnSelecionado={ctnSelecionado}
@@ -166,7 +158,7 @@ const Index = () => {
               </div>
             )}
             <div className="flex items-center gap-3 ml-auto">
-              <button onClick={() => { setPrestador(INITIAL_PRESTADOR); setRegime(null); setCnaeEscolhido(null); }} className="btn-outline flex items-center gap-2">
+              <button onClick={() => { setPrestador(INITIAL_PRESTADOR); setRegime(null); }} className="btn-outline flex items-center gap-2">
                 <X className="w-4 h-4" />
                 Cancelar
               </button>
