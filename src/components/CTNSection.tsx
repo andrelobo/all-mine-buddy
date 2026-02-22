@@ -310,7 +310,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
             }`}>
               {manualCnae && <div className="w-2 h-2 rounded-full bg-primary" />}
             </div>
-            <div className="text-sm font-medium text-foreground">CNAE *</div>
+            <div className="text-sm font-medium text-foreground">Código Cnae *</div>
           </div>
           <div className="w-full mt-2 space-y-1">
             <div className="relative">
@@ -354,7 +354,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
             }`}>
               {manualCtn && <div className="w-2 h-2 rounded-full bg-primary" />}
             </div>
-            <div className="text-sm font-medium text-foreground">CTN (6 dígitos)</div>
+            <div className="text-sm font-medium text-foreground">Código Tributação Nacional</div>
           </div>
           <div className="w-full mt-2 space-y-1">
             <div className="relative">
@@ -412,7 +412,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
             }`}>
               {manualNbs && <div className="w-2 h-2 rounded-full bg-primary" />}
             </div>
-            <div className="text-sm font-medium text-foreground">NBS</div>
+            <div className="text-sm font-medium text-foreground">Nomenclatura Brasileira Serviços</div>
           </div>
           <div className="w-full mt-2 space-y-1">
             <div className="relative">
