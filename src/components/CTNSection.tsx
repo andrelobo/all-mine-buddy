@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Settings, Search, CheckCircle2, AlertCircle, X, Plus, Trash2, PenLine, ChevronDown, Star } from 'lucide-react';
-import { getCTNByCode, isValidCTN, searchCTN } from '@/utils/ctn-data';
+import { getCTNByCode, isValidCTN, searchCTN, searchCTNByItem } from '@/utils/ctn-data';
 import { CNAE_LIST, formatCNAECode, getLC116Item, type CNAEEntry } from '@/utils/cnae-lc116';
 import { getNBSDescricao, searchNBS, type NBSEntry } from '@/utils/nbs-data';
 import { Input } from '@/components/ui/input';
@@ -46,6 +46,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   const [manualVincularSN, setManualVincularSN] = useState(false);
   const [manualCnaeDescricaoIBGE, setManualCnaeDescricaoIBGE] = useState('');
   const [ctnQuery, setCtnQuery] = useState('');
+  const [detectedItem, setDetectedItem] = useState<string | null>(null);
   const [nbsQuery, setNbsQuery] = useState('');
   const [showCnaeDropdown, setShowCnaeDropdown] = useState(false);
   const [showCtnDropdown, setShowCtnDropdown] = useState(false);
@@ -73,8 +74,11 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   }, [manualCnae]);
 
   const ctnResults = useMemo(() => {
+    if (detectedItem) {
+      return searchCTNByItem(detectedItem, ctnQuery.trim(), 30);
+    }
     return searchCTN(ctnQuery.trim(), 30);
-  }, [ctnQuery]);
+  }, [ctnQuery, detectedItem]);
 
   const nbsResults = useMemo(() => {
     return searchNBS(nbsQuery.trim(), 30);
@@ -131,6 +135,10 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
     if (digits.length >= 7) {
       const lc = getLC116Item(digits);
       if (lc) {
+        // Extract the item number (e.g., "1.01" → "01", "10.05" → "10")
+        const itemParts = lc.item.split('.');
+        const itemNum = itemParts[0].padStart(2, '0');
+        setDetectedItem(itemNum);
         if (lc.ctn) {
           setManualCtn(lc.ctn);
           setCtnQuery('');
@@ -140,7 +148,11 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
           setNbsQuery('');
         }
         setManualDescricao(lc.descricao);
+      } else {
+        setDetectedItem(null);
       }
+    } else {
+      setDetectedItem(null);
     }
   };
 

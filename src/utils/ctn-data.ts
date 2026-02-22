@@ -508,6 +508,21 @@ export function getAllCTN(): CTNEntry[] {
   return CTN_DATA;
 }
 
+/** Busca CTN filtrando pelo item (ex: "01", "04") */
+export function searchCTNByItem(item: string, query: string = '', limit = 30): CTNEntry[] {
+  const normalizedItem = item.padStart(2, '0');
+  const q = query.toLowerCase().trim();
+  const results: CTNEntry[] = [];
+  for (const entry of CTN_DATA) {
+    if (results.length >= limit) break;
+    if (entry.item !== normalizedItem) continue;
+    if (!q || entry.codigo.includes(q) || entry.descricao.toLowerCase().includes(q) || entry.itemFormatado.includes(q)) {
+      results.push(entry);
+    }
+  }
+  return results;
+}
+
 /** Retorna todos os NBS únicos da tabela */
 export function getAllNBS(): string[] {
   const set = new Set<string>();
