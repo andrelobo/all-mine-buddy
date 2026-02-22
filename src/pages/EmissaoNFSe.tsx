@@ -1,28 +1,30 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Shield, Send, Save, ArrowLeft, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import PrestadorResumo from '@/components/emissao/PrestadorResumo';
+import PrestadorSection from '@/components/PrestadorSection';
+import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
+import CTNSection from '@/components/CTNSection';
 import TomadorEmissao, { INITIAL_TOMADOR, type TomadorEmissaoData } from '@/components/emissao/TomadorEmissao';
 import PrestacaoServicoSection, { type PrestacaoServicoData } from '@/components/emissao/PrestacaoServicoSection';
 import ValoresTotaisSection from '@/components/emissao/ValoresTotaisSection';
+import { validateCNPJ, validateEmail } from '@/utils/validators';
 
-// Dados simulados do prestador (virão do banco futuramente)
-const PRESTADOR_MOCK = {
-  cnpj: '00.000.000/0001-00',
-  inscricaoMunicipal: '12345',
-  nomeEmpresarial: 'Zerä Software Ltda',
-  nomeFantasia: 'Zerä Software',
-  logradouro: 'Rua Exemplo',
-  numero: '100',
-  complemento: 'Sala 10',
-  bairro: 'Centro',
-  localidadeUf: 'São Paulo - SP',
-  cep: '01001-000',
-  regime: 'Simples Nacional',
-  cnae: '6201-5/01',
-  cnaeDescricao: 'Desenvolvimento de programas de computador sob encomenda',
-  codigoServico: '01.01',
+const INITIAL_PRESTADOR = {
+  nomeEmpresarial: '',
+  nomeFantasia: '',
+  cnpj: '',
+  inscricaoMunicipal: '',
+  inscricaoEstadual: '',
+  suframa: '',
+  cep: '',
+  logradouro: '',
+  numero: '',
+  complemento: '',
+  bairro: '',
+  localidadeUf: '',
+  email: '',
+  whatsapp: '',
 };
 
 const INITIAL_PRESTACAO: PrestacaoServicoData = {
@@ -52,9 +54,35 @@ function parsePercent(value: string): number {
 
 const EmissaoNFSe: React.FC = () => {
   const navigate = useNavigate();
+
+  // Estado do Prestador (mesmos campos da aba "O Prestador")
+  const [prestador, setPrestador] = useState(INITIAL_PRESTADOR);
+  const [regime, setRegime] = useState<RegimeTributario>(null);
+  const [informarAliquotaSN, setInformarAliquotaSN] = useState(false);
+  const [aliquotaSN, setAliquotaSN] = useState('');
+  const [regimeApuracaoSNParametro, setRegimeApuracaoSNParametro] = useState(false);
+  const [ctnSelecionado, setCtnSelecionado] = useState<string | null>(null);
+  const [ctnDescricao, setCtnDescricao] = useState('');
+  const [ctnItem, setCtnItem] = useState('');
+
+  // Estado do Tomador
   const [tomador, setTomador] = useState<TomadorEmissaoData>(INITIAL_TOMADOR);
+
+  // Estado da Prestação do Serviço
   const [prestacao, setPrestacao] = useState<PrestacaoServicoData>(INITIAL_PRESTACAO);
   const [errors, setErrors] = useState<string[]>([]);
+
+  const autosave = useCallback(() => {
+    // placeholder para persistência futura
+  }, []);
+
+  const handleSimplesDetected = useCallback((isOptante: boolean) => {
+    if (isOptante) {
+      setRegime('simples');
+      setInformarAliquotaSN(true);
+      setRegimeApuracaoSNParametro(true);
+    }
+  }, []);
 
   // Cálculos automáticos
   const valores = useMemo(() => {
@@ -77,7 +105,6 @@ const EmissaoNFSe: React.FC = () => {
     };
   }, [prestacao]);
 
-  // Atualiza base de cálculo automaticamente
   const handlePrestacaoChange = (newData: PrestacaoServicoData) => {
     const valorBruto = parseCurrency(newData.valorServico);
     const desconto = parseCurrency(newData.desconto);
@@ -92,6 +119,8 @@ const EmissaoNFSe: React.FC = () => {
 
   const validar = (): string[] => {
     const erros: string[] = [];
+    if (!validateCNPJ(prestador.cnpj)) erros.push('CNPJ do prestador é obrigatório/inválido.');
+    if (!regime) erros.push('Regime tributário é obrigatório.');
     if (!tomador.cnpjCpf) erros.push('CPF/CNPJ do tomador é obrigatório.');
     if (!tomador.nomeRazaoSocial) erros.push('Nome/Razão Social do tomador é obrigatório.');
     if (!tomador.email) erros.push('E-mail do tomador é obrigatório.');
@@ -133,9 +162,7 @@ const EmissaoNFSe: React.FC = () => {
               <Shield className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground tracking-tight">
-                DANFSE
-              </h1>
+              <h1 className="text-lg font-bold text-foreground tracking-tight">DANFSE</h1>
               <p className="text-xs text-muted-foreground">Nota Fiscal de Serviços Eletrônica</p>
             </div>
           </div>
@@ -170,16 +197,46 @@ const EmissaoNFSe: React.FC = () => {
 
       {/* Conteúdo */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
-        <PrestadorResumo data={PRESTADOR_MOCK} />
+        {/* Seção Prestador - mesmos componentes da aba "O Prestador" */}
+        <PrestadorSection
+          data={prestador}
+          onChange={setPrestador}
+          onAutosave={autosave}
+          onSimplesDetected={handleSimplesDetected}
+        />
 
+        <RegimeEParametrosSection
+          regime={regime}
+          onRegimeChange={setRegime}
+          informarAliquotaSN={informarAliquotaSN}
+          onInformarAliquotaChange={setInformarAliquotaSN}
+          aliquotaSN={aliquotaSN}
+          onAliquotaSNChange={setAliquotaSN}
+          regimeApuracaoSNParametro={regimeApuracaoSNParametro}
+          onRegimeApuracaoSNParametroChange={setRegimeApuracaoSNParametro}
+          onAutosave={autosave}
+        />
+
+        <CTNSection
+          ctnSelecionado={ctnSelecionado}
+          onCtnChange={(codigo, descricao, itemFormatado) => {
+            setCtnSelecionado(codigo);
+            setCtnDescricao(descricao);
+            setCtnItem(itemFormatado);
+          }}
+        />
+
+        {/* Seção Tomador */}
         <TomadorEmissao data={tomador} onChange={setTomador} />
 
+        {/* Seção Prestação do Serviço */}
         <PrestacaoServicoSection
           data={prestacao}
           onChange={handlePrestacaoChange}
           mostrarRetencoesFederais={true}
         />
 
+        {/* Seção Valores e Totais */}
         <ValoresTotaisSection
           valorBruto={valores.valorBruto}
           desconto={valores.desconto}
