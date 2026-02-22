@@ -301,13 +301,11 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         Parâmetro Fiscal
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 items-stretch">
         {/* CNAE Card */}
-        <div ref={cnaeDropdownRef} className={`radio-card flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
-          <div className="flex items-center gap-2 w-full">
-            <div className="text-sm font-medium text-foreground">Código Cnae *</div>
-          </div>
-          <div className="w-full mt-2 space-y-1">
+        <div ref={cnaeDropdownRef} className={`radio-card flex flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
+          <div className="text-xs font-medium text-foreground leading-tight min-h-[2rem] flex items-center">Código Cnae *</div>
+          <div className="w-full space-y-1">
             <div className="relative">
               <Input
                 placeholder="Ex: 6201-5/00 ou 6201500"
@@ -342,11 +340,9 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         </div>
 
         {/* CTN Card */}
-        <div ref={ctnDropdownRef} className={`radio-card flex-col items-start ${manualCtn ? 'radio-card-selected' : ''}`}>
-          <div className="flex items-center gap-2 w-full">
-            <div className="text-sm font-medium text-foreground">Código Tributação Nacional</div>
-          </div>
-          <div className="w-full mt-2 space-y-1">
+        <div ref={ctnDropdownRef} className={`radio-card flex flex-col items-start ${manualCtn ? 'radio-card-selected' : ''}`}>
+          <div className="text-xs font-medium text-foreground leading-tight min-h-[2rem] flex items-center">Código Tributação Nacional</div>
+          <div className="w-full space-y-1">
             <div className="relative">
               <Input
                 placeholder="Buscar CTN..."
@@ -395,11 +391,9 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         </div>
 
         {/* NBS Card */}
-        <div ref={nbsDropdownRef} className={`radio-card flex-col items-start ${manualNbs ? 'radio-card-selected' : ''}`}>
-          <div className="flex items-center gap-2 w-full">
-            <div className="text-sm font-medium text-foreground">Nomenclatura Brasileira Serviços</div>
-          </div>
-          <div className="w-full mt-2 space-y-1">
+        <div ref={nbsDropdownRef} className={`radio-card flex flex-col items-start ${manualNbs ? 'radio-card-selected' : ''}`}>
+          <div className="text-xs font-medium text-foreground leading-tight min-h-[2rem] flex items-center">Nomenclatura Brasileira Serviços</div>
+          <div className="w-full space-y-1">
             <div className="relative">
               <Input
                 placeholder="Buscar NBS..."
