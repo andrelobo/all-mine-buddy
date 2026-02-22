@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { toast } from 'sonner';
-import { Shield, FileText, Save, X, CheckCircle } from 'lucide-react';
+import { Shield, FileText, Save, X, CheckCircle, Printer } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 
@@ -159,6 +159,10 @@ const Index = () => {
               </div>
             )}
             <div className="flex items-center gap-3 ml-auto">
+              <button onClick={() => window.print()} className="btn-secondary flex items-center gap-2">
+                <Printer className="w-4 h-4" />
+                Imprimir
+              </button>
               <button onClick={handleSalvar} className="btn-primary flex items-center gap-2">
                 <Save className="w-4 h-4" />
                 Salvar Configuração
