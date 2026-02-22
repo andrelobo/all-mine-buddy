@@ -189,7 +189,7 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="field-label flex items-center gap-1">
-            <FileText className="w-3.5 h-3.5" />CPF/CNPJ*
+            <FileText className="w-3.5 h-3.5" />CNPJ/CPF*
           </label>
           <div className="flex gap-2">
             <input
