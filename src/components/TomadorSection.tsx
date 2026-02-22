@@ -259,7 +259,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
 
       <div className="grid grid-cols-1 gap-4 mt-4">
         <div>
-          <label className="field-label">Tomador(a)</label>
+          <label className="field-label">TOMADOR(A)</label>
           <input
             className="field-input"
             placeholder={currentIsCPF ? 'Nome completo do tomador' : 'Razão social da empresa'}
