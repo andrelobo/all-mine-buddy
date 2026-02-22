@@ -353,6 +353,11 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
               </div>
             )}
           </div>
+          {manualCtn && (
+            <p className="text-xs text-foreground/70 leading-snug mt-1">
+              {getCTNByCode(manualCtn)?.descricao || ''}
+            </p>
+          )}
         </div>
 
         {/* NBS Card */}
@@ -404,8 +409,13 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
               </div>
             )}
           </div>
+          </div>
+          {manualNbs && (
+            <p className="text-xs text-foreground/70 leading-snug mt-1">
+              {getNBSDescricao(manualNbs) || ''}
+            </p>
+          )}
         </div>
-      </div>
 
       {/* Options and Add button */}
       {manualCnae.replace(/\D/g, '') && (
