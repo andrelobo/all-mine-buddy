@@ -219,7 +219,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_1fr] gap-4">
         <div>
-          <label className="field-label flex items-center gap-1"><FileText className="w-3.5 h-3.5" />CNPJ/CPF *</label>
+          <label className="field-label flex items-center gap-1"><FileText className="w-3.5 h-3.5" />CNPJ/CPF*</label>
           <div className="flex gap-2">
             <input
               className="field-input"

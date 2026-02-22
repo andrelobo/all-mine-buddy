@@ -198,7 +198,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
 
       <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_3fr] gap-4">
         <div>
-          <label className="field-label">CNPJ *</label>
+          <label className="field-label">CNPJ*</label>
           <div className="flex gap-2">
             <input
               className="field-input"
