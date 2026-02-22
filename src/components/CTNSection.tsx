@@ -419,29 +419,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
 
       {/* Options and Add button */}
       {manualCnae.replace(/\D/g, '') && (
-        <div className="mb-4 p-3 rounded-lg border border-border bg-muted/30 space-y-3">
-          <div className="grid grid-cols-1 gap-3">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="manual-principal"
-                checked={manualIsPrincipal}
-                onCheckedChange={(checked) => setManualIsPrincipal(checked === true)}
-              />
-              <Label htmlFor="manual-principal" className="text-xs cursor-pointer">
-                Atividade econômica principal
-              </Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="manual-vincular-sn"
-                checked={manualVincularSN}
-                onCheckedChange={(checked) => setManualVincularSN(checked === true)}
-              />
-              <Label htmlFor="manual-vincular-sn" className="text-xs cursor-pointer">
-                Vincular ao Simples Nacional
-              </Label>
-            </div>
-          </div>
+        <div className="mb-4 p-3 rounded-lg border border-border bg-muted/30">
           <div className="flex justify-end">
             <Button
               type="button"
@@ -482,28 +460,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                 NBS {pendingEntry.lc116.nbs || getCTNByCode(pendingEntry.lc116.ctn!)?.nbs}
               </p>
             )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="pending-principal"
-                checked={pendingPrincipal}
-                onCheckedChange={(checked) => setPendingPrincipal(checked === true)}
-              />
-              <Label htmlFor="pending-principal" className="text-xs cursor-pointer">
-                Atividade econômica principal
-              </Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="pending-vincular-sn"
-                checked={pendingVincularSN}
-                onCheckedChange={(checked) => setPendingVincularSN(checked === true)}
-              />
-              <Label htmlFor="pending-vincular-sn" className="text-xs cursor-pointer">
-                Vincular ao Simples Nacional
-              </Label>
-            </div>
           </div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" size="sm" onClick={handleCancelPending} className="text-xs">
@@ -748,33 +704,6 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
         </div>
       </div>
 
-      {/* Toggle buttons */}
-      <div className="mt-2 flex items-center gap-3">
-        <button
-          type="button"
-          onClick={onTogglePrincipal}
-          className={`flex items-center gap-1 text-xs px-2 py-1 rounded-md border transition-colors ${
-            cnae.isPrincipal
-              ? 'border-amber-300 bg-amber-50 text-amber-700'
-              : 'border-border text-muted-foreground hover:border-amber-300 hover:text-amber-700'
-          }`}
-        >
-          <Star className={`w-3 h-3 ${cnae.isPrincipal ? 'fill-amber-400' : ''}`} />
-          Principal
-        </button>
-        <button
-          type="button"
-          onClick={onToggleVinculadoSN}
-          className={`flex items-center gap-1 text-xs px-2 py-1 rounded-md border transition-colors ${
-            cnae.vinculadoSN
-              ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
-              : 'border-border text-muted-foreground hover:border-emerald-300 hover:text-emerald-700'
-          }`}
-        >
-          <CheckCircle2 className="w-3 h-3" />
-          Simples Nacional
-        </button>
-      </div>
     </div>
   );
 };
