@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import PrestadorSection from '@/components/PrestadorSection';
 import TomadorEmissao, { INITIAL_TOMADOR, type TomadorEmissaoData } from '@/components/emissao/TomadorEmissao';
 import PrestacaoServicoSection, { type PrestacaoServicoData } from '@/components/emissao/PrestacaoServicoSection';
+import LocalPrestacaoSection, { type LocalPrestacaoData } from '@/components/emissao/LocalPrestacaoSection';
 import ValoresTotaisSection from '@/components/emissao/ValoresTotaisSection';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 
@@ -63,6 +64,7 @@ const EmissaoNFSe: React.FC = () => {
 
   // Estado da Prestação do Serviço
   const [prestacao, setPrestacao] = useState<PrestacaoServicoData>(INITIAL_PRESTACAO);
+  const [localPrestacao, setLocalPrestacao] = useState<LocalPrestacaoData>({ pais: 'Brasil', uf: '', municipio: '' });
   const [errors, setErrors] = useState<string[]>([]);
 
   const autosave = useCallback(() => {
@@ -197,6 +199,9 @@ const EmissaoNFSe: React.FC = () => {
 
         {/* Seção Tomador */}
         <TomadorEmissao data={tomador} onChange={setTomador} />
+
+        {/* Seção Local da Prestação */}
+        <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
 
         {/* Seção Prestação do Serviço */}
         <PrestacaoServicoSection
