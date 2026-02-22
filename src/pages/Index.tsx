@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { toast } from 'sonner';
-import { Shield, Save, CheckCircle, Printer, Building2, Users } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Shield, Save, CheckCircle, Printer, Building2, Users, Send } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 import CTNSection from '@/components/CTNSection';
@@ -45,6 +46,7 @@ const INITIAL_TOMADOR: TomadorData = {
 };
 
 const Index = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<ActiveTab>('prestador');
   const [prestador, setPrestador] = useState(INITIAL_PRESTADOR);
   const [tomador, setTomador] = useState<TomadorData>(INITIAL_TOMADOR);
@@ -159,6 +161,10 @@ const Index = () => {
 
           {/* Action buttons */}
           <div className="flex items-center gap-2 no-print">
+            <button onClick={() => navigate('/emissao-nfse')} className="btn-primary flex items-center gap-2 text-sm py-2">
+              <Send className="w-4 h-4" />
+              <span className="hidden sm:inline">Emitir NFS-e</span>
+            </button>
             <button onClick={() => window.print()} className="btn-outline flex items-center gap-2 text-sm py-2">
               <Printer className="w-4 h-4" />
               <span className="hidden sm:inline">Imprimir</span>
