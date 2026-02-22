@@ -553,10 +553,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       )}
 
       {!selectedEntry && !isOpen && cnaes.length === 0 && (
-        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-3">
-          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-          <span>Nenhum CTN selecionado. Use a busca acima para localizar o código de tributação.</span>
-        </div>
+        null
       )}
     </div>
   );
