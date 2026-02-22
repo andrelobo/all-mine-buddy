@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Save, CheckCircle, Printer, Building2, Users, Send } from 'lucide-react';
+import { Shield, Save, CheckCircle, Printer, Building2, Users, Receipt } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 import CTNSection from '@/components/CTNSection';
@@ -115,7 +115,7 @@ const Index = () => {
   const tabs: { key: ActiveTab; label: string; icon: React.ReactNode }[] = [
     { key: 'prestador', label: 'O Prestador', icon: <Building2 className="w-4 h-4" /> },
     { key: 'tomador', label: 'Tomadores', icon: <Users className="w-4 h-4" /> },
-    { key: 'emissao', label: 'Nota Fiscal', icon: <Send className="w-4 h-4" /> },
+    { key: 'emissao', label: 'Nota Fiscal', icon: <Receipt className="w-4 h-4" /> },
   ];
 
   return (
