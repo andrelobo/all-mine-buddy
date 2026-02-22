@@ -225,55 +225,6 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange }) => {
           />
         </div>
       </div>
-
-      {/* Endereço */}
-      <div className="mt-5 pt-5 border-t border-border">
-        <label className="field-label flex items-center gap-1 mb-4">
-          <MapPin className="w-3.5 h-3.5" />
-          Endereço
-        </label>
-        <div className="grid grid-cols-1 md:grid-cols-[0.6fr_2fr_0.4fr_1fr] gap-4">
-          <div>
-            <label className="field-label">CEP</label>
-            <input
-              className="field-input"
-              placeholder="00000-000"
-              value={data.cep}
-              onChange={(e) => handleCEPChange(e.target.value)}
-              maxLength={9}
-            />
-            {loadingCEP && <Loader2 className="w-4 h-4 animate-spin text-primary mt-1" />}
-          </div>
-          <div>
-            <label className="field-label">Logradouro</label>
-            <input className="field-input" placeholder="Rua, Av., etc." value={data.logradouro} onChange={(e) => update('logradouro', e.target.value)} />
-          </div>
-          <div>
-            <label className="field-label">Número</label>
-            <input className="field-input" placeholder="Nº" value={data.numero} onChange={(e) => update('numero', e.target.value)} />
-          </div>
-          <div>
-            <label className="field-label">Bairro/Distrito</label>
-            <input className="field-input" placeholder="Bairro" value={data.bairro} onChange={(e) => update('bairro', e.target.value)} />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          <div>
-            <label className="field-label">Localidade / UF*</label>
-            <input className="field-input" placeholder="Cidade - UF" value={data.localidadeUf} onChange={(e) => update('localidadeUf', e.target.value)} />
-          </div>
-          <div>
-            <label className="field-label">E-mail*</label>
-            <input className="field-input" type="email" placeholder="contato@empresa.com.br" value={data.email} onChange={(e) => update('email', e.target.value)} />
-          </div>
-          <div>
-            <label className="field-label flex items-center gap-1">
-              <Globe className="w-3.5 h-3.5" />País
-            </label>
-            <input className="field-input" placeholder="Brasil" value={data.pais} onChange={(e) => update('pais', e.target.value)} />
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
