@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Settings, Search, CheckCircle2, AlertCircle, X, Plus, Trash2, PenLine, ChevronDown, Star } from 'lucide-react';
 import { getCTNByCode, isValidCTN, searchCTN, searchCTNByItem } from '@/utils/ctn-data';
 import { CNAE_LIST, formatCNAECode, getLC116Item, type CNAEEntry } from '@/utils/cnae-lc116';
-import { getNBSDescricao, searchNBS, type NBSEntry } from '@/utils/nbs-data';
+import { getNBSDescricao, searchNBS, searchNBSByPrefix, type NBSEntry } from '@/utils/nbs-data';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -48,6 +48,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   const [ctnQuery, setCtnQuery] = useState('');
   const [detectedItem, setDetectedItem] = useState<string | null>(null);
   const [nbsQuery, setNbsQuery] = useState('');
+  const [detectedNbsPrefix, setDetectedNbsPrefix] = useState<string | null>(null);
   const [showCnaeDropdown, setShowCnaeDropdown] = useState(false);
   const [showCtnDropdown, setShowCtnDropdown] = useState(false);
   const [showNbsDropdown, setShowNbsDropdown] = useState(false);
@@ -81,8 +82,11 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   }, [ctnQuery, detectedItem]);
 
   const nbsResults = useMemo(() => {
+    if (detectedNbsPrefix) {
+      return searchNBSByPrefix(detectedNbsPrefix, nbsQuery.trim(), 30);
+    }
     return searchNBS(nbsQuery.trim(), 30);
-  }, [nbsQuery]);
+  }, [nbsQuery, detectedNbsPrefix]);
 
   const results = useMemo(() => {
     const q = query.trim();
@@ -146,13 +150,20 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         if (lc.nbs) {
           setManualNbs(lc.nbs);
           setNbsQuery('');
+          // Extract NBS prefix (e.g., "1.1502.10.00" → "1.15") for filtering
+          const nbsPrefix = lc.nbs.substring(0, 4);
+          setDetectedNbsPrefix(nbsPrefix);
+        } else {
+          setDetectedNbsPrefix(null);
         }
         setManualDescricao(lc.descricao);
       } else {
         setDetectedItem(null);
+        setDetectedNbsPrefix(null);
       }
     } else {
       setDetectedItem(null);
+      setDetectedNbsPrefix(null);
     }
   };
 

@@ -981,3 +981,17 @@ export function searchNBS(query: string, limit = 30): NBSEntry[] {
   }
   return results;
 }
+
+/** Busca NBS filtrando por prefixo (ex: "1.15" para mostrar todos NBS do grupo 15) */
+export function searchNBSByPrefix(prefix: string, query: string = '', limit = 30): NBSEntry[] {
+  const q = query.toLowerCase().trim();
+  const results: NBSEntry[] = [];
+  for (const [codigo, descricao] of Object.entries(NBS_MAP)) {
+    if (results.length >= limit) break;
+    if (!codigo.startsWith(prefix)) continue;
+    if (!q || codigo.includes(q) || descricao.toLowerCase().includes(q)) {
+      results.push({ codigo, descricao });
+    }
+  }
+  return results;
+}
