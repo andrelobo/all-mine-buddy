@@ -305,11 +305,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         {/* CNAE Card */}
         <div ref={cnaeDropdownRef} className={`radio-card flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
           <div className="flex items-center gap-2 w-full">
-            <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
-              manualCnae ? 'border-primary' : 'border-muted-foreground/40'
-            }`}>
-              {manualCnae && <div className="w-2 h-2 rounded-full bg-primary" />}
-            </div>
             <div className="text-sm font-medium text-foreground">Código Cnae *</div>
           </div>
           <div className="w-full mt-2 space-y-1">
@@ -349,11 +344,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         {/* CTN Card */}
         <div ref={ctnDropdownRef} className={`radio-card flex-col items-start ${manualCtn ? 'radio-card-selected' : ''}`}>
           <div className="flex items-center gap-2 w-full">
-            <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
-              manualCtn ? 'border-primary' : 'border-muted-foreground/40'
-            }`}>
-              {manualCtn && <div className="w-2 h-2 rounded-full bg-primary" />}
-            </div>
             <div className="text-sm font-medium text-foreground">Código Tributação Nacional</div>
           </div>
           <div className="w-full mt-2 space-y-1">
@@ -407,11 +397,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         {/* NBS Card */}
         <div ref={nbsDropdownRef} className={`radio-card flex-col items-start ${manualNbs ? 'radio-card-selected' : ''}`}>
           <div className="flex items-center gap-2 w-full">
-            <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
-              manualNbs ? 'border-primary' : 'border-muted-foreground/40'
-            }`}>
-              {manualNbs && <div className="w-2 h-2 rounded-full bg-primary" />}
-            </div>
             <div className="text-sm font-medium text-foreground">Nomenclatura Brasileira Serviços</div>
           </div>
           <div className="w-full mt-2 space-y-1">
