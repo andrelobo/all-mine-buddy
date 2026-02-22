@@ -600,17 +600,45 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  // Build the single-line display string
+  const parts: string[] = [];
+  // CNAE part
+  parts.push(`${formatCNAECode(cnae.codigo)} ${cnae.cnaeDescricao}`);
+  // CTN part
+  if (cnae.ctn) {
+    parts.push(`${cnae.ctn}: ${cnae.ctnDescricao || ''}`);
+  }
+  // NBS part
+  if (cnae.nbs) {
+    parts.push(`${cnae.nbs}: ${cnae.nbsDescricao || ''}`);
+  }
+
   return (
     <div
       className="group p-2.5 rounded-lg border transition-colors border-border bg-background hover:border-primary/20"
     >
-      {/* Header row */}
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 flex-wrap min-w-0 text-left flex-1">
-          <span className="font-mono text-xs font-semibold text-primary">
-            {formatCNAECode(cnae.codigo)}
-          </span>
-        </div>
+        <p className="text-xs text-foreground/90 flex-1 min-w-0" title={parts.join(' / ')}>
+          {/* CNAE */}
+          <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>
+          <span className="ml-1">{cnae.cnaeDescricao}</span>
+          {/* CTN */}
+          {cnae.ctn && (
+            <>
+              <span className="text-muted-foreground mx-1">/</span>
+              <span className="font-mono font-semibold text-primary">{cnae.ctn}</span>
+              <span className="ml-0.5">: {cnae.ctnDescricao || ''}</span>
+            </>
+          )}
+          {/* NBS */}
+          {cnae.nbs && (
+            <>
+              <span className="text-muted-foreground mx-1">/</span>
+              <span className="font-mono font-semibold text-primary">{cnae.nbs}</span>
+              <span className="ml-0.5">: {cnae.nbsDescricao || ''}</span>
+            </>
+          )}
+        </p>
         <button
           type="button"
           onClick={onRemove}
@@ -620,120 +648,6 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
           <Trash2 className="w-3.5 h-3.5" />
         </button>
       </div>
-
-      {/* Atividade Econômica Cnae */}
-      <div className="mt-1.5 space-y-1">
-        <div>
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Código Cnae</p>
-          <p className="text-xs text-foreground/90 mt-0.5">
-            <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>
-            <span className="ml-1.5">{cnae.cnaeDescricao}</span>
-          </p>
-        </div>
-
-        {/* Código Tributação Nacional (CTN) */}
-        <div ref={ctnRef}>
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Código Tributação Nacional (CTN)</p>
-          {!editingCtn ? (
-            <button
-              type="button"
-              onClick={() => { setEditingCtn(true); setCtnInput(''); setCtnSearchOpen(true); }}
-              className="text-left block"
-            >
-              {cnae.ctn ? (
-                <p className="text-xs text-foreground/90 mt-0.5" title={cnae.ctnDescricao || ''}>
-                  <span className="font-mono font-semibold text-primary">{formatCTNDisplay(cnae.ctn)}</span>
-                  <span className="ml-1.5">{cnae.ctnDescricao || ''}</span>
-                </p>
-              ) : (
-                <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors mt-0.5">(clique para adicionar)</p>
-              )}
-            </button>
-          ) : (
-            <div className="relative max-w-xs mt-0.5">
-              <Input
-                autoFocus
-                placeholder="Buscar CTN..."
-                value={ctnInput}
-                onChange={e => { setCtnInput(e.target.value); setCtnSearchOpen(true); }}
-                className="h-7 text-xs"
-              />
-              {cnae.ctn && (
-                <button type="button" onClick={() => { onUpdateCTN(''); setEditingCtn(false); }} className="absolute right-1 top-1/2 -translate-y-1/2 text-destructive hover:text-destructive/80">
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-              {ctnSearchOpen && ctnSearchResults.length > 0 && (
-                <div className="absolute z-30 top-full mt-1 w-full max-h-36 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-                  {ctnSearchResults.map(entry => (
-                    <button
-                      key={entry.codigo}
-                      type="button"
-                      onClick={() => { onUpdateCTN(entry.codigo); setEditingCtn(false); setCtnSearchOpen(false); }}
-                      className="w-full text-left px-2 py-1.5 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
-                    >
-                      <span className="font-mono text-xs font-semibold text-primary">{formatCTNDisplay(entry.codigo)}</span>
-                      <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Nomenclatura Brasileira Serviços (NBS) */}
-        <div ref={nbsRef}>
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Nomenclatura Brasileira Serviços (NBS)</p>
-          {!editingNbs ? (
-            <button
-              type="button"
-              onClick={() => { setEditingNbs(true); setNbsInput(''); setNbsSearchOpen(true); }}
-              className="text-left block"
-            >
-              {cnae.nbs ? (
-                <p className="text-xs text-foreground/90 mt-0.5" title={cnae.nbsDescricao || ''}>
-                  <span className="font-mono font-semibold text-primary">{cnae.nbs}</span>
-                  <span className="ml-1.5">{cnae.nbsDescricao || ''}</span>
-                </p>
-              ) : (
-                <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors mt-0.5">(clique para adicionar)</p>
-              )}
-            </button>
-          ) : (
-            <div className="relative max-w-xs mt-0.5">
-              <Input
-                autoFocus
-                placeholder="Buscar NBS..."
-                value={nbsInput}
-                onChange={e => { setNbsInput(e.target.value); setNbsSearchOpen(true); }}
-                className="h-7 text-xs"
-              />
-              {cnae.nbs && (
-                <button type="button" onClick={() => { onUpdateNBS(''); setEditingNbs(false); }} className="absolute right-1 top-1/2 -translate-y-1/2 text-destructive hover:text-destructive/80">
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-              {nbsSearchOpen && nbsSearchResults.length > 0 && (
-                <div className="absolute z-30 top-full mt-1 w-full max-h-36 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-                  {nbsSearchResults.map(entry => (
-                    <button
-                      key={entry.codigo}
-                      type="button"
-                      onClick={() => { onUpdateNBS(entry.codigo); setEditingNbs(false); setNbsSearchOpen(false); }}
-                      className="w-full text-left px-2 py-1.5 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
-                    >
-                      <span className="font-mono text-xs font-semibold text-primary">{entry.codigo}</span>
-                      <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
     </div>
   );
 };
