@@ -278,22 +278,29 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         Parâmetro Fiscal
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-        <button
-          type="button"
-          onClick={() => setShowManualForm(true)}
-          className={`radio-card text-left ${showManualForm ? 'radio-card-selected' : ''}`}
-        >
-          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
-            showManualForm ? 'border-primary' : 'border-muted-foreground/40'
-          }`}>
-            {showManualForm && <div className="w-2 h-2 rounded-full bg-primary" />}
-          </div>
-          <div>
-            <div className="text-sm font-medium text-foreground">Manual</div>
-            <div className="text-xs text-muted-foreground">Inclusão manual de CNAE, CTN e NBS</div>
-          </div>
-        </button>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+        {[
+          { key: 'cnae', label: 'CNAE *', desc: 'Atividade econômica' },
+          { key: 'ctn', label: 'CTN (6 dígitos)', desc: 'Código Tributação Nacional' },
+          { key: 'nbs', label: 'NBS', desc: 'Nomenclatura Brasileira Serviços' },
+        ].map((item) => (
+          <button
+            key={item.key}
+            type="button"
+            onClick={() => setShowManualForm(true)}
+            className={`radio-card text-left ${showManualForm ? 'radio-card-selected' : ''}`}
+          >
+            <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
+              showManualForm ? 'border-primary' : 'border-muted-foreground/40'
+            }`}>
+              {showManualForm && <div className="w-2 h-2 rounded-full bg-primary" />}
+            </div>
+            <div>
+              <div className="text-sm font-medium text-foreground">{item.label}</div>
+              <div className="text-xs text-muted-foreground">{item.desc}</div>
+            </div>
+          </button>
+        ))}
       </div>
 
       {/* Manual Form */}
