@@ -412,12 +412,12 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
               </div>
             )}
           </div>
-          </div>
           {manualNbs && (
             <p className="text-xs text-foreground/70 leading-snug mt-1">
               {getNBSDescricao(manualNbs) || ''}
             </p>
           )}
+          </div>
         </div>
 
       {/* Options and Add button */}
