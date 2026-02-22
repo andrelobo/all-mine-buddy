@@ -304,7 +304,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 items-stretch">
         {/* CNAE Card */}
         <div ref={cnaeDropdownRef} className={`radio-card flex flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
-          <div className="text-xs font-medium text-foreground leading-tight min-h-[2rem] flex items-center">Código Cnae *</div>
+          <div className="text-sm font-bold text-green-600 leading-tight min-h-[2rem] flex items-center">Código Cnae *</div>
           <div className="w-full space-y-1">
             <div className="relative">
               <Input
@@ -341,7 +341,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
 
         {/* CTN Card */}
         <div ref={ctnDropdownRef} className={`radio-card flex flex-col items-start ${manualCtn ? 'radio-card-selected' : ''}`}>
-          <div className="text-xs font-medium text-foreground leading-tight min-h-[2rem] flex items-center">Código Tributação Nacional</div>
+          <div className="text-sm font-bold text-green-600 leading-tight min-h-[2rem] flex items-center">Código Tributação Nacional *</div>
           <div className="w-full space-y-1">
             <div className="relative">
               <Input
@@ -392,7 +392,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
 
         {/* NBS Card */}
         <div ref={nbsDropdownRef} className={`radio-card flex flex-col items-start ${manualNbs ? 'radio-card-selected' : ''}`}>
-          <div className="text-xs font-medium text-foreground leading-tight min-h-[2rem] flex items-center">Nomenclatura Brasileira Serviços</div>
+          <div className="text-sm font-bold text-green-600 leading-tight min-h-[2rem] flex items-center">Nomenclatura Brasileira Serviços</div>
           <div className="w-full space-y-1">
             <div className="relative">
               <Input
