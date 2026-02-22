@@ -217,7 +217,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         O Tomador
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_3fr] gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label className="field-label">CNPJ / CPF *</label>
           <div className="flex gap-2">
@@ -247,24 +247,24 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         </div>
 
         <div>
-          <label className="field-label">{currentIsCPF ? 'Nome Completo' : 'Nome Empresarial'}</label>
-          <input
-            className="field-input"
-            placeholder={currentIsCPF ? 'Nome completo do tomador' : 'Razão social da empresa'}
-            value={data.nomeEmpresarial}
-            onChange={(e) => update('nomeEmpresarial', e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
-        <div>
           <label className="field-label">Inscrição Estadual</label>
           <input
             className="field-input"
             placeholder="Inscrição"
             value={data.inscricaoEstadual}
             onChange={(e) => update('inscricaoEstadual', e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 mt-4">
+        <div>
+          <label className="field-label">{currentIsCPF ? 'Nome Completo' : 'Nome Empresarial'}</label>
+          <input
+            className="field-input"
+            placeholder={currentIsCPF ? 'Nome completo do tomador' : 'Razão social da empresa'}
+            value={data.nomeEmpresarial}
+            onChange={(e) => update('nomeEmpresarial', e.target.value)}
           />
         </div>
       </div>
