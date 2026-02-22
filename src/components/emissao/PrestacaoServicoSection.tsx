@@ -44,7 +44,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
     <div className="section-card">
       <h2 className="section-title">
         <Briefcase className="w-5 h-5 text-primary" />
-        Prestação do Serviço
+        Serviço Prestado
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4">
