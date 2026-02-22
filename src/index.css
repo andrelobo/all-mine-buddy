@@ -100,11 +100,11 @@
 
 @layer components {
   .section-card {
-    @apply bg-card rounded-xl border border-border p-5 shadow-sm;
+    @apply bg-card rounded-xl border border-border p-4 shadow-sm;
   }
 
   .section-title {
-    @apply text-base font-semibold text-foreground flex items-center gap-2 mb-4;
+    @apply text-base font-semibold text-foreground flex items-center gap-2 mb-3;
   }
 
   .field-label {
