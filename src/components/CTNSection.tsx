@@ -707,15 +707,15 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
             <button
               type="button"
               onClick={() => { setEditingCtn(true); setCtnInput(''); setCtnSearchOpen(true); }}
-              className="text-xs text-foreground/90 hover:text-primary hover:underline transition-colors text-left"
+              className="text-left"
             >
               {cnae.ctn ? (
-                <>
+                <p className="text-xs text-foreground/90">
                   <span className="font-mono font-semibold text-primary">{formatCTNDisplay(cnae.ctn)}</span>
                   <span className="ml-2">{cnae.ctnDescricao || ''}</span>
-                </>
+                </p>
               ) : (
-                <span className="text-muted-foreground italic">(clique para adicionar)</span>
+                <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors">(clique para adicionar)</p>
               )}
             </button>
           ) : (
@@ -758,15 +758,15 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
             <button
               type="button"
               onClick={() => { setEditingNbs(true); setNbsInput(''); setNbsSearchOpen(true); }}
-              className="text-xs text-foreground/90 hover:text-primary hover:underline transition-colors text-left"
+              className="text-left"
             >
               {cnae.nbs ? (
-                <>
+                <p className="text-xs text-foreground/90">
                   <span className="font-mono font-semibold text-primary">{cnae.nbs}</span>
                   <span className="ml-2">{cnae.nbsDescricao || ''}</span>
-                </>
+                </p>
               ) : (
-                <span className="text-muted-foreground italic">(clique para adicionar)</span>
+                <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors">(clique para adicionar)</p>
               )}
             </button>
           ) : (
