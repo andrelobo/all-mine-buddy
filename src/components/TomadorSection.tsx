@@ -224,7 +224,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           <div className="flex gap-2">
             <input
               className="field-input"
-              placeholder={currentIsCPF ? '000.000.000-00' : '00.000.000/0000-00'}
+              placeholder="00.000.000/0000-00"
               value={data.cnpjCpf}
               onChange={(e) => handleCNPJCPFChange(e.target.value)}
               maxLength={18}
