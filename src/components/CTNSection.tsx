@@ -291,7 +291,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
           </div>
           <div className="w-full mt-2 space-y-1">
             <Input
-              placeholder="Ex: 6201500"
+              placeholder="Ex: 6201-5/00 ou 6201500"
               value={manualCnae}
               onChange={e => handleManualCnaeChange(e.target.value)}
               className="h-8 text-sm"
