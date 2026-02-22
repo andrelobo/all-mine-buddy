@@ -214,7 +214,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
     <div className="section-card">
       <h2 className="section-title">
         <Building2 className="w-5 h-5 text-primary" />
-        O Tomador
+        Tomadores
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
