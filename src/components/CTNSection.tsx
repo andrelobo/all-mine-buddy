@@ -691,10 +691,10 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
       </div>
 
       {/* Atividade Econômica Cnae */}
-      <div className="mt-1 space-y-1">
+      <div className="mt-1 space-y-0.5">
         <div>
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-0.5">Atividade Econômica Cnaë</p>
-          <p className="text-xs text-foreground/90">
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Atividade Econômica Cnaë</p>
+          <p className="text-xs text-foreground/90 -mt-px">
             <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>
             <span className="ml-2">{cnae.cnaeDescricao}</span>
           </p>
@@ -702,7 +702,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
 
         {/* Código Tributação Nacional (CTN) */}
         <div ref={ctnRef}>
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-0.5">Código Tributação Nacional (CTN)</p>
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Código Tributação Nacional (CTN)</p>
           {!editingCtn ? (
             <button
               type="button"
@@ -753,7 +753,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
 
         {/* Nomenclatura Brasileira Serviços (NBS) */}
         <div ref={nbsRef}>
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-0.5">Nomenclatura Brasileira Serviços (NBS)</p>
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Nomenclatura Brasileira Serviços (NBS)</p>
           {!editingNbs ? (
             <button
               type="button"
