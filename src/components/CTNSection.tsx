@@ -273,21 +273,27 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
 
   return (
     <div className="section-card">
-      <div className="flex items-center justify-between mb-1">
-        <h2 className="section-title">
-          <Settings className="w-5 h-5 text-primary" />
-          Parâmetro Fiscal
-        </h2>
-        <Button
+      <h2 className="section-title mb-3">
+        <Settings className="w-5 h-5 text-primary" />
+        Parâmetro Fiscal
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+        <button
           type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => setShowManualForm(v => !v)}
-          className="text-xs gap-1.5"
+          onClick={() => setShowManualForm(true)}
+          className={`radio-card text-left ${showManualForm ? 'radio-card-selected' : ''}`}
         >
-          <PenLine className="w-3.5 h-3.5" />
-          {showManualForm ? 'Cancelar' : 'Manual'}
-        </Button>
+          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
+            showManualForm ? 'border-primary' : 'border-muted-foreground/40'
+          }`}>
+            {showManualForm && <div className="w-2 h-2 rounded-full bg-primary" />}
+          </div>
+          <div>
+            <div className="text-sm font-medium text-foreground">Manual</div>
+            <div className="text-xs text-muted-foreground">Inclusão manual de CNAE, CTN e NBS</div>
+          </div>
+        </button>
       </div>
 
       {/* Manual Form */}
