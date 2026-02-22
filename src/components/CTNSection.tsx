@@ -377,38 +377,41 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                 value={showCtnDropdown ? ctnQuery : (manualCtn ? formatCTNDisplay(manualCtn) : '')}
                 onChange={e => {
                   setCtnQuery(e.target.value);
-                  setManualCtn('');
                   setShowCtnDropdown(true);
                 }}
-                onFocus={() => setShowCtnDropdown(true)}
+                onFocus={() => { setCtnQuery(''); setShowCtnDropdown(true); }}
                 className="h-8 text-sm pr-8"
               />
               <button
                 type="button"
-                onClick={() => setShowCtnDropdown(v => !v)}
+                onClick={() => { if (!showCtnDropdown) setCtnQuery(''); setShowCtnDropdown(v => !v); }}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
               {showCtnDropdown && ctnResults.length > 0 && (
                 <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-                  {ctnResults.map(entry => (
-                    <button
-                      key={entry.codigo}
-                      type="button"
-                      onClick={() => {
-                        setManualCtn(entry.codigo);
-                        setCtnQuery('');
-                        setShowCtnDropdown(false);
-                        if (entry.nbs && !manualNbs) setManualNbs(entry.nbs);
-                      }}
-                      className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
-                    >
-                      <span className="font-mono text-xs font-semibold text-primary">{formatCTNDisplay(entry.codigo)}</span>
-                      <span className="text-xs text-muted-foreground ml-2">({entry.itemFormatado})</span>
-                      <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
-                    </button>
-                  ))}
+                  {ctnResults.map(entry => {
+                    const isSelected = manualCtn === entry.codigo;
+                    return (
+                      <button
+                        key={entry.codigo}
+                        type="button"
+                        onClick={() => {
+                          setManualCtn(entry.codigo);
+                          setCtnQuery('');
+                          setShowCtnDropdown(false);
+                          if (entry.nbs && !manualNbs) setManualNbs(entry.nbs);
+                        }}
+                        className={`w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors ${isSelected ? 'bg-primary/10' : ''}`}
+                      >
+                        <span className="font-mono text-xs font-semibold text-primary">{formatCTNDisplay(entry.codigo)}</span>
+                        <span className="text-xs text-muted-foreground ml-2">({entry.itemFormatado})</span>
+                        {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-primary inline ml-2" />}
+                        <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -428,36 +431,39 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                 value={showNbsDropdown ? nbsQuery : manualNbs}
                 onChange={e => {
                   setNbsQuery(e.target.value);
-                  setManualNbs('');
                   setShowNbsDropdown(true);
                 }}
-                onFocus={() => setShowNbsDropdown(true)}
+                onFocus={() => { setNbsQuery(''); setShowNbsDropdown(true); }}
                 className="h-8 text-sm pr-8"
               />
               <button
                 type="button"
-                onClick={() => setShowNbsDropdown(v => !v)}
+                onClick={() => { if (!showNbsDropdown) setNbsQuery(''); setShowNbsDropdown(v => !v); }}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
               {showNbsDropdown && nbsResults.length > 0 && (
                 <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-                  {nbsResults.map(entry => (
-                    <button
-                      key={entry.codigo}
-                      type="button"
-                      onClick={() => {
-                        setManualNbs(entry.codigo);
-                        setNbsQuery('');
-                        setShowNbsDropdown(false);
-                      }}
-                      className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
-                    >
-                      <span className="font-mono text-xs font-semibold text-primary">{entry.codigo}</span>
-                      <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
-                    </button>
-                  ))}
+                  {nbsResults.map(entry => {
+                    const isSelected = manualNbs === entry.codigo;
+                    return (
+                      <button
+                        key={entry.codigo}
+                        type="button"
+                        onClick={() => {
+                          setManualNbs(entry.codigo);
+                          setNbsQuery('');
+                          setShowNbsDropdown(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors ${isSelected ? 'bg-primary/10' : ''}`}
+                      >
+                        <span className="font-mono text-xs font-semibold text-primary">{entry.codigo}</span>
+                        {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-primary inline ml-2" />}
+                        <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
