@@ -619,24 +619,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
     >
       <div className="flex items-center justify-between gap-2">
         <p className="text-xs text-foreground/90 flex-1 min-w-0 text-justify leading-relaxed" title={parts.join(' | ')}>
-          {/* CNAE */}
-          <span className="font-mono font-semibold text-primary">|{formatCNAECode(cnae.codigo)}|</span>
-          <span className="ml-1">{cnae.cnaeDescricao} </span>
-          {/* CTN */}
-          {cnae.ctn && (
-            <>
-              <span className="font-mono font-semibold text-primary">|{cnae.ctn}|</span>
-              <span className="ml-1">{cnae.ctnDescricao || ''} </span>
-            </>
-          )}
-          {/* NBS */}
-          {cnae.nbs && (
-            <>
-              <span className="font-mono font-semibold text-primary">|{cnae.nbs}|</span>
-              <span className="ml-1">{(cnae.nbsDescricao || '').replace(/\.$/, '')}.</span>
-            </>
-          )}
-          {!cnae.nbs && <span>.</span>}
+          <span className="font-mono font-semibold text-primary">|{formatCNAECode(cnae.codigo)}|</span>{' '}{cnae.cnaeDescricao}{' '}{cnae.ctn && (<><span className="font-mono font-semibold text-primary">|{cnae.ctn}|</span>{' '}{cnae.ctnDescricao || ''}{' '}</>)}{cnae.nbs && (<><span className="font-mono font-semibold text-primary">|{cnae.nbs}|</span>{' '}{(cnae.nbsDescricao || '').replace(/\.$/, '')}.</>)}{!cnae.nbs && '.'}
         </p>
         <button
           type="button"
