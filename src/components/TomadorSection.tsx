@@ -275,7 +275,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           <MapPin className="w-4 h-4" />
           Endereço
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr_0.5fr] gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-[0.8fr_2.5fr_0.4fr_1fr] gap-4">
           <div>
             <label className="field-label">CEP</label>
             <input
@@ -307,17 +307,6 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
               onChange={(e) => update('numero', e.target.value)}
             />
           </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-4 mt-4">
-          <div>
-            <label className="field-label">Complemento</label>
-            <input
-              className="field-input"
-              placeholder="Sala, andar, etc."
-              value={data.complemento}
-              onChange={(e) => update('complemento', e.target.value)}
-            />
-          </div>
           <div>
             <label className="field-label">Bairro/Distrito</label>
             <input
@@ -325,6 +314,17 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
               placeholder="Bairro"
               value={data.bairro}
               onChange={(e) => update('bairro', e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4 mt-4">
+          <div>
+            <label className="field-label">Complemento</label>
+            <input
+              className="field-input"
+              placeholder="Sala, andar, etc."
+              value={data.complemento}
+              onChange={(e) => update('complemento', e.target.value)}
             />
           </div>
           <div>
