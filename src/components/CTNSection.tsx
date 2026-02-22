@@ -538,13 +538,10 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
           <p className="text-xs text-muted-foreground font-medium">Danfse</p>
           <div className="space-y-1.5">
             {cnaes.map((cnae) => {
-              const isLinked = cnae.ctn === ctnSelecionado;
               return (
                 <CnaeListItem
                   key={cnae.codigo}
                   cnae={cnae}
-                  isLinked={isLinked}
-                  onSelect={() => handleSelectCNAEForCTN(cnae)}
                   onRemove={() => handleRemoveCNAE(cnae.codigo)}
                   onTogglePrincipal={() => handleTogglePrincipal(cnae.codigo)}
                   onToggleVinculadoSN={() => handleToggleVinculadoSN(cnae.codigo)}
@@ -571,8 +568,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
 /* ─── Sub-component for each CNAE list item ─── */
 interface CnaeListItemProps {
   cnae: CnaeAdicionado;
-  isLinked: boolean;
-  onSelect: () => void;
   onRemove: () => void;
   onTogglePrincipal: () => void;
   onToggleVinculadoSN: () => void;
@@ -582,7 +577,7 @@ interface CnaeListItemProps {
 }
 
 const CnaeListItem: React.FC<CnaeListItemProps> = ({
-  cnae, isLinked, onSelect, onRemove, onTogglePrincipal, onToggleVinculadoSN, onUpdateCTN, onUpdateNBS, formatCTNDisplay
+  cnae, onRemove, onTogglePrincipal, onToggleVinculadoSN, onUpdateCTN, onUpdateNBS, formatCTNDisplay
 }) => {
   const [editingCtn, setEditingCtn] = useState(false);
   const [editingNbs, setEditingNbs] = useState(false);
@@ -613,25 +608,15 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
 
   return (
     <div
-      className={`group p-2.5 rounded-lg border transition-colors ${
-        isLinked
-          ? 'border-primary/30 bg-primary/5'
-          : 'border-border bg-background hover:border-primary/20'
-      }`}
+      className="group p-2.5 rounded-lg border transition-colors border-border bg-background hover:border-primary/20"
     >
       {/* Header row */}
       <div className="flex items-center justify-between gap-2">
-        <button
-          type="button"
-          onClick={onSelect}
-          disabled={!cnae.ctn}
-          className="flex items-center gap-2 flex-wrap min-w-0 text-left flex-1"
-          title={cnae.ctn ? 'Clique para vincular este Cnaë ao CTN' : 'Sem CTN vinculado'}
-        >
+        <div className="flex items-center gap-2 flex-wrap min-w-0 text-left flex-1">
           <span className="font-mono text-xs font-semibold text-primary">
             {formatCNAECode(cnae.codigo)}
           </span>
-        </button>
+        </div>
         <button
           type="button"
           onClick={onRemove}
