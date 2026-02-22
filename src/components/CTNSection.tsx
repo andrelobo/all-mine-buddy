@@ -424,7 +424,21 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
 
         {/* NBS Card */}
         <div ref={nbsDropdownRef} className={`radio-card flex flex-col items-start ${manualNbs ? 'radio-card-selected' : ''}`}>
-          <div className="text-sm font-bold text-green-600 leading-tight min-h-[2rem] flex items-center">Nomenclatura Brasileira Serviços</div>
+          <div className="text-sm font-bold text-green-600 leading-tight min-h-[2rem] flex items-center justify-between w-full">
+            <span>Nomenclatura Brasileira Serviços</span>
+            {manualCnae.replace(/\D/g, '') && (
+              <Button
+                type="button"
+                size="sm"
+                onClick={handleAddManual}
+                disabled={!manualCnae.replace(/\D/g, '')}
+                className="text-xs gap-1 h-6 px-2"
+              >
+                <Plus className="w-3 h-3" />
+                Adicionar
+              </Button>
+            )}
+          </div>
           <div className="w-full space-y-1">
             <div className="relative">
               <Input
@@ -476,23 +490,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
         </div>
       </div>
 
-      {/* Options and Add button */}
-      {manualCnae.replace(/\D/g, '') && (
-        <div className="mb-4 p-3 rounded-lg border border-border bg-muted/30">
-          <div className="flex justify-end">
-            <Button
-              type="button"
-              size="sm"
-              onClick={handleAddManual}
-              disabled={!manualCnae.replace(/\D/g, '')}
-              className="text-xs gap-1.5"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Adicionar
-            </Button>
-          </div>
-        </div>
-      )}
 
 
       {/* Pending confirmation panel */}
