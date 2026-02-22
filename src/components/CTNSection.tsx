@@ -47,11 +47,30 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   const [manualCnaeDescricaoIBGE, setManualCnaeDescricaoIBGE] = useState('');
   const [ctnQuery, setCtnQuery] = useState('');
   const [nbsQuery, setNbsQuery] = useState('');
+  const [showCnaeDropdown, setShowCnaeDropdown] = useState(false);
   const [showCtnDropdown, setShowCtnDropdown] = useState(false);
   const [showNbsDropdown, setShowNbsDropdown] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const cnaeDropdownRef = useRef<HTMLDivElement>(null);
   const ctnDropdownRef = useRef<HTMLDivElement>(null);
   const nbsDropdownRef = useRef<HTMLDivElement>(null);
+
+  const cnaeManualResults = useMemo(() => {
+    const q = manualCnae.trim();
+    if (!q) return [];
+    const normalized = q.toLowerCase();
+    const digits = q.replace(/\D/g, '');
+    const matches: CNAEEntry[] = [];
+    for (const entry of CNAE_LIST) {
+      if (matches.length >= 30) break;
+      if (digits && entry.codigo.startsWith(digits)) {
+        matches.push(entry);
+      } else if (entry.descricao.toLowerCase().includes(normalized)) {
+        matches.push(entry);
+      }
+    }
+    return matches;
+  }, [manualCnae]);
 
   const ctnResults = useMemo(() => {
     const q = ctnQuery.trim();
@@ -89,6 +108,9 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
+      if (cnaeDropdownRef.current && !cnaeDropdownRef.current.contains(e.target as Node)) {
+        setShowCnaeDropdown(false);
+      }
       if (ctnDropdownRef.current && !ctnDropdownRef.current.contains(e.target as Node)) {
         setShowCtnDropdown(false);
       }
@@ -103,6 +125,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   // Auto-fill CTN and NBS when CNAE is typed
   const handleManualCnaeChange = (value: string) => {
     setManualCnae(value);
+    setShowCnaeDropdown(value.trim().length > 0);
     const digits = value.replace(/\D/g, '');
     // Try to find IBGE description from CNAE_LIST
     const cnaeEntry = CNAE_LIST.find(e => e.codigo === digits);
@@ -280,7 +303,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
         {/* CNAE Card */}
-        <div className={`radio-card flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
+        <div ref={cnaeDropdownRef} className={`radio-card flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
           <div className="flex items-center gap-2 w-full">
             <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
               manualCnae ? 'border-primary' : 'border-muted-foreground/40'
@@ -290,12 +313,33 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
             <div className="text-sm font-medium text-foreground">CNAE *</div>
           </div>
           <div className="w-full mt-2 space-y-1">
-            <Input
-              placeholder="Ex: 6201-5/00 ou 6201500"
-              value={manualCnae}
-              onChange={e => handleManualCnaeChange(e.target.value)}
-              className="h-8 text-sm"
-            />
+            <div className="relative">
+              <Input
+                placeholder="Ex: 6201-5/00 ou 6201500"
+                value={manualCnae}
+                onChange={e => handleManualCnaeChange(e.target.value)}
+                onFocus={() => { if (manualCnae.trim()) setShowCnaeDropdown(true); }}
+                className="h-8 text-sm"
+              />
+              {showCnaeDropdown && cnaeManualResults.length > 0 && (
+                <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                  {cnaeManualResults.map(entry => (
+                    <button
+                      key={entry.codigo}
+                      type="button"
+                      onClick={() => {
+                        handleManualCnaeChange(entry.codigo);
+                        setShowCnaeDropdown(false);
+                      }}
+                      className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
+                    >
+                      <span className="font-mono text-xs font-semibold text-primary">{formatCNAECode(entry.codigo)}</span>
+                      <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             {manualCnaeDescricaoIBGE && (
               <p className="text-xs text-foreground/70 leading-snug">{manualCnaeDescricaoIBGE}</p>
             )}
