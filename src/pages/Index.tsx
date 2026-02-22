@@ -9,7 +9,7 @@ import SimplesNacionalSection from '@/components/SimplesNacionalSection';
 import TomadorSection, { type TomadorData, validateCPF } from '@/components/TomadorSection';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 
-type ActiveTab = 'prestador' | 'tomador';
+type ActiveTab = 'prestador' | 'tomador' | 'emissao';
 
 const INITIAL_PRESTADOR = {
   nomeEmpresarial: '',
@@ -115,6 +115,7 @@ const Index = () => {
   const tabs: { key: ActiveTab; label: string; icon: React.ReactNode }[] = [
     { key: 'prestador', label: 'O Prestador', icon: <Building2 className="w-4 h-4" /> },
     { key: 'tomador', label: 'Tomadores', icon: <Users className="w-4 h-4" /> },
+    { key: 'emissao', label: 'Emitir NFS-e', icon: <Send className="w-4 h-4" /> },
   ];
 
   return (
@@ -146,7 +147,7 @@ const Index = () => {
             {tabs.map((tab) => (
               <button
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() => tab.key === 'emissao' ? navigate('/emissao-nfse') : setActiveTab(tab.key)}
                 className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors duration-150 ${
                   activeTab === tab.key
                     ? 'border-primary text-primary'
@@ -161,10 +162,6 @@ const Index = () => {
 
           {/* Action buttons */}
           <div className="flex items-center gap-2 no-print">
-            <button onClick={() => navigate('/emissao-nfse')} className="btn-primary flex items-center gap-2 text-sm py-2">
-              <Send className="w-4 h-4" />
-              <span className="hidden sm:inline">Emitir NFS-e</span>
-            </button>
             <button onClick={() => window.print()} className="btn-outline flex items-center gap-2 text-sm py-2">
               <Printer className="w-4 h-4" />
               <span className="hidden sm:inline">Imprimir</span>
