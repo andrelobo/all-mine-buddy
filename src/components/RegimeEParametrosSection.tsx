@@ -86,7 +86,6 @@ const RegimeEParametrosSection: React.FC<Props> = ({
 
       {regime && (
         <h3 className="text-sm font-bold text-muted-foreground flex items-center gap-2 mb-3">
-          <Landmark className="w-4 h-4 text-primary" />
           Parâmetro Federal
         </h3>
       )}
