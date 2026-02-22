@@ -28,6 +28,7 @@ const INITIAL_PRESTADOR = {
 const INITIAL_PRESTACAO: PrestacaoServicoData = {
   codigoServico: '',
   descricaoServico: '',
+  localPrestacao: '',
   valorServico: '',
   aliquota: '',
   baseCalculo: '',
