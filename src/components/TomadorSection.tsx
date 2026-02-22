@@ -326,17 +326,6 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             />
           </div>
         </div>
-        <div className="grid grid-cols-1 gap-4 mt-4">
-          <div>
-            <label className="field-label">Complemento</label>
-            <input
-              className="field-input"
-              placeholder="Sala, andar, etc."
-              value={data.complemento}
-              onChange={(e) => update('complemento', e.target.value)}
-            />
-          </div>
-        </div>
       </div>
 
       {/* Contato */}
