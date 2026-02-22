@@ -600,14 +600,6 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
           <span className="font-mono text-xs font-semibold text-primary">
             {formatCNAECode(cnae.codigo)}
           </span>
-          {cnae.isManual && (
-            <span className="text-xs bg-accent text-accent-foreground px-1.5 py-0.5 rounded font-medium">Manual</span>
-          )}
-          {isLinked && (
-            <span className="flex items-center gap-1 text-xs text-primary bg-primary/10 px-1.5 py-0.5 rounded font-medium">
-              <CheckCircle2 className="w-3 h-3" /> Vinculado
-            </span>
-          )}
         </button>
         <button
           type="button"
