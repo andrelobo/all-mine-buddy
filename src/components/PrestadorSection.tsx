@@ -196,7 +196,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
       </h2>
 
       {/* Identificação */}
-      <div className={`grid grid-cols-1 ${compact ? 'md:grid-cols-[1.2fr_1fr_3.5fr]' : 'md:grid-cols-[1.2fr_1fr_3.5fr]'} gap-4`}>
+      <div className={`grid grid-cols-1 ${compact ? 'md:grid-cols-[1fr_0.8fr_4fr]' : 'md:grid-cols-[1.2fr_1fr_3.5fr]'} gap-4`}>
         <div>
           <label className="field-label flex items-center gap-1"><FileText className="w-3.5 h-3.5" />CNPJ*</label>
           <div className="flex gap-2">
