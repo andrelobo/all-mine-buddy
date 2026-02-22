@@ -621,28 +621,22 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
         <p className="text-xs text-foreground/90 flex-1 min-w-0 text-justify leading-relaxed" title={parts.join(' | ')}>
           {/* CNAE */}
           <span className="font-mono font-semibold text-primary">|{formatCNAECode(cnae.codigo)}|</span>
-          <span className="ml-1">{cnae.cnaeDescricao}</span>
+          <span className="ml-1">{cnae.cnaeDescricao} </span>
           {/* CTN */}
           {cnae.ctn && (
             <>
-              <span className="ml-1 font-mono font-semibold text-primary">|{cnae.ctn}|</span>
-              <span className="ml-1">{cnae.ctnDescricao || ''}</span>
+              <span className="font-mono font-semibold text-primary">|{cnae.ctn}|</span>
+              <span className="ml-1">{cnae.ctnDescricao || ''} </span>
             </>
           )}
           {/* NBS */}
           {cnae.nbs && (
             <>
-              <span className="ml-1 font-mono font-semibold text-primary">|{cnae.nbs}|</span>
+              <span className="font-mono font-semibold text-primary">|{cnae.nbs}|</span>
               <span className="ml-1">{(cnae.nbsDescricao || '').replace(/\.$/, '')}.</span>
             </>
           )}
-          {/* Ponto final se não tem NBS */}
-          {!cnae.nbs && cnae.ctn && (
-            <span>.</span>
-          )}
-          {!cnae.nbs && !cnae.ctn && (
-            <span>.</span>
-          )}
+          {!cnae.nbs && <span>.</span>}
         </p>
         <button
           type="button"
