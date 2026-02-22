@@ -312,8 +312,15 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                 value={manualCnae}
                 onChange={e => handleManualCnaeChange(e.target.value)}
                 onFocus={() => { if (manualCnae.trim()) setShowCnaeDropdown(true); }}
-                className="h-8 text-sm"
+                className="h-8 text-sm pr-8"
               />
+              <button
+                type="button"
+                onClick={() => setShowCnaeDropdown(v => !v)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <ChevronDown className="w-3.5 h-3.5" />
+              </button>
               {showCnaeDropdown && cnaeManualResults.length > 0 && (
                 <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
                   {cnaeManualResults.map(entry => (
