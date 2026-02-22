@@ -12,6 +12,7 @@ const INITIAL_TOMADOR: TomadorData = {
   inscricaoMunicipal: '',
   inscricaoEstadual: '',
   suframa: '',
+  substitutoTributario: false,
   cep: '',
   logradouro: '',
   numero: '',
