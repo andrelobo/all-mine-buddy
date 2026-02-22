@@ -695,8 +695,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
         <div>
           <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Atividade Econômica Cnaë</p>
           <p className="text-xs text-foreground/90 -mt-px">
-            <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>
-            <span className="ml-2">{cnae.cnaeDescricao}</span>
+            <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>{cnae.cnaeDescricao}
           </p>
         </div>
 
@@ -711,8 +710,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
             >
               {cnae.ctn ? (
                 <p className="text-xs text-foreground/90">
-                  <span className="font-mono font-semibold text-primary">{formatCTNDisplay(cnae.ctn)}</span>
-                  <span className="ml-2">{cnae.ctnDescricao || ''}</span>
+                  <span className="font-mono font-semibold text-primary">{formatCTNDisplay(cnae.ctn)}</span>{cnae.ctnDescricao || ''}
                 </p>
               ) : (
                 <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors">(clique para adicionar)</p>
@@ -762,8 +760,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
             >
               {cnae.nbs ? (
                 <p className="text-xs text-foreground/90">
-                  <span className="font-mono font-semibold text-primary">{cnae.nbs}</span>
-                  <span className="ml-2">{cnae.nbsDescricao || ''}</span>
+                  <span className="font-mono font-semibold text-primary">{cnae.nbs}</span>{cnae.nbsDescricao || ''}
                 </p>
               ) : (
                 <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors">(clique para adicionar)</p>
