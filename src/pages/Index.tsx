@@ -163,7 +163,7 @@ const Index = () => {
             <div className="flex items-center gap-3 ml-auto no-print">
               <button onClick={() => navigate('/cadastro-tomador')} className="btn-secondary flex items-center gap-2">
                 <Users className="w-4 h-4" />
-                Cadastro de Tomador
+                O Tomador
               </button>
               <button onClick={() => window.print()} className="btn-secondary flex items-center gap-2">
                 <Printer className="w-4 h-4" />

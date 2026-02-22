@@ -69,7 +69,7 @@ const CadastroTomador = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold text-foreground tracking-tight">
-                Cadastro de Tomador
+                O Tomador
               </h1>
             </div>
           </div>
