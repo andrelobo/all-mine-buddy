@@ -504,7 +504,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       {/* Lista de CNAEs adicionados */}
       {cnaes.length > 0 && (
         <div className="mt-4 space-y-2">
-          <p className="text-xs text-muted-foreground font-medium">Cnaës adicionados</p>
+          <p className="text-xs text-muted-foreground font-medium">Danfse</p>
           <div className="space-y-1.5">
             {cnaes.map((cnae) => {
               const isLinked = cnae.ctn === ctnSelecionado;
