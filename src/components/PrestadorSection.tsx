@@ -196,7 +196,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
         O Prestador
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-[2fr_1.2fr_2.5fr] gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_3.5fr] gap-4">
         <div>
           <label className="field-label flex items-center gap-1"><FileText className="w-3.5 h-3.5" />CNPJ*</label>
           <div className="flex gap-2">
