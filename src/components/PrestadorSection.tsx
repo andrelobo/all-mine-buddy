@@ -271,20 +271,6 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
         </div>
       )}
 
-      {/* Compact: only Inscrição Estadual */}
-      {compact && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <div>
-            <label className="field-label">Inscrição Estadual</label>
-            <input
-              className="field-input"
-              placeholder="Inscrição Estadual"
-              value={data.inscricaoEstadual}
-              onChange={(e) => update('inscricaoEstadual', e.target.value)}
-            />
-          </div>
-        </div>
-      )}
 
       {/* Endereço */}
       {!compact && (
