@@ -636,11 +636,12 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
       </div>
 
       {/* Atividade Econômica Cnae */}
-      <div className="mt-1 space-y-0.5">
+      <div className="mt-2 space-y-2">
         <div>
           <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Atividade Econômica Cnaë</p>
-          <p className="text-xs text-foreground/90 -mt-px">
-            <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>{' '}{cnae.cnaeDescricao}
+          <p className="text-xs text-foreground/90 mt-0.5">
+            <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>
+            <span className="ml-1.5">{cnae.cnaeDescricao}</span>
           </p>
         </div>
 
@@ -651,18 +652,19 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
             <button
               type="button"
               onClick={() => { setEditingCtn(true); setCtnInput(''); setCtnSearchOpen(true); }}
-              className="text-left"
+              className="text-left mt-0.5"
             >
               {cnae.ctn ? (
                 <p className="text-xs text-foreground/90">
-                  <span className="font-mono font-semibold text-primary">{formatCTNDisplay(cnae.ctn)}</span>{' '}{cnae.ctnDescricao || ''}
+                  <span className="font-mono font-semibold text-primary">{formatCTNDisplay(cnae.ctn)}</span>
+                  <span className="ml-1.5">{cnae.ctnDescricao || ''}</span>
                 </p>
               ) : (
                 <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors">(clique para adicionar)</p>
               )}
             </button>
           ) : (
-            <div className="relative max-w-xs">
+            <div className="relative max-w-xs mt-0.5">
               <Input
                 autoFocus
                 placeholder="Buscar CTN..."
@@ -701,18 +703,19 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
             <button
               type="button"
               onClick={() => { setEditingNbs(true); setNbsInput(''); setNbsSearchOpen(true); }}
-              className="text-left"
+              className="text-left mt-0.5"
             >
               {cnae.nbs ? (
                 <p className="text-xs text-foreground/90">
-                  <span className="font-mono font-semibold text-primary">{cnae.nbs}</span>{' '}{cnae.nbsDescricao || ''}
+                  <span className="font-mono font-semibold text-primary">{cnae.nbs}</span>
+                  <span className="ml-1.5">{cnae.nbsDescricao || ''}</span>
                 </p>
               ) : (
                 <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors">(clique para adicionar)</p>
               )}
             </button>
           ) : (
-            <div className="relative max-w-xs">
+            <div className="relative max-w-xs mt-0.5">
               <Input
                 autoFocus
                 placeholder="Buscar NBS..."
