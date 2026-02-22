@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Briefcase, Percent, ChevronDown, Search } from 'lucide-react';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { Briefcase, Percent, ChevronDown, Search, MapPin } from 'lucide-react';
 import { searchCTN, getCTNByCode } from '@/utils/ctn-data';
 
 export interface PrestacaoServicoData {
@@ -44,6 +44,15 @@ function formatCTNDisplay(codigo: string) {
   return codigo;
 }
 
+const UF_LIST = [
+  'AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA',
+  'PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO'
+];
+
+interface Municipio {
+  nome: string;
+}
+
 const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarRetencoesFederais }) => {
   const update = (field: keyof PrestacaoServicoData, value: string | boolean) => {
     onChange({ ...data, [field]: value });
@@ -55,14 +64,57 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
   const [ctnDescricaoSelecionada, setCtnDescricaoSelecionada] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Local prestação state
+  const [ufSelecionada, setUfSelecionada] = useState('');
+  const [municipios, setMunicipios] = useState<Municipio[]>([]);
+  const [municipioQuery, setMunicipioQuery] = useState('');
+  const [showLocalDropdown, setShowLocalDropdown] = useState(false);
+  const [loadingMunicipios, setLoadingMunicipios] = useState(false);
+  const localDropdownRef = useRef<HTMLDivElement>(null);
+
   const ctnResults = useMemo(() => {
     return searchCTN(ctnQuery.trim(), 30);
   }, [ctnQuery]);
+
+  // Fetch municipios when UF changes
+  useEffect(() => {
+    if (!ufSelecionada) {
+      setMunicipios([]);
+      return;
+    }
+    setLoadingMunicipios(true);
+    fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${ufSelecionada}/municipios?orderBy=nome`)
+      .then(res => res.json())
+      .then((data: Municipio[]) => {
+        setMunicipios(data);
+        setLoadingMunicipios(false);
+      })
+      .catch(() => setLoadingMunicipios(false));
+  }, [ufSelecionada]);
+
+  const filteredMunicipios = useMemo(() => {
+    if (!municipioQuery.trim()) return municipios;
+    const q = municipioQuery.toLowerCase();
+    return municipios.filter(m => m.nome.toLowerCase().includes(q));
+  }, [municipios, municipioQuery]);
+
+  // Parse existing localPrestacao to init UF
+  useEffect(() => {
+    if (data.localPrestacao && !ufSelecionada) {
+      const parts = data.localPrestacao.split(' - ');
+      if (parts.length === 2 && UF_LIST.includes(parts[1])) {
+        setUfSelecionada(parts[1]);
+      }
+    }
+  }, [data.localPrestacao]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setShowCtnDropdown(false);
+      }
+      if (localDropdownRef.current && !localDropdownRef.current.contains(e.target as Node)) {
+        setShowLocalDropdown(false);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -82,6 +134,12 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
     setCtnDescricaoSelecionada(descricao);
     setCtnQuery('');
     setShowCtnDropdown(false);
+  };
+
+  const handleSelectMunicipio = (nome: string) => {
+    update('localPrestacao', `${nome} - ${ufSelecionada}`);
+    setMunicipioQuery('');
+    setShowLocalDropdown(false);
   };
 
   return (
@@ -151,13 +209,68 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       </div>
 
       <div className="mt-4">
-        <label className="field-label">Local da Prestação do Serviço</label>
-        <input
-          className="field-input"
-          placeholder="Informe o local da prestação do serviço..."
-          value={data.localPrestacao}
-          onChange={(e) => update('localPrestacao', e.target.value)}
-        />
+        <label className="field-label flex items-center gap-1">
+          <MapPin className="w-3.5 h-3.5" />
+          Local da Prestação do Serviço
+        </label>
+        <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-3" ref={localDropdownRef}>
+          {/* UF Select */}
+          <div className="relative">
+            <select
+              className="field-input w-full appearance-none pr-8"
+              value={ufSelecionada}
+              onChange={(e) => {
+                setUfSelecionada(e.target.value);
+                update('localPrestacao', '');
+                setMunicipioQuery('');
+              }}
+            >
+              <option value="">UF</option>
+              {UF_LIST.map(uf => (
+                <option key={uf} value={uf}>{uf}</option>
+              ))}
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          </div>
+
+          {/* Município search */}
+          <div className="relative">
+            <input
+              className="field-input pr-8"
+              placeholder={ufSelecionada ? (loadingMunicipios ? 'Carregando municípios...' : 'Buscar município...') : 'Selecione a UF primeiro'}
+              disabled={!ufSelecionada || loadingMunicipios}
+              value={showLocalDropdown ? municipioQuery : (data.localPrestacao ? data.localPrestacao.split(' - ')[0] : '')}
+              onChange={(e) => {
+                setMunicipioQuery(e.target.value);
+                setShowLocalDropdown(true);
+              }}
+              onFocus={() => { setMunicipioQuery(''); setShowLocalDropdown(true); }}
+            />
+            <Search className="w-3.5 h-3.5 absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+
+            {showLocalDropdown && ufSelecionada && !loadingMunicipios && filteredMunicipios.length > 0 && (
+              <div className="absolute z-50 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                {filteredMunicipios.slice(0, 50).map(m => (
+                  <button
+                    key={m.nome}
+                    type="button"
+                    onClick={() => handleSelectMunicipio(m.nome)}
+                    className={`w-full text-left px-3 py-2 text-sm border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors ${
+                      data.localPrestacao === `${m.nome} - ${ufSelecionada}` ? 'bg-primary/10 font-medium' : ''
+                    }`}
+                  >
+                    {m.nome}
+                  </button>
+                ))}
+              </div>
+            )}
+            {showLocalDropdown && ufSelecionada && !loadingMunicipios && municipioQuery.trim() && filteredMunicipios.length === 0 && (
+              <div className="absolute z-50 top-full mt-1 w-full rounded-lg border border-border bg-card shadow-lg p-3">
+                <p className="text-xs text-muted-foreground text-center">Nenhum município encontrado</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
