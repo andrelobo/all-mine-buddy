@@ -5,6 +5,7 @@ import { searchCTN, getCTNByCode } from '@/utils/ctn-data';
 export interface PrestacaoServicoData {
   codigoServico: string;
   descricaoServico: string;
+  localPrestacao: string;
   valorServico: string;
   aliquota: string;
   baseCalculo: string;
@@ -147,6 +148,16 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
             onChange={(e) => update('descricaoServico', e.target.value)}
           />
         </div>
+      </div>
+
+      <div className="mt-4">
+        <label className="field-label">Local da Prestação do Serviço</label>
+        <input
+          className="field-input"
+          placeholder="Informe o local da prestação do serviço..."
+          value={data.localPrestacao}
+          onChange={(e) => update('localPrestacao', e.target.value)}
+        />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
