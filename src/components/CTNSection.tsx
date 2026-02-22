@@ -622,7 +622,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
       {/* Atividade Econômica Cnae */}
       <div className="mt-1.5 space-y-1">
         <div>
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Atividade Econômica Cnaë</p>
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Código Cnae</p>
           <p className="text-xs text-foreground/90 mt-0.5">
             <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>
             <span className="ml-1.5">{cnae.cnaeDescricao}</span>
