@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, Percent } from 'lucide-react';
+import { Landmark, Percent } from 'lucide-react';
 
 export type RegimeTributario = 'simples' | 'presumido' | 'real' | null;
 
@@ -59,7 +59,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
   return (
     <div className="section-card">
       <h2 className="section-title">
-        <Settings className="w-5 h-5 text-primary" />
+        <Landmark className="w-5 h-5 text-primary" />
         Regime Tributário
       </h2>
 
@@ -86,7 +86,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
 
       {regime && (
         <h3 className="text-sm font-bold text-muted-foreground flex items-center gap-2 mb-3">
-          <Settings className="w-4 h-4 text-primary" />
+          <Landmark className="w-4 h-4 text-primary" />
           Parâmetro Federal
         </h3>
       )}
