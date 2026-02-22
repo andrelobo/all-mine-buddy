@@ -413,7 +413,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
               )}
             </div>
             {manualCtn && (
-              <p className="text-xs text-foreground/70 leading-snug">{getCTNByCode(manualCtn)?.descricao || ''}</p>
+              <p className="text-xs text-foreground/70 leading-snug line-clamp-2" title={getCTNByCode(manualCtn)?.descricao || ''}>{getCTNByCode(manualCtn)?.descricao || ''}</p>
             )}
           </div>
         </div>
@@ -462,7 +462,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
               )}
             </div>
             {manualNbs && (
-              <p className="text-xs text-foreground/70 leading-snug">{getNBSDescricao(manualNbs) || ''}</p>
+              <p className="text-xs text-foreground/70 leading-snug line-clamp-2" title={getNBSDescricao(manualNbs) || ''}>{getNBSDescricao(manualNbs) || ''}</p>
             )}
           </div>
         </div>
@@ -654,7 +654,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
               className="text-left block"
             >
               {cnae.ctn ? (
-                <p className="text-xs text-foreground/90 mt-0.5">
+                <p className="text-xs text-foreground/90 mt-0.5" title={cnae.ctnDescricao || ''}>
                   <span className="font-mono font-semibold text-primary">{formatCTNDisplay(cnae.ctn)}</span>
                   <span className="ml-1.5">{cnae.ctnDescricao || ''}</span>
                 </p>
@@ -705,7 +705,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
               className="text-left block"
             >
               {cnae.nbs ? (
-                <p className="text-xs text-foreground/90 mt-0.5">
+                <p className="text-xs text-foreground/90 mt-0.5" title={cnae.nbsDescricao || ''}>
                   <span className="font-mono font-semibold text-primary">{cnae.nbs}</span>
                   <span className="ml-1.5">{cnae.nbsDescricao || ''}</span>
                 </p>
