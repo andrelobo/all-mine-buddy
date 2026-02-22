@@ -190,7 +190,7 @@ const EmissaoNFSe: React.FC = () => {
           data={prestador}
           onChange={setPrestador}
           onAutosave={autosave}
-          
+          compact
         />
 
 
