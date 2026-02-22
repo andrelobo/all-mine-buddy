@@ -368,10 +368,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
             }`}>
               {manualNbs && <div className="w-2 h-2 rounded-full bg-primary" />}
             </div>
-            <div>
-              <div className="text-sm font-medium text-foreground">NBS</div>
-              <div className="text-xs text-muted-foreground">Nomenclatura Brasileira Serviços</div>
-            </div>
+            <div className="text-sm font-medium text-foreground">NBS</div>
           </div>
           <div className="w-full mt-2 relative">
             <Input
@@ -417,8 +414,8 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
               {getNBSDescricao(manualNbs) || ''}
             </p>
           )}
-          </div>
         </div>
+      </div>
 
       {/* Options and Add button */}
       {manualCnae.replace(/\D/g, '') && (
