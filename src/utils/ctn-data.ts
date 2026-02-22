@@ -487,7 +487,7 @@ export function isValidCTN(codigo: string): boolean {
 /** Busca CTN por texto (código ou descrição) */
 export function searchCTN(query: string, limit = 20): CTNEntry[] {
   const q = query.toLowerCase().trim();
-  if (!q) return [];
+  if (!q) return CTN_DATA.slice(0, limit);
   
   const results: CTNEntry[] = [];
   for (const entry of CTN_DATA) {
