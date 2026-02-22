@@ -263,7 +263,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           <label className="field-label">TOMADOR(A)</label>
           <input
             className="field-input"
-            placeholder={currentIsCPF ? 'Nome completo do tomador' : 'Razão social da empresa'}
+            placeholder="Tomador(a)"
             value={data.nomeEmpresarial}
             onChange={(e) => update('nomeEmpresarial', e.target.value)}
           />
