@@ -477,7 +477,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       </div>
 
       {manualCnae.replace(/\D/g, '') && (
-        <div className="flex justify-end mt-1">
+        <div className="flex justify-end -mt-1">
           <Button
             type="button"
             size="sm"
