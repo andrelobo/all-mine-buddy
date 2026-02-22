@@ -134,7 +134,7 @@ const EmissaoNFSe: React.FC = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold text-foreground tracking-tight">
-                Emissão de NFS-e
+                DANFSE
               </h1>
               <p className="text-xs text-muted-foreground">Nota Fiscal de Serviços Eletrônica</p>
             </div>
