@@ -165,3 +165,25 @@
            transition duration-200 ease-in-out;
   }
 }
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .btn-primary,
+  .btn-outline,
+  .btn-secondary,
+  button {
+    display: none !important;
+  }
+
+  header {
+    position: static !important;
+  }
+
+  * {
+    break-inside: avoid;
+  }
+}
