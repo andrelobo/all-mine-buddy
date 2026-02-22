@@ -73,9 +73,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   }, [manualCnae]);
 
   const ctnResults = useMemo(() => {
-    const q = ctnQuery.trim();
-    if (!q) return searchCTN('', 0);
-    return searchCTN(q, 30);
+    return searchCTN(ctnQuery.trim(), 30);
   }, [ctnQuery]);
 
   const nbsResults = useMemo(() => {
