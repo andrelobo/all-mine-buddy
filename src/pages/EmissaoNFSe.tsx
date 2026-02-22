@@ -3,8 +3,6 @@ import { Shield, Send, Save, ArrowLeft, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import PrestadorSection from '@/components/PrestadorSection';
-import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
-import CTNSection from '@/components/CTNSection';
 import TomadorEmissao, { INITIAL_TOMADOR, type TomadorEmissaoData } from '@/components/emissao/TomadorEmissao';
 import PrestacaoServicoSection, { type PrestacaoServicoData } from '@/components/emissao/PrestacaoServicoSection';
 import ValoresTotaisSection from '@/components/emissao/ValoresTotaisSection';
@@ -57,13 +55,7 @@ const EmissaoNFSe: React.FC = () => {
 
   // Estado do Prestador (mesmos campos da aba "O Prestador")
   const [prestador, setPrestador] = useState(INITIAL_PRESTADOR);
-  const [regime, setRegime] = useState<RegimeTributario>(null);
-  const [informarAliquotaSN, setInformarAliquotaSN] = useState(false);
-  const [aliquotaSN, setAliquotaSN] = useState('');
-  const [regimeApuracaoSNParametro, setRegimeApuracaoSNParametro] = useState(false);
-  const [ctnSelecionado, setCtnSelecionado] = useState<string | null>(null);
-  const [ctnDescricao, setCtnDescricao] = useState('');
-  const [ctnItem, setCtnItem] = useState('');
+
 
   // Estado do Tomador
   const [tomador, setTomador] = useState<TomadorEmissaoData>(INITIAL_TOMADOR);
@@ -76,13 +68,8 @@ const EmissaoNFSe: React.FC = () => {
     // placeholder para persistência futura
   }, []);
 
-  const handleSimplesDetected = useCallback((isOptante: boolean) => {
-    if (isOptante) {
-      setRegime('simples');
-      setInformarAliquotaSN(true);
-      setRegimeApuracaoSNParametro(true);
-    }
-  }, []);
+
+
 
   // Cálculos automáticos
   const valores = useMemo(() => {
@@ -120,7 +107,7 @@ const EmissaoNFSe: React.FC = () => {
   const validar = (): string[] => {
     const erros: string[] = [];
     if (!validateCNPJ(prestador.cnpj)) erros.push('CNPJ do prestador é obrigatório/inválido.');
-    if (!regime) erros.push('Regime tributário é obrigatório.');
+    
     if (!tomador.cnpjCpf) erros.push('CPF/CNPJ do tomador é obrigatório.');
     if (!tomador.nomeRazaoSocial) erros.push('Nome/Razão Social do tomador é obrigatório.');
     if (!tomador.email) erros.push('E-mail do tomador é obrigatório.');
@@ -202,29 +189,10 @@ const EmissaoNFSe: React.FC = () => {
           data={prestador}
           onChange={setPrestador}
           onAutosave={autosave}
-          onSimplesDetected={handleSimplesDetected}
+          
         />
 
-        <RegimeEParametrosSection
-          regime={regime}
-          onRegimeChange={setRegime}
-          informarAliquotaSN={informarAliquotaSN}
-          onInformarAliquotaChange={setInformarAliquotaSN}
-          aliquotaSN={aliquotaSN}
-          onAliquotaSNChange={setAliquotaSN}
-          regimeApuracaoSNParametro={regimeApuracaoSNParametro}
-          onRegimeApuracaoSNParametroChange={setRegimeApuracaoSNParametro}
-          onAutosave={autosave}
-        />
 
-        <CTNSection
-          ctnSelecionado={ctnSelecionado}
-          onCtnChange={(codigo, descricao, itemFormatado) => {
-            setCtnSelecionado(codigo);
-            setCtnDescricao(descricao);
-            setCtnItem(itemFormatado);
-          }}
-        />
 
         {/* Seção Tomador */}
         <TomadorEmissao data={tomador} onChange={setTomador} />
