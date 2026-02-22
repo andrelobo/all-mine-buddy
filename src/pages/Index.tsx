@@ -115,7 +115,7 @@ const Index = () => {
   const tabs: { key: ActiveTab; label: string; icon: React.ReactNode }[] = [
     { key: 'prestador', label: 'O Prestador', icon: <Building2 className="w-4 h-4" /> },
     { key: 'tomador', label: 'Tomadores', icon: <Users className="w-4 h-4" /> },
-    { key: 'emissao', label: 'Emitir NFS-e', icon: <Send className="w-4 h-4" /> },
+    { key: 'emissao', label: 'Nota Fiscal', icon: <Send className="w-4 h-4" /> },
   ];
 
   return (
