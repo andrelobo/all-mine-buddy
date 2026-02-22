@@ -158,7 +158,7 @@ const Index = () => {
                 Configuração fiscal válida para emissão de NFS-e
               </div>
             )}
-            <div className="flex items-center gap-3 ml-auto">
+            <div className="flex items-center gap-3 ml-auto no-print">
               <button onClick={() => window.print()} className="btn-secondary flex items-center gap-2">
                 <Printer className="w-4 h-4" />
                 Imprimir
