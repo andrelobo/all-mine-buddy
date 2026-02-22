@@ -257,16 +257,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-        <div>
-          <label className="field-label">Nome Fantasia</label>
-          <input
-            className="field-input"
-            placeholder="Nome fantasia"
-            value={data.nomeFantasia}
-            onChange={(e) => update('nomeFantasia', e.target.value)}
-          />
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
         <div>
           <label className="field-label">Inscrição Estadual</label>
           <input
@@ -274,15 +265,6 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             placeholder="Inscrição"
             value={data.inscricaoEstadual}
             onChange={(e) => update('inscricaoEstadual', e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="field-label">Inscrição Suframa</label>
-          <input
-            className="field-input"
-            placeholder="Inscrição"
-            value={data.suframa}
-            onChange={(e) => update('suframa', e.target.value)}
           />
         </div>
       </div>
