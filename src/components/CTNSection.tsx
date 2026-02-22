@@ -619,7 +619,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
     >
       <div className="flex items-center justify-between gap-2">
         <p className="text-xs text-foreground/90 flex-1 min-w-0 text-justify leading-relaxed" title={parts.join(' | ')}>
-          <span className="font-mono font-semibold text-primary">|{formatCNAECode(cnae.codigo)}|</span>{' '}{cnae.cnaeDescricao.replace(/[.\s]+$/, '')}{' '}{cnae.ctn && (<><span className="font-mono font-semibold text-primary">|{cnae.ctn}|</span>{' '}{(cnae.ctnDescricao || '').replace(/[.\s]+$/, '')}{cnae.nbs ? ' ' : '.'}</>)}{cnae.nbs && (<><span className="font-mono font-semibold text-primary">|{cnae.nbs}|</span>{' '}{(cnae.nbsDescricao || '').replace(/[.\s]+$/, '')}.</>)}{!cnae.nbs && !cnae.ctn && '.'}
+          <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>{' '}{cnae.cnaeDescricao.replace(/[.\s]+$/, '')}{' '}{cnae.ctn && (<><span className="font-mono font-semibold text-primary whitespace-nowrap">|{cnae.ctn}|</span>{' '}{(cnae.ctnDescricao || '').replace(/[.\s]+$/, '')}{cnae.nbs ? ' ' : '.'}</>)}{cnae.nbs && (<><span className="font-mono font-semibold text-primary whitespace-nowrap">|{cnae.nbs}|</span>{' '}{(cnae.nbsDescricao || '').replace(/[.\s]+$/, '')}.</>)}{!cnae.nbs && !cnae.ctn && '.'}
         </p>
         <button
           type="button"
