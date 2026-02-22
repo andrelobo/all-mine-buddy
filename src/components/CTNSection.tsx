@@ -397,6 +397,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                       <button
                         key={entry.codigo}
                         type="button"
+                        title={`${formatCTNDisplay(entry.codigo)} (${entry.itemFormatado}) — ${entry.descricao}`}
                         onClick={() => {
                           setManualCtn(entry.codigo);
                           setCtnQuery('');
@@ -451,6 +452,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
                       <button
                         key={entry.codigo}
                         type="button"
+                        title={`${entry.codigo} — ${entry.descricao}`}
                         onClick={() => {
                           setManualNbs(entry.codigo);
                           setNbsQuery('');
