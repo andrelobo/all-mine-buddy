@@ -652,15 +652,15 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
             <button
               type="button"
               onClick={() => { setEditingCtn(true); setCtnInput(''); setCtnSearchOpen(true); }}
-              className="text-left mt-0.5"
+              className="text-left block"
             >
               {cnae.ctn ? (
-                <p className="text-xs text-foreground/90">
+                <p className="text-xs text-foreground/90 mt-0.5">
                   <span className="font-mono font-semibold text-primary">{formatCTNDisplay(cnae.ctn)}</span>
                   <span className="ml-1.5">{cnae.ctnDescricao || ''}</span>
                 </p>
               ) : (
-                <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors">(clique para adicionar)</p>
+                <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors mt-0.5">(clique para adicionar)</p>
               )}
             </button>
           ) : (
@@ -703,15 +703,15 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
             <button
               type="button"
               onClick={() => { setEditingNbs(true); setNbsInput(''); setNbsSearchOpen(true); }}
-              className="text-left mt-0.5"
+              className="text-left block"
             >
               {cnae.nbs ? (
-                <p className="text-xs text-foreground/90">
+                <p className="text-xs text-foreground/90 mt-0.5">
                   <span className="font-mono font-semibold text-primary">{cnae.nbs}</span>
                   <span className="ml-1.5">{cnae.nbsDescricao || ''}</span>
                 </p>
               ) : (
-                <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors">(clique para adicionar)</p>
+                <p className="text-xs text-muted-foreground italic hover:text-primary transition-colors mt-0.5">(clique para adicionar)</p>
               )}
             </button>
           ) : (
