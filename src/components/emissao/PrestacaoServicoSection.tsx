@@ -49,7 +49,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
 
       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4">
         <div>
-          <label className="field-label">Código do Serviço*</label>
+          <label className="field-label">Código Tributação Nacional*</label>
           <input
             className="field-input"
             placeholder="Ex: 01.01"
