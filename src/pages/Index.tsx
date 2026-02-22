@@ -159,14 +159,6 @@ const Index = () => {
               </div>
             )}
             <div className="flex items-center gap-3 ml-auto">
-              <button onClick={() => { setPrestador(INITIAL_PRESTADOR); setRegime(null); }} className="btn-outline flex items-center gap-2">
-                <X className="w-4 h-4" />
-                Cancelar
-              </button>
-              <button onClick={handleTestar} className="btn-outline flex items-center gap-2">
-                <FileText className="w-4 h-4" />
-                Testar Emissão NFS-e
-              </button>
               <button onClick={handleSalvar} className="btn-primary flex items-center gap-2">
                 <Save className="w-4 h-4" />
                 Salvar Configuração
