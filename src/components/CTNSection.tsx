@@ -618,24 +618,24 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
       className="group p-2.5 rounded-lg border transition-colors border-border bg-background hover:border-primary/20"
     >
       <div className="flex items-center justify-between gap-2">
-        <p className="text-xs text-foreground/90 flex-1 min-w-0" title={parts.join(' / ')}>
+        <p className="text-xs text-foreground/90 flex-1 min-w-0 text-justify leading-relaxed" title={parts.join(' / ')}>
           {/* CNAE */}
           <span className="font-mono font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>
           <span className="ml-1">{cnae.cnaeDescricao}</span>
           {/* CTN */}
           {cnae.ctn && (
             <>
-              <span className="text-muted-foreground mx-1">/</span>
+              <span className="text-muted-foreground">/</span>
               <span className="font-mono font-semibold text-primary">{cnae.ctn}</span>
-              <span className="ml-0.5">: {cnae.ctnDescricao || ''}</span>
+              <span>: {cnae.ctnDescricao || ''}</span>
             </>
           )}
           {/* NBS */}
           {cnae.nbs && (
             <>
-              <span className="text-muted-foreground mx-1">/</span>
+              <span className="text-muted-foreground">/</span>
               <span className="font-mono font-semibold text-primary">{cnae.nbs}</span>
-              <span className="ml-0.5">: {cnae.nbsDescricao || ''}</span>
+              <span>: {cnae.nbsDescricao || ''}</span>
             </>
           )}
         </p>
