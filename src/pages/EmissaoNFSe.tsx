@@ -6,6 +6,7 @@ import PrestadorSection from '@/components/PrestadorSection';
 import TomadorEmissao, { INITIAL_TOMADOR, type TomadorEmissaoData } from '@/components/emissao/TomadorEmissao';
 import PrestacaoServicoSection, { type PrestacaoServicoData } from '@/components/emissao/PrestacaoServicoSection';
 import ValoresTotaisSection from '@/components/emissao/ValoresTotaisSection';
+import CTNSection from '@/components/CTNSection';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 
 const INITIAL_PRESTADOR = {
@@ -63,6 +64,9 @@ const EmissaoNFSe: React.FC = () => {
   // Estado da Prestação do Serviço
   const [prestacao, setPrestacao] = useState<PrestacaoServicoData>(INITIAL_PRESTACAO);
   const [errors, setErrors] = useState<string[]>([]);
+  const [ctnSelecionado, setCtnSelecionado] = useState<string | null>(null);
+  const [ctnDescricao, setCtnDescricao] = useState<string>('');
+  const [ctnItem, setCtnItem] = useState<string>('');
 
   const autosave = useCallback(() => {
     // placeholder para persistência futura
@@ -196,6 +200,17 @@ const EmissaoNFSe: React.FC = () => {
 
         {/* Seção Tomador */}
         <TomadorEmissao data={tomador} onChange={setTomador} />
+
+        {/* Seção DANFSE Nacional */}
+        <CTNSection
+          ctnSelecionado={ctnSelecionado}
+          onCtnChange={(codigo, descricao, itemFormatado) => {
+            setCtnSelecionado(codigo);
+            setCtnDescricao(descricao);
+            setCtnItem(itemFormatado);
+            setPrestacao(prev => ({ ...prev, codigoServico: codigo }));
+          }}
+        />
 
         {/* Seção Prestação do Serviço */}
         <PrestacaoServicoSection
