@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Settings, Search, CheckCircle2, AlertCircle, X, Plus, Trash2, PenLine, ChevronDown, Star } from 'lucide-react';
+import { Receipt, Search, CheckCircle2, AlertCircle, X, Plus, Trash2, PenLine, ChevronDown, Star } from 'lucide-react';
 import { getCTNByCode, isValidCTN, searchCTN, searchCTNByItem } from '@/utils/ctn-data';
 import { CNAE_LIST, formatCNAECode, getLC116Item, type CNAEEntry } from '@/utils/cnae-lc116';
 import { getNBSDescricao, searchNBS, searchNBSByPrefix, type NBSEntry } from '@/utils/nbs-data';
@@ -367,7 +367,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   return (
     <div className="section-card">
       <h2 className="section-title mb-3">
-        <Settings className="w-5 h-5 text-primary" />
+        <Receipt className="w-5 h-5 text-primary" />
         DANFSE Nacional
       </h2>
 
