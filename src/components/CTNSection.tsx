@@ -421,15 +421,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       {manualCnae.replace(/\D/g, '') && (
         <div className="mb-4 p-3 rounded-lg border border-border bg-muted/30 space-y-3">
           <div className="grid grid-cols-1 gap-3">
-            <div className="space-y-1">
-              <Label className="text-xs">Descrição</Label>
-              <Input
-                placeholder="Descrição da atividade"
-                value={manualDescricao}
-                onChange={e => setManualDescricao(e.target.value)}
-                className="h-8 text-sm"
-              />
-            </div>
             <div className="flex items-center gap-2">
               <Checkbox
                 id="manual-principal"
