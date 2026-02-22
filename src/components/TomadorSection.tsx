@@ -271,10 +271,10 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
 
       {/* Endereço */}
       <div className="mt-5 pt-5 border-t border-border">
-        <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2 mb-4">
-          <MapPin className="w-4 h-4" />
+        <label className="field-label flex items-center gap-1 mb-4">
+          <MapPin className="w-3.5 h-3.5" />
           Endereço
-        </h3>
+        </label>
         <div className="grid grid-cols-1 md:grid-cols-[0.525fr_2fr_0.3fr_1fr] gap-4">
           <div>
             <label className="field-label">CEP</label>
