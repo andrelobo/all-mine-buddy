@@ -186,7 +186,7 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_3fr] gap-4">
         <div>
           <label className="field-label flex items-center gap-1">
             <FileText className="w-3.5 h-3.5" />CNPJ/CPF*
@@ -215,9 +215,6 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange }) => {
             onChange={(e) => update('inscricaoMunicipal', e.target.value)}
           />
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 mt-4">
         <div>
           <label className="field-label">TOMADOR(A)*</label>
           <input
