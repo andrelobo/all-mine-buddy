@@ -10,6 +10,7 @@ export interface TomadorData {
   inscricaoMunicipal: string;
   inscricaoEstadual: string;
   suframa: string;
+  substitutoTributario: boolean;
   cep: string;
   logradouro: string;
   numero: string;
@@ -257,7 +258,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 mt-4 items-end">
         <div>
           <label className="field-label">TOMADOR(A)</label>
           <input
@@ -266,6 +267,23 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             value={data.nomeEmpresarial}
             onChange={(e) => update('nomeEmpresarial', e.target.value)}
           />
+        </div>
+        <div className="flex items-center gap-2 pb-1">
+          <label className="field-label whitespace-nowrap mb-0">Substituto Tributário</label>
+          <button
+            type="button"
+            onClick={() => {
+              onChange({ ...data, substitutoTributario: !data.substitutoTributario });
+              onAutosave();
+            }}
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
+              data.substitutoTributario
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-muted-foreground'
+            }`}
+          >
+            {data.substitutoTributario ? 'Sim' : 'Não'}
+          </button>
         </div>
       </div>
 
