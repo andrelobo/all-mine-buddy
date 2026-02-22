@@ -137,7 +137,6 @@ const Index = () => {
           onAutosave={autosave}
         />
 
-        <SimplesNacionalSection />
 
 
 
