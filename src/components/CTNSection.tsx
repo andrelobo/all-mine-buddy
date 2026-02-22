@@ -581,7 +581,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
       {/* Lista de CNAEs adicionados — agrupado por CNAE, 1:N vínculos */}
       {cnaes.length > 0 && (
         <div className="mt-1 space-y-2">
-          <p className="text-xs text-muted-foreground font-medium">Gestão Fiscal</p>
+          
           <div className="space-y-1.5">
             {cnaes.map((cnae) => (
               <CnaeListItem
