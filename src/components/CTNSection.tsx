@@ -531,7 +531,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
 
       {/* Lista de CNAEs adicionados */}
       {cnaes.length > 0 && (
-        <div className="mt-4 space-y-2">
+        <div className="mt-1 space-y-2">
           <p className="text-xs text-muted-foreground font-medium">Gestão Fiscal</p>
           <div className="space-y-1.5">
             {cnaes.map((cnae) => {
