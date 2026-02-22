@@ -1,5 +1,6 @@
-import React from 'react';
-import { Briefcase, Percent } from 'lucide-react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { Briefcase, Percent, ChevronDown, Search } from 'lucide-react';
+import { searchCTN, getCTNByCode } from '@/utils/ctn-data';
 
 export interface PrestacaoServicoData {
   codigoServico: string;
@@ -35,9 +36,51 @@ function formatPercent(value: string): string {
   return v;
 }
 
+function formatCTNDisplay(codigo: string) {
+  if (codigo.length === 6) {
+    return `${codigo.slice(0, 2)}.${codigo.slice(2, 4)}.${codigo.slice(4, 6)}`;
+  }
+  return codigo;
+}
+
 const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarRetencoesFederais }) => {
   const update = (field: keyof PrestacaoServicoData, value: string | boolean) => {
     onChange({ ...data, [field]: value });
+  };
+
+  // CTN search state
+  const [ctnQuery, setCtnQuery] = useState('');
+  const [showCtnDropdown, setShowCtnDropdown] = useState(false);
+  const [ctnDescricaoSelecionada, setCtnDescricaoSelecionada] = useState('');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const ctnResults = useMemo(() => {
+    return searchCTN(ctnQuery.trim(), 30);
+  }, [ctnQuery]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowCtnDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  // If codigoServico is set externally, resolve description
+  useEffect(() => {
+    if (data.codigoServico && !ctnDescricaoSelecionada) {
+      const entry = getCTNByCode(data.codigoServico);
+      if (entry) setCtnDescricaoSelecionada(entry.descricao);
+    }
+  }, [data.codigoServico]);
+
+  const handleSelectCTN = (codigo: string, descricao: string) => {
+    update('codigoServico', codigo);
+    setCtnDescricaoSelecionada(descricao);
+    setCtnQuery('');
+    setShowCtnDropdown(false);
   };
 
   return (
@@ -48,14 +91,52 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4">
-        <div>
+        <div ref={dropdownRef} className="relative">
           <label className="field-label">Código Tributação Nacional*</label>
-          <input
-            className="field-input"
-            placeholder="Ex: 01.01"
-            value={data.codigoServico}
-            onChange={(e) => update('codigoServico', e.target.value)}
-          />
+          <div className="relative">
+            <input
+              className="field-input pr-8"
+              placeholder="Buscar código ou descrição..."
+              value={showCtnDropdown ? ctnQuery : (data.codigoServico ? formatCTNDisplay(data.codigoServico) : '')}
+              onChange={(e) => {
+                setCtnQuery(e.target.value);
+                setShowCtnDropdown(true);
+              }}
+              onFocus={() => { setCtnQuery(''); setShowCtnDropdown(true); }}
+            />
+            <button
+              type="button"
+              onClick={() => { if (!showCtnDropdown) setCtnQuery(''); setShowCtnDropdown(v => !v); }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <ChevronDown className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          {ctnDescricaoSelecionada && !showCtnDropdown && (
+            <p className="text-xs text-muted-foreground mt-1 leading-snug line-clamp-2">{ctnDescricaoSelecionada}</p>
+          )}
+          {showCtnDropdown && ctnResults.length > 0 && (
+            <div className="absolute z-30 top-full mt-1 w-full md:w-[400px] max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+              {ctnResults.map(entry => (
+                <button
+                  key={entry.codigo}
+                  type="button"
+                  title={`${formatCTNDisplay(entry.codigo)} (${entry.itemFormatado}) — ${entry.descricao}`}
+                  onClick={() => handleSelectCTN(entry.codigo, entry.descricao)}
+                  className={`w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors ${data.codigoServico === entry.codigo ? 'bg-primary/10' : ''}`}
+                >
+                  <span className="font-mono text-xs font-semibold text-primary">{formatCTNDisplay(entry.codigo)}</span>
+                  <span className="text-xs text-muted-foreground ml-1.5">({entry.itemFormatado})</span>
+                  <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                </button>
+              ))}
+            </div>
+          )}
+          {showCtnDropdown && ctnQuery.trim() && ctnResults.length === 0 && (
+            <div className="absolute z-30 top-full mt-1 w-full md:w-[400px] rounded-lg border border-border bg-card shadow-lg p-3">
+              <p className="text-xs text-muted-foreground text-center">Nenhum resultado encontrado</p>
+            </div>
+          )}
         </div>
         <div>
           <label className="field-label">Descrição do Serviço*</label>
