@@ -229,7 +229,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
           <label className="field-label">Nome Empresarial</label>
           <input
             className="field-input"
-            placeholder="Razão social da empresa"
+            placeholder="Razão Social"
             value={data.nomeEmpresarial}
             onChange={(e) => update('nomeEmpresarial', e.target.value)}
           />
