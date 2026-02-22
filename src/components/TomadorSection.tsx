@@ -321,7 +321,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         {/* Contato */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
-            <label className="field-label">Localidade / UF</label>
+            <label className="field-label">Localidade/UF</label>
             <input
               className="field-input"
               placeholder="Cidade - UF"
