@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Shield, Send, Save, ArrowLeft, AlertCircle, Printer } from 'lucide-react';
+import { Shield, Send, Save, ArrowLeft, AlertCircle, Printer, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import PrestadorSection from '@/components/PrestadorSection';
@@ -9,23 +9,9 @@ import LocalPrestacaoSection, { type LocalPrestacaoData } from '@/components/emi
 import ValoresTotaisSection from '@/components/emissao/ValoresTotaisSection';
 import DANFSePrint from '@/components/emissao/DANFSePrint';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
-
-const INITIAL_PRESTADOR = {
-  nomeEmpresarial: '',
-  nomeFantasia: '',
-  cnpj: '',
-  inscricaoMunicipal: '',
-  inscricaoEstadual: '',
-  suframa: '',
-  cep: '',
-  logradouro: '',
-  numero: '',
-  complemento: '',
-  bairro: '',
-  localidadeUf: '',
-  email: '',
-  whatsapp: '',
-};
+import { usePrestador } from '@/hooks/usePrestador';
+import { useNotasFiscais } from '@/hooks/useNotasFiscais';
+import { useTomadores } from '@/hooks/useTomadores';
 
 const INITIAL_PRESTACAO: PrestacaoServicoData = {
   codigoServico: '',
@@ -55,27 +41,17 @@ function parsePercent(value: string): number {
 
 const EmissaoNFSe: React.FC = () => {
   const navigate = useNavigate();
+  const { prestador, setPrestador, config, loading: loadingPrestador } = usePrestador();
+  const { salvarNota, saving: savingNota } = useNotasFiscais();
+  const { salvarTomador } = useTomadores(config.id);
 
-  // Estado do Prestador (mesmos campos da aba "O Prestador")
-  const [prestador, setPrestador] = useState(INITIAL_PRESTADOR);
-
-
-  // Estado do Tomador
   const [tomador, setTomador] = useState<TomadorEmissaoData>(INITIAL_TOMADOR);
-
-  // Estado da Prestação do Serviço
   const [prestacao, setPrestacao] = useState<PrestacaoServicoData>(INITIAL_PRESTACAO);
   const [localPrestacao, setLocalPrestacao] = useState<LocalPrestacaoData>({ pais: 'Brasil', uf: '', municipio: '' });
   const [errors, setErrors] = useState<string[]>([]);
 
-  const autosave = useCallback(() => {
-    // placeholder para persistência futura
-  }, []);
+  const autosave = useCallback(() => {}, []);
 
-
-
-
-  // Cálculos automáticos
   const valores = useMemo(() => {
     const valorBruto = parseCurrency(prestacao.valorServico);
     const desconto = parseCurrency(prestacao.desconto);
@@ -111,7 +87,6 @@ const EmissaoNFSe: React.FC = () => {
   const validar = (): string[] => {
     const erros: string[] = [];
     if (!validateCNPJ(prestador.cnpj)) erros.push('CNPJ do prestador é obrigatório/inválido.');
-    
     if (!tomador.cnpjCpf) erros.push('CPF/CNPJ do tomador é obrigatório.');
     if (!tomador.nomeRazaoSocial) erros.push('Nome/Razão Social do tomador é obrigatório.');
     if (!tomador.email) erros.push('E-mail do tomador é obrigatório.');
@@ -123,30 +98,69 @@ const EmissaoNFSe: React.FC = () => {
     return erros;
   };
 
-  const handleEmitir = () => {
+  const handleEmitir = async () => {
     const erros = validar();
     setErrors(erros);
     if (erros.length > 0) {
       toast.error('Corrija os erros antes de emitir a NFS-e.');
       return;
     }
-    toast.success('NFS-e preparada para emissão! (Integração futura)');
+
+    // Save tomador first
+    const tomadorId = await salvarTomador({
+      prestador_id: config.id || null,
+      cnpj_cpf: tomador.cnpjCpf,
+      nome_razao_social: tomador.nomeRazaoSocial,
+      nome_fantasia: '',
+      inscricao_municipal: tomador.inscricaoMunicipal,
+      inscricao_estadual: '',
+      suframa: '',
+      substituto_tributario: false,
+      cep: tomador.cep,
+      logradouro: tomador.logradouro,
+      numero: tomador.numero,
+      complemento: tomador.complemento,
+      bairro: tomador.bairro,
+      localidade_uf: tomador.localidadeUf,
+      email: tomador.email,
+      whatsapp: '',
+      pais: tomador.pais || 'Brasil',
+    });
+
+    // Save nota fiscal
+    await salvarNota({
+      prestadorId: config.id || null,
+      tomadorId: tomadorId || null,
+      prestacao,
+      localPrestacao,
+      status: 'emitida',
+    });
   };
 
-  const handleSalvarRascunho = () => {
-    toast.info('Rascunho salvo! (Persistência futura)');
+  const handleSalvarRascunho = async () => {
+    await salvarNota({
+      prestadorId: config.id || null,
+      tomadorId: null,
+      prestacao,
+      localPrestacao,
+      status: 'rascunho',
+    });
   };
+
+  if (loadingPrestador) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate('/')}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
-            >
+            <button onClick={() => navigate('/')} className="p-2 rounded-lg hover:bg-muted transition-colors">
               <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </button>
             <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
@@ -163,19 +177,18 @@ const EmissaoNFSe: React.FC = () => {
               <Printer className="w-4 h-4" />
               <span className="hidden sm:inline">Imprimir</span>
             </button>
-            <button onClick={handleSalvarRascunho} className="btn-outline flex items-center gap-2 text-sm py-2">
-              <Save className="w-4 h-4" />
+            <button onClick={handleSalvarRascunho} disabled={savingNota} className="btn-outline flex items-center gap-2 text-sm py-2">
+              {savingNota ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               <span className="hidden sm:inline">Rascunho</span>
             </button>
-            <button onClick={handleEmitir} className="btn-primary flex items-center gap-2 text-sm py-2">
-              <Send className="w-4 h-4" />
+            <button onClick={handleEmitir} disabled={savingNota} className="btn-primary flex items-center gap-2 text-sm py-2">
+              {savingNota ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               <span className="hidden sm:inline">Emitir NFS-e</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Erros de validação */}
       {errors.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
           <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
@@ -190,32 +203,11 @@ const EmissaoNFSe: React.FC = () => {
         </div>
       )}
 
-      {/* Conteúdo */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-3">
-        {/* Seção Prestador - mesmos componentes da aba "O Prestador" */}
-        <PrestadorSection
-          data={prestador}
-          onChange={setPrestador}
-          onAutosave={autosave}
-          compact
-        />
-
-
-
-        {/* Seção Tomador */}
+        <PrestadorSection data={prestador} onChange={setPrestador} onAutosave={autosave} compact />
         <TomadorEmissao data={tomador} onChange={setTomador} />
-
-        {/* Seção Local da Prestação */}
         <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
-
-        {/* Seção Prestação do Serviço */}
-        <PrestacaoServicoSection
-          data={prestacao}
-          onChange={handlePrestacaoChange}
-          mostrarRetencoesFederais={true}
-        />
-
-        {/* Seção Valores e Totais */}
+        <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} />
         <ValoresTotaisSection
           valorBruto={valores.valorBruto}
           desconto={valores.desconto}
@@ -229,7 +221,6 @@ const EmissaoNFSe: React.FC = () => {
         />
       </main>
 
-      {/* Layout de impressão - modelo DANFSE Portal Nacional */}
       <DANFSePrint
         data={{
           prestador: {
