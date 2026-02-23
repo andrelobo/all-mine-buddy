@@ -196,7 +196,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
       </h2>
 
       {/* Identificação */}
-      <div className={`grid grid-cols-1 ${compact ? 'md:grid-cols-[1fr_0.8fr_4fr]' : 'md:grid-cols-[1.2fr_1fr_3.5fr]'} gap-4`}>
+      <div className={`grid grid-cols-1 ${compact ? 'md:grid-cols-[1fr_0.8fr_4fr]' : 'md:grid-cols-[1fr_1fr_1fr_1fr]'} gap-4`}>
         <div>
           <label className="field-label flex items-center gap-1"><FileText className="w-3.5 h-3.5" />CNPJ*</label>
           <div className="flex gap-2">
@@ -225,29 +225,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
           />
         </div>
 
-        <div>
-          <label className="field-label">Nome Empresarial</label>
-          <input
-            className="field-input"
-            placeholder="Razão Social"
-            value={data.nomeEmpresarial}
-            onChange={(e) => update('nomeEmpresarial', e.target.value)}
-          />
-        </div>
-      </div>
-
-      {/* Nome Fantasia + Inscrições (full mode) */}
-      {!compact && (
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-4 mt-4">
-          <div>
-            <label className="field-label">Nome Fantasia</label>
-            <input
-              className="field-input"
-              placeholder="Nome Fantasia"
-              value={data.nomeFantasia}
-              onChange={(e) => update('nomeFantasia', e.target.value)}
-            />
-          </div>
+        {!compact && (
           <div>
             <label className="field-label">Inscrição Estadual</label>
             <input
@@ -257,6 +235,9 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
               onChange={(e) => update('inscricaoEstadual', e.target.value)}
             />
           </div>
+        )}
+
+        {!compact && (
           <div>
             <label className="field-label">Inscrição Suframa</label>
             <input
@@ -266,8 +247,19 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
               onChange={(e) => update('suframa', e.target.value)}
             />
           </div>
-        </div>
-      )}
+        )}
+      </div>
+
+      {/* Nome Empresarial */}
+      <div className="mt-4">
+        <label className="field-label">Nome Empresarial</label>
+        <input
+          className="field-input"
+          placeholder="Razão Social"
+          value={data.nomeEmpresarial}
+          onChange={(e) => update('nomeEmpresarial', e.target.value)}
+        />
+      </div>
     </div>
   );
 };
