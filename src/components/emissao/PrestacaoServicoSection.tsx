@@ -75,6 +75,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
   // Favoritos dropdown state
   const [showFavoritosDropdown, setShowFavoritosDropdown] = useState(false);
   const [favoritosQuery, setFavoritosQuery] = useState('');
+  const [favoritoSelecionado, setFavoritoSelecionado] = useState<FavoritoItem | null>(null);
   const favoritosDropdownRef = useRef<HTMLDivElement>(null);
 
   const filteredFavoritos = useMemo(() => {
@@ -88,6 +89,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
   }, [favoritos, favoritosQuery]);
 
   const handleSelectFavorito = (fav: FavoritoItem) => {
+    setFavoritoSelecionado(fav);
     const primeiroVinculo = fav.vinculos[0];
     if (primeiroVinculo?.ctn) {
       const entry = getCTNByCode(primeiroVinculo.ctn);
@@ -197,7 +199,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
             <input
               className="field-input pr-8"
               placeholder={favoritos.length > 0 ? `Buscar entre ${favoritos.length} serviço(s)...` : 'Nenhum serviço cadastrado'}
-              value={showFavoritosDropdown ? favoritosQuery : ''}
+              value={showFavoritosDropdown ? favoritosQuery : (favoritoSelecionado ? `${favoritoSelecionado.codigo.replace(/(\d{4})(\d)(\d{2})/, '$1-$2/$3')} — ${favoritoSelecionado.cnaeDescricao}` : '')}
               onChange={(e) => { setFavoritosQuery(e.target.value); setShowFavoritosDropdown(true); }}
               onFocus={() => { setFavoritosQuery(''); setShowFavoritosDropdown(true); }}
               readOnly={favoritos.length === 0}
