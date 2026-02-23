@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Shield, Send, Save, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Shield, Send, Save, ArrowLeft, AlertCircle, Printer } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import PrestadorSection from '@/components/PrestadorSection';
@@ -158,6 +158,10 @@ const EmissaoNFSe: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            <button onClick={() => window.print()} className="btn-outline flex items-center gap-2 text-sm py-2">
+              <Printer className="w-4 h-4" />
+              <span className="hidden sm:inline">Imprimir</span>
+            </button>
             <button onClick={handleSalvarRascunho} className="btn-outline flex items-center gap-2 text-sm py-2">
               <Save className="w-4 h-4" />
               <span className="hidden sm:inline">Rascunho</span>
