@@ -238,7 +238,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
 
         {compact && (
           <div>
-            <label className="field-label">NOME EMPRESARIAL</label>
+            <label className="field-label">Nome Empresarial</label>
             <input
               className="field-input"
               placeholder="Razão Social"
