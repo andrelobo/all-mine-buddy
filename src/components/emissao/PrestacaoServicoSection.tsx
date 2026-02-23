@@ -150,15 +150,21 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Serviços Favoritos */}
-        <div className="flex flex-col">
-          <label className="field-label">&nbsp;</label>
-          <button
-            type="button"
-            className="flex items-center gap-1 text-[11px] py-[7px] px-2 rounded-md border border-[hsl(144,72%,28%)] text-[hsl(144,72%,28%)] hover:bg-[hsl(144,72%,28%)]/10 transition-colors font-bold animate-pulse whitespace-nowrap w-fit"
-          >
-            <Search className="w-3.5 h-3.5" />
-            Serviços Favoritos
-          </button>
+        <div ref={dropdownRef} className="relative">
+          <label className="field-label">Serviços Favoritos</label>
+          <div className="relative">
+            <input
+              className="field-input pr-8"
+              placeholder="Buscar serviço favorito..."
+              readOnly
+            />
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <ChevronDown className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
         <div ref={dropdownRef} className="relative">
           <label className="field-label">Código Tributação Nacional*</label>
