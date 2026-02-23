@@ -88,17 +88,17 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
     );
   }, [favoritos, favoritosQuery]);
 
-  const handleSelectFavorito = (fav: FavoritoItem) => {
+  const handleSelectFavorito = (fav: FavoritoItem, vinculo?: FavoritoItem['vinculos'][0]) => {
     setFavoritoSelecionado(fav);
-    const primeiroVinculo = fav.vinculos[0];
-    if (primeiroVinculo?.ctn) {
-      const entry = getCTNByCode(primeiroVinculo.ctn);
+    const v = vinculo || fav.vinculos[0];
+    if (v?.ctn) {
+      const entry = getCTNByCode(v.ctn);
       onChange({
         ...data,
-        codigoServico: primeiroVinculo.ctn,
-        descricaoServico: data.descricaoServico || primeiroVinculo.ctnDescricao || entry?.descricao || '',
+        codigoServico: v.ctn,
+        descricaoServico: data.descricaoServico || v.ctnDescricao || entry?.descricao || '',
       });
-      setCtnDescricaoSelecionada(primeiroVinculo.ctnDescricao || entry?.descricao || '');
+      setCtnDescricaoSelecionada(v.ctnDescricao || entry?.descricao || '');
     }
     setShowFavoritosDropdown(false);
     setFavoritosQuery('');
@@ -213,25 +213,52 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
             </button>
           </div>
           {showFavoritosDropdown && filteredFavoritos.length > 0 && (
-            <div className="absolute z-30 top-full mt-1 w-full md:w-[450px] max-h-52 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+            <div className="absolute z-30 top-full mt-1 w-full md:w-[500px] max-h-60 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
               {filteredFavoritos.map((fav, idx) => (
-                <button
-                  key={fav.codigo}
-                  type="button"
-                  onClick={() => handleSelectFavorito(fav)}
-                  className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
-                >
-                  <div className="flex items-center gap-2">
+                <div key={fav.codigo} className="border-b border-border/50 last:border-b-0">
+                  {/* Cabeçalho CNAE */}
+                  <div className="flex items-center gap-2 px-3 py-2 bg-muted/30">
                     <span className="text-xs font-bold text-muted-foreground shrink-0">{idx + 1}.</span>
                     <span className="font-mono text-xs font-semibold text-primary">{fav.codigo.replace(/(\d{4})(\d)(\d{2})/, '$1-$2/$3')}</span>
                     <span className="text-xs text-foreground/90 truncate">{fav.cnaeDescricao}</span>
                   </div>
-                  {fav.vinculos.length > 0 && fav.vinculos[0].ctn && (
-                    <p className="text-xs text-muted-foreground mt-0.5 ml-5">
-                      CTN {formatCTNDisplay(fav.vinculos[0].ctn)} — {fav.vinculos[0].ctnDescricao?.replace(/[.\s]+$/, '')}
-                    </p>
+                  {/* Sub-linhas de vínculos CTN/NBS */}
+                  {fav.vinculos.map((vinculo, vIdx) => (
+                    <button
+                      key={vinculo.ctn || vinculo.nbs || vIdx}
+                      type="button"
+                      onClick={() => handleSelectFavorito(fav, vinculo)}
+                      className="w-full text-left px-3 py-1.5 hover:bg-primary/5 transition-colors flex items-start gap-2"
+                    >
+                      <span className="text-muted-foreground text-xs w-6 text-right shrink-0">{vIdx + 1}.</span>
+                      <div className="flex-1 min-w-0 text-xs leading-relaxed">
+                        {vinculo.ctn && (
+                          <>
+                            <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.ctn}|</span>
+                            {' '}{(vinculo.ctnDescricao || '').replace(/[.\s]+$/, '')}
+                            {vinculo.nbs ? ' ' : '.'}
+                          </>
+                        )}
+                        {vinculo.nbs && (
+                          <>
+                            <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.nbs}|</span>
+                            {' '}{(vinculo.nbsDescricao || '').replace(/[.\s]+$/, '')}.
+                          </>
+                        )}
+                        {!vinculo.ctn && !vinculo.nbs && <span className="text-muted-foreground italic">Sem CTN/NBS</span>}
+                      </div>
+                    </button>
+                  ))}
+                  {fav.vinculos.length === 0 && (
+                    <button
+                      type="button"
+                      onClick={() => handleSelectFavorito(fav)}
+                      className="w-full text-left px-3 py-1.5 hover:bg-primary/5 transition-colors"
+                    >
+                      <span className="text-xs text-muted-foreground italic ml-8">Sem vínculos CTN/NBS</span>
+                    </button>
                   )}
-                </button>
+                </div>
               ))}
             </div>
           )}
