@@ -250,15 +250,52 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
         )}
       </div>
 
-      {/* Nome Empresarial */}
-      <div className="mt-4">
-        <label className="field-label">Nome Empresarial</label>
-        <input
-          className="field-input"
-          placeholder="Razão Social"
-          value={data.nomeEmpresarial}
-          onChange={(e) => update('nomeEmpresarial', e.target.value)}
-        />
+      {/* Nome Empresarial + Simples Nacional */}
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-end">
+        <div>
+          <label className="field-label">Nome Empresarial</label>
+          <input
+            className="field-input"
+            placeholder="Razão Social"
+            value={data.nomeEmpresarial}
+            onChange={(e) => update('nomeEmpresarial', e.target.value)}
+          />
+        </div>
+        <div className="flex items-center gap-3 pb-1">
+          <label className="field-label whitespace-nowrap mb-0">Optante Simples Nacional</label>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className={`px-3 py-1.5 text-sm rounded-l-md border transition-colors ${
+                simplesStatus.simples === true
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-muted text-muted-foreground border-border hover:bg-accent'
+              }`}
+              onClick={() => {
+                setSimplesStatus(prev => ({ ...prev, simples: true }));
+                setSimplesChecked(true);
+                onSimplesDetected?.(true);
+              }}
+            >
+              Sim
+            </button>
+            <button
+              type="button"
+              className={`px-3 py-1.5 text-sm rounded-r-md border border-l-0 transition-colors ${
+                simplesStatus.simples === false
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-muted text-muted-foreground border-border hover:bg-accent'
+              }`}
+              onClick={() => {
+                setSimplesStatus(prev => ({ ...prev, simples: false }));
+                setSimplesChecked(true);
+                onSimplesDetected?.(false);
+              }}
+            >
+              Não
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Endereço */}
