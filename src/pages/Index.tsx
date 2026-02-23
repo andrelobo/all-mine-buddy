@@ -235,19 +235,13 @@ const Index = () => {
                 <span className="hidden sm:inline">Novo Cadastro</span>
               </button>
             )}
-            {activeTab === 'prestador' && unsavedPrestador && (
-              <div className="flex items-center gap-2 bg-yellow-50 border border-yellow-400 text-yellow-800 px-3 py-1.5 rounded-md animate-pulse">
-                <Save className="w-4 h-4 text-yellow-600" />
-                <span className="text-xs font-bold">SALVE AS ALTERAÇÕES!</span>
-              </div>
-            )}
             <button
               onClick={activeTab === 'tomador' ? handleSalvarTomador : handleSalvar}
               disabled={savingPrestador}
-              className={`flex items-center gap-2 text-sm py-2 ${
+              className={`flex items-center gap-2 text-sm py-2 btn-primary ${
                 activeTab === 'prestador' && unsavedPrestador
-                  ? 'btn-primary ring-2 ring-yellow-400 ring-offset-2 animate-bounce'
-                  : 'btn-primary'
+                  ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2'
+                  : ''
               }`}
             >
               {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
