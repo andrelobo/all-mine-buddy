@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Shield, Send, Save, ArrowLeft, AlertCircle, Printer, Loader2 } from 'lucide-react';
+import { Shield, FileOutput, Save, ArrowLeft, AlertCircle, Printer, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import PrestadorSection from '@/components/PrestadorSection';
@@ -178,7 +178,7 @@ const EmissaoNFSe: React.FC = () => {
               <span className="hidden sm:inline">Visualizar</span>
             </button>
             <button onClick={handleEmitir} disabled={savingNota} className="btn-primary flex items-center gap-2 text-sm py-2">
-              {savingNota ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              {savingNota ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileOutput className="w-4 h-4" />}
               <span className="hidden sm:inline">Emitir</span>
             </button>
           </div>
