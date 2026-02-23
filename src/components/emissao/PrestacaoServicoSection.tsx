@@ -148,13 +148,13 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         <Briefcase className="w-5 h-5 text-primary" />
         Serviço Prestado
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_3fr] gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Serviços Favoritos */}
         <div className="flex flex-col">
           <label className="field-label">&nbsp;</label>
           <button
             type="button"
-            className="flex items-center gap-1 text-[11px] py-[7px] px-2 rounded-md border border-[hsl(144,72%,28%)] text-[hsl(144,72%,28%)] hover:bg-[hsl(144,72%,28%)]/10 transition-colors font-bold animate-pulse whitespace-nowrap"
+            className="flex items-center gap-1 text-[11px] py-[7px] px-2 rounded-md border border-[hsl(144,72%,28%)] text-[hsl(144,72%,28%)] hover:bg-[hsl(144,72%,28%)]/10 transition-colors font-bold animate-pulse whitespace-nowrap w-fit"
           >
             <Search className="w-3.5 h-3.5" />
             Serviços Favoritos
@@ -207,15 +207,16 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
             </div>
           )}
         </div>
-        <div>
-          <label className="field-label">Descrição do Serviço*</label>
-          <textarea
-            className="field-input min-h-[80px] resize-y"
-            placeholder="Descreva o serviço prestado conforme a NFS-e..."
-            value={data.descricaoServico}
-            onChange={(e) => update('descricaoServico', e.target.value)}
-          />
-        </div>
+      </div>
+
+      <div className="mt-4">
+        <label className="field-label">Descrição do Serviço*</label>
+        <textarea
+          className="field-input min-h-[80px] resize-y"
+          placeholder="Descreva o serviço prestado conforme a NFS-e..."
+          value={data.descricaoServico}
+          onChange={(e) => update('descricaoServico', e.target.value)}
+        />
       </div>
 
 
