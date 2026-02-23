@@ -170,7 +170,7 @@ export function usePrestador() {
       if (result.error) throw result.error;
       
       setConfig(prev => ({ ...prev, id: result.data.id }));
-      toast.success('Prestador salvo com sucesso!');
+      toast.success('Dados Salvos');
       return result.data.id;
     } catch (err: any) {
       console.error('Erro ao salvar prestador:', err);
