@@ -148,18 +148,18 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         <Briefcase className="w-5 h-5 text-primary" />
         Serviço Prestado
       </h2>
-      {/* Serviços Favoritos */}
-      <div className="mb-4">
-        <button
-          type="button"
-          className="flex items-center gap-1 text-[11px] py-1 px-2 rounded-md border border-[hsl(144,72%,28%)] text-[hsl(144,72%,28%)] hover:bg-[hsl(144,72%,28%)]/10 transition-colors font-bold animate-pulse"
-        >
-          <Search className="w-3.5 h-3.5" />
-          Serviços Favoritos
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_3fr] gap-4">
+        {/* Serviços Favoritos */}
+        <div className="flex flex-col">
+          <label className="field-label">&nbsp;</label>
+          <button
+            type="button"
+            className="flex items-center gap-1 text-[11px] py-[7px] px-2 rounded-md border border-[hsl(144,72%,28%)] text-[hsl(144,72%,28%)] hover:bg-[hsl(144,72%,28%)]/10 transition-colors font-bold animate-pulse whitespace-nowrap"
+          >
+            <Search className="w-3.5 h-3.5" />
+            Serviços Favoritos
+          </button>
+        </div>
         <div ref={dropdownRef} className="relative">
           <label className="field-label">Código Tributação Nacional*</label>
           <div className="relative">
