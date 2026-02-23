@@ -268,7 +268,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
               type="button"
               className={`px-3 py-1.5 text-sm rounded-l-md border transition-colors ${
                 simplesStatus.simples === true
-                  ? 'bg-primary text-primary-foreground border-primary'
+                  ? 'bg-[hsl(144,72%,28%)] text-white border-[hsl(144,72%,28%)]'
                   : 'bg-muted text-muted-foreground border-border hover:bg-accent'
               }`}
               onClick={() => {
