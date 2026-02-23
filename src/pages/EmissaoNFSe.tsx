@@ -47,7 +47,7 @@ const EmissaoNFSe: React.FC = () => {
 
   const [tomador, setTomador] = useState<TomadorEmissaoData>(INITIAL_TOMADOR);
   const [prestacao, setPrestacao] = useState<PrestacaoServicoData>(INITIAL_PRESTACAO);
-  const [localPrestacao, setLocalPrestacao] = useState<LocalPrestacaoData>({ pais: 'Brasil', uf: '', municipio: '' });
+  const [localPrestacao, setLocalPrestacao] = useState<LocalPrestacaoData>({ pais: 'Brasil', uf: 'AM', municipio: 'Manaus' });
   const [errors, setErrors] = useState<string[]>([]);
 
   const autosave = useCallback(() => {}, []);

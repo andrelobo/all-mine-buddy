@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { MapPin, Loader2, Globe } from 'lucide-react';
 
 export interface LocalPrestacaoData {
@@ -25,10 +25,14 @@ const UFS = [
 const LocalPrestacaoSection: React.FC<Props> = ({ data, onChange }) => {
   const [municipios, setMunicipios] = useState<MunicipioOption[]>([]);
   const [loadingMunicipios, setLoadingMunicipios] = useState(false);
-  const [searchMunicipio, setSearchMunicipio] = useState('');
+  const [searchMunicipio, setSearchMunicipio] = useState(data.municipio || '');
   const [showDropdown, setShowDropdown] = useState(false);
   const lastUf = useRef('');
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (data.uf) fetchMunicipios(data.uf);
+  }, []);
 
   const update = (field: keyof LocalPrestacaoData, value: string) => {
     onChange({ ...data, [field]: value });
