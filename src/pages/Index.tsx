@@ -239,7 +239,7 @@ const Index = () => {
               <span className="hidden sm:inline">
                 {activeTab === 'tomador' 
                   ? (editingTomadorId ? 'Atualizar Tomador' : 'Salvar Tomador') 
-                  : 'Salvar Configuração'}
+                  : 'Salvar Dados'}
               </span>
             </button>
           </div>
