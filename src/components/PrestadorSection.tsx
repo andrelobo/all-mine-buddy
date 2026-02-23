@@ -241,7 +241,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
             <div className="flex items-center justify-between gap-2">
               <label className="field-label mb-0">NOME EMPRESARIAL</label>
               {simplesStatus.simples === true && (
-                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[hsl(144,72%,28%)] text-white tracking-wide leading-none whitespace-nowrap">
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-semibold text-[hsl(144,72%,28%)] border border-[hsl(144,72%,28%)] tracking-wide leading-none whitespace-nowrap">
                   <Shield className="w-2.5 h-2.5" />
                   Simples Nacional
                 </span>
