@@ -144,13 +144,12 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
 
   return (
     <div className="section-card">
-      <h2 className="section-title">
-        <Briefcase className="w-5 h-5 text-primary" />
-        Serviço Prestado
-      </h2>
-      {/* Serviços Favoritos */}
       <div className="flex items-center justify-between mb-4">
-        <div />
+        <h2 className="section-title mb-0">
+          <Briefcase className="w-5 h-5 text-primary" />
+          Serviço Prestado
+        </h2>
+        {/* Serviços Favoritos */}
         <button
           type="button"
           className="flex items-center gap-1 text-[11px] py-1 px-2 rounded-md border border-[hsl(144,72%,28%)] text-[hsl(144,72%,28%)] hover:bg-[hsl(144,72%,28%)]/10 transition-colors font-bold animate-pulse"
