@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { Briefcase, Percent, ChevronDown, Search, MapPin } from 'lucide-react';
+import { Briefcase, Percent, ChevronDown, Search, MapPin, Star } from 'lucide-react';
 import { searchCTN, getCTNByCode } from '@/utils/ctn-data';
 
 export interface PrestacaoServicoData {
@@ -194,7 +194,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Serviços Favoritos */}
         <div ref={favoritosDropdownRef} className="relative">
-          <label className="field-label">Serviços Favoritos</label>
+          <label className="field-label flex items-center gap-1.5" style={{ color: 'hsl(43, 80%, 45%)' }}><Star className="w-4 h-4" fill="currentColor" />Serviços Favoritos</label>
           <div className="relative">
             <input
               className="field-input pr-8"
