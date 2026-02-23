@@ -148,7 +148,6 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         <Briefcase className="w-5 h-5 text-primary" />
         Serviço Prestado
       </h2>
-
       {/* Serviços Favoritos */}
       <div className="mb-4 pb-4 border-b border-border">
         <label className="field-label mb-3">Favoritos</label>
