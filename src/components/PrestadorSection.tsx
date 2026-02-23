@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Building2, Loader2, FileText } from 'lucide-react';
+import { Building2, Loader2, FileText, MapPin } from 'lucide-react';
 import { formatCNPJ, formatCEP, formatPhone, validateCNPJ } from '@/utils/validators';
 import { toast } from 'sonner';
 
@@ -260,6 +260,90 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
           onChange={(e) => update('nomeEmpresarial', e.target.value)}
         />
       </div>
+
+      {/* Endereço */}
+      {!compact && (
+        <div className="mt-5 pt-5 border-t border-border">
+          <label className="field-label flex items-center gap-1 mb-4">
+            <MapPin className="w-3.5 h-3.5" />
+            Endereço
+          </label>
+          <div className="grid grid-cols-1 md:grid-cols-[0.4fr_2.1fr_0.35fr_1.1fr] gap-4">
+            <div>
+              <label className="field-label">CEP</label>
+              <input
+                className="field-input"
+                placeholder="00000-000"
+                value={data.cep}
+                onChange={(e) => handleCEPChange(e.target.value)}
+                maxLength={9}
+              />
+              {loadingCEP && (
+                <Loader2 className="w-4 h-4 animate-spin text-primary mt-2" />
+              )}
+            </div>
+            <div>
+              <label className="field-label">Logradouro</label>
+              <input
+                className="field-input"
+                placeholder="Rua, Av., etc."
+                value={data.logradouro}
+                onChange={(e) => update('logradouro', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="field-label">Número</label>
+              <input
+                className="field-input"
+                placeholder="Nº"
+                value={data.numero}
+                onChange={(e) => update('numero', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="field-label">Bairro/Distrito</label>
+              <input
+                className="field-input"
+                placeholder="Bairro"
+                value={data.bairro}
+                onChange={(e) => update('bairro', e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div>
+              <label className="field-label">Localidade / UF</label>
+              <input
+                className="field-input"
+                placeholder="Cidade - UF"
+                value={data.localidadeUf}
+                onChange={(e) => update('localidadeUf', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="field-label">E-mail</label>
+              <input
+                className="field-input"
+                type="email"
+                placeholder="contato@empresa.com.br"
+                value={data.email}
+                onChange={(e) => update('email', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="field-label">WhatsApp</label>
+              <input
+                className="field-input"
+                placeholder="(00) 00000-0000"
+                value={data.whatsapp}
+                onChange={(e) => update('whatsapp', formatPhone(e.target.value))}
+                maxLength={15}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
