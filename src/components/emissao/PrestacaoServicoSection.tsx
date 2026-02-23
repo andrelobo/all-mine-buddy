@@ -177,6 +177,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
     setCtnDescricaoSelecionada(descricao);
     setCtnQuery('');
     setShowCtnDropdown(false);
+    setFavoritoSelecionado(null);
   };
 
   const handleSelectMunicipio = (nome: string) => {
