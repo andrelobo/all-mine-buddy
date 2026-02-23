@@ -175,7 +175,7 @@ const EmissaoNFSe: React.FC = () => {
           <div className="flex items-center gap-2">
             <button onClick={() => window.print()} className="btn-outline flex items-center gap-2 text-sm py-2">
               <Printer className="w-4 h-4" />
-              <span className="hidden sm:inline">Imprimir</span>
+              <span className="hidden sm:inline">Visualizar</span>
             </button>
             <button onClick={handleEmitir} disabled={savingNota} className="btn-primary flex items-center gap-2 text-sm py-2">
               {savingNota ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
