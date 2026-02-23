@@ -320,28 +320,6 @@ const Index = () => {
           <ListaServicosSection />
         )}
 
-        {/* Parâmetro Municipal - fixo em todas as abas */}
-        {ctnSelecionado && (
-          <div className="section-card">
-            <h3 className="text-sm font-bold flex items-center gap-2 mb-3" style={{ color: 'hsl(144, 72%, 28%)' }}>
-              Parâmetro Municipal
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="field-label">Código CTN</label>
-                <input className="field-input bg-muted" value={ctnSelecionado} readOnly />
-              </div>
-              <div>
-                <label className="field-label">Item</label>
-                <input className="field-input bg-muted" value={ctnItem} readOnly />
-              </div>
-              <div>
-                <label className="field-label">Descrição</label>
-                <input className="field-input bg-muted" value={ctnDescricao} readOnly />
-              </div>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );
