@@ -148,7 +148,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         <Briefcase className="w-5 h-5 text-primary" />
         Serviço Prestado
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_3fr] gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_3fr] gap-4">
         {/* Serviços Favoritos */}
         <div className="flex flex-col">
           <label className="field-label">&nbsp;</label>
