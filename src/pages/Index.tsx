@@ -196,16 +196,16 @@ const Index = () => {
               regimeApuracaoSNParametro={regimeApuracaoSNParametro}
               onRegimeApuracaoSNParametroChange={setRegimeApuracaoSNParametro}
               onAutosave={autosave}
-            />
-
-            <CTNSection
-              ctnSelecionado={ctnSelecionado}
-              onCtnChange={(codigo, descricao, itemFormatado) => {
-                setCtnSelecionado(codigo);
-                setCtnDescricao(descricao);
-                setCtnItem(itemFormatado);
-              }}
-            />
+            >
+              <CTNSection
+                ctnSelecionado={ctnSelecionado}
+                onCtnChange={(codigo, descricao, itemFormatado) => {
+                  setCtnSelecionado(codigo);
+                  setCtnDescricao(descricao);
+                  setCtnItem(itemFormatado);
+                }}
+              />
+            </RegimeEParametrosSection>
           </>
         )}
 

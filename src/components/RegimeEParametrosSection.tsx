@@ -38,12 +38,13 @@ const Toggle: React.FC<{ checked: boolean; onChange: (v: boolean) => void; label
   </label>
 );
 
-const RegimeEParametrosSection: React.FC<Props> = ({
+const RegimeEParametrosSection: React.FC<Props & { children?: React.ReactNode }> = ({
   regime, onRegimeChange,
   informarAliquotaSN, onInformarAliquotaChange,
   aliquotaSN, onAliquotaSNChange,
   regimeApuracaoSNParametro, onRegimeApuracaoSNParametroChange,
   onAutosave,
+  children,
 }) => {
   const regimes: { value: RegimeTributario; label: string; desc: string }[] = [
     { value: 'simples', label: 'Simples Nacional', desc: 'MEI, ME e EPP optantes pelo Simples' },
@@ -125,6 +126,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
           )}
         </div>
       )}
+      {children}
     </div>
   );
 };
