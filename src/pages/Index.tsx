@@ -233,7 +233,7 @@ const Index = () => {
                 className="btn-outline flex items-center gap-2 text-sm py-2"
               >
                 <PlusCircle className="w-4 h-4" />
-                <span className="hidden sm:inline">Novo Cadastro</span>
+                <span className="hidden sm:inline">Cadastro</span>
               </button>
             )}
             <button
@@ -248,7 +248,7 @@ const Index = () => {
               {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               <span className="hidden sm:inline">
                 {activeTab === 'tomador' 
-                  ? (editingTomadorId ? 'Atualizar Tomador' : 'SALVAR') 
+                  ? (editingTomadorId ? 'Atualizar' : 'SALVAR') 
                   : 'SALVAR'}
               </span>
             </button>
