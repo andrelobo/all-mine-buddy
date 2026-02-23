@@ -51,14 +51,19 @@ const EmissaoNFSe: React.FC = () => {
   const [prestacao, setPrestacao] = useState<PrestacaoServicoData>(INITIAL_PRESTACAO);
   const [localPrestacao, setLocalPrestacao] = useState<LocalPrestacaoData>({ pais: 'Brasil', uf: 'AM', municipio: 'Manaus' });
   const [errors, setErrors] = useState<string[]>([]);
+  const [tomadorSubstituto, setTomadorSubstituto] = useState(false);
 
   const autosave = useCallback(() => {}, []);
 
   const handleTomadorSelecionado = useCallback((t: TomadorDB) => {
-    if (t.substituto_tributario) {
+    const isSub = !!t.substituto_tributario;
+    setTomadorSubstituto(isSub);
+    if (isSub) {
       setPrestacao(prev => ({ ...prev, issRetido: true }));
+    } else {
+      setPrestacao(prev => ({ ...prev, issRetido: false, aliquota: config.optanteSimples ? '' : prev.aliquota }));
     }
-  }, []);
+  }, [config.optanteSimples]);
 
   const valores = useMemo(() => {
     const valorBruto = parseCurrency(prestacao.valorServico);
@@ -102,7 +107,7 @@ const EmissaoNFSe: React.FC = () => {
     if (!prestacao.codigoServico) erros.push('Código do serviço é obrigatório.');
     if (!prestacao.descricaoServico) erros.push('Descrição do serviço é obrigatória.');
     if (!prestacao.valorServico || parseCurrency(prestacao.valorServico) <= 0) erros.push('Valor do serviço deve ser maior que zero.');
-    if (!prestacao.aliquota) erros.push('Alíquota é obrigatória.');
+    if (!prestacao.aliquota && !(config.optanteSimples && !tomadorSubstituto)) erros.push('Alíquota é obrigatória.');
     return erros;
   };
 
@@ -211,7 +216,7 @@ const EmissaoNFSe: React.FC = () => {
         <PrestadorSection data={prestador} onChange={setPrestador} onAutosave={autosave} optanteSimples={config.optanteSimples} compact />
         <TomadorEmissao data={tomador} onChange={setTomador} onTomadorSelecionado={handleTomadorSelecionado} prestadorId={config.id} />
         <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
-        <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} favoritos={config.parametroMunicipal} />
+        <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} favoritos={config.parametroMunicipal} optanteSimples={config.optanteSimples} tomadorSubstituto={tomadorSubstituto} />
         <ValoresTotaisSection
           valorBruto={valores.valorBruto}
           desconto={valores.desconto}
