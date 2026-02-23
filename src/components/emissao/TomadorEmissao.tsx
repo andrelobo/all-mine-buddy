@@ -282,7 +282,7 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange, prestadorId }) => {
           <label className="field-label">Razão Social</label>
           <input
             className="field-input"
-            placeholder={isCPF ? 'Nome completo' : 'Razão social'}
+            placeholder="Tomador(a)"
             value={data.nomeRazaoSocial}
             onChange={(e) => update('nomeRazaoSocial', e.target.value)}
           />
