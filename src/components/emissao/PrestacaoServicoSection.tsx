@@ -341,9 +341,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
           />
         </div>
         <div>
-          <label className="field-label flex items-center gap-1">
-            <Percent className="w-3.5 h-3.5" />Alíquota (%)*
-          </label>
+          <label className="field-label">Alíquota*</label>
           <input
             className="field-input text-right"
             placeholder="0,00"
