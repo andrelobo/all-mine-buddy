@@ -217,15 +217,6 @@ const Index = () => {
           />
         )}
 
-        {/* Footer status */}
-        {configValida && (
-          <div className="section-card">
-            <div className="alert-success flex items-center gap-2 text-sm">
-              <CheckCircle className="w-4 h-4" />
-              Configuração fiscal válida para emissão de NFS-e
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );
