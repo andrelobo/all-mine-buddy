@@ -38,6 +38,7 @@ const TomadoresLista: React.FC<Props> = ({ tomadores, loading, onEditar, onExclu
                 <th className="text-left py-2 px-3 font-medium text-muted-foreground">Nome / Razão Social</th>
                 <th className="text-left py-2 px-3 font-medium text-muted-foreground hidden md:table-cell">Localidade</th>
                 <th className="text-left py-2 px-3 font-medium text-muted-foreground hidden lg:table-cell">E-mail</th>
+                <th className="text-center py-2 px-3 font-medium text-muted-foreground hidden sm:table-cell w-20">SubTrib</th>
                 <th className="text-right py-2 px-3 font-medium text-muted-foreground w-24">Ações</th>
               </tr>
             </thead>
@@ -48,6 +49,15 @@ const TomadoresLista: React.FC<Props> = ({ tomadores, loading, onEditar, onExclu
                   <td className="py-2.5 px-3 text-sm text-foreground">{t.nome_razao_social}</td>
                   <td className="py-2.5 px-3 text-sm text-muted-foreground hidden md:table-cell">{t.localidade_uf || '—'}</td>
                   <td className="py-2.5 px-3 text-sm text-muted-foreground hidden lg:table-cell">{t.email || '—'}</td>
+                  <td className="py-2.5 px-3 text-center hidden sm:table-cell">
+                    <span className={`inline-block px-2 py-0.5 text-xs rounded-md font-medium ${
+                      t.substituto_tributario
+                        ? 'bg-destructive/10 text-destructive'
+                        : 'bg-primary/10 text-primary'
+                    }`}>
+                      {t.substituto_tributario ? 'Sim' : 'Não'}
+                    </span>
+                  </td>
                   <td className="py-2.5 px-3 text-right">
                     <div className="flex items-center justify-end gap-1">
                       <button
