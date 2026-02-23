@@ -389,8 +389,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       {/* Retenções Federais */}
       {mostrarRetencoesFederais && (
         <div className="mt-5 pt-5 border-t border-border">
-          <label className="field-label flex items-center gap-1 mb-4">
-            <Percent className="w-3.5 h-3.5" />
+          <label className="field-label mb-4">
             Retenções Federais
           </label>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
