@@ -155,7 +155,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
           className="flex items-center gap-1 text-[11px] py-1 px-2 rounded-md border border-[hsl(144,72%,28%)] text-[hsl(144,72%,28%)] hover:bg-[hsl(144,72%,28%)]/10 transition-colors font-bold animate-pulse"
         >
           <Search className="w-3.5 h-3.5" />
-          Favoritos
+          Serviços Favoritos
         </button>
       </div>
 
