@@ -165,7 +165,7 @@ const Index = () => {
     { key: 'prestador', label: 'O Prestador', icon: <Building2 className="w-4 h-4" /> },
     { key: 'tomador', label: 'Tomadores', icon: <Users className="w-4 h-4" /> },
     
-    { key: 'emissao', label: 'NFSE', icon: <Receipt className="w-4 h-4" /> },
+    { key: 'emissao', label: 'DANFSE', icon: <Receipt className="w-4 h-4" /> },
   ];
 
   if (loadingPrestador) {
