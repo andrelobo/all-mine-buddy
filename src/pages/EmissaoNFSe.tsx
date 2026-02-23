@@ -7,6 +7,7 @@ import TomadorEmissao, { INITIAL_TOMADOR, type TomadorEmissaoData } from '@/comp
 import PrestacaoServicoSection, { type PrestacaoServicoData } from '@/components/emissao/PrestacaoServicoSection';
 import LocalPrestacaoSection, { type LocalPrestacaoData } from '@/components/emissao/LocalPrestacaoSection';
 import ValoresTotaisSection from '@/components/emissao/ValoresTotaisSection';
+import DANFSePrint from '@/components/emissao/DANFSePrint';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 
 const INITIAL_PRESTADOR = {
@@ -227,6 +228,41 @@ const EmissaoNFSe: React.FC = () => {
           retInss={valores.retInss}
         />
       </main>
+
+      {/* Layout de impressão - modelo DANFSE Portal Nacional */}
+      <DANFSePrint
+        data={{
+          prestador: {
+            cnpj: prestador.cnpj,
+            inscricaoMunicipal: prestador.inscricaoMunicipal,
+            nomeEmpresarial: prestador.nomeEmpresarial,
+            nomeFantasia: prestador.nomeFantasia,
+          },
+          tomador: {
+            cnpjCpf: tomador.cnpjCpf,
+            nomeRazaoSocial: tomador.nomeRazaoSocial,
+            inscricaoMunicipal: tomador.inscricaoMunicipal,
+            email: tomador.email,
+            logradouro: tomador.logradouro,
+            numero: tomador.numero,
+            complemento: tomador.complemento,
+            bairro: tomador.bairro,
+            localidadeUf: tomador.localidadeUf,
+            cep: tomador.cep,
+          },
+          localPrestacao,
+          servico: {
+            codigoServico: prestacao.codigoServico,
+            descricaoServico: prestacao.descricaoServico,
+            valorServico: prestacao.valorServico,
+            aliquota: prestacao.aliquota,
+            baseCalculo: prestacao.baseCalculo,
+            desconto: prestacao.desconto,
+            issRetido: prestacao.issRetido,
+          },
+          valores,
+        }}
+      />
     </div>
   );
 };
