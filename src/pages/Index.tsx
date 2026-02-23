@@ -37,6 +37,7 @@ const INITIAL_TOMADOR: TomadorData = {
 const Index = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<ActiveTab>('prestador');
+  const [unsavedPrestador, setUnsavedPrestador] = useState(false);
   
   // Prestador persistence
   const { prestador, setPrestador, config, setConfig, loading: loadingPrestador, saving: savingPrestador, salvarPrestador } = usePrestador();
@@ -81,6 +82,7 @@ const Index = () => {
 
   const autosave = useCallback(() => {
     checkValidity();
+    setUnsavedPrestador(true);
   }, [checkValidity]);
 
   const autosaveTomador = useCallback(() => {
@@ -93,6 +95,7 @@ const Index = () => {
       setInformarAliquotaSN(true);
       setRegimeApuracaoSNParametro(true);
     }
+    setUnsavedPrestador(true);
   }, []);
 
   const handleSalvar = async () => {
@@ -123,7 +126,8 @@ const Index = () => {
       ctnItem,
     };
 
-    await salvarPrestador(prestador, cfg);
+    const result = await salvarPrestador(prestador, cfg);
+    if (result) setUnsavedPrestador(false);
   };
 
   const handleSalvarTomador = async () => {
@@ -231,10 +235,19 @@ const Index = () => {
                 <span className="hidden sm:inline">Novo Cadastro</span>
               </button>
             )}
+            {activeTab === 'prestador' && unsavedPrestador && (
+              <span className="text-xs text-yellow-600 font-medium animate-pulse hidden sm:inline">
+                Alterações não salvas
+              </span>
+            )}
             <button
               onClick={activeTab === 'tomador' ? handleSalvarTomador : handleSalvar}
               disabled={savingPrestador}
-              className="btn-primary flex items-center gap-2 text-sm py-2"
+              className={`flex items-center gap-2 text-sm py-2 ${
+                activeTab === 'prestador' && unsavedPrestador
+                  ? 'btn-primary ring-2 ring-yellow-500 ring-offset-1'
+                  : 'btn-primary'
+              }`}
             >
               {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               <span className="hidden sm:inline">
