@@ -149,6 +149,15 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         Serviço Prestado
       </h2>
 
+      {/* Serviços Favoritos */}
+      <div className="mb-4 pb-4 border-b border-border">
+        <label className="field-label flex items-center gap-1.5 mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          Serviços Favoritos
+        </label>
+        <p className="text-xs text-muted-foreground">Nenhum serviço favorito cadastrado.</p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4">
         <div ref={dropdownRef} className="relative">
           <label className="field-label">Código Tributação Nacional*</label>
@@ -297,14 +306,8 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         </div>
       )}
 
-      {/* Serviços Favoritos */}
-      <div className="mt-5 pt-5 border-t border-border">
-        <label className="field-label flex items-center gap-1.5 mb-3">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-          Serviços Favoritos
-        </label>
-        <p className="text-xs text-muted-foreground">Nenhum serviço favorito cadastrado.</p>
-      </div>
+
+
     </div>
   );
 };
