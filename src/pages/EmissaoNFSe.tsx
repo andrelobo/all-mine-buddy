@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import PrestadorSection from '@/components/PrestadorSection';
 import TomadorEmissao, { INITIAL_TOMADOR, type TomadorEmissaoData } from '@/components/emissao/TomadorEmissao';
+import type { TomadorDB } from '@/hooks/useTomadores';
 import PrestacaoServicoSection, { type PrestacaoServicoData } from '@/components/emissao/PrestacaoServicoSection';
 import LocalPrestacaoSection, { type LocalPrestacaoData } from '@/components/emissao/LocalPrestacaoSection';
 import ValoresTotaisSection from '@/components/emissao/ValoresTotaisSection';
@@ -52,6 +53,12 @@ const EmissaoNFSe: React.FC = () => {
   const [errors, setErrors] = useState<string[]>([]);
 
   const autosave = useCallback(() => {}, []);
+
+  const handleTomadorSelecionado = useCallback((t: TomadorDB) => {
+    if (t.substituto_tributario) {
+      setPrestacao(prev => ({ ...prev, issRetido: true }));
+    }
+  }, []);
 
   const valores = useMemo(() => {
     const valorBruto = parseCurrency(prestacao.valorServico);
@@ -202,7 +209,7 @@ const EmissaoNFSe: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-3">
         <PrestadorSection data={prestador} onChange={setPrestador} onAutosave={autosave} optanteSimples={config.optanteSimples} compact />
-        <TomadorEmissao data={tomador} onChange={setTomador} prestadorId={config.id} />
+        <TomadorEmissao data={tomador} onChange={setTomador} onTomadorSelecionado={handleTomadorSelecionado} prestadorId={config.id} />
         <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
         <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} favoritos={config.parametroMunicipal} />
         <ValoresTotaisSection

@@ -22,6 +22,7 @@ export interface TomadorEmissaoData {
 interface Props {
   data: TomadorEmissaoData;
   onChange: (data: TomadorEmissaoData) => void;
+  onTomadorSelecionado?: (tomador: TomadorDB) => void;
   prestadorId?: string;
 }
 
@@ -91,7 +92,7 @@ const INITIAL_TOMADOR: TomadorEmissaoData = {
   pais: 'Brasil',
 };
 
-const TomadorEmissao: React.FC<Props> = ({ data, onChange, prestadorId }) => {
+const TomadorEmissao: React.FC<Props> = ({ data, onChange, onTomadorSelecionado, prestadorId }) => {
   const [loadingCNPJ, setLoadingCNPJ] = useState(false);
   const [loadingCEP, setLoadingCEP] = useState(false);
   const [tomadoresCadastrados, setTomadoresCadastrados] = useState<TomadorDB[]>([]);
@@ -140,6 +141,7 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange, prestadorId }) => {
       email: t.email || '',
       pais: t.pais || 'Brasil',
     });
+    onTomadorSelecionado?.(t);
     setShowDropdown(false);
     toast.success(`Tomador "${t.nome_razao_social}" selecionado!`);
   };
@@ -238,10 +240,15 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange, prestadorId }) => {
                   key={t.id}
                   type="button"
                   onClick={() => selecionarTomador(t)}
-                  className="w-full text-left px-3 py-2.5 hover:bg-muted/50 transition-colors border-b border-border/50 last:border-0"
+                  className={`w-full text-left px-3 py-2.5 hover:bg-muted/50 transition-colors border-b border-border/50 last:border-0 ${
+                    t.substituto_tributario ? 'bg-destructive/5' : ''
+                  }`}
                 >
-                  <p className="text-sm font-medium text-foreground truncate">{t.nome_razao_social}</p>
-                  <p className="text-xs text-muted-foreground">{t.cnpj_cpf} · {t.localidade_uf || '—'}</p>
+                  <p className={`text-sm font-medium truncate ${t.substituto_tributario ? 'text-destructive' : 'text-foreground'}`}>
+                    {t.nome_razao_social}
+                    {t.substituto_tributario && <span className="ml-1 text-[10px] font-bold">(SubTrib)</span>}
+                  </p>
+                  <p className={`text-xs ${t.substituto_tributario ? 'text-destructive/70' : 'text-muted-foreground'}`}>{t.cnpj_cpf} · {t.localidade_uf || '—'}</p>
                 </button>
               ))}
             </div>
