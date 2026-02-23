@@ -346,7 +346,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
           <label className="field-label">Alíquota %{optanteSimples && !tomadorSubstituto ? '' : '*'}</label>
           <input
             className={`field-input text-right ${optanteSimples && !tomadorSubstituto ? 'bg-muted/30 text-muted-foreground' : ''}`}
-            placeholder={optanteSimples && !tomadorSubstituto ? 'Simples' : '0,00'}
+            placeholder={optanteSimples && !tomadorSubstituto ? '0,00' : '0,00'}
             value={optanteSimples && !tomadorSubstituto ? '' : data.aliquota}
             onChange={(e) => update('aliquota', formatPercent(e.target.value))}
             maxLength={5}
