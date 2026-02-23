@@ -205,7 +205,7 @@ const EmissaoNFSe: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-3">
         <PrestadorSection data={prestador} onChange={setPrestador} onAutosave={autosave} optanteSimples={config.optanteSimples} compact />
-        <TomadorEmissao data={tomador} onChange={setTomador} />
+        <TomadorEmissao data={tomador} onChange={setTomador} prestadorId={config.id} />
         <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
         <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} />
         <ValoresTotaisSection
