@@ -208,9 +208,11 @@ const Index = () => {
                 className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors duration-150 ${
                   tab.key === 'emissao'
                     ? 'border-yellow-600 text-yellow-600'
-                    : activeTab === tab.key
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
+                    : tab.key === 'tomador'
+                      ? 'border-green-600 text-green-600'
+                      : activeTab === tab.key
+                        ? 'border-primary text-primary'
+                        : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                 }`}
               >
                 {tab.icon}
