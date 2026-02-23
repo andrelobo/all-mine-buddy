@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Save, CheckCircle, Printer, Building2, Users, Receipt, Loader2 } from 'lucide-react';
+import { Shield, Save, CheckCircle, Printer, Building2, Users, Receipt, Loader2, PlusCircle } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 import CTNSection from '@/components/CTNSection';
@@ -215,6 +215,15 @@ const Index = () => {
           </nav>
 
           <div className="flex items-center gap-2 no-print">
+            {activeTab === 'tomador' && editingTomadorId && (
+              <button
+                onClick={() => { setTomador(INITIAL_TOMADOR); setEditingTomadorId(null); }}
+                className="btn-outline flex items-center gap-2 text-sm py-2"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span className="hidden sm:inline">Novo Cadastro</span>
+              </button>
+            )}
             <button onClick={() => window.print()} className="btn-outline flex items-center gap-2 text-sm py-2">
               <Printer className="w-4 h-4" />
               <span className="hidden sm:inline">Imprimir</span>
@@ -226,7 +235,9 @@ const Index = () => {
             >
               {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               <span className="hidden sm:inline">
-                {activeTab === 'tomador' ? 'Salvar Tomador' : 'Salvar Configuração'}
+                {activeTab === 'tomador' 
+                  ? (editingTomadorId ? 'Atualizar Tomador' : 'Salvar Tomador') 
+                  : 'Salvar Configuração'}
               </span>
             </button>
           </div>
