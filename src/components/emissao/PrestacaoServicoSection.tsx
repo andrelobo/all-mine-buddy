@@ -30,6 +30,8 @@ interface Props {
   onChange: (data: PrestacaoServicoData) => void;
   mostrarRetencoesFederais: boolean;
   favoritos?: FavoritoItem[];
+  optanteSimples?: boolean;
+  tomadorSubstituto?: boolean;
 }
 
 function formatCurrency(value: string): string {
@@ -61,7 +63,7 @@ interface Municipio {
   nome: string;
 }
 
-const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarRetencoesFederais, favoritos = [] }) => {
+const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarRetencoesFederais, favoritos = [], optanteSimples = false, tomadorSubstituto = false }) => {
   const update = (field: keyof PrestacaoServicoData, value: string | boolean) => {
     onChange({ ...data, [field]: value });
   };
@@ -341,14 +343,19 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
           />
         </div>
         <div>
-          <label className="field-label">Alíquota %*</label>
+          <label className="field-label">Alíquota %{optanteSimples && !tomadorSubstituto ? '' : '*'}</label>
           <input
-            className="field-input text-right"
-            placeholder="0,00"
-            value={data.aliquota}
+            className={`field-input text-right ${optanteSimples && !tomadorSubstituto ? 'bg-muted/30 text-muted-foreground' : ''}`}
+            placeholder={optanteSimples && !tomadorSubstituto ? 'Simples' : '0,00'}
+            value={optanteSimples && !tomadorSubstituto ? '' : data.aliquota}
             onChange={(e) => update('aliquota', formatPercent(e.target.value))}
             maxLength={5}
+            disabled={optanteSimples && !tomadorSubstituto}
+            title={optanteSimples && !tomadorSubstituto ? 'Optante do Simples Nacional - alíquota paga na guia única' : ''}
           />
+          {optanteSimples && !tomadorSubstituto && (
+            <p className="text-[10px] text-muted-foreground mt-0.5">Simples Nacional — guia única</p>
+          )}
         </div>
         <div>
           <label className="field-label">Base de Cálculo (R$)</label>
