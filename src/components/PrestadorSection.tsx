@@ -39,11 +39,16 @@ async function fetchCNPJData(cnpj: string) {
     if (res.ok) {
       const d = await res.json();
       if (d.status !== 'ERROR') {
+        // ReceitaWS pode não incluir o tipo no logradouro
+        let logradouroCompleto = d.logradouro || '';
+        if (d.tipo && logradouroCompleto && !logradouroCompleto.toUpperCase().startsWith(d.tipo.toUpperCase())) {
+          logradouroCompleto = `${d.tipo} ${logradouroCompleto}`;
+        }
         return {
           razao_social: d.nome || '',
           nome_fantasia: d.fantasia || '',
           cep: d.cep?.replace(/[.\-]/g, '') || '',
-          logradouro: d.logradouro || '',
+          logradouro: logradouroCompleto,
           numero: d.numero || '',
           complemento: d.complemento || '',
           bairro: d.bairro || '',
@@ -62,11 +67,16 @@ async function fetchCNPJData(cnpj: string) {
   const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleaned}`);
   if (!res.ok) throw new Error('CNPJ não encontrado');
   const data = await res.json();
+  // BrasilAPI separa tipo de logradouro do logradouro
+  let logradouroCompleto = data.logradouro || '';
+  if (data.descricao_tipo_de_logradouro && logradouroCompleto && !logradouroCompleto.toUpperCase().startsWith(data.descricao_tipo_de_logradouro.toUpperCase())) {
+    logradouroCompleto = `${data.descricao_tipo_de_logradouro} ${logradouroCompleto}`;
+  }
   return {
     razao_social: data.razao_social || '',
     nome_fantasia: data.nome_fantasia || '',
     cep: data.cep || '',
-    logradouro: data.logradouro || '',
+    logradouro: logradouroCompleto,
     numero: data.numero || '',
     complemento: data.complemento || '',
     bairro: data.bairro || '',
