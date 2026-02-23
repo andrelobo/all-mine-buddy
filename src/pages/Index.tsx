@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import vascoEscudo from '@/assets/vasco-escudo.png';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Save, CheckCircle, Printer, Building2, Users, Receipt, Loader2, PlusCircle, List } from 'lucide-react';
+import { Shield, Save, CheckCircle, Printer, Building2, Users, Receipt, Loader2, PlusCircle, List, Trash2 } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 import CTNSection from '@/components/CTNSection';
@@ -226,6 +226,41 @@ const Index = () => {
           </nav>
 
           <div className="flex items-center gap-2 no-print">
+            {activeTab === 'prestador' && (
+              <button
+                onClick={() => {
+                  setPrestador({
+                    nomeEmpresarial: '',
+                    nomeFantasia: '',
+                    cnpj: '',
+                    inscricaoMunicipal: '',
+                    inscricaoEstadual: '',
+                    suframa: '',
+                    cep: '',
+                    logradouro: '',
+                    numero: '',
+                    complemento: '',
+                    bairro: '',
+                    localidadeUf: '',
+                    email: '',
+                    whatsapp: '',
+                  });
+                  setRegime(null);
+                  setAliquotaSN('');
+                  setInformarAliquotaSN(false);
+                  setRegimeApuracaoSNParametro(false);
+                  setCtnSelecionado(null);
+                  setCtnDescricao('');
+                  setCtnItem('');
+                  setUnsavedPrestador(true);
+                  toast.info('Cadastro limpo. Preencha os dados e salve.');
+                }}
+                className="btn-outline flex items-center gap-2 text-sm py-2 text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span className="hidden sm:inline">Limpar Cadastro</span>
+              </button>
+            )}
             {activeTab === 'tomador' && editingTomadorId && (
               <button
                 onClick={() => { setTomador(INITIAL_TOMADOR); setEditingTomadorId(null); }}
