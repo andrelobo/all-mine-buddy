@@ -365,11 +365,10 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
   };
 
   return (
-    <div className="section-card">
-      <h2 className="section-title mb-3">
-        <Receipt className="w-5 h-5 text-primary" />
+    <div className="mt-5 pt-5 border-t border-border">
+      <h3 className="text-sm font-bold flex items-center gap-2 mb-3" style={{ color: 'hsl(144, 72%, 28%)' }}>
         Parâmetro Municipal
-      </h2>
+      </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 items-stretch">
         {/* CNAE Card */}
