@@ -247,7 +247,7 @@ const Index = () => {
               {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               <span className="hidden sm:inline">
                 {activeTab === 'tomador' 
-                  ? (editingTomadorId ? 'Atualizar Tomador' : 'Salvar Tomador') 
+                  ? (editingTomadorId ? 'Atualizar Tomador' : 'SALVAR') 
                   : 'SALVAR'}
               </span>
             </button>
