@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import vascoEscudo from '@/assets/vasco-escudo.png';
 import { Shield, FileOutput, Save, ArrowLeft, AlertCircle, Printer, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -163,8 +164,8 @@ const EmissaoNFSe: React.FC = () => {
             <button onClick={() => navigate('/')} className="p-2 rounded-lg hover:bg-muted transition-colors">
               <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </button>
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              <Shield className="w-5 h-5 text-primary-foreground" />
+            <div className="w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center">
+              <img src={vascoEscudo} alt="Zerä Software" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 className="text-lg font-bold text-foreground tracking-tight">DANFSE</h1>

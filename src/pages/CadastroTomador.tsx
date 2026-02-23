@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import vascoEscudo from '@/assets/vasco-escudo.png';
 import { toast } from 'sonner';
 import { Shield, Save, CheckCircle, Printer, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -65,8 +66,8 @@ const CadastroTomador = () => {
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              <Shield className="w-5 h-5 text-primary-foreground" />
+            <div className="w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center">
+              <img src={vascoEscudo} alt="Zerä Software" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 className="text-lg font-bold text-foreground tracking-tight">
