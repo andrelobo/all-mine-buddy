@@ -238,20 +238,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
 
         {compact && (
           <div>
-            <div className="flex items-center gap-2">
-              <label className="field-label mb-0">NOME EMPRESARIAL</label>
-              {simplesStatus.simples === true && (
-                <span className="inline-flex items-center gap-1 py-1 px-2 rounded-md text-[11px] font-medium text-[hsl(144,72%,28%)] border border-[hsl(144,72%,28%)] leading-none whitespace-nowrap">
-                  <Shield className="w-2.5 h-2.5" />
-                  Simples Nacional
-                </span>
-              )}
-              {simplesStatus.simples === false && (
-                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-destructive text-destructive-foreground tracking-wide leading-none whitespace-nowrap">
-                  REGIME NORMAL
-                </span>
-              )}
-            </div>
+            <label className="field-label">NOME EMPRESARIAL</label>
             <input
               className="field-input"
               placeholder="Razão Social"
