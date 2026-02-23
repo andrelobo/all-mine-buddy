@@ -228,7 +228,7 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange, prestadorId }) => {
             className="btn-outline flex items-center gap-1.5 text-xs py-1.5 px-3"
           >
             <Search className="w-3.5 h-3.5" />
-            Selecionar Cadastrado ({tomadoresCadastrados.length})
+            Selecione Tomador(a) ({tomadoresCadastrados.length})
             <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
           </button>
           {showDropdown && tomadoresCadastrados.length > 0 && (
