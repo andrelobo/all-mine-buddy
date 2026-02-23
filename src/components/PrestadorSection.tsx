@@ -297,10 +297,10 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
           </div>
           <div className="flex items-center gap-3 pb-1">
             <label className="field-label whitespace-nowrap mb-0">Optante Simples Nacional</label>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-0">
               <button
                 type="button"
-                className={`px-4 py-2 text-base rounded-l-md border transition-colors ${
+                className={`px-2 py-1 text-xs rounded-l-md border transition-colors ${
                   simplesStatus.simples === true
                     ? 'bg-[hsl(144,72%,28%)] text-white border-[hsl(144,72%,28%)]'
                     : 'bg-muted text-muted-foreground border-border hover:bg-accent'
@@ -315,7 +315,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
               </button>
               <button
                 type="button"
-                className={`px-4 py-2 text-base rounded-r-md border border-l-0 transition-colors ${
+                className={`px-2 py-1 text-xs rounded-r-md border border-l-0 transition-colors ${
                   simplesStatus.simples === false
                     ? 'bg-destructive text-destructive-foreground border-destructive'
                     : 'bg-muted text-muted-foreground border-border hover:bg-accent'
