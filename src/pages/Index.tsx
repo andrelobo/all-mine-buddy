@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Save, CheckCircle, Printer, Building2, Users, Receipt, Loader2, PlusCircle } from 'lucide-react';
+import { Shield, Save, CheckCircle, Printer, Building2, Users, Receipt, Loader2, PlusCircle, List } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 import CTNSection from '@/components/CTNSection';
@@ -11,8 +11,9 @@ import TomadoresLista from '@/components/TomadoresLista';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 import { usePrestador } from '@/hooks/usePrestador';
 import { useTomadores } from '@/hooks/useTomadores';
+import ListaServicosSection from '@/components/ListaServicosSection';
 
-type ActiveTab = 'prestador' | 'tomador' | 'emissao';
+type ActiveTab = 'prestador' | 'tomador' | 'servicos' | 'emissao';
 
 const INITIAL_TOMADOR: TomadorData = {
   nomeEmpresarial: '',
@@ -162,6 +163,7 @@ const Index = () => {
   const tabs: { key: ActiveTab; label: string; icon: React.ReactNode }[] = [
     { key: 'prestador', label: 'O Prestador', icon: <Building2 className="w-4 h-4" /> },
     { key: 'tomador', label: 'Tomadores', icon: <Users className="w-4 h-4" /> },
+    { key: 'servicos', label: 'Lista de Serviços', icon: <List className="w-4 h-4" /> },
     { key: 'emissao', label: 'Nota Fiscal', icon: <Receipt className="w-4 h-4" /> },
   ];
 
@@ -312,6 +314,10 @@ const Index = () => {
               onExcluir={excluirTomador}
             />
           </>
+        )}
+
+        {activeTab === 'servicos' && (
+          <ListaServicosSection />
         )}
 
         {/* Parâmetro Municipal - fixo em todas as abas */}
