@@ -153,6 +153,13 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
       onChange(updated);
       onAutosave();
       toast.success('Dados do CNPJ preenchidos automaticamente!');
+
+      // Se o endereço veio incompleto mas temos CEP, buscar via CEP
+      const cepClean = (result.cep || '').replace(/\D/g, '');
+      if (cepClean.length === 8 && (!result.logradouro || !result.bairro)) {
+        lastFetchedCEP.current = ''; // forçar nova busca
+        buscarCEP(formatCEP(cepClean));
+      }
     } catch {
       toast.error('Não foi possível consultar o CNPJ.');
     } finally {
