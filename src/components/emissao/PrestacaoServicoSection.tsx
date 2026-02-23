@@ -341,7 +341,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
           />
         </div>
         <div>
-          <label className="field-label">Alíquota*</label>
+          <label className="field-label">Alíquota %*</label>
           <input
             className="field-input text-right"
             placeholder="0,00"
