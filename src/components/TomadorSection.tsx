@@ -268,22 +268,38 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             onChange={(e) => update('nomeEmpresarial', e.target.value)}
           />
         </div>
-        <div className="flex items-center gap-2 pb-1">
+        <div className="flex items-center gap-3 pb-1">
           <label className="field-label whitespace-nowrap mb-0">Substituto Tributário</label>
-          <button
-            type="button"
-            onClick={() => {
-              onChange({ ...data, substitutoTributario: !data.substitutoTributario });
-              onAutosave();
-            }}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
-              data.substitutoTributario
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted text-muted-foreground'
-            }`}
-          >
-            {data.substitutoTributario ? 'Sim' : 'Não'}
-          </button>
+          <div className="flex items-center gap-0">
+            <button
+              type="button"
+              className={`px-3 py-1.5 text-sm rounded-l-md border transition-colors ${
+                data.substitutoTributario
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-muted text-muted-foreground border-border hover:bg-accent'
+              }`}
+              onClick={() => {
+                onChange({ ...data, substitutoTributario: true });
+                onAutosave();
+              }}
+            >
+              Sim
+            </button>
+            <button
+              type="button"
+              className={`px-3 py-1.5 text-sm rounded-r-md border border-l-0 transition-colors ${
+                !data.substitutoTributario
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-muted text-muted-foreground border-border hover:bg-accent'
+              }`}
+              onClick={() => {
+                onChange({ ...data, substitutoTributario: false });
+                onAutosave();
+              }}
+            >
+              Não
+            </button>
+          </div>
         </div>
       </div>
 
