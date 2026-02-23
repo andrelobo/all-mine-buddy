@@ -18,10 +18,18 @@ export interface PrestacaoServicoData {
   retInss: string;
 }
 
+interface FavoritoItem {
+  codigo: string;
+  cnaeDescricao: string;
+  lc116Item: string;
+  vinculos: { ctn?: string; ctnDescricao?: string; nbs?: string; nbsDescricao?: string }[];
+}
+
 interface Props {
   data: PrestacaoServicoData;
   onChange: (data: PrestacaoServicoData) => void;
   mostrarRetencoesFederais: boolean;
+  favoritos?: FavoritoItem[];
 }
 
 function formatCurrency(value: string): string {
@@ -53,7 +61,7 @@ interface Municipio {
   nome: string;
 }
 
-const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarRetencoesFederais }) => {
+const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarRetencoesFederais, favoritos = [] }) => {
   const update = (field: keyof PrestacaoServicoData, value: string | boolean) => {
     onChange({ ...data, [field]: value });
   };
@@ -62,7 +70,37 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
   const [ctnQuery, setCtnQuery] = useState('');
   const [showCtnDropdown, setShowCtnDropdown] = useState(false);
   const [ctnDescricaoSelecionada, setCtnDescricaoSelecionada] = useState('');
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const ctnDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Favoritos dropdown state
+  const [showFavoritosDropdown, setShowFavoritosDropdown] = useState(false);
+  const [favoritosQuery, setFavoritosQuery] = useState('');
+  const favoritosDropdownRef = useRef<HTMLDivElement>(null);
+
+  const filteredFavoritos = useMemo(() => {
+    if (!favoritosQuery.trim()) return favoritos;
+    const q = favoritosQuery.toLowerCase();
+    return favoritos.filter(f =>
+      f.cnaeDescricao.toLowerCase().includes(q) ||
+      f.codigo.includes(q) ||
+      f.vinculos.some(v => v.ctnDescricao?.toLowerCase().includes(q) || v.ctn?.includes(q))
+    );
+  }, [favoritos, favoritosQuery]);
+
+  const handleSelectFavorito = (fav: FavoritoItem) => {
+    const primeiroVinculo = fav.vinculos[0];
+    if (primeiroVinculo?.ctn) {
+      const entry = getCTNByCode(primeiroVinculo.ctn);
+      onChange({
+        ...data,
+        codigoServico: primeiroVinculo.ctn,
+        descricaoServico: data.descricaoServico || primeiroVinculo.ctnDescricao || entry?.descricao || '',
+      });
+      setCtnDescricaoSelecionada(primeiroVinculo.ctnDescricao || entry?.descricao || '');
+    }
+    setShowFavoritosDropdown(false);
+    setFavoritosQuery('');
+  };
 
   // Local prestação state
   const [ufSelecionada, setUfSelecionada] = useState('');
@@ -110,8 +148,11 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (ctnDropdownRef.current && !ctnDropdownRef.current.contains(e.target as Node)) {
         setShowCtnDropdown(false);
+      }
+      if (favoritosDropdownRef.current && !favoritosDropdownRef.current.contains(e.target as Node)) {
+        setShowFavoritosDropdown(false);
       }
       if (localDropdownRef.current && !localDropdownRef.current.contains(e.target as Node)) {
         setShowLocalDropdown(false);
@@ -150,23 +191,55 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Serviços Favoritos */}
-        <div ref={dropdownRef} className="relative">
+        <div ref={favoritosDropdownRef} className="relative">
           <label className="field-label">Serviços Favoritos</label>
           <div className="relative">
             <input
               className="field-input pr-8"
-              placeholder="Buscar serviço favorito..."
-              readOnly
+              placeholder={favoritos.length > 0 ? `Buscar entre ${favoritos.length} serviço(s)...` : 'Nenhum serviço cadastrado'}
+              value={showFavoritosDropdown ? favoritosQuery : ''}
+              onChange={(e) => { setFavoritosQuery(e.target.value); setShowFavoritosDropdown(true); }}
+              onFocus={() => { setFavoritosQuery(''); setShowFavoritosDropdown(true); }}
+              readOnly={favoritos.length === 0}
             />
             <button
               type="button"
+              onClick={() => { if (favoritos.length > 0) { setFavoritosQuery(''); setShowFavoritosDropdown(v => !v); } }}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               <ChevronDown className="w-3.5 h-3.5" />
             </button>
           </div>
+          {showFavoritosDropdown && filteredFavoritos.length > 0 && (
+            <div className="absolute z-30 top-full mt-1 w-full md:w-[450px] max-h-52 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+              {filteredFavoritos.map((fav, idx) => (
+                <button
+                  key={fav.codigo}
+                  type="button"
+                  onClick={() => handleSelectFavorito(fav)}
+                  className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-muted-foreground shrink-0">{idx + 1}.</span>
+                    <span className="font-mono text-xs font-semibold text-primary">{fav.codigo.replace(/(\d{4})(\d)(\d{2})/, '$1-$2/$3')}</span>
+                    <span className="text-xs text-foreground/90 truncate">{fav.cnaeDescricao}</span>
+                  </div>
+                  {fav.vinculos.length > 0 && fav.vinculos[0].ctn && (
+                    <p className="text-xs text-muted-foreground mt-0.5 ml-5">
+                      CTN {formatCTNDisplay(fav.vinculos[0].ctn)} — {fav.vinculos[0].ctnDescricao?.replace(/[.\s]+$/, '')}
+                    </p>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+          {showFavoritosDropdown && favoritosQuery.trim() && filteredFavoritos.length === 0 && (
+            <div className="absolute z-30 top-full mt-1 w-full rounded-lg border border-border bg-card shadow-lg p-3">
+              <p className="text-xs text-muted-foreground text-center">Nenhum favorito encontrado</p>
+            </div>
+          )}
         </div>
-        <div ref={dropdownRef} className="relative">
+        <div ref={ctnDropdownRef} className="relative">
           <label className="field-label">Código Tributação Nacional*</label>
           <div className="relative">
             <input
