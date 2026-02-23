@@ -332,7 +332,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
         <div>
-          <label className="field-label">Valor do Serviço* (R$)</label>
+          <label className="field-label">Valor do Serviço (R$)*</label>
           <input
             className="field-input text-right"
             placeholder="0,00"
