@@ -353,9 +353,6 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
             disabled={optanteSimples && !tomadorSubstituto}
             title={optanteSimples && !tomadorSubstituto ? 'Optante do Simples Nacional - alíquota paga na guia única' : ''}
           />
-          {optanteSimples && !tomadorSubstituto && (
-            <p className="text-[10px] text-muted-foreground mt-0.5">Simples Nacional — guia única</p>
-          )}
         </div>
         <div>
           <label className="field-label">Base de Cálculo (R$)</label>
