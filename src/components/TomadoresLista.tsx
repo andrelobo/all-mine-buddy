@@ -44,10 +44,10 @@ const TomadoresLista: React.FC<Props> = ({ tomadores, loading, onEditar, onExclu
             <tbody>
               {tomadores.map((t) => (
                 <tr key={t.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                  <td className="py-2.5 px-3 font-mono text-xs">{t.cnpj_cpf}</td>
-                  <td className="py-2.5 px-3 font-medium text-foreground">{t.nome_razao_social}</td>
-                  <td className="py-2.5 px-3 text-muted-foreground hidden md:table-cell">{t.localidade_uf || '—'}</td>
-                  <td className="py-2.5 px-3 text-muted-foreground hidden lg:table-cell">{t.email || '—'}</td>
+                  <td className="py-2.5 px-3 text-sm text-foreground">{t.cnpj_cpf}</td>
+                  <td className="py-2.5 px-3 text-sm text-foreground">{t.nome_razao_social}</td>
+                  <td className="py-2.5 px-3 text-sm text-muted-foreground hidden md:table-cell">{t.localidade_uf || '—'}</td>
+                  <td className="py-2.5 px-3 text-sm text-muted-foreground hidden lg:table-cell">{t.email || '—'}</td>
                   <td className="py-2.5 px-3 text-right">
                     <div className="flex items-center justify-end gap-1">
                       <button
