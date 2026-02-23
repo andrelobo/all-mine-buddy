@@ -206,9 +206,11 @@ const Index = () => {
                 key={tab.key}
                 onClick={() => tab.key === 'emissao' ? navigate('/emissao-nfse') : setActiveTab(tab.key)}
                 className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors duration-150 ${
-                  activeTab === tab.key
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
+                  tab.key === 'emissao'
+                    ? 'border-yellow-600 text-yellow-600'
+                    : activeTab === tab.key
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                 }`}
               >
                 {tab.icon}
