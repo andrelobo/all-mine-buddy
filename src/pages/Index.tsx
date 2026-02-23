@@ -210,7 +210,7 @@ const Index = () => {
                     ? 'border-yellow-600 text-yellow-600'
                     : tab.key === 'tomador'
                       ? 'border-green-600 text-green-600'
-                      : activeTab === tab.key
+                      : tab.key === 'prestador'
                         ? 'border-primary text-primary'
                         : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                 }`}
