@@ -275,7 +275,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
               type="button"
               className={`px-3 py-1.5 text-sm rounded-l-md border transition-colors ${
                 data.substitutoTributario
-                  ? 'bg-primary text-primary-foreground border-primary'
+                  ? 'bg-destructive text-destructive-foreground border-destructive'
                   : 'bg-muted text-muted-foreground border-border hover:bg-accent'
               }`}
               onClick={() => {
