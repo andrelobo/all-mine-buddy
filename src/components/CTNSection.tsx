@@ -601,10 +601,11 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange, savedCnaes, 
         <div className="mt-1 space-y-2">
           
           <div className="space-y-1.5">
-            {cnaes.map((cnae) => (
+            {cnaes.map((cnae, index) => (
               <CnaeListItem
                 key={cnae.codigo}
                 cnae={cnae}
+                ordem={index + 1}
                 onRemove={() => handleRemoveCNAE(cnae.codigo)}
                 onTogglePrincipal={() => handleTogglePrincipal(cnae.codigo)}
                 onToggleVinculadoSN={() => handleToggleVinculadoSN(cnae.codigo)}
@@ -629,6 +630,7 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange, savedCnaes, 
 /* ─── Sub-component for each CNAE list item (agrupado, 1:N) ─── */
 interface CnaeListItemProps {
   cnae: CnaeAdicionado;
+  ordem: number;
   onRemove: () => void;
   onTogglePrincipal: () => void;
   onToggleVinculadoSN: () => void;
@@ -640,7 +642,7 @@ interface CnaeListItemProps {
 }
 
 const CnaeListItem: React.FC<CnaeListItemProps> = ({
-  cnae, onRemove, onTogglePrincipal, onToggleVinculadoSN, onAddVinculo, onRemoveVinculo,
+  cnae, ordem, onRemove, onTogglePrincipal, onToggleVinculadoSN, onAddVinculo, onRemoveVinculo,
   onUpdateVinculoCtn, onUpdateVinculoNbs, formatCTNDisplay
 }) => {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -684,6 +686,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
       {/* Cabeçalho do CNAE */}
       <div className="flex items-center justify-between gap-2 p-2.5">
         <div className="flex items-center gap-2 flex-1 min-w-0">
+          <span className="text-xs font-bold text-muted-foreground shrink-0">{ordem}.</span>
           <span className="font-mono text-xs font-semibold text-primary">{formatCNAECode(cnae.codigo)}</span>
           <span className="text-xs text-foreground/90 truncate">{cnae.cnaeDescricao.replace(/[.\s]+$/, '')}</span>
           {cnae.isManual && (
