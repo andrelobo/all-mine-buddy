@@ -85,7 +85,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
       </div>
 
       {regime && (
-        <h3 className="text-sm font-bold text-muted-foreground flex items-center gap-2 mb-3">
+        <h3 className="text-sm font-bold flex items-center gap-2 mb-3" style={{ color: 'hsl(144, 72%, 28%)' }}>
           Parâmetro Federal
         </h3>
       )}
