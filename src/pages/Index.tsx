@@ -227,10 +227,6 @@ const Index = () => {
                 <span className="hidden sm:inline">Novo Cadastro</span>
               </button>
             )}
-            <button onClick={() => window.print()} className="btn-outline flex items-center gap-2 text-sm py-2">
-              <Printer className="w-4 h-4" />
-              <span className="hidden sm:inline">Imprimir</span>
-            </button>
             <button
               onClick={activeTab === 'tomador' ? handleSalvarTomador : handleSalvar}
               disabled={savingPrestador}
