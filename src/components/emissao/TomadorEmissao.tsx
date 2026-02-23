@@ -279,7 +279,7 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange, prestadorId }) => {
           />
         </div>
         <div>
-          <label className="field-label">Tomador(a)</label>
+          <label className="field-label">Razão Social</label>
           <input
             className="field-input"
             placeholder={isCPF ? 'Nome completo' : 'Razão social'}
