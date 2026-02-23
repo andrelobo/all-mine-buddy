@@ -80,21 +80,22 @@ export function usePrestador() {
 
       if (error) throw error;
       if (data) {
+        const { formatCNPJ, formatCEP, formatPhone } = await import('@/utils/validators');
         setPrestador({
           nomeEmpresarial: data.nome_empresarial || '',
           nomeFantasia: data.nome_fantasia || '',
-          cnpj: data.cnpj || '',
+          cnpj: data.cnpj ? formatCNPJ(data.cnpj) : '',
           inscricaoMunicipal: data.inscricao_municipal || '',
           inscricaoEstadual: data.inscricao_estadual || '',
           suframa: data.suframa || '',
-          cep: data.cep || '',
+          cep: data.cep ? formatCEP(data.cep) : '',
           logradouro: data.logradouro || '',
           numero: data.numero || '',
           complemento: data.complemento || '',
           bairro: data.bairro || '',
           localidadeUf: data.localidade_uf || '',
           email: data.email || '',
-          whatsapp: data.whatsapp || '',
+          whatsapp: data.whatsapp ? formatPhone(data.whatsapp) : '',
         });
         setConfig({
           id: data.id,
