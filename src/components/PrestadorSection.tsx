@@ -133,10 +133,12 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
       };
       onChange(updated);
       onAutosave();
-      setSimplesStatus({ simples: result.opcao_pelo_simples, mei: null });
+      setSimplesStatus({ simples: result.opcao_pelo_simples === true ? true : false, mei: null });
       setSimplesChecked(true);
       if (result.opcao_pelo_simples === true) {
         onSimplesDetected?.(true);
+      } else {
+        onSimplesDetected?.(false);
       }
       toast.success('Dados do CNPJ preenchidos automaticamente!');
     } catch {
