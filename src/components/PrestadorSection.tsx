@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Building2, Loader2, FileText, MapPin } from 'lucide-react';
+import { Building2, Loader2, FileText, MapPin, Shield } from 'lucide-react';
 import { formatCNPJ, formatCEP, formatPhone, validateCNPJ } from '@/utils/validators';
 import { toast } from 'sonner';
 
@@ -201,10 +201,23 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
 
   return (
     <div className="section-card">
-      <h2 className="section-title">
-        <Building2 className="w-5 h-5 text-primary" />
-        O Prestador
-      </h2>
+      <div className="flex items-center gap-3">
+        <h2 className="section-title mb-0">
+          <Building2 className="w-5 h-5 text-primary" />
+          O Prestador
+        </h2>
+        {compact && simplesStatus.simples === true && (
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-[hsl(144,72%,28%)] text-white shadow-sm tracking-wide">
+            <Shield className="w-3.5 h-3.5" />
+            SIMPLES NACIONAL
+          </span>
+        )}
+        {compact && simplesStatus.simples === false && (
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-destructive text-destructive-foreground shadow-sm tracking-wide">
+            REGIME NORMAL
+          </span>
+        )}
+      </div>
 
       {/* Identificação */}
       <div className={`grid grid-cols-1 ${compact ? 'md:grid-cols-[1fr_0.8fr_4fr]' : 'md:grid-cols-[1fr_1fr_1fr_1fr]'} gap-4`}>
