@@ -243,7 +243,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
               {simplesStatus.simples === true && (
                 <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[hsl(144,72%,28%)] text-white tracking-wide leading-none whitespace-nowrap">
                   <Shield className="w-2.5 h-2.5" />
-                  SIMPLES NACIONAL
+                  Simples Nacional
                 </span>
               )}
               {simplesStatus.simples === false && (
