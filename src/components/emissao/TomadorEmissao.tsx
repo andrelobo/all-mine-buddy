@@ -225,7 +225,7 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange, prestadorId }) => {
           <button
             type="button"
             onClick={() => setShowDropdown(!showDropdown)}
-            className="flex items-center gap-1 text-[11px] py-1 px-2 rounded-md border border-destructive text-destructive hover:bg-destructive/10 transition-colors font-medium animate-pulse"
+            className="flex items-center gap-1 text-[11px] py-1 px-2 rounded-md border border-destructive text-destructive hover:bg-destructive/10 transition-colors font-bold animate-pulse"
           >
             <Search className="w-3.5 h-3.5" />
             Selecione ({tomadoresCadastrados.length})
