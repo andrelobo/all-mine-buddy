@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Receipt, Search, CheckCircle2, AlertCircle, X, Plus, Trash2, PenLine, ChevronDown, Star } from 'lucide-react';
 import { getCTNByCode, isValidCTN, searchCTN, searchCTNByItem } from '@/utils/ctn-data';
 import { CNAE_LIST, formatCNAECode, getLC116Item, type CNAEEntry } from '@/utils/cnae-lc116';
@@ -31,7 +31,11 @@ interface CnaeAdicionado {
 interface Props {
   ctnSelecionado: string | null;
   onCtnChange: (codigo: string, descricao: string, itemFormatado: string) => void;
+  savedCnaes?: CnaeAdicionado[];
+  onCnaesChange?: (cnaes: CnaeAdicionado[]) => void;
 }
+
+export type { CnaeAdicionado, CtnNbsVinculo };
 
 let vinculoIdCounter = 0;
 function nextVinculoId() {
@@ -42,10 +46,25 @@ function createVinculo(ctn?: string, ctnDescricao?: string, nbs?: string, nbsDes
   return { id: nextVinculoId(), ctn: ctn || undefined, ctnDescricao, nbs: nbs || undefined, nbsDescricao };
 }
 
-const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange }) => {
+const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange, savedCnaes, onCnaesChange }) => {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const [cnaes, setCnaes] = useState<CnaeAdicionado[]>([]);
+  const [cnaes, setCnaesLocal] = useState<CnaeAdicionado[]>(savedCnaes || []);
+
+  const setCnaes: React.Dispatch<React.SetStateAction<CnaeAdicionado[]>> = useCallback((action) => {
+    setCnaesLocal(prev => {
+      const next = typeof action === 'function' ? action(prev) : action;
+      onCnaesChange?.(next);
+      return next;
+    });
+  }, [onCnaesChange]);
+
+  // Sync from saved data on load
+  useEffect(() => {
+    if (savedCnaes && savedCnaes.length > 0 && cnaes.length === 0) {
+      setCnaesLocal(savedCnaes);
+    }
+  }, [savedCnaes]);
   const [pendingEntry, setPendingEntry] = useState<CNAEEntry | null>(null);
   const [pendingPrincipal, setPendingPrincipal] = useState(false);
   const [pendingVincularSN, setPendingVincularSN] = useState(false);

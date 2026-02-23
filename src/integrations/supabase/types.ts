@@ -134,6 +134,7 @@ export type Database = {
           nome_fantasia: string | null
           numero: string | null
           optante_simples: boolean | null
+          parametro_municipal: Json | null
           regime_tributario: string | null
           suframa: string | null
           updated_at: string
@@ -159,6 +160,7 @@ export type Database = {
           nome_fantasia?: string | null
           numero?: string | null
           optante_simples?: boolean | null
+          parametro_municipal?: Json | null
           regime_tributario?: string | null
           suframa?: string | null
           updated_at?: string
@@ -184,6 +186,7 @@ export type Database = {
           nome_fantasia?: string | null
           numero?: string | null
           optante_simples?: boolean | null
+          parametro_municipal?: Json | null
           regime_tributario?: string | null
           suframa?: string | null
           updated_at?: string

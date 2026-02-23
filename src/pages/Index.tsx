@@ -275,6 +275,8 @@ const Index = () => {
                   setCtnDescricao(descricao);
                   setCtnItem(itemFormatado);
                 }}
+                savedCnaes={config.parametroMunicipal}
+                onCnaesChange={(cnaes) => setConfig(prev => ({ ...prev, parametroMunicipal: cnaes }))}
               />
             </RegimeEParametrosSection>
           </>

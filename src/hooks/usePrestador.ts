@@ -27,6 +27,7 @@ export interface PrestadorConfig {
   ctnCodigo: string;
   ctnDescricao: string;
   ctnItem: string;
+  parametroMunicipal: any[];
 }
 
 const INITIAL_PRESTADOR: PrestadorData = {
@@ -53,6 +54,7 @@ const INITIAL_CONFIG: PrestadorConfig = {
   ctnCodigo: '',
   ctnDescricao: '',
   ctnItem: '',
+  parametroMunicipal: [],
 };
 
 export function usePrestador() {
@@ -102,6 +104,7 @@ export function usePrestador() {
           ctnCodigo: data.ctn_codigo || '',
           ctnDescricao: data.ctn_descricao || '',
           ctnItem: data.ctn_item || '',
+          parametroMunicipal: (data as any).parametro_municipal || [],
         });
       }
     } catch (err) {
@@ -144,7 +147,8 @@ export function usePrestador() {
         ctn_codigo: cfg.ctnCodigo,
         ctn_descricao: cfg.ctnDescricao,
         ctn_item: cfg.ctnItem,
-      };
+        parametro_municipal: cfg.parametroMunicipal,
+      } as any;
 
       let result;
       if (cfg.id) {
