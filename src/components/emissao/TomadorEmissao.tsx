@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useRef } from 'react';
-import { Users, FileText, MapPin, Loader2, Search, Plus, Globe } from 'lucide-react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { Users, FileText, MapPin, Loader2, Search, Plus, Globe, ChevronDown } from 'lucide-react';
 import { formatCNPJ, formatCEP, formatPhone, validateCNPJ } from '@/utils/validators';
 import { formatCPF, validateCPF } from '@/components/TomadorSection';
 import { toast } from 'sonner';
-
+import { supabase } from '@/integrations/supabase/client';
+import type { TomadorDB } from '@/hooks/useTomadores';
 export interface TomadorEmissaoData {
   cnpjCpf: string;
   nomeRazaoSocial: string;
@@ -21,6 +22,7 @@ export interface TomadorEmissaoData {
 interface Props {
   data: TomadorEmissaoData;
   onChange: (data: TomadorEmissaoData) => void;
+  prestadorId?: string;
 }
 
 async function fetchCNPJData(cnpj: string) {
@@ -89,13 +91,58 @@ const INITIAL_TOMADOR: TomadorEmissaoData = {
   pais: 'Brasil',
 };
 
-const TomadorEmissao: React.FC<Props> = ({ data, onChange }) => {
+const TomadorEmissao: React.FC<Props> = ({ data, onChange, prestadorId }) => {
   const [loadingCNPJ, setLoadingCNPJ] = useState(false);
   const [loadingCEP, setLoadingCEP] = useState(false);
+  const [tomadoresCadastrados, setTomadoresCadastrados] = useState<TomadorDB[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const lastFetchedCNPJ = useRef('');
   const lastFetchedCEP = useRef('');
   const dataRef = useRef(data);
   dataRef.current = data;
+
+  // Load registered tomadores
+  useEffect(() => {
+    const load = async () => {
+      let query = supabase.from('tomadores').select('*').order('nome_razao_social');
+      if (prestadorId) query = query.eq('prestador_id', prestadorId);
+      const { data: rows } = await query;
+      if (rows) setTomadoresCadastrados(rows as TomadorDB[]);
+    };
+    load();
+  }, [prestadorId]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const selecionarTomador = (t: TomadorDB) => {
+    lastFetchedCNPJ.current = t.cnpj_cpf.replace(/\D/g, '');
+    lastFetchedCEP.current = t.cep?.replace(/\D/g, '') || '';
+    onChange({
+      cnpjCpf: t.cnpj_cpf,
+      nomeRazaoSocial: t.nome_razao_social,
+      inscricaoMunicipal: t.inscricao_municipal || '',
+      cep: t.cep || '',
+      logradouro: t.logradouro || '',
+      numero: t.numero || '',
+      complemento: t.complemento || '',
+      bairro: t.bairro || '',
+      localidadeUf: t.localidade_uf || '',
+      email: t.email || '',
+      pais: t.pais || 'Brasil',
+    });
+    setShowDropdown(false);
+    toast.success(`Tomador "${t.nome_razao_social}" selecionado!`);
+  };
 
   const update = (field: keyof TomadorEmissaoData, value: string) => {
     onChange({ ...data, [field]: value });
@@ -174,15 +221,31 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange }) => {
           <Users className="w-5 h-5 text-primary" />
           Tomador(a)
         </h2>
-        <div className="flex items-center gap-2">
-          <button type="button" className="btn-outline flex items-center gap-1.5 text-xs py-1.5 px-3">
+        <div className="relative" ref={dropdownRef}>
+          <button
+            type="button"
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="btn-outline flex items-center gap-1.5 text-xs py-1.5 px-3"
+          >
             <Search className="w-3.5 h-3.5" />
-            Buscar Cadastro
+            Selecionar Cadastrado ({tomadoresCadastrados.length})
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
           </button>
-          <button type="button" className="btn-outline flex items-center gap-1.5 text-xs py-1.5 px-3">
-            <Plus className="w-3.5 h-3.5" />
-            Novo Tomador
-          </button>
+          {showDropdown && tomadoresCadastrados.length > 0 && (
+            <div className="absolute right-0 top-full mt-1 w-80 max-h-60 overflow-y-auto bg-card border border-border rounded-lg shadow-lg z-20">
+              {tomadoresCadastrados.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => selecionarTomador(t)}
+                  className="w-full text-left px-3 py-2.5 hover:bg-muted/50 transition-colors border-b border-border/50 last:border-0"
+                >
+                  <p className="text-sm font-medium text-foreground truncate">{t.nome_razao_social}</p>
+                  <p className="text-xs text-muted-foreground">{t.cnpj_cpf} · {t.localidade_uf || '—'}</p>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
