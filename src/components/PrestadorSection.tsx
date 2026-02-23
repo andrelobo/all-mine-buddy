@@ -238,7 +238,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
 
         {compact && (
           <div>
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
               <label className="field-label mb-0">NOME EMPRESARIAL</label>
               {simplesStatus.simples === true && (
                 <span className="inline-flex items-center gap-1 py-1 px-2 rounded-md text-[11px] font-medium text-[hsl(144,72%,28%)] border border-[hsl(144,72%,28%)] leading-none whitespace-nowrap">
