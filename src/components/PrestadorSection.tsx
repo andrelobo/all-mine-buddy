@@ -31,60 +31,60 @@ interface Props {
 
 async function fetchCNPJData(cnpj: string) {
   const cleaned = cnpj.replace(/\D/g, '');
-  
+
+  // Usa BrasilAPI como fonte primária (mesma do Cartão CNPJ)
   try {
-    const res = await fetch(`https://receitaws.com.br/v1/cnpj/${cleaned}`, {
-      headers: { 'Accept': 'application/json' },
-    });
+    const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleaned}`);
     if (res.ok) {
-      const d = await res.json();
-      if (d.status !== 'ERROR') {
-        // ReceitaWS pode não incluir o tipo no logradouro
-        let logradouroCompleto = d.logradouro || '';
-        if (d.tipo && logradouroCompleto && !logradouroCompleto.toUpperCase().startsWith(d.tipo.toUpperCase())) {
-          logradouroCompleto = `${d.tipo} ${logradouroCompleto}`;
-        }
-        return {
-          razao_social: d.nome || '',
-          nome_fantasia: d.fantasia || '',
-          cep: d.cep?.replace(/[.\-]/g, '') || '',
-          logradouro: logradouroCompleto,
-          numero: d.numero || '',
-          complemento: d.complemento || '',
-          bairro: d.bairro || '',
-          municipio: d.municipio || '',
-          uf: d.uf || '',
-          email: d.email || '',
-          telefone: d.telefone?.replace(/\D/g, '') || '',
-          opcao_pelo_simples: d.simples?.optante ?? null,
-        };
+      const data = await res.json();
+      // Concatena tipo de logradouro ao logradouro
+      let logradouroCompleto = data.logradouro || '';
+      if (data.descricao_tipo_de_logradouro && logradouroCompleto && !logradouroCompleto.toUpperCase().startsWith(data.descricao_tipo_de_logradouro.toUpperCase())) {
+        logradouroCompleto = `${data.descricao_tipo_de_logradouro} ${logradouroCompleto}`;
       }
+      return {
+        razao_social: data.razao_social || '',
+        nome_fantasia: data.nome_fantasia || '',
+        cep: data.cep || '',
+        logradouro: logradouroCompleto,
+        numero: data.numero || '',
+        complemento: data.complemento || '',
+        bairro: data.bairro || '',
+        municipio: data.municipio || '',
+        uf: data.uf || '',
+        email: data.email || '',
+        telefone: data.ddd_telefone_1?.replace(/\D/g, '') || '',
+        opcao_pelo_simples: data.opcao_pelo_simples ?? null,
+      };
     }
   } catch {
     // fallback abaixo
   }
 
-  const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleaned}`);
+  // Fallback: ReceitaWS
+  const res = await fetch(`https://receitaws.com.br/v1/cnpj/${cleaned}`, {
+    headers: { 'Accept': 'application/json' },
+  });
   if (!res.ok) throw new Error('CNPJ não encontrado');
-  const data = await res.json();
-  // BrasilAPI separa tipo de logradouro do logradouro
-  let logradouroCompleto = data.logradouro || '';
-  if (data.descricao_tipo_de_logradouro && logradouroCompleto && !logradouroCompleto.toUpperCase().startsWith(data.descricao_tipo_de_logradouro.toUpperCase())) {
-    logradouroCompleto = `${data.descricao_tipo_de_logradouro} ${logradouroCompleto}`;
+  const d = await res.json();
+  if (d.status === 'ERROR') throw new Error('CNPJ não encontrado');
+  let logradouroCompleto = d.logradouro || '';
+  if (d.tipo && logradouroCompleto && !logradouroCompleto.toUpperCase().startsWith(d.tipo.toUpperCase())) {
+    logradouroCompleto = `${d.tipo} ${logradouroCompleto}`;
   }
   return {
-    razao_social: data.razao_social || '',
-    nome_fantasia: data.nome_fantasia || '',
-    cep: data.cep || '',
+    razao_social: d.nome || '',
+    nome_fantasia: d.fantasia || '',
+    cep: d.cep?.replace(/[.\-]/g, '') || '',
     logradouro: logradouroCompleto,
-    numero: data.numero || '',
-    complemento: data.complemento || '',
-    bairro: data.bairro || '',
-    municipio: data.municipio || '',
-    uf: data.uf || '',
-    email: data.email || '',
-    telefone: data.ddd_telefone_1?.replace(/\D/g, '') || '',
-    opcao_pelo_simples: data.opcao_pelo_simples ?? null,
+    numero: d.numero || '',
+    complemento: d.complemento || '',
+    bairro: d.bairro || '',
+    municipio: d.municipio || '',
+    uf: d.uf || '',
+    email: d.email || '',
+    telefone: d.telefone?.replace(/\D/g, '') || '',
+    opcao_pelo_simples: d.simples?.optante ?? null,
   };
 }
 
