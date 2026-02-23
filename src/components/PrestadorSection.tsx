@@ -26,6 +26,7 @@ interface Props {
   onAutosave: () => void;
   onSimplesDetected?: (isOptante: boolean) => void;
   compact?: boolean;
+  optanteSimples?: boolean | null;
 }
 
 async function fetchCNPJData(cnpj: string) {
@@ -90,15 +91,23 @@ async function fetchCEPData(cep: string) {
   };
 }
 
-const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimplesDetected, compact = false }) => {
+const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimplesDetected, compact = false, optanteSimples }) => {
   const [loadingCNPJ, setLoadingCNPJ] = useState(false);
   const [loadingCEP, setLoadingCEP] = useState(false);
-  const [simplesStatus, setSimplesStatus] = useState<{ simples: boolean | null; mei: boolean | null }>({ simples: null, mei: null });
-  const [simplesChecked, setSimplesChecked] = useState(false);
+  const [simplesStatus, setSimplesStatus] = useState<{ simples: boolean | null; mei: boolean | null }>({ simples: optanteSimples ?? null, mei: null });
+  const [simplesChecked, setSimplesChecked] = useState(optanteSimples != null);
   const lastFetchedCNPJ = useRef('');
   const lastFetchedCEP = useRef('');
   const dataRef = useRef(data);
   dataRef.current = data;
+
+  // Sync simples status when loaded from DB
+  useEffect(() => {
+    if (optanteSimples != null && !simplesChecked) {
+      setSimplesStatus({ simples: optanteSimples, mei: null });
+      setSimplesChecked(true);
+    }
+  }, [optanteSimples]);
 
   const update = (field: keyof PrestadorData, value: string) => {
     onChange({ ...data, [field]: value });

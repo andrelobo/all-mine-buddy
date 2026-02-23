@@ -255,6 +255,7 @@ const Index = () => {
               onChange={setPrestador}
               onAutosave={autosave}
               onSimplesDetected={handleSimplesDetected}
+              optanteSimples={config.optanteSimples}
             />
 
             <RegimeEParametrosSection
