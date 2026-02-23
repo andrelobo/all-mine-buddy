@@ -7,6 +7,7 @@ import RegimeEParametrosSection, { type RegimeTributario } from '@/components/Re
 import CTNSection from '@/components/CTNSection';
 import SimplesNacionalSection from '@/components/SimplesNacionalSection';
 import TomadorSection, { type TomadorData, validateCPF } from '@/components/TomadorSection';
+import TomadoresLista from '@/components/TomadoresLista';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 import { usePrestador } from '@/hooks/usePrestador';
 import { useTomadores } from '@/hooks/useTomadores';
@@ -50,7 +51,8 @@ const Index = () => {
 
   // Tomador state
   const [tomador, setTomador] = useState<TomadorData>(INITIAL_TOMADOR);
-  const { salvarTomador } = useTomadores(config.id);
+  const [editingTomadorId, setEditingTomadorId] = useState<string | null>(null);
+  const { tomadores: tomadoresList, loading: loadingTomadores, salvarTomador, excluirTomador } = useTomadores(config.id);
 
   // Sync config to local state when loaded from DB
   useEffect(() => {
@@ -133,6 +135,7 @@ const Index = () => {
     }
 
     await salvarTomador({
+      id: editingTomadorId || undefined,
       prestador_id: config.id || null,
       cnpj_cpf: tomador.cnpjCpf,
       nome_razao_social: tomador.nomeEmpresarial,
@@ -153,6 +156,7 @@ const Index = () => {
     });
 
     setTomador(INITIAL_TOMADOR);
+    setEditingTomadorId(null);
   };
 
   const tabs: { key: ActiveTab; label: string; icon: React.ReactNode }[] = [
@@ -264,11 +268,39 @@ const Index = () => {
         )}
 
         {activeTab === 'tomador' && (
-          <TomadorSection
-            data={tomador}
-            onChange={setTomador}
-            onAutosave={autosaveTomador}
-          />
+          <>
+            <TomadorSection
+              data={tomador}
+              onChange={setTomador}
+              onAutosave={autosaveTomador}
+            />
+            <TomadoresLista
+              tomadores={tomadoresList}
+              loading={loadingTomadores}
+              onEditar={(t) => {
+                setTomador({
+                  nomeEmpresarial: t.nome_razao_social,
+                  nomeFantasia: t.nome_fantasia,
+                  cnpjCpf: t.cnpj_cpf,
+                  inscricaoMunicipal: t.inscricao_municipal,
+                  inscricaoEstadual: t.inscricao_estadual,
+                  suframa: t.suframa,
+                  substitutoTributario: t.substituto_tributario,
+                  cep: t.cep,
+                  logradouro: t.logradouro,
+                  numero: t.numero,
+                  complemento: t.complemento,
+                  bairro: t.bairro,
+                  localidadeUf: t.localidade_uf,
+                  email: t.email,
+                  whatsapp: t.whatsapp,
+                });
+                setEditingTomadorId(t.id);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onExcluir={excluirTomador}
+            />
+          </>
         )}
       </main>
     </div>
