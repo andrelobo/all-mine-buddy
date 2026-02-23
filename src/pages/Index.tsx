@@ -1,32 +1,17 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Save, CheckCircle, Printer, Building2, Users, Receipt } from 'lucide-react';
+import { Shield, Save, CheckCircle, Printer, Building2, Users, Receipt, Loader2 } from 'lucide-react';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 import CTNSection from '@/components/CTNSection';
 import SimplesNacionalSection from '@/components/SimplesNacionalSection';
 import TomadorSection, { type TomadorData, validateCPF } from '@/components/TomadorSection';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
+import { usePrestador } from '@/hooks/usePrestador';
+import { useTomadores } from '@/hooks/useTomadores';
 
 type ActiveTab = 'prestador' | 'tomador' | 'emissao';
-
-const INITIAL_PRESTADOR = {
-  nomeEmpresarial: '',
-  nomeFantasia: '',
-  cnpj: '',
-  inscricaoMunicipal: '',
-  inscricaoEstadual: '',
-  suframa: '',
-  cep: '',
-  logradouro: '',
-  numero: '',
-  complemento: '',
-  bairro: '',
-  localidadeUf: '',
-  email: '',
-  whatsapp: '',
-};
 
 const INITIAL_TOMADOR: TomadorData = {
   nomeEmpresarial: '',
@@ -49,10 +34,12 @@ const INITIAL_TOMADOR: TomadorData = {
 const Index = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<ActiveTab>('prestador');
-  const [prestador, setPrestador] = useState(INITIAL_PRESTADOR);
-  const [tomador, setTomador] = useState<TomadorData>(INITIAL_TOMADOR);
+  
+  // Prestador persistence
+  const { prestador, setPrestador, config, setConfig, loading: loadingPrestador, saving: savingPrestador, salvarPrestador } = usePrestador();
+  
+  // Regime state derived from config
   const [regime, setRegime] = useState<RegimeTributario>(null);
-
   const [informarAliquotaSN, setInformarAliquotaSN] = useState(false);
   const [aliquotaSN, setAliquotaSN] = useState('');
   const [regimeApuracaoSNParametro, setRegimeApuracaoSNParametro] = useState(false);
@@ -60,6 +47,25 @@ const Index = () => {
   const [ctnSelecionado, setCtnSelecionado] = useState<string | null>(null);
   const [ctnDescricao, setCtnDescricao] = useState<string>('');
   const [ctnItem, setCtnItem] = useState<string>('');
+
+  // Tomador state
+  const [tomador, setTomador] = useState<TomadorData>(INITIAL_TOMADOR);
+  const { salvarTomador } = useTomadores(config.id);
+
+  // Sync config to local state when loaded from DB
+  useEffect(() => {
+    if (config.regimeTributario) {
+      setRegime(config.regimeTributario as RegimeTributario);
+      if (config.regimeTributario === 'simples') {
+        setInformarAliquotaSN(true);
+        setRegimeApuracaoSNParametro(true);
+      }
+    }
+    if (config.aliquotaSimples) setAliquotaSN(config.aliquotaSimples);
+    if (config.ctnCodigo) setCtnSelecionado(config.ctnCodigo);
+    if (config.ctnDescricao) setCtnDescricao(config.ctnDescricao);
+    if (config.ctnItem) setCtnItem(config.ctnItem);
+  }, [config]);
 
   const checkValidity = useCallback(() => {
     const cnpjOk = validateCNPJ(prestador.cnpj);
@@ -74,7 +80,7 @@ const Index = () => {
   }, [checkValidity]);
 
   const autosaveTomador = useCallback(() => {
-    // tomador autosave placeholder
+    // placeholder
   }, []);
 
   const handleSimplesDetected = useCallback((isOptante: boolean) => {
@@ -85,7 +91,7 @@ const Index = () => {
     }
   }, []);
 
-  const handleSalvar = () => {
+  const handleSalvar = async () => {
     if (!validateCNPJ(prestador.cnpj)) {
       toast.error('CNPJ inválido. Verifique o número informado.');
       return;
@@ -102,15 +108,51 @@ const Index = () => {
       toast.error('Informe a alíquota do Simples Nacional.');
       return;
     }
-    toast.success('Configuração fiscal salva com sucesso!');
+
+    const cfg = {
+      ...config,
+      regimeTributario: regime,
+      optanteSimples: regime === 'simples',
+      aliquotaSimples: aliquotaSN,
+      ctnCodigo: ctnSelecionado || '',
+      ctnDescricao,
+      ctnItem,
+    };
+
+    await salvarPrestador(prestador, cfg);
   };
 
-  const handleTestar = () => {
-    if (!configValida) {
-      toast.error('Corrija os campos antes de testar a emissão.');
+  const handleSalvarTomador = async () => {
+    if (!tomador.cnpjCpf) {
+      toast.error('Informe o CNPJ/CPF do tomador.');
       return;
     }
-    toast.info('Simulação de emissão de NFS-e iniciada...');
+    if (!tomador.nomeEmpresarial) {
+      toast.error('Informe o nome/razão social do tomador.');
+      return;
+    }
+
+    await salvarTomador({
+      prestador_id: config.id || null,
+      cnpj_cpf: tomador.cnpjCpf,
+      nome_razao_social: tomador.nomeEmpresarial,
+      nome_fantasia: tomador.nomeFantasia,
+      inscricao_municipal: tomador.inscricaoMunicipal,
+      inscricao_estadual: tomador.inscricaoEstadual,
+      suframa: tomador.suframa,
+      substituto_tributario: tomador.substitutoTributario,
+      cep: tomador.cep,
+      logradouro: tomador.logradouro,
+      numero: tomador.numero,
+      complemento: tomador.complemento,
+      bairro: tomador.bairro,
+      localidade_uf: tomador.localidadeUf,
+      email: tomador.email,
+      whatsapp: tomador.whatsapp,
+      pais: 'Brasil',
+    });
+
+    setTomador(INITIAL_TOMADOR);
   };
 
   const tabs: { key: ActiveTab; label: string; icon: React.ReactNode }[] = [
@@ -118,6 +160,14 @@ const Index = () => {
     { key: 'tomador', label: 'Tomadores', icon: <Users className="w-4 h-4" /> },
     { key: 'emissao', label: 'Nota Fiscal', icon: <Receipt className="w-4 h-4" /> },
   ];
+
+  if (loadingPrestador) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -143,7 +193,6 @@ const Index = () => {
 
         {/* Tab bar + action buttons */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between border-t border-border">
-          {/* Tabs */}
           <nav className="flex items-center gap-1">
             {tabs.map((tab) => (
               <button
@@ -161,15 +210,20 @@ const Index = () => {
             ))}
           </nav>
 
-          {/* Action buttons */}
           <div className="flex items-center gap-2 no-print">
             <button onClick={() => window.print()} className="btn-outline flex items-center gap-2 text-sm py-2">
               <Printer className="w-4 h-4" />
               <span className="hidden sm:inline">Imprimir</span>
             </button>
-            <button onClick={handleSalvar} className="btn-primary flex items-center gap-2 text-sm py-2">
-              <Save className="w-4 h-4" />
-              <span className="hidden sm:inline">Salvar Configuração</span>
+            <button
+              onClick={activeTab === 'tomador' ? handleSalvarTomador : handleSalvar}
+              disabled={savingPrestador}
+              className="btn-primary flex items-center gap-2 text-sm py-2"
+            >
+              {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              <span className="hidden sm:inline">
+                {activeTab === 'tomador' ? 'Salvar Tomador' : 'Salvar Configuração'}
+              </span>
             </button>
           </div>
         </div>
@@ -216,7 +270,6 @@ const Index = () => {
             onAutosave={autosaveTomador}
           />
         )}
-
       </main>
     </div>
   );

@@ -14,7 +14,260 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      notas_fiscais: {
+        Row: {
+          aliquota: number | null
+          base_calculo: number | null
+          codigo_servico: string | null
+          created_at: string
+          data_emissao: string | null
+          desconto: number | null
+          descricao_servico: string | null
+          id: string
+          iss_retido: boolean | null
+          iss_valor: number | null
+          local_prestacao_municipio: string | null
+          local_prestacao_pais: string | null
+          local_prestacao_uf: string | null
+          numero_nfse: string | null
+          prestador_id: string | null
+          ret_cofins: number | null
+          ret_csll: number | null
+          ret_inss: number | null
+          ret_ir: number | null
+          ret_pis: number | null
+          status: string
+          tomador_id: string | null
+          updated_at: string
+          valor_liquido: number | null
+          valor_servico: number | null
+        }
+        Insert: {
+          aliquota?: number | null
+          base_calculo?: number | null
+          codigo_servico?: string | null
+          created_at?: string
+          data_emissao?: string | null
+          desconto?: number | null
+          descricao_servico?: string | null
+          id?: string
+          iss_retido?: boolean | null
+          iss_valor?: number | null
+          local_prestacao_municipio?: string | null
+          local_prestacao_pais?: string | null
+          local_prestacao_uf?: string | null
+          numero_nfse?: string | null
+          prestador_id?: string | null
+          ret_cofins?: number | null
+          ret_csll?: number | null
+          ret_inss?: number | null
+          ret_ir?: number | null
+          ret_pis?: number | null
+          status?: string
+          tomador_id?: string | null
+          updated_at?: string
+          valor_liquido?: number | null
+          valor_servico?: number | null
+        }
+        Update: {
+          aliquota?: number | null
+          base_calculo?: number | null
+          codigo_servico?: string | null
+          created_at?: string
+          data_emissao?: string | null
+          desconto?: number | null
+          descricao_servico?: string | null
+          id?: string
+          iss_retido?: boolean | null
+          iss_valor?: number | null
+          local_prestacao_municipio?: string | null
+          local_prestacao_pais?: string | null
+          local_prestacao_uf?: string | null
+          numero_nfse?: string | null
+          prestador_id?: string | null
+          ret_cofins?: number | null
+          ret_csll?: number | null
+          ret_inss?: number | null
+          ret_ir?: number | null
+          ret_pis?: number | null
+          status?: string
+          tomador_id?: string | null
+          updated_at?: string
+          valor_liquido?: number | null
+          valor_servico?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notas_fiscais_prestador_id_fkey"
+            columns: ["prestador_id"]
+            isOneToOne: false
+            referencedRelation: "prestadores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_fiscais_tomador_id_fkey"
+            columns: ["tomador_id"]
+            isOneToOne: false
+            referencedRelation: "tomadores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prestadores: {
+        Row: {
+          aliquota_simples: string | null
+          bairro: string | null
+          cep: string | null
+          cnpj: string
+          complemento: string | null
+          created_at: string
+          ctn_codigo: string | null
+          ctn_descricao: string | null
+          ctn_item: string | null
+          email: string | null
+          id: string
+          inscricao_estadual: string | null
+          inscricao_municipal: string | null
+          localidade_uf: string | null
+          logradouro: string | null
+          nome_empresarial: string
+          nome_fantasia: string | null
+          numero: string | null
+          optante_simples: boolean | null
+          regime_tributario: string | null
+          suframa: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          aliquota_simples?: string | null
+          bairro?: string | null
+          cep?: string | null
+          cnpj: string
+          complemento?: string | null
+          created_at?: string
+          ctn_codigo?: string | null
+          ctn_descricao?: string | null
+          ctn_item?: string | null
+          email?: string | null
+          id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          localidade_uf?: string | null
+          logradouro?: string | null
+          nome_empresarial?: string
+          nome_fantasia?: string | null
+          numero?: string | null
+          optante_simples?: boolean | null
+          regime_tributario?: string | null
+          suframa?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          aliquota_simples?: string | null
+          bairro?: string | null
+          cep?: string | null
+          cnpj?: string
+          complemento?: string | null
+          created_at?: string
+          ctn_codigo?: string | null
+          ctn_descricao?: string | null
+          ctn_item?: string | null
+          email?: string | null
+          id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          localidade_uf?: string | null
+          logradouro?: string | null
+          nome_empresarial?: string
+          nome_fantasia?: string | null
+          numero?: string | null
+          optante_simples?: boolean | null
+          regime_tributario?: string | null
+          suframa?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      tomadores: {
+        Row: {
+          bairro: string | null
+          cep: string | null
+          cnpj_cpf: string
+          complemento: string | null
+          created_at: string
+          email: string | null
+          id: string
+          inscricao_estadual: string | null
+          inscricao_municipal: string | null
+          localidade_uf: string | null
+          logradouro: string | null
+          nome_fantasia: string | null
+          nome_razao_social: string
+          numero: string | null
+          pais: string | null
+          prestador_id: string | null
+          substituto_tributario: boolean | null
+          suframa: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          bairro?: string | null
+          cep?: string | null
+          cnpj_cpf?: string
+          complemento?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          localidade_uf?: string | null
+          logradouro?: string | null
+          nome_fantasia?: string | null
+          nome_razao_social?: string
+          numero?: string | null
+          pais?: string | null
+          prestador_id?: string | null
+          substituto_tributario?: boolean | null
+          suframa?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          bairro?: string | null
+          cep?: string | null
+          cnpj_cpf?: string
+          complemento?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          localidade_uf?: string | null
+          logradouro?: string | null
+          nome_fantasia?: string | null
+          nome_razao_social?: string
+          numero?: string | null
+          pais?: string | null
+          prestador_id?: string | null
+          substituto_tributario?: boolean | null
+          suframa?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tomadores_prestador_id_fkey"
+            columns: ["prestador_id"]
+            isOneToOne: false
+            referencedRelation: "prestadores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
