@@ -85,11 +85,16 @@ async function fetchCNPJData(cnpj: string) {
   const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleaned}`);
   if (!res.ok) throw new Error('CNPJ não encontrado');
   const data = await res.json();
+  const tipoLogradouro = data.descricao_tipo_de_logradouro || '';
+  const logradouroBase = data.logradouro || '';
+  const logradouroCompleto = tipoLogradouro && logradouroBase
+    ? `${tipoLogradouro} ${logradouroBase}`
+    : logradouroBase;
   return {
     razao_social: data.razao_social || '',
     nome_fantasia: data.nome_fantasia || '',
     cep: data.cep || '',
-    logradouro: data.logradouro || '',
+    logradouro: logradouroCompleto,
     numero: data.numero || '',
     complemento: data.complemento || '',
     bairro: data.bairro || '',
@@ -154,9 +159,9 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
       onAutosave();
       toast.success('Dados do CNPJ preenchidos automaticamente!');
 
-      // Se o endereço veio incompleto mas temos CEP, buscar via CEP
+      // Se o endereço veio incompleto mas temos CEP, buscar via CEP apenas para campos vazios
       const cepClean = (result.cep || '').replace(/\D/g, '');
-      if (cepClean.length === 8 && (!result.logradouro || !result.bairro)) {
+      if (cepClean.length === 8 && (!result.logradouro && !result.bairro)) {
         lastFetchedCEP.current = ''; // forçar nova busca
         buscarCEP(formatCEP(cepClean));
       }
