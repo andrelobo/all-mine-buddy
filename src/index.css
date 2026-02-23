@@ -173,12 +173,13 @@
 @media print {
   @page {
     size: A4;
-    margin: 15mm 10mm;
+    margin: 8mm 8mm;
   }
 
   body {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    font-size: 9px !important;
   }
 
   .no-print,
@@ -190,6 +191,61 @@
 
   header {
     position: static !important;
+  }
+
+  header button,
+  header .btn-primary,
+  header .btn-outline {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 4px !important;
+    margin: 0 !important;
+  }
+
+  main > * {
+    margin-bottom: 4px !important;
+  }
+
+  .section-card {
+    padding: 6px 8px !important;
+    margin-bottom: 4px !important;
+    box-shadow: none !important;
+    border-radius: 4px !important;
+  }
+
+  .section-title {
+    font-size: 10px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .field-label {
+    font-size: 7.5px !important;
+    margin-bottom: 1px !important;
+  }
+
+  .field-input,
+  input,
+  select,
+  textarea {
+    font-size: 8px !important;
+    padding: 2px 4px !important;
+    min-height: unset !important;
+    height: auto !important;
+  }
+
+  textarea {
+    max-height: 40px !important;
+    overflow: hidden !important;
+  }
+
+  h1, h2, h3, p, span, label, div {
+    line-height: 1.2 !important;
+  }
+
+  .grid {
+    gap: 4px !important;
   }
 
   * {
