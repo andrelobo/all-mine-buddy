@@ -149,9 +149,15 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         Serviço Prestado
       </h2>
       {/* Serviços Favoritos */}
-      <div className="mb-4 pb-4 border-b border-border">
-        <label className="field-label mb-3">Favoritos</label>
-        <p className="text-xs text-muted-foreground">Nenhum serviço favorito cadastrado.</p>
+      <div className="flex items-center justify-between mb-4">
+        <div />
+        <button
+          type="button"
+          className="flex items-center gap-1 text-[11px] py-1 px-2 rounded-md border border-[hsl(144,72%,28%)] text-[hsl(144,72%,28%)] hover:bg-[hsl(144,72%,28%)]/10 transition-colors font-bold animate-pulse"
+        >
+          <Search className="w-3.5 h-3.5" />
+          Favoritos
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4">
