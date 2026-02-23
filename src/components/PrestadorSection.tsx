@@ -268,7 +268,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className={`px-3 py-1.5 text-sm rounded-l-md border transition-colors ${
+              className={`px-2 py-1 text-xs rounded-l-md border transition-colors ${
                 simplesStatus.simples === true
                   ? 'bg-[hsl(144,72%,28%)] text-white border-[hsl(144,72%,28%)]'
                   : 'bg-muted text-muted-foreground border-border hover:bg-accent'
@@ -283,7 +283,7 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
             </button>
             <button
               type="button"
-              className={`px-3 py-1.5 text-sm rounded-r-md border border-l-0 transition-colors ${
+              className={`px-2 py-1 text-xs rounded-r-md border border-l-0 transition-colors ${
                 simplesStatus.simples === false
                   ? 'bg-destructive text-destructive-foreground border-destructive'
                   : 'bg-muted text-muted-foreground border-border hover:bg-accent'
