@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Tag, Star, Loader2, AlertCircle, Trash2, CheckCircle2, Plus, X } from 'lucide-react';
+import { Landmark, Star, Loader2, AlertCircle, Trash2, CheckCircle2, Plus, X } from 'lucide-react';
 import { validateCNPJ } from '@/utils/validators';
 import { getLC116Item } from '@/utils/cnae-lc116';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -188,8 +188,8 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
   return (
     <div className="section-card">
       <h2 className="section-title">
-        <Tag className="w-5 h-5 text-primary" />
-        Parametrização de CNAE
+        <Landmark className="w-5 h-5 text-primary" />
+        Código CNAE
       </h2>
 
       {!cnpjValido && !showManualForm && visibleActivities.length === 0 && (
