@@ -55,6 +55,7 @@ const Index = () => {
   // Tomador state
   const [tomador, setTomador] = useState<TomadorData>(INITIAL_TOMADOR);
   const [editingTomadorId, setEditingTomadorId] = useState<string | null>(null);
+  const [showTomadorForm, setShowTomadorForm] = useState(false);
   const { tomadores: tomadoresList, loading: loadingTomadores, salvarTomador, excluirTomador } = useTomadores(config.id);
 
   // Sync config to local state when loaded from DB
@@ -163,6 +164,7 @@ const Index = () => {
 
     setTomador(INITIAL_TOMADOR);
     setEditingTomadorId(null);
+    setShowTomadorForm(false);
   };
 
   const tabs: { key: ActiveTab; label: string; icon: React.ReactNode }[] = [
@@ -227,31 +229,33 @@ const Index = () => {
 
           <div className="flex items-center gap-2 no-print">
             
-            {activeTab === 'tomador' && editingTomadorId && (
+            {activeTab === 'tomador' && showTomadorForm && (
               <button
-                onClick={() => { setTomador(INITIAL_TOMADOR); setEditingTomadorId(null); }}
+                onClick={() => { setTomador(INITIAL_TOMADOR); setEditingTomadorId(null); setShowTomadorForm(false); }}
                 className="btn-outline flex items-center gap-2 text-sm py-2"
               >
-                <PlusCircle className="w-4 h-4" />
-                <span className="hidden sm:inline">Cadastro</span>
+                <List className="w-4 h-4" />
+                <span className="hidden sm:inline">Lista</span>
               </button>
             )}
-            <button
-              onClick={activeTab === 'tomador' ? handleSalvarTomador : handleSalvar}
-              disabled={savingPrestador}
-              className={`flex items-center gap-2 text-sm py-2 btn-primary ${
-                activeTab === 'prestador' && unsavedPrestador
-                  ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2'
-                  : ''
-              }`}
-            >
-              {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              <span className="hidden sm:inline">
-                {activeTab === 'tomador' 
-                  ? (editingTomadorId ? 'Atualizar' : 'SALVAR') 
-                  : 'SALVAR'}
-              </span>
-            </button>
+            {(activeTab !== 'tomador' || showTomadorForm) && (
+              <button
+                onClick={activeTab === 'tomador' ? handleSalvarTomador : handleSalvar}
+                disabled={savingPrestador}
+                className={`flex items-center gap-2 text-sm py-2 btn-primary ${
+                  activeTab === 'prestador' && unsavedPrestador
+                    ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2'
+                    : ''
+                }`}
+              >
+                {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                <span className="hidden sm:inline">
+                  {activeTab === 'tomador' 
+                    ? (editingTomadorId ? 'Atualizar' : 'SALVAR') 
+                    : 'SALVAR'}
+                </span>
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -295,14 +299,23 @@ const Index = () => {
 
         {activeTab === 'tomador' && (
           <>
-            <TomadorSection
-              data={tomador}
-              onChange={setTomador}
-              onAutosave={autosaveTomador}
-            />
+            {showTomadorForm && (
+              <TomadorSection
+                data={tomador}
+                onChange={setTomador}
+                onAutosave={autosaveTomador}
+              />
+            )}
             <TomadoresLista
               tomadores={tomadoresList}
               loading={loadingTomadores}
+              editingId={editingTomadorId}
+              onNovo={() => {
+                setTomador(INITIAL_TOMADOR);
+                setEditingTomadorId(null);
+                setShowTomadorForm(true);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
               onEditar={(t) => {
                 setTomador({
                   nomeEmpresarial: t.nome_razao_social,
@@ -322,6 +335,7 @@ const Index = () => {
                   whatsapp: t.whatsapp,
                 });
                 setEditingTomadorId(t.id);
+                setShowTomadorForm(true);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               onExcluir={excluirTomador}

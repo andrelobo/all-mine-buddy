@@ -1,5 +1,5 @@
-import React from 'react';
-import { Users, Pencil, Trash2, Loader2 } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Users, Pencil, Trash2, Loader2, Search, PlusCircle } from 'lucide-react';
 import type { TomadorDB } from '@/hooks/useTomadores';
 
 interface Props {
@@ -7,9 +7,24 @@ interface Props {
   loading: boolean;
   onEditar: (tomador: TomadorDB) => void;
   onExcluir: (id: string) => void;
+  onNovo: () => void;
+  editingId: string | null;
 }
 
-const TomadoresLista: React.FC<Props> = ({ tomadores, loading, onEditar, onExcluir }) => {
+const TomadoresLista: React.FC<Props> = ({ tomadores, loading, onEditar, onExcluir, onNovo, editingId }) => {
+  const [filtro, setFiltro] = useState('');
+
+  const tomadoresFiltrados = useMemo(() => {
+    if (!filtro.trim()) return tomadores;
+    const termo = filtro.toLowerCase();
+    return tomadores.filter(
+      (t) =>
+        t.nome_razao_social.toLowerCase().includes(termo) ||
+        t.cnpj_cpf.includes(termo) ||
+        (t.email && t.email.toLowerCase().includes(termo)) ||
+        (t.localidade_uf && t.localidade_uf.toLowerCase().includes(termo))
+    );
+  }, [tomadores, filtro]);
   if (loading) {
     return (
       <div className="section-card flex items-center justify-center py-8">
@@ -20,14 +35,34 @@ const TomadoresLista: React.FC<Props> = ({ tomadores, loading, onEditar, onExclu
 
   return (
     <div className="section-card">
-      <h2 className="section-title">
-        <Users className="w-5 h-5 text-primary" />
-        Tomadores Cadastrados ({tomadores.length})
-      </h2>
+      <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+        <h2 className="section-title mb-0">
+          <Users className="w-5 h-5 text-primary" />
+          Tomadores Cadastrados ({tomadoresFiltrados.length})
+        </h2>
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input
+              className="field-input pl-8 py-1.5 text-sm w-48 sm:w-64"
+              placeholder="Pesquisar tomador..."
+              value={filtro}
+              onChange={(e) => setFiltro(e.target.value)}
+            />
+          </div>
+          <button
+            onClick={onNovo}
+            className="btn-primary flex items-center gap-1.5 text-sm py-1.5 px-3"
+          >
+            <PlusCircle className="w-4 h-4" />
+            <span className="hidden sm:inline">Novo Tomador</span>
+          </button>
+        </div>
+      </div>
 
-      {tomadores.length === 0 ? (
+      {tomadoresFiltrados.length === 0 ? (
         <p className="text-sm text-muted-foreground py-4 text-center">
-          Nenhum tomador cadastrado ainda. Preencha o formulário acima e clique em "Salvar Tomador".
+          {filtro ? 'Nenhum tomador encontrado para a pesquisa.' : 'Nenhum tomador cadastrado ainda. Clique em "Novo Tomador" para começar.'}
         </p>
       ) : (
         <div className="overflow-x-auto">
@@ -43,8 +78,8 @@ const TomadoresLista: React.FC<Props> = ({ tomadores, loading, onEditar, onExclu
               </tr>
             </thead>
             <tbody>
-              {tomadores.map((t) => (
-                <tr key={t.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+              {tomadoresFiltrados.map((t) => (
+                <tr key={t.id} className={`border-b border-border/50 hover:bg-muted/30 transition-colors ${editingId === t.id ? 'bg-primary/5 ring-1 ring-primary/20' : ''}`}>
                   <td className="py-2.5 px-3 text-sm text-foreground">{t.cnpj_cpf}</td>
                   <td className="py-2.5 px-3 text-sm text-foreground">{t.nome_razao_social}</td>
                   <td className="py-2.5 px-3 text-sm text-muted-foreground hidden md:table-cell">{t.localidade_uf || '—'}</td>
