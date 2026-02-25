@@ -45,10 +45,10 @@ const RegimeEParametrosSection: React.FC<Props> = ({
   regimeApuracaoSNParametro, onRegimeApuracaoSNParametroChange,
   onAutosave,
 }) => {
-  const regimes: { value: RegimeTributario; label: string; desc: string }[] = [
+  const regimes: { value: RegimeTributario; label: string; desc: string; disabled?: boolean }[] = [
     { value: 'simples', label: 'Simples Nacional', desc: 'MEI, ME e EPP optantes pelo Simples' },
-    { value: 'presumido', label: 'Lucro Presumido', desc: 'Tributação com base na presunção de lucro' },
-    { value: 'real', label: 'Lucro Real', desc: 'Apuração com base no lucro efetivo' },
+    { value: 'presumido', label: 'Lucro Presumido', desc: 'Em atualização.', disabled: true },
+    { value: 'real', label: 'Lucro Real', desc: 'Em atualização.', disabled: true },
   ];
 
   const handleRegimeChange = (r: RegimeTributario) => {
@@ -68,8 +68,9 @@ const RegimeEParametrosSection: React.FC<Props> = ({
           <button
             key={r.value}
             type="button"
-            onClick={() => handleRegimeChange(r.value)}
-            className={`radio-card text-left ${regime === r.value ? 'radio-card-selected' : ''}`}
+            disabled={r.disabled}
+            onClick={() => !r.disabled && handleRegimeChange(r.value)}
+            className={`radio-card text-left ${regime === r.value ? 'radio-card-selected' : ''} ${r.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
               regime === r.value ? 'border-primary' : 'border-muted-foreground/40'
