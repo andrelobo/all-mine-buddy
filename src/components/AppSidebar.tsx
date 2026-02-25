@@ -45,7 +45,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange }) => {
                 Skalë
               </span>
               <span className="text-[10px] text-sidebar-foreground/60 uppercase tracking-wider">
-                NFS-e
+                Inteligência Tributária IA
               </span>
             </div>
           )}
