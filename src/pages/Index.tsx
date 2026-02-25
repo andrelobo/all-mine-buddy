@@ -358,14 +358,7 @@ const Index = () => {
                       }}
                     />
 
-                    <CNAESection
-                      cnpj={prestador.cnpj}
-                      cnaeEscolhido={snCnaePrincipal || null}
-                      onCnaeEscolhidoChange={(codigo, descricao) => {
-                        snSetCnaePrincipal(codigo);
-                        setUnsavedPrestador(true);
-                      }}
-                    />
+
 
                     <EnderecoCard
                       cep={prestador.cep}
@@ -389,7 +382,16 @@ const Index = () => {
 
                 {/* Sub-aba: Regime Tributário */}
                 {prestadorSubTab === 'regime' && (
-                  <div className="space-y-5">
+                   <div className="space-y-5">
+                    <CNAESection
+                      cnpj={prestador.cnpj}
+                      cnaeEscolhido={snCnaePrincipal || null}
+                      onCnaeEscolhidoChange={(codigo, descricao) => {
+                        snSetCnaePrincipal(codigo);
+                        setUnsavedPrestador(true);
+                      }}
+                    />
+
                     <RegimeEParametrosSection
                       regime={regime}
                       onRegimeChange={setRegime}
