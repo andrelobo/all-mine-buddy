@@ -1,120 +1,75 @@
 
-## Objetivo
 
-Atualizar o card "Parametrização de CNAE" com duas melhorias:
+# Reorganizar aba "O Prestador" em 3 sub-abas horizontais com cards
 
-1. Reconstruir as tabelas de CTN (6 dígitos, padrão governo federal) e NBS usando os arquivos anexos como fonte oficial.
-2. Adicionar a funcionalidade de inclusão manual de CNAE diretamente no card.
+## Visao Geral
 
----
+Reestruturar a aba "O Prestador" que hoje exibe todos os componentes em sequencia vertical, organizando-os em 3 sub-abas horizontais no topo: **Dados Cadastrais**, **Regime Tributario** e **Parametros Fiscais**. Cada sub-aba contera cards agrupados logicamente.
 
-## O que foi identificado nos arquivos
+## Estrutura das Sub-abas
 
-### Cnae_Service.docx
-Tabela oficial com a relação CNAE → Item da Lista de Serviços da LC 116/2003. Contém milhares de CNAEs mapeados. Esse arquivo é a fonte autoritativa para o campo `item` e `descricao` do mapeamento atual.
+### Sub-aba 1: Dados Cadastrais
+- **Card: Informacoes da Empresa** - CNPJ (com auto-busca), Nome Empresarial, Nome Fantasia, Inscricao Municipal, Inscricao Estadual, Suframa, Optante Simples Nacional (toggle Sim/Nao)
+- **Card: CNAE** - Componente CNAESection existente (atividades economicas do CNPJ, selecao de CNAE principal)
+- **Card: Contato** - E-mail, WhatsApp
+- **Card: Endereco** - CEP (com auto-busca), Logradouro, Numero, Complemento, Bairro, Localidade/UF
 
-### TabCtneNbs.xlsx
-Tabela do governo federal com a estrutura completa do CTN de 6 dígitos:
+### Sub-aba 2: Regime Tributario
+- **Card unico: Regime Tributario** - Seletor de regime (Simples Nacional, Lucro Presumido, Lucro Real) com destaque visual
+- Quando Simples Nacional selecionado, exibir dentro do mesmo card:
+  - Destaque visual: "Simples Nacional - Anexo III - Sem Fator R"
+  - Campo RBT12
+  - Campos somente-leitura: Anexo, Faixa, Aliquota Nominal, Parcela a Deduzir, Aliquota Efetiva, % ISS
+  - Alertas e validacoes
+  - Resumo Tributario (ResumoTributario)
 
-```text
-CÓDIGO | ITEM | SUBITEM | DESDOBRO | DESCRIÇÃO
-010101 |  01  |   01    |    01    | Análise e desenvolvimento de sistemas.
-010201 |  01  |   02    |    01    | Programação.
-```
+### Sub-aba 3: Parametros Fiscais
+- **Card: Parametros Federais** - Toggles do Simples Nacional (regime apuracao, informar aliquota, campo aliquota %)
+- **Card: Parametros Municipais** - CTNSection completo (CNAE + CTN + NBS, lista de servicos configurados)
+- **Card: Configuracoes Operacionais** - Placeholder para futuras configuracoes
 
-O CTN correto é de **6 dígitos** (ex: `010101`), não 4 como está atualmente. O NBS não está presente nesse arquivo — ele é uma tabela separada da Receita Federal. O arquivo fornecido é exclusivamente de CTN.
+## Detalhes Tecnicos
 
----
+### Arquivos a modificar
 
-## Problemas no código atual
+1. **`src/pages/Index.tsx`** (modificar)
+   - Adicionar estado `prestadorSubTab` com valores `'cadastro' | 'regime' | 'parametros'`
+   - Renderizar barra de sub-abas horizontais dentro do bloco `activeTab === 'prestador'`
+   - Distribuir os componentes existentes entre as 3 sub-abas
+   - Mover CNAESection para sub-aba "Dados Cadastrais"
+   - Mover SimplesNacionalSection e ResumoTributario para sub-aba "Regime Tributario"
+   - Mover CTNSection e toggles federais para sub-aba "Parametros Fiscais"
 
-- O CTN está errado: usa 4 dígitos (`0101`) em vez dos 6 dígitos oficiais (`010101`).
-- O NBS está sendo atribuído genericamente (`1.0101.00.00`) sem base em tabela oficial — precisa ser marcado como campo separado e opcional.
-- Não existe funcionalidade de inclusão manual de CNAE.
+2. **`src/components/PrestadorSection.tsx`** (modificar)
+   - Separar o componente em cards distintos reutilizaveis
+   - Card "Informacoes da Empresa": identificacao + optante simples
+   - Card "Contato": email + whatsapp
+   - Card "Endereco": campos de endereco com auto-busca CEP
+   - Manter toda a logica de auto-busca CNPJ/CEP intacta
 
----
+3. **`src/components/RegimeEParametrosSection.tsx`** (modificar)
+   - Remover o slot de `children` (CTNSection sera renderizado separadamente)
+   - Adicionar destaque visual para "Simples Nacional - Anexo III - Sem Fator R" quando regime = simples
+   - Integrar SimplesNacionalSection e ResumoTributario nesta sub-aba
 
-## Plano de Implementação
+### Navegacao por Sub-abas
 
-### Parte 1 — Atualizar `src/utils/cnae-lc116.ts`
+- Usar estilo de tabs horizontais com `border-b` e indicador ativo
+- Transicao suave entre sub-abas
+- Manter estado da sub-aba ao alternar entre abas principais (prestador/tomador/emissao)
 
-Reconstruir a tabela `LC116_CTN_NBS` usando os dados do `TabCtneNbs.xlsx`:
+### Experiencia do Usuario
 
-- **CTN**: usar os 6 dígitos exatos da coluna "CÓDIGO DE TRIBUTAÇÃO NACIONAL" (ex: `010101`, `010201`, `010301`).
-- Para cada item LC 116 (ex: `1.01`), mapear para o CTN de 6 dígitos do primeiro subitem com desdobro `01`.
-- **NBS**: manter como campo opcional (`nbs?: string`) e remover os valores inventados. O NBS será preenchido apenas onde houver dados confiáveis (a tabela fornecida não contém NBS).
+- Tooltips explicativos em campos tributarios (ja existentes em CNAESection, manter e expandir)
+- Mascaras automaticas ja implementadas (CNPJ, CEP, telefone) - sem alteracao
+- Auto-complete CEP e CNAE ja funcionais - sem alteracao
+- Mensagens de validacao ja existentes via `toast` - sem alteracao
+- Salvamento sem recarregar ja implementado - sem alteracao
+- Indicador visual de sucesso (botao SALVAR com bounce) - sem alteracao
 
-A lógica de mapeamento de item para CTN seguirá a tabela oficial:
+### Layout Responsivo
 
-```text
-Item 1.01 → CTN 010101
-Item 1.02 → CTN 010201
-Item 1.03 → CTN 010301 (ou 010302 dependendo do subserviço)
-Item 2.01 → CTN 020101
-Item 4.01 → CTN 040101 (Medicina)
-Item 4.02 → CTN 040201 (Análises clínicas)
-...
-```
+- Cards em grid responsivo: 1 coluna mobile, 2 colunas tablet, layout otimizado desktop
+- Sub-abas com scroll horizontal em telas pequenas
+- Campos com `grid-cols-1 md:grid-cols-2 lg:grid-cols-4` conforme contexto
 
-### Parte 2 — Adicionar inclusão manual de CNAE
-
-No componente `src/components/CNAESection.tsx`, adicionar um formulário de inclusão manual que permite ao usuário informar:
-
-- **Código CNAE** (campo texto com máscara `XXXX-X/XX`)
-- **Descrição** (campo texto livre)
-
-O CNAE incluído manualmente será adicionado à lista de atividades, podendo ser selecionado, removido e tratado como qualquer outro CNAE buscado via API. Será marcado com badge "Manual" para diferenciá-lo.
-
-O botão de inclusão manual só aparece quando o CNPJ é válido (para manter coerência com o fluxo atual). Porém, também será exibido mesmo sem CNPJ válido com uma nota explicando que é uma adição manual.
-
-### Fluxo da adição manual
-
-```text
-Usuário clica "Adicionar CNAE manualmente"
-  → Abre formulário inline no card
-  → Preenche código (ex: 6201-5/00) e descrição
-  → Clica "Adicionar"
-  → CNAE aparece na lista com badge "Manual"
-  → Pode ser selecionado como CNAE para configuração tributária
-  → Pode ser removido como os demais
-```
-
----
-
-## Arquivos a modificar
-
-| Arquivo | Mudança |
-|---|---|
-| `src/utils/cnae-lc116.ts` | Atualizar `LC116_CTN_NBS` com CTNs de 6 dígitos do governo federal; remover NBS inventados |
-| `src/components/CNAESection.tsx` | Adicionar formulário de inclusão manual de CNAE com badge "Manual" |
-
----
-
-## Detalhes técnicos
-
-**Interface atualizada:**
-```typescript
-export interface LC116Item {
-  item: string;
-  descricao: string;
-  ctn?: string;   // 6 dígitos — padrão governo federal (TabCtneNbs.xlsx)
-  nbs?: string;   // Opcional — apenas quando disponível em fonte oficial
-}
-```
-
-**Novo estado no CNAESection:**
-```typescript
-const [showManualForm, setShowManualForm] = useState(false);
-const [manualCodigo, setManualCodigo] = useState('');
-const [manualDescricao, setManualDescricao] = useState('');
-```
-
-**CNAEAtividade atualizado:**
-```typescript
-interface CNAEAtividade {
-  codigo: number | string;
-  descricao: string;
-  isPrincipal: boolean;
-  isManual?: boolean; // flag para identificar inclusões manuais
-}
-```
