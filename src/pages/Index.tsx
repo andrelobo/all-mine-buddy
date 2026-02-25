@@ -319,7 +319,7 @@ const Index = () => {
           </header>
 
           {/* Content */}
-          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-2">
 
             {/* ====== PRESTADOR com sub-abas ====== */}
             {activeTab === 'prestador' && (
@@ -382,7 +382,7 @@ const Index = () => {
 
                 {/* Sub-aba: Regime Tributário */}
                 {prestadorSubTab === 'regime' && (
-                   <div className="space-y-5">
+                   <div className="space-y-2">
                     <CNAESection
                       cnpj={prestador.cnpj}
                       cnaeEscolhido={snCnaePrincipal || null}
@@ -430,7 +430,7 @@ const Index = () => {
 
                 {/* Sub-aba: Parâmetros Fiscais */}
                 {prestadorSubTab === 'parametros' && (
-                  <div className="space-y-5">
+                  <div className="space-y-2">
                     {/* Parâmetros Federais */}
                     {regime === 'simples' && (
                       <div className="section-card">
