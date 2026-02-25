@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      cnae_catalogo: {
+        Row: {
+          anexo: string
+          codigo_cnae: string
+          created_at: string
+          descricao: string
+          id: string
+          permite_fator_r: boolean
+        }
+        Insert: {
+          anexo?: string
+          codigo_cnae: string
+          created_at?: string
+          descricao?: string
+          id?: string
+          permite_fator_r?: boolean
+        }
+        Update: {
+          anexo?: string
+          codigo_cnae?: string
+          created_at?: string
+          descricao?: string
+          id?: string
+          permite_fator_r?: boolean
+        }
+        Relationships: []
+      }
       notas_fiscais: {
         Row: {
           aliquota: number | null
@@ -118,6 +145,7 @@ export type Database = {
           aliquota_simples: string | null
           bairro: string | null
           cep: string | null
+          cnae_principal: string | null
           cnpj: string
           complemento: string | null
           created_at: string
@@ -135,7 +163,14 @@ export type Database = {
           numero: string | null
           optante_simples: boolean | null
           parametro_municipal: Json | null
+          rbt12: number | null
           regime_tributario: string | null
+          simples_aliquota_efetiva: number | null
+          simples_aliquota_nominal: number | null
+          simples_anexo: string | null
+          simples_data_calculo: string | null
+          simples_faixa: number | null
+          simples_parcela_deduzir: number | null
           suframa: string | null
           updated_at: string
           whatsapp: string | null
@@ -144,6 +179,7 @@ export type Database = {
           aliquota_simples?: string | null
           bairro?: string | null
           cep?: string | null
+          cnae_principal?: string | null
           cnpj: string
           complemento?: string | null
           created_at?: string
@@ -161,7 +197,14 @@ export type Database = {
           numero?: string | null
           optante_simples?: boolean | null
           parametro_municipal?: Json | null
+          rbt12?: number | null
           regime_tributario?: string | null
+          simples_aliquota_efetiva?: number | null
+          simples_aliquota_nominal?: number | null
+          simples_anexo?: string | null
+          simples_data_calculo?: string | null
+          simples_faixa?: number | null
+          simples_parcela_deduzir?: number | null
           suframa?: string | null
           updated_at?: string
           whatsapp?: string | null
@@ -170,6 +213,7 @@ export type Database = {
           aliquota_simples?: string | null
           bairro?: string | null
           cep?: string | null
+          cnae_principal?: string | null
           cnpj?: string
           complemento?: string | null
           created_at?: string
@@ -187,10 +231,50 @@ export type Database = {
           numero?: string | null
           optante_simples?: boolean | null
           parametro_municipal?: Json | null
+          rbt12?: number | null
           regime_tributario?: string | null
+          simples_aliquota_efetiva?: number | null
+          simples_aliquota_nominal?: number | null
+          simples_anexo?: string | null
+          simples_data_calculo?: string | null
+          simples_faixa?: number | null
+          simples_parcela_deduzir?: number | null
           suframa?: string | null
           updated_at?: string
           whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      simples_anexo_iii: {
+        Row: {
+          aliquota_nominal: number
+          created_at: string
+          faixa: number
+          id: string
+          limite_inferior: number
+          limite_superior: number
+          parcela_deduzir: number
+          percentual_iss: number
+        }
+        Insert: {
+          aliquota_nominal: number
+          created_at?: string
+          faixa: number
+          id?: string
+          limite_inferior?: number
+          limite_superior: number
+          parcela_deduzir?: number
+          percentual_iss?: number
+        }
+        Update: {
+          aliquota_nominal?: number
+          created_at?: string
+          faixa?: number
+          id?: string
+          limite_inferior?: number
+          limite_superior?: number
+          parcela_deduzir?: number
+          percentual_iss?: number
         }
         Relationships: []
       }
