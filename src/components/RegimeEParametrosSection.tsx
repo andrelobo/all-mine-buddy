@@ -84,47 +84,6 @@ const RegimeEParametrosSection: React.FC<Props> = ({
         ))}
       </div>
 
-      {regime && (
-        <h3 className="text-sm font-bold flex items-center gap-2 mb-3" style={{ color: 'hsl(144, 72%, 28%)' }}>
-          Parâmetro Federal
-        </h3>
-      )}
-
-      {regime === 'simples' && (
-        <div className="space-y-4 p-4 rounded-lg bg-muted/50 border border-border mb-5">
-          <Toggle
-            checked={regimeApuracaoSNParametro}
-            onChange={(v) => { onRegimeApuracaoSNParametroChange(v); onAutosave(); }}
-            label="Regime de apuração dos tributos federais e municipal pelo Simples Nacional"
-          />
-          <Toggle
-            checked={informarAliquotaSN}
-            onChange={(v) => { onInformarAliquotaChange(v); onAutosave(); }}
-            label="Informar alíquota do Simples Nacional"
-          />
-          {informarAliquotaSN && (
-            <div>
-              <label className="field-label whitespace-nowrap">Simples Nacional</label>
-              <div className="relative w-[55px]">
-                <input
-                  className="field-input pr-7 border-primary"
-                  type="text"
-                  placeholder="00,00"
-                  maxLength={5}
-                  value={aliquotaSN}
-                  onChange={(e) => {
-                    let v = e.target.value.replace(/[^\d]/g, '').slice(0, 4);
-                    if (v.length > 2) v = v.slice(0, -2) + ',' + v.slice(-2);
-                    onAliquotaSNChange(v);
-                    onAutosave();
-                  }}
-                />
-                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">%</span>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 };
