@@ -61,8 +61,8 @@ const EmpresaCard: React.FC<Props> = ({
       </div>
     </div>
 
-    <div className="mt-4 grid grid-cols-1 md:grid-cols-[2fr_1.5fr_auto] gap-4 items-end">
-      <div>
+    <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+      <div className="md:col-span-2">
         <label className="field-label">Nome Empresarial</label>
         <input className="field-input" placeholder="Razão Social" value={data.nomeEmpresarial} onChange={(e) => onFieldChange('nomeEmpresarial', e.target.value)} />
       </div>
