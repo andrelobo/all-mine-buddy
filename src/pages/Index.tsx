@@ -299,47 +299,48 @@ const Index = () => {
 
         {activeTab === 'tomador' && (
           <>
-            {showTomadorForm && (
+            {showTomadorForm ? (
               <TomadorSection
                 data={tomador}
                 onChange={setTomador}
                 onAutosave={autosaveTomador}
               />
+            ) : (
+              <TomadoresLista
+                tomadores={tomadoresList}
+                loading={loadingTomadores}
+                editingId={editingTomadorId}
+                onNovo={() => {
+                  setTomador(INITIAL_TOMADOR);
+                  setEditingTomadorId(null);
+                  setShowTomadorForm(true);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                onEditar={(t) => {
+                  setTomador({
+                    nomeEmpresarial: t.nome_razao_social,
+                    nomeFantasia: t.nome_fantasia,
+                    cnpjCpf: t.cnpj_cpf,
+                    inscricaoMunicipal: t.inscricao_municipal,
+                    inscricaoEstadual: t.inscricao_estadual,
+                    suframa: t.suframa,
+                    substitutoTributario: t.substituto_tributario,
+                    cep: t.cep,
+                    logradouro: t.logradouro,
+                    numero: t.numero,
+                    complemento: t.complemento,
+                    bairro: t.bairro,
+                    localidadeUf: t.localidade_uf,
+                    email: t.email,
+                    whatsapp: t.whatsapp,
+                  });
+                  setEditingTomadorId(t.id);
+                  setShowTomadorForm(true);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                onExcluir={excluirTomador}
+              />
             )}
-            <TomadoresLista
-              tomadores={tomadoresList}
-              loading={loadingTomadores}
-              editingId={editingTomadorId}
-              onNovo={() => {
-                setTomador(INITIAL_TOMADOR);
-                setEditingTomadorId(null);
-                setShowTomadorForm(true);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              onEditar={(t) => {
-                setTomador({
-                  nomeEmpresarial: t.nome_razao_social,
-                  nomeFantasia: t.nome_fantasia,
-                  cnpjCpf: t.cnpj_cpf,
-                  inscricaoMunicipal: t.inscricao_municipal,
-                  inscricaoEstadual: t.inscricao_estadual,
-                  suframa: t.suframa,
-                  substitutoTributario: t.substituto_tributario,
-                  cep: t.cep,
-                  logradouro: t.logradouro,
-                  numero: t.numero,
-                  complemento: t.complemento,
-                  bairro: t.bairro,
-                  localidadeUf: t.localidade_uf,
-                  email: t.email,
-                  whatsapp: t.whatsapp,
-                });
-                setEditingTomadorId(t.id);
-                setShowTomadorForm(true);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              onExcluir={excluirTomador}
-            />
           </>
         )}
 
