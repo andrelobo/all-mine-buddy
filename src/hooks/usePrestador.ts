@@ -28,6 +28,13 @@ export interface PrestadorConfig {
   ctnDescricao: string;
   ctnItem: string;
   parametroMunicipal: any[];
+  cnaePrincipal: string;
+  rbt12: number;
+  simplesAnexo: string;
+  simplesFaixa: number | null;
+  simplesAliquotaNominal: number;
+  simplesParcalaDeduzir: number;
+  simplesAliquotaEfetiva: number;
 }
 
 const INITIAL_PRESTADOR: PrestadorData = {
@@ -55,6 +62,13 @@ const INITIAL_CONFIG: PrestadorConfig = {
   ctnDescricao: '',
   ctnItem: '',
   parametroMunicipal: [],
+  cnaePrincipal: '',
+  rbt12: 0,
+  simplesAnexo: '',
+  simplesFaixa: null,
+  simplesAliquotaNominal: 0,
+  simplesParcalaDeduzir: 0,
+  simplesAliquotaEfetiva: 0,
 };
 
 export function usePrestador() {
@@ -106,6 +120,13 @@ export function usePrestador() {
           ctnDescricao: data.ctn_descricao || '',
           ctnItem: data.ctn_item || '',
           parametroMunicipal: (data as any).parametro_municipal || [],
+          cnaePrincipal: (data as any).cnae_principal || '',
+          rbt12: Number((data as any).rbt12) || 0,
+          simplesAnexo: (data as any).simples_anexo || '',
+          simplesFaixa: (data as any).simples_faixa || null,
+          simplesAliquotaNominal: Number((data as any).simples_aliquota_nominal) || 0,
+          simplesParcalaDeduzir: Number((data as any).simples_parcela_deduzir) || 0,
+          simplesAliquotaEfetiva: Number((data as any).simples_aliquota_efetiva) || 0,
         });
       }
     } catch (err) {
@@ -149,6 +170,14 @@ export function usePrestador() {
         ctn_descricao: cfg.ctnDescricao,
         ctn_item: cfg.ctnItem,
         parametro_municipal: cfg.parametroMunicipal,
+        cnae_principal: cfg.cnaePrincipal,
+        rbt12: cfg.rbt12,
+        simples_anexo: cfg.simplesAnexo,
+        simples_faixa: cfg.simplesFaixa,
+        simples_aliquota_nominal: cfg.simplesAliquotaNominal,
+        simples_parcela_deduzir: cfg.simplesParcalaDeduzir,
+        simples_aliquota_efetiva: cfg.simplesAliquotaEfetiva,
+        simples_data_calculo: cfg.simplesAliquotaEfetiva > 0 ? new Date().toISOString() : null,
       } as any;
 
       let result;

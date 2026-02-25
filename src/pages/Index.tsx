@@ -6,6 +6,9 @@ import AppSidebar from '@/components/AppSidebar';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 import CTNSection from '@/components/CTNSection';
+import CNAESection from '@/components/CNAESection';
+import SimplesNacionalSection from '@/components/SimplesNacionalSection';
+import ResumoTributario from '@/components/ResumoTributario';
 import TomadorSection, { type TomadorData } from '@/components/TomadorSection';
 import TomadoresLista from '@/components/TomadoresLista';
 import TomadorEmissao, { INITIAL_TOMADOR as INITIAL_TOMADOR_EMISSAO, type TomadorEmissaoData } from '@/components/emissao/TomadorEmissao';
@@ -17,6 +20,7 @@ import { validateCNPJ, validateEmail } from '@/utils/validators';
 import { usePrestador } from '@/hooks/usePrestador';
 import { useTomadores } from '@/hooks/useTomadores';
 import { useNotasFiscais } from '@/hooks/useNotasFiscais';
+import { useSimplesNacional } from '@/hooks/useSimplesNacional';
 import type { TomadorDB } from '@/hooks/useTomadores';
 
 type ActiveTab = 'prestador' | 'tomador' | 'emissao';
@@ -80,6 +84,19 @@ const Index = () => {
   const [ctnSelecionado, setCtnSelecionado] = useState<string | null>(null);
   const [ctnDescricao, setCtnDescricao] = useState<string>('');
   const [ctnItem, setCtnItem] = useState<string>('');
+
+  // --- Simples Nacional Anexo III ---
+  const {
+    cnaePrincipal: snCnaePrincipal,
+    setCnaePrincipal: snSetCnaePrincipal,
+    cnaeDescricao: snCnaeDescricao,
+    cnaeAnexo: snCnaeAnexo,
+    permiteFatorR: snPermiteFatorR,
+    rbt12: snRbt12,
+    setRbt12: snSetRbt12,
+    calculo: snCalculo,
+    alertas: snAlertas,
+  } = useSimplesNacional(config.cnaePrincipal, config.rbt12);
 
   // --- Tomador state ---
   const [tomador, setTomador] = useState<TomadorData>(INITIAL_TOMADOR);
@@ -164,6 +181,13 @@ const Index = () => {
       ctnCodigo: ctnSelecionado || '',
       ctnDescricao,
       ctnItem,
+      cnaePrincipal: snCnaePrincipal,
+      rbt12: snRbt12,
+      simplesAnexo: snCnaeAnexo || 'III',
+      simplesFaixa: snCalculo.faixa?.faixa || null,
+      simplesAliquotaNominal: snCalculo.faixa?.aliquotaNominal || 0,
+      simplesParcalaDeduzir: snCalculo.faixa?.parcelaDeduzir || 0,
+      simplesAliquotaEfetiva: snCalculo.aliquotaEfetiva || 0,
     };
 
     const result = await salvarPrestador(prestador, cfg);
@@ -415,6 +439,39 @@ const Index = () => {
                     onCnaesChange={(cnaes) => setConfig(prev => ({ ...prev, parametroMunicipal: cnaes }))}
                   />
                 </RegimeEParametrosSection>
+
+                {regime === 'simples' && (
+                  <CNAESection
+                    cnpj={prestador.cnpj}
+                    cnaeEscolhido={snCnaePrincipal || null}
+                    onCnaeEscolhidoChange={(codigo, descricao) => {
+                      snSetCnaePrincipal(codigo);
+                      setUnsavedPrestador(true);
+                    }}
+                  />
+                )}
+
+                {regime === 'simples' && (
+                  <SimplesNacionalSection
+                    cnaePrincipal={snCnaePrincipal}
+                    cnaeDescricao={snCnaeDescricao}
+                    cnaeAnexo={snCnaeAnexo}
+                    rbt12={snRbt12}
+                    onRbt12Change={(v) => { snSetRbt12(v); setUnsavedPrestador(true); }}
+                    calculo={snCalculo}
+                    alertas={snAlertas}
+                    permiteFatorR={snPermiteFatorR}
+                  />
+                )}
+
+                {regime === 'simples' && (
+                  <ResumoTributario
+                    rbt12={snRbt12}
+                    cnaeAnexo={snCnaeAnexo || 'III'}
+                    calculo={snCalculo}
+                    visible={snCalculo.valido}
+                  />
+                )}
               </>
             )}
 
