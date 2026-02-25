@@ -345,7 +345,7 @@ const Index = () => {
 
                 {/* Sub-aba: Dados Cadastrais */}
                 {prestadorSubTab === 'cadastro' && (
-                  <div className="space-y-5">
+                  <div className="space-y-3">
                     <EmpresaCard
                       data={prestador}
                       onFieldChange={autoFetch.handleFieldChange}
