@@ -36,18 +36,13 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange }) => {
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
-            <img src={skaleLogo} alt="Skalë" className="w-full h-full object-contain" />
+          <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
+            <img src={skaleLogo} alt="Skalë" className="w-full h-full object-contain brightness-0 invert" />
           </div>
           {!isCollapsed && (
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-sidebar-foreground leading-tight">
-                Skalë
-              </span>
-              <span className="text-[10px] text-sidebar-foreground/60 uppercase tracking-wider">
-                Inteligência Tributária IA
-              </span>
-            </div>
+            <span className="text-sm font-bold text-sidebar-foreground leading-tight">
+              Skalë
+            </span>
           )}
         </div>
       </SidebarHeader>
