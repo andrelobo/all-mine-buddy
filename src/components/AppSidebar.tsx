@@ -1,6 +1,6 @@
 import React from 'react';
 import { Building2, Users, Receipt } from 'lucide-react';
-import vascoEscudo from '@/assets/vasco-escudo.png';
+import skaleLogo from '@/assets/skale-logo.png';
 import {
   Sidebar,
   SidebarContent,
@@ -36,13 +36,13 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange }) => {
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center bg-white">
-            <img src={vascoEscudo} alt="Zerä Software" className="w-full h-full object-contain" />
+          <div className="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
+            <img src={skaleLogo} alt="Skalë" className="w-full h-full object-contain" />
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">
               <span className="text-sm font-bold text-sidebar-foreground leading-tight">
-                Zerä Software
+                Skalë
               </span>
               <span className="text-[10px] text-sidebar-foreground/60 uppercase tracking-wider">
                 NFS-e
