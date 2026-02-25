@@ -216,7 +216,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
       {(visibleActivities.length > 0 || manualActivities.length > 0) && !loading && (
         <div className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            Selecione o CNAE para configuração tributária. Remova atividades que não devem ser consideradas.
+            Selecione o CNAE para configuração tributária.
           </p>
 
           <div className="space-y-2">
