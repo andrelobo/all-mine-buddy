@@ -86,7 +86,7 @@ const CadastroTomador = () => {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-2">
         <TomadorSection
           data={tomador}
           onChange={setTomador}
