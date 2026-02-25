@@ -367,12 +367,6 @@ const Index = () => {
                       }}
                     />
 
-                    <ContatoCard
-                      email={prestador.email}
-                      whatsapp={prestador.whatsapp}
-                      onFieldChange={autoFetch.handleFieldChange}
-                    />
-
                     <EnderecoCard
                       cep={prestador.cep}
                       logradouro={prestador.logradouro}
@@ -383,6 +377,12 @@ const Index = () => {
                       onFieldChange={autoFetch.handleFieldChange}
                       onCEPChange={autoFetch.handleCEPChange}
                       loadingCEP={autoFetch.loadingCEP}
+                    />
+
+                    <ContatoCard
+                      email={prestador.email}
+                      whatsapp={prestador.whatsapp}
+                      onFieldChange={autoFetch.handleFieldChange}
                     />
                   </div>
                 )}
