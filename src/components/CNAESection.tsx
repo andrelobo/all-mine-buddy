@@ -189,7 +189,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
     <div className="section-card">
       <h2 className="section-title">
         <Landmark className="w-5 h-5 text-primary" />
-        Código CNAE
+        Código Cnae
       </h2>
 
       {!cnpjValido && !showManualForm && visibleActivities.length === 0 && (
