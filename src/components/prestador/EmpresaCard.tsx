@@ -70,10 +70,10 @@ const EmpresaCard: React.FC<Props> = ({
         <label className="field-label">Nome Fantasia</label>
         <input className="field-input" placeholder="Nome Fantasia" value={data.nomeFantasia} onChange={(e) => onFieldChange('nomeFantasia', e.target.value)} />
       </div>
-      <div className="flex items-start gap-3 pb-1">
-        <div>
+      <div>
+        <div className="flex items-center gap-3">
           <label className="field-label whitespace-nowrap mb-0">Optante Simples</label>
-          <div className="flex items-center gap-0 mt-1">
+          <div className="flex items-center gap-0">
             <button
               type="button"
               className={`px-2 py-1 text-xs rounded-l-md border transition-colors ${
@@ -93,12 +93,12 @@ const EmpresaCard: React.FC<Props> = ({
               onClick={() => onSimplesToggle(false)}
             >Não</button>
           </div>
-          {simplesStatus === true && (
-            <span className="text-[11px] text-muted-foreground mt-1 block">
-              Opção desde: {data.dataOpcaoSimples || '00/00/0000'}
-            </span>
-          )}
         </div>
+        {simplesStatus === true && (
+          <span className="text-[11px] text-muted-foreground mt-1 block">
+            Opção desde: {data.dataOpcaoSimples || '00/00/0000'}
+          </span>
+        )}
       </div>
     </div>
   </div>
