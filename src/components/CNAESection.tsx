@@ -80,11 +80,14 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
 
     fetchCNAEFromCNPJ(cleaned)
       .then((data) => {
-        const activities: CNAEAtividade[] = [
+        const allRaw: CNAEAtividade[] = [
           ...(data.principal ? [{ ...data.principal, isPrincipal: true }] : []),
           ...data.secundarias.map((s) => ({ ...s, isPrincipal: false })),
         ];
-        setAllActivities(activities);
+        // Filtra apenas atividades de serviço (com mapeamento LC 116) e limita a 3
+        const serviceOnly = allRaw.filter((a) => getLC116Item(a.codigo) !== null);
+        const limited = serviceOnly.slice(0, 3);
+        setAllActivities(limited);
 
         if (!cnaeEscolhido && data.principal) {
           onCnaeEscolhidoChange(String(data.principal.codigo), data.principal.descricao);
