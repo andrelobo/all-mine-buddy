@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { Save, CheckCircle, Loader2, List, FileOutput, Printer, AlertCircle } from 'lucide-react';
+import { Save, CheckCircle, Loader2, List, FileOutput, Printer, AlertCircle, Building2, Landmark, Settings } from 'lucide-react';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/AppSidebar';
 import PrestadorSection from '@/components/PrestadorSection';
@@ -9,6 +9,10 @@ import CTNSection from '@/components/CTNSection';
 import CNAESection from '@/components/CNAESection';
 import SimplesNacionalSection from '@/components/SimplesNacionalSection';
 import ResumoTributario from '@/components/ResumoTributario';
+import EmpresaCard from '@/components/prestador/EmpresaCard';
+import ContatoCard from '@/components/prestador/ContatoCard';
+import EnderecoCard from '@/components/prestador/EnderecoCard';
+import { usePrestadorAutoFetch } from '@/hooks/usePrestadorAutoFetch';
 import TomadorSection, { type TomadorData } from '@/components/TomadorSection';
 import TomadoresLista from '@/components/TomadoresLista';
 import TomadorEmissao, { INITIAL_TOMADOR as INITIAL_TOMADOR_EMISSAO, type TomadorEmissaoData } from '@/components/emissao/TomadorEmissao';
@@ -24,39 +28,18 @@ import { useSimplesNacional } from '@/hooks/useSimplesNacional';
 import type { TomadorDB } from '@/hooks/useTomadores';
 
 type ActiveTab = 'prestador' | 'tomador' | 'emissao';
+type PrestadorSubTab = 'cadastro' | 'regime' | 'parametros';
 
 const INITIAL_TOMADOR: TomadorData = {
-  nomeEmpresarial: '',
-  nomeFantasia: '',
-  cnpjCpf: '',
-  inscricaoMunicipal: '',
-  inscricaoEstadual: '',
-  suframa: '',
-  substitutoTributario: false,
-  cep: '',
-  logradouro: '',
-  numero: '',
-  complemento: '',
-  bairro: '',
-  localidadeUf: '',
-  email: '',
-  whatsapp: '',
+  nomeEmpresarial: '', nomeFantasia: '', cnpjCpf: '', inscricaoMunicipal: '', inscricaoEstadual: '',
+  suframa: '', substitutoTributario: false, cep: '', logradouro: '', numero: '', complemento: '',
+  bairro: '', localidadeUf: '', email: '', whatsapp: '',
 };
 
 const INITIAL_PRESTACAO: PrestacaoServicoData = {
-  codigoServico: '',
-  descricaoServico: '',
-  localPrestacao: '',
-  valorServico: '',
-  aliquota: '',
-  baseCalculo: '',
-  issRetido: false,
-  desconto: '',
-  retPis: '',
-  retCofins: '',
-  retCsll: '',
-  retIr: '',
-  retInss: '',
+  codigoServico: '', descricaoServico: '', localPrestacao: '', valorServico: '', aliquota: '',
+  baseCalculo: '', issRetido: false, desconto: '', retPis: '', retCofins: '', retCsll: '',
+  retIr: '', retInss: '',
 };
 
 function parseCurrency(value: string): number {
@@ -69,13 +52,19 @@ function parsePercent(value: string): number {
   return parseFloat(value.replace(',', '.')) || 0;
 }
 
+const SUB_TABS: { key: PrestadorSubTab; label: string; icon: React.ReactNode }[] = [
+  { key: 'cadastro', label: 'Dados Cadastrais', icon: <Building2 className="w-4 h-4" /> },
+  { key: 'regime', label: 'Regime Tributário', icon: <Landmark className="w-4 h-4" /> },
+  { key: 'parametros', label: 'Parâmetros Fiscais', icon: <Settings className="w-4 h-4" /> },
+];
+
 const Index = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('prestador');
+  const [prestadorSubTab, setPrestadorSubTab] = useState<PrestadorSubTab>('cadastro');
   const [unsavedPrestador, setUnsavedPrestador] = useState(false);
   
   const { prestador, setPrestador, config, setConfig, loading: loadingPrestador, saving: savingPrestador, salvarPrestador } = usePrestador();
   
-  // --- Prestador state ---
   const [regime, setRegime] = useState<RegimeTributario>(null);
   const [informarAliquotaSN, setInformarAliquotaSN] = useState(false);
   const [aliquotaSN, setAliquotaSN] = useState('');
@@ -85,26 +74,17 @@ const Index = () => {
   const [ctnDescricao, setCtnDescricao] = useState<string>('');
   const [ctnItem, setCtnItem] = useState<string>('');
 
-  // --- Simples Nacional Anexo III ---
   const {
-    cnaePrincipal: snCnaePrincipal,
-    setCnaePrincipal: snSetCnaePrincipal,
-    cnaeDescricao: snCnaeDescricao,
-    cnaeAnexo: snCnaeAnexo,
-    permiteFatorR: snPermiteFatorR,
-    rbt12: snRbt12,
-    setRbt12: snSetRbt12,
-    calculo: snCalculo,
-    alertas: snAlertas,
+    cnaePrincipal: snCnaePrincipal, setCnaePrincipal: snSetCnaePrincipal,
+    cnaeDescricao: snCnaeDescricao, cnaeAnexo: snCnaeAnexo, permiteFatorR: snPermiteFatorR,
+    rbt12: snRbt12, setRbt12: snSetRbt12, calculo: snCalculo, alertas: snAlertas,
   } = useSimplesNacional(config.cnaePrincipal, config.rbt12);
 
-  // --- Tomador state ---
   const [tomador, setTomador] = useState<TomadorData>(INITIAL_TOMADOR);
   const [editingTomadorId, setEditingTomadorId] = useState<string | null>(null);
   const [showTomadorForm, setShowTomadorForm] = useState(false);
   const { tomadores: tomadoresList, loading: loadingTomadores, salvarTomador, excluirTomador } = useTomadores(config.id);
 
-  // --- Emissão (DANFSE) state ---
   const { salvarNota, saving: savingNota } = useNotasFiscais();
   const [tomadorEmissao, setTomadorEmissao] = useState<TomadorEmissaoData>(INITIAL_TOMADOR_EMISSAO);
   const [prestacao, setPrestacao] = useState<PrestacaoServicoData>(INITIAL_PRESTACAO);
@@ -150,28 +130,16 @@ const Index = () => {
     setUnsavedPrestador(true);
   }, []);
 
-  const handleTabChange = (tab: ActiveTab) => {
-    setActiveTab(tab);
-  };
+  // Auto-fetch hook for CNPJ/CEP
+  const autoFetch = usePrestadorAutoFetch(prestador, setPrestador, autosave, handleSimplesDetected);
 
-  // --- Prestador save ---
+  const handleTabChange = (tab: ActiveTab) => { setActiveTab(tab); };
+
   const handleSalvar = async () => {
-    if (!validateCNPJ(prestador.cnpj)) {
-      toast.error('CNPJ inválido. Verifique o número informado.');
-      return;
-    }
-    if (prestador.email && !validateEmail(prestador.email)) {
-      toast.error('E-mail inválido. Verifique o endereço informado.');
-      return;
-    }
-    if (!regime) {
-      toast.error('Selecione o regime tributário.');
-      return;
-    }
-    if (regime === 'simples' && !aliquotaSN) {
-      toast.error('Informe a alíquota do Simples Nacional.');
-      return;
-    }
+    if (!validateCNPJ(prestador.cnpj)) { toast.error('CNPJ inválido. Verifique o número informado.'); return; }
+    if (prestador.email && !validateEmail(prestador.email)) { toast.error('E-mail inválido. Verifique o endereço informado.'); return; }
+    if (!regime) { toast.error('Selecione o regime tributário.'); return; }
+    if (regime === 'simples' && !aliquotaSN) { toast.error('Informe a alíquota do Simples Nacional.'); return; }
 
     const cfg = {
       ...config,
@@ -179,8 +147,7 @@ const Index = () => {
       optanteSimples: regime === 'simples',
       aliquotaSimples: aliquotaSN,
       ctnCodigo: ctnSelecionado || '',
-      ctnDescricao,
-      ctnItem,
+      ctnDescricao, ctnItem,
       cnaePrincipal: snCnaePrincipal,
       rbt12: snRbt12,
       simplesAnexo: snCnaeAnexo || 'III',
@@ -189,57 +156,31 @@ const Index = () => {
       simplesParcalaDeduzir: snCalculo.faixa?.parcelaDeduzir || 0,
       simplesAliquotaEfetiva: snCalculo.aliquotaEfetiva || 0,
     };
-
     const result = await salvarPrestador(prestador, cfg);
     if (result) setUnsavedPrestador(false);
   };
 
-  // --- Tomador save ---
   const handleSalvarTomador = async () => {
-    if (!tomador.cnpjCpf) {
-      toast.error('Informe o CNPJ/CPF do tomador.');
-      return;
-    }
-    if (!tomador.nomeEmpresarial) {
-      toast.error('Informe o nome/razão social do tomador.');
-      return;
-    }
-
+    if (!tomador.cnpjCpf) { toast.error('Informe o CNPJ/CPF do tomador.'); return; }
+    if (!tomador.nomeEmpresarial) { toast.error('Informe o nome/razão social do tomador.'); return; }
     await salvarTomador({
       id: editingTomadorId || undefined,
-      prestador_id: config.id || null,
-      cnpj_cpf: tomador.cnpjCpf,
-      nome_razao_social: tomador.nomeEmpresarial,
-      nome_fantasia: tomador.nomeFantasia,
-      inscricao_municipal: tomador.inscricaoMunicipal,
-      inscricao_estadual: tomador.inscricaoEstadual,
-      suframa: tomador.suframa,
-      substituto_tributario: tomador.substitutoTributario,
-      cep: tomador.cep,
-      logradouro: tomador.logradouro,
-      numero: tomador.numero,
-      complemento: tomador.complemento,
-      bairro: tomador.bairro,
-      localidade_uf: tomador.localidadeUf,
-      email: tomador.email,
-      whatsapp: tomador.whatsapp,
-      pais: 'Brasil',
+      prestador_id: config.id || null, cnpj_cpf: tomador.cnpjCpf,
+      nome_razao_social: tomador.nomeEmpresarial, nome_fantasia: tomador.nomeFantasia,
+      inscricao_municipal: tomador.inscricaoMunicipal, inscricao_estadual: tomador.inscricaoEstadual,
+      suframa: tomador.suframa, substituto_tributario: tomador.substitutoTributario,
+      cep: tomador.cep, logradouro: tomador.logradouro, numero: tomador.numero,
+      complemento: tomador.complemento, bairro: tomador.bairro, localidade_uf: tomador.localidadeUf,
+      email: tomador.email, whatsapp: tomador.whatsapp, pais: 'Brasil',
     });
-
-    setTomador(INITIAL_TOMADOR);
-    setEditingTomadorId(null);
-    setShowTomadorForm(false);
+    setTomador(INITIAL_TOMADOR); setEditingTomadorId(null); setShowTomadorForm(false);
   };
 
-  // --- Emissão logic ---
   const handleTomadorSelecionado = useCallback((t: TomadorDB) => {
     const isSub = !!t.substituto_tributario;
     setTomadorSubstituto(isSub);
-    if (isSub) {
-      setPrestacao(prev => ({ ...prev, issRetido: true }));
-    } else {
-      setPrestacao(prev => ({ ...prev, issRetido: false, aliquota: config.optanteSimples ? '' : prev.aliquota }));
-    }
+    if (isSub) { setPrestacao(prev => ({ ...prev, issRetido: true })); }
+    else { setPrestacao(prev => ({ ...prev, issRetido: false, aliquota: config.optanteSimples ? '' : prev.aliquota })); }
   }, [config.optanteSimples]);
 
   const valores = useMemo(() => {
@@ -249,14 +190,9 @@ const Index = () => {
     const baseCalculo = valorBruto - desconto;
     const issValor = baseCalculo * (aliquota / 100);
     return {
-      valorBruto,
-      desconto,
-      baseCalculo,
-      issValor,
-      retPis: parseCurrency(prestacao.retPis),
-      retCofins: parseCurrency(prestacao.retCofins),
-      retCsll: parseCurrency(prestacao.retCsll),
-      retIr: parseCurrency(prestacao.retIr),
+      valorBruto, desconto, baseCalculo, issValor,
+      retPis: parseCurrency(prestacao.retPis), retCofins: parseCurrency(prestacao.retCofins),
+      retCsll: parseCurrency(prestacao.retCsll), retIr: parseCurrency(prestacao.retIr),
       retInss: parseCurrency(prestacao.retInss),
     };
   }, [prestacao]);
@@ -290,43 +226,23 @@ const Index = () => {
   const handleEmitir = async () => {
     const erros = validarEmissao();
     setEmissaoErrors(erros);
-    if (erros.length > 0) {
-      toast.error('Corrija os erros antes de emitir a NFS-e.');
-      return;
-    }
-
+    if (erros.length > 0) { toast.error('Corrija os erros antes de emitir a NFS-e.'); return; }
     const tomadorId = await salvarTomador({
-      prestador_id: config.id || null,
-      cnpj_cpf: tomadorEmissao.cnpjCpf,
-      nome_razao_social: tomadorEmissao.nomeRazaoSocial,
-      nome_fantasia: '',
-      inscricao_municipal: tomadorEmissao.inscricaoMunicipal,
-      inscricao_estadual: '',
-      suframa: '',
-      substituto_tributario: false,
-      cep: tomadorEmissao.cep,
-      logradouro: tomadorEmissao.logradouro,
-      numero: tomadorEmissao.numero,
-      complemento: tomadorEmissao.complemento,
-      bairro: tomadorEmissao.bairro,
-      localidade_uf: tomadorEmissao.localidadeUf,
-      email: tomadorEmissao.email,
-      whatsapp: '',
+      prestador_id: config.id || null, cnpj_cpf: tomadorEmissao.cnpjCpf,
+      nome_razao_social: tomadorEmissao.nomeRazaoSocial, nome_fantasia: '',
+      inscricao_municipal: tomadorEmissao.inscricaoMunicipal, inscricao_estadual: '', suframa: '',
+      substituto_tributario: false, cep: tomadorEmissao.cep, logradouro: tomadorEmissao.logradouro,
+      numero: tomadorEmissao.numero, complemento: tomadorEmissao.complemento, bairro: tomadorEmissao.bairro,
+      localidade_uf: tomadorEmissao.localidadeUf, email: tomadorEmissao.email, whatsapp: '',
       pais: tomadorEmissao.pais || 'Brasil',
     });
-
     await salvarNota({
-      prestadorId: config.id || null,
-      tomadorId: tomadorId || null,
-      prestacao,
-      localPrestacao,
-      status: 'emitida',
+      prestadorId: config.id || null, tomadorId: tomadorId || null,
+      prestacao, localPrestacao, status: 'emitida',
     });
   };
 
   const autosaveEmissao = useCallback(() => {}, []);
-
-  // --- Header config per tab ---
   const tabTitle = activeTab === 'prestador' ? 'O Prestador' : activeTab === 'tomador' ? 'Tomadores' : 'DANFSE';
 
   if (loadingPrestador) {
@@ -382,10 +298,7 @@ const Index = () => {
               )}
 
               {activeTab === 'tomador' && showTomadorForm && (
-                <button
-                  onClick={handleSalvarTomador}
-                  className="flex items-center gap-2 text-sm py-2 btn-primary"
-                >
+                <button onClick={handleSalvarTomador} className="flex items-center gap-2 text-sm py-2 btn-primary">
                   <Save className="w-4 h-4" />
                   <span className="hidden sm:inline">{editingTomadorId ? 'Atualizar' : 'SALVAR'}</span>
                 </button>
@@ -394,8 +307,7 @@ const Index = () => {
               {activeTab === 'emissao' && (
                 <div className="flex items-center gap-2 flex-nowrap">
                   <button onClick={() => window.print()} className="btn-outline flex items-center gap-2 text-sm py-2 whitespace-nowrap">
-                    <Printer className="w-4 h-4 shrink-0" />
-                    <span>Visualizar</span>
+                    <Printer className="w-4 h-4 shrink-0" /><span>Visualizar</span>
                   </button>
                   <button onClick={handleEmitir} disabled={savingNota} className="btn-primary flex items-center gap-2 text-sm py-2 whitespace-nowrap">
                     {savingNota ? <Loader2 className="w-4 h-4 animate-spin shrink-0" /> : <FileOutput className="w-4 h-4 shrink-0" />}
@@ -408,112 +320,223 @@ const Index = () => {
 
           {/* Content */}
           <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+
+            {/* ====== PRESTADOR com sub-abas ====== */}
             {activeTab === 'prestador' && (
               <>
-                <PrestadorSection
-                  data={prestador}
-                  onChange={setPrestador}
-                  onAutosave={autosave}
-                  onSimplesDetected={handleSimplesDetected}
-                  optanteSimples={config.optanteSimples}
-                />
-                <RegimeEParametrosSection
-                  regime={regime}
-                  onRegimeChange={setRegime}
-                  informarAliquotaSN={informarAliquotaSN}
-                  onInformarAliquotaChange={setInformarAliquotaSN}
-                  aliquotaSN={aliquotaSN}
-                  onAliquotaSNChange={setAliquotaSN}
-                  regimeApuracaoSNParametro={regimeApuracaoSNParametro}
-                  onRegimeApuracaoSNParametroChange={setRegimeApuracaoSNParametro}
-                  onAutosave={autosave}
-                >
-                  <CTNSection
-                    ctnSelecionado={ctnSelecionado}
-                    onCtnChange={(codigo, descricao, itemFormatado) => {
-                      setCtnSelecionado(codigo);
-                      setCtnDescricao(descricao);
-                      setCtnItem(itemFormatado);
-                    }}
-                    savedCnaes={config.parametroMunicipal}
-                    onCnaesChange={(cnaes) => setConfig(prev => ({ ...prev, parametroMunicipal: cnaes }))}
-                  />
-                </RegimeEParametrosSection>
+                {/* Sub-abas horizontais */}
+                <div className="flex border-b border-border overflow-x-auto -mt-1 mb-2">
+                  {SUB_TABS.map((tab) => (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      onClick={() => setPrestadorSubTab(tab.key)}
+                      className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                        prestadorSubTab === tab.key
+                          ? 'border-primary text-primary'
+                          : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
+                      }`}
+                    >
+                      {tab.icon}
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
 
-                {regime === 'simples' && (
-                  <CNAESection
-                    cnpj={prestador.cnpj}
-                    cnaeEscolhido={snCnaePrincipal || null}
-                    onCnaeEscolhidoChange={(codigo, descricao) => {
-                      snSetCnaePrincipal(codigo);
-                      setUnsavedPrestador(true);
-                    }}
-                  />
+                {/* Sub-aba: Dados Cadastrais */}
+                {prestadorSubTab === 'cadastro' && (
+                  <div className="space-y-5">
+                    <EmpresaCard
+                      data={prestador}
+                      onFieldChange={autoFetch.handleFieldChange}
+                      onCNPJChange={autoFetch.handleCNPJChange}
+                      loadingCNPJ={autoFetch.loadingCNPJ}
+                      simplesStatus={autoFetch.simplesStatus ?? config.optanteSimples ?? null}
+                      onSimplesToggle={(v) => {
+                        autoFetch.setSimplesStatus(v);
+                        handleSimplesDetected(v);
+                      }}
+                    />
+
+                    <CNAESection
+                      cnpj={prestador.cnpj}
+                      cnaeEscolhido={snCnaePrincipal || null}
+                      onCnaeEscolhidoChange={(codigo, descricao) => {
+                        snSetCnaePrincipal(codigo);
+                        setUnsavedPrestador(true);
+                      }}
+                    />
+
+                    <ContatoCard
+                      email={prestador.email}
+                      whatsapp={prestador.whatsapp}
+                      onFieldChange={autoFetch.handleFieldChange}
+                    />
+
+                    <EnderecoCard
+                      cep={prestador.cep}
+                      logradouro={prestador.logradouro}
+                      numero={prestador.numero}
+                      complemento={prestador.complemento}
+                      bairro={prestador.bairro}
+                      localidadeUf={prestador.localidadeUf}
+                      onFieldChange={autoFetch.handleFieldChange}
+                      onCEPChange={autoFetch.handleCEPChange}
+                      loadingCEP={autoFetch.loadingCEP}
+                    />
+                  </div>
                 )}
 
-                {regime === 'simples' && (
-                  <SimplesNacionalSection
-                    cnaePrincipal={snCnaePrincipal}
-                    cnaeDescricao={snCnaeDescricao}
-                    cnaeAnexo={snCnaeAnexo}
-                    rbt12={snRbt12}
-                    onRbt12Change={(v) => { snSetRbt12(v); setUnsavedPrestador(true); }}
-                    calculo={snCalculo}
-                    alertas={snAlertas}
-                    permiteFatorR={snPermiteFatorR}
-                  />
+                {/* Sub-aba: Regime Tributário */}
+                {prestadorSubTab === 'regime' && (
+                  <div className="space-y-5">
+                    <RegimeEParametrosSection
+                      regime={regime}
+                      onRegimeChange={setRegime}
+                      informarAliquotaSN={informarAliquotaSN}
+                      onInformarAliquotaChange={setInformarAliquotaSN}
+                      aliquotaSN={aliquotaSN}
+                      onAliquotaSNChange={setAliquotaSN}
+                      regimeApuracaoSNParametro={regimeApuracaoSNParametro}
+                      onRegimeApuracaoSNParametroChange={setRegimeApuracaoSNParametro}
+                      onAutosave={autosave}
+                    />
+
+                    {regime === 'simples' && (
+                      <SimplesNacionalSection
+                        cnaePrincipal={snCnaePrincipal}
+                        cnaeDescricao={snCnaeDescricao}
+                        cnaeAnexo={snCnaeAnexo}
+                        rbt12={snRbt12}
+                        onRbt12Change={(v) => { snSetRbt12(v); setUnsavedPrestador(true); }}
+                        calculo={snCalculo}
+                        alertas={snAlertas}
+                        permiteFatorR={snPermiteFatorR}
+                      />
+                    )}
+
+                    {regime === 'simples' && (
+                      <ResumoTributario
+                        rbt12={snRbt12}
+                        cnaeAnexo={snCnaeAnexo || 'III'}
+                        calculo={snCalculo}
+                        visible={snCalculo.valido}
+                      />
+                    )}
+                  </div>
                 )}
 
-                {regime === 'simples' && (
-                  <ResumoTributario
-                    rbt12={snRbt12}
-                    cnaeAnexo={snCnaeAnexo || 'III'}
-                    calculo={snCalculo}
-                    visible={snCalculo.valido}
-                  />
+                {/* Sub-aba: Parâmetros Fiscais */}
+                {prestadorSubTab === 'parametros' && (
+                  <div className="space-y-5">
+                    {/* Parâmetros Federais */}
+                    {regime === 'simples' && (
+                      <div className="section-card">
+                        <h2 className="section-title">
+                          <Settings className="w-5 h-5 text-primary" />
+                          Parâmetros Federais
+                        </h2>
+                        <div className="space-y-4 p-4 rounded-lg bg-muted/50 border border-border">
+                          <ToggleSwitch
+                            checked={regimeApuracaoSNParametro}
+                            onChange={(v) => { setRegimeApuracaoSNParametro(v); autosave(); }}
+                            label="Regime de apuração dos tributos federais e municipal pelo Simples Nacional"
+                          />
+                          <ToggleSwitch
+                            checked={informarAliquotaSN}
+                            onChange={(v) => { setInformarAliquotaSN(v); autosave(); }}
+                            label="Informar alíquota do Simples Nacional"
+                          />
+                          {informarAliquotaSN && (
+                            <div>
+                              <label className="field-label whitespace-nowrap">Simples Nacional</label>
+                              <div className="relative w-[55px]">
+                                <input
+                                  className="field-input pr-7 border-primary"
+                                  type="text"
+                                  placeholder="00,00"
+                                  maxLength={5}
+                                  value={aliquotaSN}
+                                  onChange={(e) => {
+                                    let v = e.target.value.replace(/[^\d]/g, '').slice(0, 4);
+                                    if (v.length > 2) v = v.slice(0, -2) + ',' + v.slice(-2);
+                                    setAliquotaSN(v);
+                                    autosave();
+                                  }}
+                                />
+                                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">%</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {!regime && (
+                      <div className="section-card flex items-center justify-center py-8 text-muted-foreground text-sm">
+                        Selecione um regime tributário na aba "Regime Tributário" para configurar os parâmetros.
+                      </div>
+                    )}
+
+                    {regime && regime !== 'simples' && (
+                      <div className="section-card">
+                        <h2 className="section-title">
+                          <Settings className="w-5 h-5 text-primary" />
+                          Parâmetros Federais
+                        </h2>
+                        <p className="text-sm text-muted-foreground">Configurações federais para {regime === 'presumido' ? 'Lucro Presumido' : 'Lucro Real'} serão disponibilizadas em breve.</p>
+                      </div>
+                    )}
+
+                    {/* Parâmetros Municipais */}
+                    <div className="section-card">
+                      <CTNSection
+                        ctnSelecionado={ctnSelecionado}
+                        onCtnChange={(codigo, descricao, itemFormatado) => {
+                          setCtnSelecionado(codigo);
+                          setCtnDescricao(descricao);
+                          setCtnItem(itemFormatado);
+                        }}
+                        savedCnaes={config.parametroMunicipal}
+                        onCnaesChange={(cnaes) => setConfig(prev => ({ ...prev, parametroMunicipal: cnaes }))}
+                      />
+                    </div>
+
+                    {/* Configurações Operacionais placeholder */}
+                    <div className="section-card">
+                      <h2 className="section-title">
+                        <Settings className="w-5 h-5 text-primary" />
+                        Configurações Operacionais
+                      </h2>
+                      <p className="text-sm text-muted-foreground py-4 text-center">
+                        Configurações operacionais adicionais serão disponibilizadas em versões futuras.
+                      </p>
+                    </div>
+                  </div>
                 )}
               </>
             )}
 
+            {/* ====== TOMADOR ====== */}
             {activeTab === 'tomador' && (
               <>
                 {showTomadorForm ? (
-                  <TomadorSection
-                    data={tomador}
-                    onChange={setTomador}
-                    onAutosave={autosaveTomador}
-                  />
+                  <TomadorSection data={tomador} onChange={setTomador} onAutosave={autosaveTomador} />
                 ) : (
                   <TomadoresLista
-                    tomadores={tomadoresList}
-                    loading={loadingTomadores}
-                    editingId={editingTomadorId}
-                    onNovo={() => {
-                      setTomador(INITIAL_TOMADOR);
-                      setEditingTomadorId(null);
-                      setShowTomadorForm(true);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
+                    tomadores={tomadoresList} loading={loadingTomadores} editingId={editingTomadorId}
+                    onNovo={() => { setTomador(INITIAL_TOMADOR); setEditingTomadorId(null); setShowTomadorForm(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                     onEditar={(t) => {
                       setTomador({
-                        nomeEmpresarial: t.nome_razao_social,
-                        nomeFantasia: t.nome_fantasia,
-                        cnpjCpf: t.cnpj_cpf,
-                        inscricaoMunicipal: t.inscricao_municipal,
-                        inscricaoEstadual: t.inscricao_estadual,
-                        suframa: t.suframa,
-                        substitutoTributario: t.substituto_tributario,
-                        cep: t.cep,
-                        logradouro: t.logradouro,
-                        numero: t.numero,
-                        complemento: t.complemento,
-                        bairro: t.bairro,
-                        localidadeUf: t.localidade_uf,
-                        email: t.email,
-                        whatsapp: t.whatsapp,
+                        nomeEmpresarial: t.nome_razao_social, nomeFantasia: t.nome_fantasia,
+                        cnpjCpf: t.cnpj_cpf, inscricaoMunicipal: t.inscricao_municipal,
+                        inscricaoEstadual: t.inscricao_estadual, suframa: t.suframa,
+                        substitutoTributario: t.substituto_tributario, cep: t.cep,
+                        logradouro: t.logradouro, numero: t.numero, complemento: t.complemento,
+                        bairro: t.bairro, localidadeUf: t.localidade_uf,
+                        email: t.email, whatsapp: t.whatsapp,
                       });
-                      setEditingTomadorId(t.id);
-                      setShowTomadorForm(true);
+                      setEditingTomadorId(t.id); setShowTomadorForm(true);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                     onExcluir={excluirTomador}
@@ -522,6 +545,7 @@ const Index = () => {
               </>
             )}
 
+            {/* ====== EMISSÃO ====== */}
             {activeTab === 'emissao' && (
               <>
                 {emissaoErrors.length > 0 && (
@@ -540,15 +564,9 @@ const Index = () => {
                 <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
                 <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} favoritos={config.parametroMunicipal} optanteSimples={config.optanteSimples} tomadorSubstituto={tomadorSubstituto} />
                 <ValoresTotaisSection
-                  valorBruto={valores.valorBruto}
-                  desconto={valores.desconto}
-                  issValor={valores.issValor}
-                  issRetido={prestacao.issRetido}
-                  retPis={valores.retPis}
-                  retCofins={valores.retCofins}
-                  retCsll={valores.retCsll}
-                  retIr={valores.retIr}
-                  retInss={valores.retInss}
+                  valorBruto={valores.valorBruto} desconto={valores.desconto} issValor={valores.issValor}
+                  issRetido={prestacao.issRetido} retPis={valores.retPis} retCofins={valores.retCofins}
+                  retCsll={valores.retCsll} retIr={valores.retIr} retInss={valores.retInss}
                 />
               </>
             )}
@@ -559,34 +577,10 @@ const Index = () => {
       {activeTab === 'emissao' && (
         <DANFSePrint
           data={{
-            prestador: {
-              cnpj: prestador.cnpj,
-              inscricaoMunicipal: prestador.inscricaoMunicipal,
-              nomeEmpresarial: prestador.nomeEmpresarial,
-              nomeFantasia: prestador.nomeFantasia,
-            },
-            tomador: {
-              cnpjCpf: tomadorEmissao.cnpjCpf,
-              nomeRazaoSocial: tomadorEmissao.nomeRazaoSocial,
-              inscricaoMunicipal: tomadorEmissao.inscricaoMunicipal,
-              email: tomadorEmissao.email,
-              logradouro: tomadorEmissao.logradouro,
-              numero: tomadorEmissao.numero,
-              complemento: tomadorEmissao.complemento,
-              bairro: tomadorEmissao.bairro,
-              localidadeUf: tomadorEmissao.localidadeUf,
-              cep: tomadorEmissao.cep,
-            },
+            prestador: { cnpj: prestador.cnpj, inscricaoMunicipal: prestador.inscricaoMunicipal, nomeEmpresarial: prestador.nomeEmpresarial, nomeFantasia: prestador.nomeFantasia },
+            tomador: { cnpjCpf: tomadorEmissao.cnpjCpf, nomeRazaoSocial: tomadorEmissao.nomeRazaoSocial, inscricaoMunicipal: tomadorEmissao.inscricaoMunicipal, email: tomadorEmissao.email, logradouro: tomadorEmissao.logradouro, numero: tomadorEmissao.numero, complemento: tomadorEmissao.complemento, bairro: tomadorEmissao.bairro, localidadeUf: tomadorEmissao.localidadeUf, cep: tomadorEmissao.cep },
             localPrestacao,
-            servico: {
-              codigoServico: prestacao.codigoServico,
-              descricaoServico: prestacao.descricaoServico,
-              valorServico: prestacao.valorServico,
-              aliquota: prestacao.aliquota,
-              baseCalculo: prestacao.baseCalculo,
-              desconto: prestacao.desconto,
-              issRetido: prestacao.issRetido,
-            },
+            servico: { codigoServico: prestacao.codigoServico, descricaoServico: prestacao.descricaoServico, valorServico: prestacao.valorServico, aliquota: prestacao.aliquota, baseCalculo: prestacao.baseCalculo, desconto: prestacao.desconto, issRetido: prestacao.issRetido },
             valores,
           }}
         />
@@ -594,5 +588,21 @@ const Index = () => {
     </SidebarProvider>
   );
 };
+
+// Toggle component used in Parâmetros Fiscais
+const ToggleSwitch: React.FC<{ checked: boolean; onChange: (v: boolean) => void; label: string }> = ({ checked, onChange, label }) => (
+  <label className="flex items-center gap-3 cursor-pointer select-none">
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`switch-track ${checked ? 'switch-track-on' : 'switch-track-off'}`}
+    >
+      <span className={`switch-thumb ${checked ? 'translate-x-4' : 'translate-x-0'}`} />
+    </button>
+    <span className="text-sm text-foreground">{label}</span>
+  </label>
+);
 
 export default Index;
