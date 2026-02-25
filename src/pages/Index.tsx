@@ -383,6 +383,15 @@ const Index = () => {
                 {/* Sub-aba: Regime Tributário */}
                 {prestadorSubTab === 'regime' && (
                    <div className="space-y-2">
+                    <CNAESection
+                      cnpj={prestador.cnpj}
+                      cnaeEscolhido={snCnaePrincipal || null}
+                      onCnaeEscolhidoChange={(codigo, descricao) => {
+                        snSetCnaePrincipal(codigo);
+                        setUnsavedPrestador(true);
+                      }}
+                    />
+
                     <RegimeEParametrosSection
                       regime={regime}
                       onRegimeChange={setRegime}
@@ -422,14 +431,6 @@ const Index = () => {
                 {/* Sub-aba: Parâmetros Fiscais */}
                 {prestadorSubTab === 'parametros' && (
                   <div className="space-y-2">
-                    <CNAESection
-                      cnpj={prestador.cnpj}
-                      cnaeEscolhido={snCnaePrincipal || null}
-                      onCnaeEscolhidoChange={(codigo, descricao) => {
-                        snSetCnaePrincipal(codigo);
-                        setUnsavedPrestador(true);
-                      }}
-                    />
 
                     {/* Parâmetros Federais */}
                     {regime === 'simples' && (
