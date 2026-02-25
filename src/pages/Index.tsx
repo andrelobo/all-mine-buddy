@@ -1,20 +1,19 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import vascoEscudo from '@/assets/vasco-escudo.png';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Save, CheckCircle, Printer, Building2, Users, Receipt, Loader2, PlusCircle, List } from 'lucide-react';
+import { Save, CheckCircle, Loader2, List } from 'lucide-react';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import AppSidebar from '@/components/AppSidebar';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
 import CTNSection from '@/components/CTNSection';
-import SimplesNacionalSection from '@/components/SimplesNacionalSection';
-import TomadorSection, { type TomadorData, validateCPF } from '@/components/TomadorSection';
+import TomadorSection, { type TomadorData } from '@/components/TomadorSection';
 import TomadoresLista from '@/components/TomadoresLista';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 import { usePrestador } from '@/hooks/usePrestador';
 import { useTomadores } from '@/hooks/useTomadores';
-import ListaServicosSection from '@/components/ListaServicosSection';
 
-type ActiveTab = 'prestador' | 'tomador' | 'servicos' | 'emissao';
+type ActiveTab = 'prestador' | 'tomador' | 'emissao';
 
 const INITIAL_TOMADOR: TomadorData = {
   nomeEmpresarial: '',
@@ -39,10 +38,8 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('prestador');
   const [unsavedPrestador, setUnsavedPrestador] = useState(false);
   
-  // Prestador persistence
   const { prestador, setPrestador, config, setConfig, loading: loadingPrestador, saving: savingPrestador, salvarPrestador } = usePrestador();
   
-  // Regime state derived from config
   const [regime, setRegime] = useState<RegimeTributario>(null);
   const [informarAliquotaSN, setInformarAliquotaSN] = useState(false);
   const [aliquotaSN, setAliquotaSN] = useState('');
@@ -52,13 +49,11 @@ const Index = () => {
   const [ctnDescricao, setCtnDescricao] = useState<string>('');
   const [ctnItem, setCtnItem] = useState<string>('');
 
-  // Tomador state
   const [tomador, setTomador] = useState<TomadorData>(INITIAL_TOMADOR);
   const [editingTomadorId, setEditingTomadorId] = useState<string | null>(null);
   const [showTomadorForm, setShowTomadorForm] = useState(false);
   const { tomadores: tomadoresList, loading: loadingTomadores, salvarTomador, excluirTomador } = useTomadores(config.id);
 
-  // Sync config to local state when loaded from DB
   useEffect(() => {
     if (config.regimeTributario) {
       setRegime(config.regimeTributario as RegimeTributario);
@@ -86,9 +81,7 @@ const Index = () => {
     setUnsavedPrestador(true);
   }, [checkValidity]);
 
-  const autosaveTomador = useCallback(() => {
-    // placeholder
-  }, []);
+  const autosaveTomador = useCallback(() => {}, []);
 
   const handleSimplesDetected = useCallback((isOptante: boolean) => {
     if (isOptante) {
@@ -98,6 +91,14 @@ const Index = () => {
     }
     setUnsavedPrestador(true);
   }, []);
+
+  const handleTabChange = (tab: ActiveTab) => {
+    if (tab === 'emissao') {
+      navigate('/emissao-nfse');
+    } else {
+      setActiveTab(tab);
+    }
+  };
 
   const handleSalvar = async () => {
     if (!validateCNPJ(prestador.cnpj)) {
@@ -167,13 +168,6 @@ const Index = () => {
     setShowTomadorForm(false);
   };
 
-  const tabs: { key: ActiveTab; label: string; icon: React.ReactNode }[] = [
-    { key: 'prestador', label: 'O Prestador', icon: <Building2 className="w-4 h-4" /> },
-    { key: 'tomador', label: 'Tomadores', icon: <Users className="w-4 h-4" /> },
-    
-    { key: 'emissao', label: 'DANFSE', icon: <Receipt className="w-4 h-4" /> },
-  ];
-
   if (loadingPrestador) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -183,170 +177,144 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header with tabs and actions */}
-      <header className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center">
-              <img src={vascoEscudo} alt="Zerä Software" className="w-full h-full object-contain" />
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar activeTab={activeTab} onTabChange={handleTabChange} />
+
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Top bar */}
+          <header className="bg-card border-b border-border sticky top-0 z-10 px-4 sm:px-6 py-2 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <SidebarTrigger />
+              <h2 className="text-base font-semibold text-foreground">
+                {activeTab === 'prestador' ? 'O Prestador' : 'Tomadores'}
+              </h2>
             </div>
-            <h1 className="text-lg font-bold text-foreground tracking-tight">
-              Zerä Software Ltda
-            </h1>
-          </div>
 
-          {configValida && (
-            <div className="alert-success flex items-center gap-2 text-xs hidden sm:flex">
-              <CheckCircle className="w-4 h-4" />
-              Configuração fiscal válida
+            <div className="flex items-center gap-3">
+              {configValida && (
+                <div className="alert-success flex items-center gap-2 text-xs hidden sm:flex">
+                  <CheckCircle className="w-4 h-4" />
+                  Configuração fiscal válida
+                </div>
+              )}
+
+              {activeTab === 'tomador' && showTomadorForm && (
+                <button
+                  onClick={() => { setTomador(INITIAL_TOMADOR); setEditingTomadorId(null); setShowTomadorForm(false); }}
+                  className="btn-outline flex items-center gap-2 text-sm py-2"
+                >
+                  <List className="w-4 h-4" />
+                  <span className="hidden sm:inline">Lista</span>
+                </button>
+              )}
+              {(activeTab !== 'tomador' || showTomadorForm) && (
+                <button
+                  onClick={activeTab === 'tomador' ? handleSalvarTomador : handleSalvar}
+                  disabled={savingPrestador}
+                  className={`flex items-center gap-2 text-sm py-2 btn-primary ${
+                    activeTab === 'prestador' && unsavedPrestador
+                      ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2'
+                      : ''
+                  }`}
+                >
+                  {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  <span className="hidden sm:inline">
+                    {activeTab === 'tomador'
+                      ? (editingTomadorId ? 'Atualizar' : 'SALVAR')
+                      : 'SALVAR'}
+                  </span>
+                </button>
+              )}
             </div>
-          )}
+          </header>
+
+          {/* Content */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+            {activeTab === 'prestador' && (
+              <>
+                <PrestadorSection
+                  data={prestador}
+                  onChange={setPrestador}
+                  onAutosave={autosave}
+                  onSimplesDetected={handleSimplesDetected}
+                  optanteSimples={config.optanteSimples}
+                />
+                <RegimeEParametrosSection
+                  regime={regime}
+                  onRegimeChange={setRegime}
+                  informarAliquotaSN={informarAliquotaSN}
+                  onInformarAliquotaChange={setInformarAliquotaSN}
+                  aliquotaSN={aliquotaSN}
+                  onAliquotaSNChange={setAliquotaSN}
+                  regimeApuracaoSNParametro={regimeApuracaoSNParametro}
+                  onRegimeApuracaoSNParametroChange={setRegimeApuracaoSNParametro}
+                  onAutosave={autosave}
+                >
+                  <CTNSection
+                    ctnSelecionado={ctnSelecionado}
+                    onCtnChange={(codigo, descricao, itemFormatado) => {
+                      setCtnSelecionado(codigo);
+                      setCtnDescricao(descricao);
+                      setCtnItem(itemFormatado);
+                    }}
+                    savedCnaes={config.parametroMunicipal}
+                    onCnaesChange={(cnaes) => setConfig(prev => ({ ...prev, parametroMunicipal: cnaes }))}
+                  />
+                </RegimeEParametrosSection>
+              </>
+            )}
+
+            {activeTab === 'tomador' && (
+              <>
+                {showTomadorForm ? (
+                  <TomadorSection
+                    data={tomador}
+                    onChange={setTomador}
+                    onAutosave={autosaveTomador}
+                  />
+                ) : (
+                  <TomadoresLista
+                    tomadores={tomadoresList}
+                    loading={loadingTomadores}
+                    editingId={editingTomadorId}
+                    onNovo={() => {
+                      setTomador(INITIAL_TOMADOR);
+                      setEditingTomadorId(null);
+                      setShowTomadorForm(true);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    onEditar={(t) => {
+                      setTomador({
+                        nomeEmpresarial: t.nome_razao_social,
+                        nomeFantasia: t.nome_fantasia,
+                        cnpjCpf: t.cnpj_cpf,
+                        inscricaoMunicipal: t.inscricao_municipal,
+                        inscricaoEstadual: t.inscricao_estadual,
+                        suframa: t.suframa,
+                        substitutoTributario: t.substituto_tributario,
+                        cep: t.cep,
+                        logradouro: t.logradouro,
+                        numero: t.numero,
+                        complemento: t.complemento,
+                        bairro: t.bairro,
+                        localidadeUf: t.localidade_uf,
+                        email: t.email,
+                        whatsapp: t.whatsapp,
+                      });
+                      setEditingTomadorId(t.id);
+                      setShowTomadorForm(true);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    onExcluir={excluirTomador}
+                  />
+                )}
+              </>
+            )}
+          </main>
         </div>
-
-        {/* Tab bar + action buttons */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between border-t border-border">
-          <nav className="flex items-center gap-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => tab.key === 'emissao' ? navigate('/emissao-nfse') : setActiveTab(tab.key)}
-                className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors duration-150 ${
-                  tab.key === 'emissao'
-                    ? 'border-yellow-600 text-yellow-600'
-                    : tab.key === 'tomador'
-                      ? 'border-green-600 text-green-600'
-                      : tab.key === 'prestador'
-                        ? 'border-primary text-primary'
-                        : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
-                }`}
-              >
-                {tab.icon}
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2 no-print">
-            
-            {activeTab === 'tomador' && showTomadorForm && (
-              <button
-                onClick={() => { setTomador(INITIAL_TOMADOR); setEditingTomadorId(null); setShowTomadorForm(false); }}
-                className="btn-outline flex items-center gap-2 text-sm py-2"
-              >
-                <List className="w-4 h-4" />
-                <span className="hidden sm:inline">Lista</span>
-              </button>
-            )}
-            {(activeTab !== 'tomador' || showTomadorForm) && (
-              <button
-                onClick={activeTab === 'tomador' ? handleSalvarTomador : handleSalvar}
-                disabled={savingPrestador}
-                className={`flex items-center gap-2 text-sm py-2 btn-primary ${
-                  activeTab === 'prestador' && unsavedPrestador
-                    ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2'
-                    : ''
-                }`}
-              >
-                {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                <span className="hidden sm:inline">
-                  {activeTab === 'tomador' 
-                    ? (editingTomadorId ? 'Atualizar' : 'SALVAR') 
-                    : 'SALVAR'}
-                </span>
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
-        {activeTab === 'prestador' && (
-          <>
-            <PrestadorSection
-              data={prestador}
-              onChange={setPrestador}
-              onAutosave={autosave}
-              onSimplesDetected={handleSimplesDetected}
-              optanteSimples={config.optanteSimples}
-            />
-
-            <RegimeEParametrosSection
-              regime={regime}
-              onRegimeChange={setRegime}
-              informarAliquotaSN={informarAliquotaSN}
-              onInformarAliquotaChange={setInformarAliquotaSN}
-              aliquotaSN={aliquotaSN}
-              onAliquotaSNChange={setAliquotaSN}
-              regimeApuracaoSNParametro={regimeApuracaoSNParametro}
-              onRegimeApuracaoSNParametroChange={setRegimeApuracaoSNParametro}
-              onAutosave={autosave}
-            >
-              <CTNSection
-                ctnSelecionado={ctnSelecionado}
-                onCtnChange={(codigo, descricao, itemFormatado) => {
-                  setCtnSelecionado(codigo);
-                  setCtnDescricao(descricao);
-                  setCtnItem(itemFormatado);
-                }}
-                savedCnaes={config.parametroMunicipal}
-                onCnaesChange={(cnaes) => setConfig(prev => ({ ...prev, parametroMunicipal: cnaes }))}
-              />
-            </RegimeEParametrosSection>
-          </>
-        )}
-
-        {activeTab === 'tomador' && (
-          <>
-            {showTomadorForm ? (
-              <TomadorSection
-                data={tomador}
-                onChange={setTomador}
-                onAutosave={autosaveTomador}
-              />
-            ) : (
-              <TomadoresLista
-                tomadores={tomadoresList}
-                loading={loadingTomadores}
-                editingId={editingTomadorId}
-                onNovo={() => {
-                  setTomador(INITIAL_TOMADOR);
-                  setEditingTomadorId(null);
-                  setShowTomadorForm(true);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                onEditar={(t) => {
-                  setTomador({
-                    nomeEmpresarial: t.nome_razao_social,
-                    nomeFantasia: t.nome_fantasia,
-                    cnpjCpf: t.cnpj_cpf,
-                    inscricaoMunicipal: t.inscricao_municipal,
-                    inscricaoEstadual: t.inscricao_estadual,
-                    suframa: t.suframa,
-                    substitutoTributario: t.substituto_tributario,
-                    cep: t.cep,
-                    logradouro: t.logradouro,
-                    numero: t.numero,
-                    complemento: t.complemento,
-                    bairro: t.bairro,
-                    localidadeUf: t.localidade_uf,
-                    email: t.email,
-                    whatsapp: t.whatsapp,
-                  });
-                  setEditingTomadorId(t.id);
-                  setShowTomadorForm(true);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                onExcluir={excluirTomador}
-              />
-            )}
-          </>
-        )}
-
-
-      </main>
-    </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
