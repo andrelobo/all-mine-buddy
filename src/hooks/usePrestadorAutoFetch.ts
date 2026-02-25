@@ -17,6 +17,7 @@ export interface PrestadorData {
   localidadeUf: string;
   email: string;
   whatsapp: string;
+  dataOpcaoSimples?: string;
 }
 
 async function fetchCNPJData(cnpj: string) {
@@ -42,6 +43,7 @@ async function fetchCNPJData(cnpj: string) {
         email: data.email || '',
         telefone: data.ddd_telefone_1?.replace(/\D/g, '') || '',
         opcao_pelo_simples: data.opcao_pelo_simples ?? null,
+        data_opcao_simples: data.data_opcao_pelo_simples || null,
       };
     }
   } catch { /* fallback */ }
@@ -67,6 +69,7 @@ async function fetchCNPJData(cnpj: string) {
     email: d.email || '',
     telefone: d.telefone?.replace(/\D/g, '') || '',
     opcao_pelo_simples: d.simples?.optante ?? null,
+    data_opcao_simples: d.simples?.data_opcao || null,
   };
 }
 
@@ -117,6 +120,10 @@ export function usePrestadorAutoFetch(
       onChange(updated);
       onAutosave();
       const isSimples = result.opcao_pelo_simples === true;
+      const dataOpcao = result.data_opcao_simples
+        ? new Date(result.data_opcao_simples).toLocaleDateString('pt-BR')
+        : undefined;
+      onChange({ ...updated, dataOpcaoSimples: dataOpcao });
       setSimplesStatus(isSimples);
       onSimplesDetected?.(isSimples);
       toast.success('Dados do CNPJ preenchidos automaticamente!');
