@@ -46,7 +46,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
   onAutosave,
 }) => {
   const regimes: { value: RegimeTributario; label: string; desc: string; disabled?: boolean }[] = [
-    { value: 'simples', label: 'Simples Nacional', desc: 'MEI, ME e EPP optantes pelo Simples' },
+    { value: 'simples', label: 'Simples Nacional', desc: 'ME/EPP Optantes Simples Nacional' },
     { value: 'presumido', label: 'Lucro Presumido', desc: 'Em atualização.', disabled: true },
     { value: 'real', label: 'Lucro Real', desc: 'Em atualização.', disabled: true },
   ];
