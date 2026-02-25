@@ -35,15 +35,10 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange }) => {
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-3">
-          <div className="w-28 h-28 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
-            <img src={skaleLogo} alt="Skalë" className="w-full h-full object-contain brightness-0 invert" />
-          </div>
-          {!isCollapsed && (
-            <span className="text-sm font-bold text-sidebar-foreground leading-tight">
-              Skalë
-            </span>
-          )}
+        <div className="flex items-center">
+          <span className="text-sm font-bold text-sidebar-foreground leading-tight">
+            Skalë Software
+          </span>
         </div>
       </SidebarHeader>
 
