@@ -50,7 +50,6 @@ function formatCNAECode(codigo: number | string): string {
 
 const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChange, rbt12 = 0, cnaesLista, onCnaesListaChange }) => {
   const [manualActivities, setManualActivitiesRaw] = useState<CNAEAtividade[]>(cnaesLista || []);
-  const [removedCodes, setRemovedCodes] = useState<Set<string>>(new Set());
   const [manualCnae, setManualCnae] = useState('');
   const [manualCnaeDescricaoIBGE, setManualCnaeDescricaoIBGE] = useState('');
   const [showCnaeDropdown, setShowCnaeDropdown] = useState(false);
@@ -142,14 +141,12 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
     fetchAnexos();
   }, [cnaeManualResults]);
 
-  const visibleActivities = manualActivities.filter((a) => !removedCodes.has(String(a.codigo)));
-
   const handleRemove = (e: React.MouseEvent, codigo: string) => {
     e.stopPropagation();
-    setRemovedCodes((prev) => { const next = new Set(prev); next.add(codigo); return next; });
+    setManualActivities((prev) => prev.filter((a) => String(a.codigo) !== codigo));
     if (cnaeEscolhido === codigo) {
-      const next = manualActivities.find((a) => String(a.codigo) !== codigo && !removedCodes.has(String(a.codigo)));
-      if (next) onCnaeEscolhidoChange(String(next.codigo), next.descricao);
+      const remaining = manualActivities.filter((a) => String(a.codigo) !== codigo);
+      if (remaining.length > 0) onCnaeEscolhidoChange(String(remaining[0].codigo), remaining[0].descricao);
     }
   };
 
@@ -272,11 +269,11 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
       </div>
 
       {/* Lista de CNAEs adicionados */}
-      {visibleActivities.length > 0 && (
+      {manualActivities.length > 0 && (
         <div className="mt-3">
           <p className="text-[10px] tracking-wider text-destructive font-medium mb-1.5">Lista Cnae</p>
           <div className="border border-border rounded-lg divide-y divide-border">
-            {visibleActivities.map((atividade) => {
+            {manualActivities.map((atividade) => {
               const codigo = String(atividade.codigo);
               const isSelected = cnaeEscolhido === codigo;
               return (
@@ -305,12 +302,6 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
               );
             })}
           </div>
-
-          {removedCodes.size > 0 && (
-            <button type="button" onClick={() => setRemovedCodes(new Set())} className="text-[10px] text-muted-foreground hover:text-foreground underline transition-colors mt-1">
-              Restaurar {removedCodes.size} atividade{removedCodes.size > 1 ? 's' : ''} removida{removedCodes.size > 1 ? 's' : ''}
-            </button>
-          )}
         </div>
       )}
     </div>
