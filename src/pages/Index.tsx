@@ -9,7 +9,7 @@ import CTNSection from '@/components/CTNSection';
 import CNAESection from '@/components/CNAESection';
 import SimplesNacionalSection from '@/components/SimplesNacionalSection';
 import ResumoTributario from '@/components/ResumoTributario';
-import Dashboard from '@/components/Dashboard';
+
 import TabelaAnexoIII from '@/components/TabelaAnexoIII';
 import EmpresaCard from '@/components/prestador/EmpresaCard';
 import ContatoCard from '@/components/prestador/ContatoCard';
@@ -29,7 +29,7 @@ import { useNotasFiscais } from '@/hooks/useNotasFiscais';
 import { useSimplesNacional } from '@/hooks/useSimplesNacional';
 import type { TomadorDB } from '@/hooks/useTomadores';
 
-type ActiveTab = 'dashboard' | 'prestador' | 'tomador' | 'emissao';
+type ActiveTab = 'prestador' | 'tomador' | 'emissao';
 type PrestadorSubTab = 'cadastro' | 'regime' | 'parametros';
 
 const INITIAL_TOMADOR: TomadorData = {
@@ -61,7 +61,7 @@ const SUB_TABS: { key: PrestadorSubTab; label: string; icon: React.ReactNode }[]
 ];
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('prestador');
   const [prestadorSubTab, setPrestadorSubTab] = useState<PrestadorSubTab>('cadastro');
   const [unsavedPrestador, setUnsavedPrestador] = useState(false);
   
@@ -263,7 +263,7 @@ const Index = () => {
   };
 
   const autosaveEmissao = useCallback(() => {}, []);
-  const tabTitle = activeTab === 'dashboard' ? 'Dashboard' : activeTab === 'prestador' ? 'O Prestador' : activeTab === 'tomador' ? 'Tomadores' : 'DANFSE';
+  const tabTitle = activeTab === 'prestador' ? 'O Prestador' : activeTab === 'tomador' ? 'Tomadores' : 'DANFSE';
 
   if (loadingPrestador) {
     return (
@@ -353,16 +353,6 @@ const Index = () => {
           {/* Content */}
           <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-4 space-y-2">
 
-            {/* ====== DASHBOARD ====== */}
-            {activeTab === 'dashboard' && (
-              <Dashboard
-                nomeEmpresa={prestador.nomeEmpresarial || prestador.nomeFantasia || ''}
-                rbt12={snRbt12}
-                calculo={snCalculo}
-                cnaeAnexo={snCnaeAnexo || 'III'}
-                regime={regime}
-              />
-            )}
 
             {/* ====== PRESTADOR com sub-abas ====== */}
             {activeTab === 'prestador' && (
