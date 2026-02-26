@@ -78,14 +78,11 @@ export function useSimplesNacional(cnaePrincipalInicial: string, rbt12Inicial: n
 
   const alertas = useMemo(() => {
     const all = [...calculo.alertas];
-    if (permiteFatorR && cnaeAnexo === 'III') {
-      all.push('Este CNAE pode ter regras de Fator R. Este produto é focado em Anexo III sem Fator R.');
-    }
     if (cnaeAnexo && cnaeAnexo !== 'III') {
       all.push(`Este CNAE pertence ao Anexo ${cnaeAnexo}, não ao Anexo III.`);
     }
     return all;
-  }, [calculo.alertas, permiteFatorR, cnaeAnexo]);
+  }, [calculo.alertas, cnaeAnexo]);
 
   return {
     cnaePrincipal,
