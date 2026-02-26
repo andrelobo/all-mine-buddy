@@ -63,7 +63,7 @@ const RegimeEParametrosSection: React.FC<Props> = ({
         Regime Tributário
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
         {regimes.map((r) => (
           <button
             key={r.value}
