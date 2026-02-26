@@ -337,8 +337,8 @@ const Index = () => {
             </div>
           </header>
 
-          {/* Dashboard Resumo Tributário - topo fixo */}
-          {activeTab === 'prestador' && regime === 'simples' && snCalculo.valido && (
+          {/* Dashboard Resumo Tributário - topo fixo, visível globalmente */}
+          {regime === 'simples' && snCalculo.valido && (
             <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-4 pb-0">
               <ResumoTributario
                 rbt12={snRbt12}
