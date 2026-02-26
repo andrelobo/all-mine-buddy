@@ -1,5 +1,5 @@
 import React from 'react';
-import { Building2, Users, Receipt, Landmark, Settings, ClipboardList, LayoutDashboard } from 'lucide-react';
+import { Building2, Users, Receipt, Landmark, Settings, ClipboardList } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -14,7 +14,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-type ActiveTab = 'dashboard' | 'prestador' | 'tomador' | 'emissao';
+type ActiveTab = 'prestador' | 'tomador' | 'emissao';
 type PrestadorSubTab = 'cadastro' | 'regime' | 'parametros';
 
 interface AppSidebarProps {
@@ -51,23 +51,6 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange, prestad
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {/* Dashboard */}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  isActive={activeTab === 'dashboard'}
-                  onClick={() => onTabChange('dashboard')}
-                  tooltip="Dashboard"
-                  className={
-                    activeTab === 'dashboard'
-                      ? 'bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground'
-                      : ''
-                  }
-                >
-                  <LayoutDashboard className="w-4 h-4" />
-                  <span>Dashboard</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
               {/* O Prestador - com sub-itens */}
               <SidebarMenuItem>
                 <SidebarMenuButton
