@@ -339,14 +339,12 @@ const Index = () => {
 
           {/* Dashboard Resumo Tributário - topo fixo, visível globalmente */}
           {regime === 'simples' && snCalculo.valido && (
-            <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-4 pb-0">
-              <ResumoTributario
-                rbt12={snRbt12}
-                cnaeAnexo={snCnaeAnexo || 'III'}
-                calculo={snCalculo}
-                visible={true}
-              />
-            </div>
+            <ResumoTributario
+              rbt12={snRbt12}
+              cnaeAnexo={snCnaeAnexo || 'III'}
+              calculo={snCalculo}
+              visible={true}
+            />
           )}
 
           {/* Content */}
