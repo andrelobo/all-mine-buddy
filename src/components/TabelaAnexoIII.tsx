@@ -10,15 +10,15 @@ const TabelaAnexoIII: React.FC<Props> = ({ faixaAtual }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="section-card p-3">
+    <div className="section-card">
       <button
         type="button"
         onClick={() => setOpen(!open)}
         className="flex items-center justify-between w-full text-left"
       >
-        <h2 className="section-title text-sm mb-0 flex items-center gap-1.5">
-          <TableIcon className="w-4 h-4 text-primary" />
-          Tabela Anexo III
+        <h2 className="section-title mb-0">
+          <TableIcon className="w-5 h-5 text-primary" />
+          Tabela Anexo III – Simples Nacional
         </h2>
         <ChevronDown
           className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
@@ -26,14 +26,14 @@ const TabelaAnexoIII: React.FC<Props> = ({ faixaAtual }) => {
       </button>
 
       {open && (
-        <div className="overflow-auto mt-3">
-          <table className="w-full text-xs border-collapse">
+        <div className="overflow-auto mt-4">
+          <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b border-border text-muted-foreground">
-                <th className="py-1.5 px-2 text-center font-medium">Faixa</th>
-                <th className="py-1.5 px-2 text-left font-medium">Receita Bruta (12m)</th>
-                <th className="py-1.5 px-2 text-center font-medium">Alíq. Nom.</th>
-                <th className="py-1.5 px-2 text-right font-medium">Deduzir</th>
+                <th className="py-2 px-3 text-center font-medium">Faixa</th>
+                <th className="py-2 px-3 text-left font-medium">Receita Bruta (12 meses)</th>
+                <th className="py-2 px-3 text-center font-medium">Alíq. Nominal</th>
+                <th className="py-2 px-3 text-right font-medium">Parcela a Deduzir</th>
               </tr>
             </thead>
             <tbody>
@@ -46,13 +46,13 @@ const TabelaAnexoIII: React.FC<Props> = ({ faixaAtual }) => {
                       : 'text-foreground'
                   }`}
                 >
-                  <td className="py-1 px-2 text-center">{f.faixa}ª</td>
-                  <td className="py-1 px-2">
+                  <td className="py-2 px-3 text-center">{f.faixa}ª</td>
+                  <td className="py-2 px-3">
                     {f.limiteInferior === 0 ? 'Até' : `${formatCurrency(f.limiteInferior)} –`}{' '}
                     {formatCurrency(f.limiteSuperior)}
                   </td>
-                  <td className="py-1 px-2 text-center">{formatPercent(f.aliquotaNominal)}</td>
-                  <td className="py-1 px-2 text-right">{formatCurrency(f.parcelaDeduzir)}</td>
+                  <td className="py-2 px-3 text-center">{formatPercent(f.aliquotaNominal)}</td>
+                  <td className="py-2 px-3 text-right">{formatCurrency(f.parcelaDeduzir)}</td>
                 </tr>
               ))}
             </tbody>
