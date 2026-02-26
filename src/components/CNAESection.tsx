@@ -5,6 +5,7 @@ import { CNAE_LIST, formatCNAECode as formatCNAECodeFromList, getLC116Item } fro
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+import { calcularSimplesAnexoIII, formatPercent } from '@/utils/simples-nacional';
 
 interface CNAEAtividade {
   codigo: number | string;
@@ -19,6 +20,7 @@ interface Props {
   cnpj: string;
   cnaeEscolhido: string | null;
   onCnaeEscolhidoChange: (codigo: string, descricao: string) => void;
+  rbt12?: number;
 }
 
 function formatCNAECode(codigo: number | string): string {
@@ -27,7 +29,7 @@ function formatCNAECode(codigo: number | string): string {
   return str;
 }
 
-const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChange }) => {
+const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChange, rbt12 = 0 }) => {
   const [manualActivities, setManualActivities] = useState<CNAEAtividade[]>([]);
   const [removedCodes, setRemovedCodes] = useState<Set<string>>(new Set());
   const [manualCnae, setManualCnae] = useState('');
@@ -205,17 +207,18 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                     <button key={entry.codigo} type="button" onClick={() => { handleManualCnaeChange(entry.codigo); setShowCnaeDropdown(false); }} className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors">
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-mono text-xs font-semibold text-primary">{formatCNAECodeFromList(entry.codigo)}</span>
-                        {entry.codigo in anexoCache && (
-                          anexoCache[entry.codigo]?.toUpperCase().includes('III') ? (
-                            <span className="flex items-center gap-0.5 text-[10px] text-green-600 bg-green-50 dark:bg-green-900/20 px-1 py-0.5 rounded font-medium shrink-0">
-                              <ShieldCheck className="w-2.5 h-2.5" /> III
+                        {entry.codigo in anexoCache && (() => {
+                          const anexo = anexoCache[entry.codigo];
+                          const isIII = anexo?.toUpperCase().includes('III');
+                          const calc = rbt12 > 0 && anexo ? calcularSimplesAnexoIII(rbt12, anexo) : null;
+                          const aliqStr = calc?.valido ? formatPercent(calc.aliquotaEfetiva) : null;
+                          return (
+                            <span className={`flex items-center gap-0.5 text-[10px] px-1 py-0.5 rounded font-medium shrink-0 ${isIII ? 'text-green-600 bg-green-50 dark:bg-green-900/20' : 'text-destructive bg-destructive/10'}`}>
+                              {isIII ? <ShieldCheck className="w-2.5 h-2.5" /> : <ShieldX className="w-2.5 h-2.5" />}
+                              {anexo || '?'}{aliqStr && ` · ${aliqStr}`}
                             </span>
-                          ) : (
-                            <span className="flex items-center gap-0.5 text-[10px] text-destructive bg-destructive/10 px-1 py-0.5 rounded font-medium shrink-0">
-                              <ShieldX className="w-2.5 h-2.5" /> {anexoCache[entry.codigo] || '?'}
-                            </span>
-                          )
-                        )}
+                          );
+                        })()}
                       </div>
                       <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
                     </button>
@@ -270,17 +273,20 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                           <Loader2 className="w-3 h-3 animate-spin" /> Verificando anexo…
                         </span>
                       )}
-                      {!atividade.anexoLoading && atividade.anexo !== undefined && (
-                        atividade.anexo?.toUpperCase().includes('III') ? (
+                      {!atividade.anexoLoading && atividade.anexo !== undefined && (() => {
+                        const isIII = atividade.anexo?.toUpperCase().includes('III');
+                        const calc = rbt12 > 0 && atividade.anexo ? calcularSimplesAnexoIII(rbt12, atividade.anexo) : null;
+                        const aliqStr = calc?.valido ? formatPercent(calc.aliquotaEfetiva) : null;
+                        return isIII ? (
                           <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded font-medium mt-1 w-fit">
-                            <ShieldCheck className="w-3 h-3" /> Anexo III
+                            <ShieldCheck className="w-3 h-3" /> Anexo III{aliqStr && ` · Alíquota ${aliqStr}`}
                           </span>
                         ) : (
                           <span className="flex items-center gap-1 text-xs text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-medium mt-1 w-fit">
-                            <ShieldX className="w-3 h-3" /> {atividade.anexo ? `Anexo ${atividade.anexo}` : 'Não encontrado no catálogo'}
+                            <ShieldX className="w-3 h-3" /> {atividade.anexo ? `Anexo ${atividade.anexo}` : 'Não encontrado no catálogo'}{aliqStr && ` · Alíquota ${aliqStr}`}
                           </span>
-                        )
-                      )}
+                        );
+                      })()}
                     </div>
                   </button>
                   <button type="button" onClick={(e) => handleRemove(e, codigo)} title="Remover atividade" className="shrink-0 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100 mt-0.5">
