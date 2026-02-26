@@ -25,7 +25,7 @@ const ResumoTributario: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, visible 
     <>
       <div className="flex items-center gap-1.5 px-3">
         <BarChart3 className="w-3.5 h-3.5 text-primary" />
-        <span className="text-[10px] font-semibold text-primary uppercase tracking-wider whitespace-nowrap">Analytics Dashboard</span>
+        <span className="text-[10px] font-semibold text-primary uppercase tracking-wider whitespace-nowrap">Analytics</span>
       </div>
       <Separator />
       <TickerItem label="Anexo" value={cnaeAnexo || 'III'} highlight />
