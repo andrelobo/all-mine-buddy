@@ -499,7 +499,11 @@ const Index = () => {
                     )}
 
                     {/* Parâmetros Municipais */}
-                    <div className="section-card">
+                    <div className="section-card p-3">
+                      <h2 className="section-title text-sm mb-2">
+                        <Settings className="w-4 h-4 text-primary" />
+                        Parâmetros Municipais
+                      </h2>
                       <CTNSection
                         ctnSelecionado={ctnSelecionado}
                         onCtnChange={(codigo, descricao, itemFormatado) => {
