@@ -200,16 +200,16 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
   const selectedActivity = manualActivities.find((a) => String(a.codigo) === cnaeEscolhido);
 
   return (
-    <div className="section-card">
-      <h2 className="section-title">
-        <Landmark className="w-5 h-5 text-primary" />
+    <div className="section-card p-3">
+      <h2 className="section-title text-sm mb-2">
+        <Landmark className="w-4 h-4 text-primary" />
         Código Cnae
       </h2>
 
       {/* Campo de pesquisa CNAE — acima da lista */}
-      <div className="space-y-3">
-        <div ref={cnaeDropdownRef} className={`radio-card flex flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
-          <div className="text-sm font-bold leading-tight flex items-center gap-1.5 mb-1.5 text-primary"><Search className="w-4 h-4" />Pesquise</div>
+      <div className="space-y-2">
+        <div ref={cnaeDropdownRef} className={`radio-card flex flex-col items-start p-2 ${manualCnae ? 'radio-card-selected' : ''}`}>
+          <div className="text-xs font-bold leading-tight flex items-center gap-1 mb-1 text-primary"><Search className="w-3.5 h-3.5" />Pesquise</div>
           <div className="w-full space-y-1">
             <div className="relative">
               <Input placeholder="Ex: 6201-5/00 ou 6201500" value={manualCnae} onChange={e => handleManualCnaeChange(e.target.value)} onFocus={() => { if (manualCnae.trim()) setShowCnaeDropdown(true); }} className="h-8 text-sm pr-8" />
