@@ -9,10 +9,10 @@ interface Props {
   visible: boolean;
 }
 
-const TickerItem: React.FC<{ label: string; value: string; highlight?: boolean }> = ({ label, value, highlight }) => (
-  <div className={`flex items-center gap-1.5 px-3 py-0.5 whitespace-nowrap ${highlight ? 'bg-primary/10 rounded' : ''}`}>
-    <span className={`text-[9px] uppercase tracking-wide ${highlight ? 'text-primary' : 'text-muted-foreground'}`}>{label}</span>
-    <span className={`text-xs font-bold ${highlight ? 'text-primary text-sm' : 'text-foreground'}`}>{value}</span>
+const TickerItem: React.FC<{ label: string; value: string; highlight?: boolean }> = ({ label, value }) => (
+  <div className="flex items-center gap-1.5 px-3 py-0.5 whitespace-nowrap bg-primary/10 rounded">
+    <span className="text-[9px] uppercase tracking-wide text-primary">{label}</span>
+    <span className="text-xs font-bold text-primary">{value}</span>
   </div>
 );
 
