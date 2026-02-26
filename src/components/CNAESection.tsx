@@ -115,15 +115,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
               {showCnaeDropdown && cnaeManualResults.length > 0 && (
                 <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
                   {cnaeManualResults.map(entry => (
-                    <button key={entry.codigo} type="button" onClick={() => {
-                      const cleaned = entry.codigo.replace(/\D/g, '');
-                      if (!manualActivities.some(a => String(a.codigo).replace(/\D/g, '') === cleaned)) {
-                        const nova = { codigo: cleaned, descricao: entry.descricao, isPrincipal: false, isManual: true };
-                        setManualActivities(prev => [...prev, nova]);
-                        if (!cnaeEscolhido) onCnaeEscolhidoChange(cleaned, entry.descricao);
-                      }
-                      setManualCnae(''); setManualCnaeDescricaoIBGE(''); setShowCnaeDropdown(false);
-                    }} className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors">
+                    <button key={entry.codigo} type="button" onClick={() => { handleManualCnaeChange(entry.codigo); setShowCnaeDropdown(false); }} className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors">
                       <span className="font-mono text-xs font-semibold text-primary">{formatCNAECodeFromList(entry.codigo)}</span>
                       <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
                     </button>
