@@ -1,6 +1,6 @@
 import React from 'react';
-import { BarChart3, TrendingUp } from 'lucide-react';
-import { type CalculoSimplesResult, formatCurrency, formatPercent, distanciaProximaFaixa } from '@/utils/simples-nacional';
+import { BarChart3 } from 'lucide-react';
+import { type CalculoSimplesResult, formatCurrency, formatPercent } from '@/utils/simples-nacional';
 
 interface Props {
   rbt12: number;
@@ -12,27 +12,25 @@ interface Props {
 const ResumoTributario: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, visible }) => {
   if (!visible || !calculo.valido || !calculo.faixa) return null;
 
-  const distancia = distanciaProximaFaixa(rbt12);
-
   return (
-    <div className="section-card p-3">
-      <h2 className="section-title text-sm mb-2">
+    <div className="rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-card to-primary/5 p-3 shadow-sm">
+      <div className="flex items-center gap-2 mb-2">
         <BarChart3 className="w-4 h-4 text-primary" />
-        Resumo Tributário
-      </h2>
+        <h2 className="text-xs font-semibold text-primary uppercase tracking-wider">Dashboard Tributário</h2>
+      </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
-        <div className="p-2 rounded-lg bg-muted/30 border border-border text-center">
+      <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+        <div className="p-2 rounded-lg bg-card border border-border text-center">
           <p className="text-[9px] uppercase tracking-wider text-muted-foreground mb-0.5">Anexo</p>
           <p className="text-base font-bold text-primary">{cnaeAnexo || 'III'}</p>
         </div>
 
-        <div className="p-2 rounded-lg bg-muted/30 border border-border text-center">
+        <div className="p-2 rounded-lg bg-card border border-border text-center">
           <p className="text-[9px] uppercase tracking-wider text-muted-foreground mb-0.5">Faixa</p>
           <p className="text-base font-bold text-foreground">{calculo.faixa.faixa}ª</p>
         </div>
 
-        <div className="p-2 rounded-lg bg-muted/30 border border-border text-center">
+        <div className="p-2 rounded-lg bg-card border border-border text-center">
           <p className="text-[9px] uppercase tracking-wider text-muted-foreground mb-0.5">RBT12</p>
           <p className="text-xs font-bold text-foreground">{formatCurrency(rbt12)}</p>
         </div>
@@ -42,20 +40,10 @@ const ResumoTributario: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, visible 
           <p className="text-lg font-bold text-primary">{formatPercent(calculo.aliquotaEfetiva)}</p>
         </div>
 
-        <div className="p-2 rounded-lg bg-muted/30 border border-border text-center">
+        <div className="p-2 rounded-lg bg-card border border-border text-center">
           <p className="text-[9px] uppercase tracking-wider text-muted-foreground mb-0.5">ISS Estimado</p>
           <p className="text-xs font-bold text-foreground">{formatPercent(calculo.issReferencia)}</p>
         </div>
-
-        {distancia && (
-          <div className="p-2 rounded-lg bg-accent/20 border border-accent/40 text-center">
-            <p className="text-[9px] uppercase tracking-wider text-muted-foreground mb-0.5">Próx. Faixa</p>
-            <div className="flex items-center justify-center gap-1">
-              <TrendingUp className="w-3 h-3 text-accent-foreground" />
-              <p className="text-xs font-bold text-accent-foreground">{formatCurrency(distancia.valor)}</p>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
