@@ -402,6 +402,7 @@ const Index = () => {
                         snSetCnaePrincipal(codigo);
                         setUnsavedPrestador(true);
                       }}
+                      rbt12={snRbt12}
                     />
 
                     {regime === 'simples' && (
