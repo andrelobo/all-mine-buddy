@@ -219,27 +219,21 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
               {showCnaeDropdown && cnaeManualResults.length > 0 && (
                 <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
                   {cnaeManualResults.map(entry => (
-                    <button key={entry.codigo} type="button" onClick={() => { handleManualCnaeChange(entry.codigo); setShowCnaeDropdown(false); }} className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-mono text-xs font-semibold text-primary">{formatCNAECodeFromList(entry.codigo)}</span>
+                    <button key={entry.codigo} type="button" onClick={() => { handleManualCnaeChange(entry.codigo); setShowCnaeDropdown(false); }} className="w-full text-left px-3 py-1.5 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-semibold text-primary shrink-0">{formatCNAECodeFromList(entry.codigo)}</span>
+                        <span className="text-xs text-foreground/70 truncate flex-1">{entry.descricao}</span>
                         {entry.codigo in anexoCache && (() => {
                           const anexo = anexoCache[entry.codigo];
                           const isIII = anexo?.toUpperCase().includes('III');
-                          const aliqRange = getAliquotaRange(anexo);
                           return (
-                            <div className="flex items-center gap-1.5 shrink-0">
-                              <span className={`flex items-center gap-0.5 text-[10px] px-1 py-0.5 rounded font-medium ${isIII ? 'text-green-600 bg-green-50 dark:bg-green-900/20' : 'text-destructive bg-destructive/10'}`}>
-                                {isIII ? <ShieldCheck className="w-2.5 h-2.5" /> : <ShieldX className="w-2.5 h-2.5" />}
-                                {anexo || '?'}
-                              </span>
-                              {aliqRange && (
-                                <span className="text-[10px] text-muted-foreground font-medium">{aliqRange}</span>
-                              )}
-                            </div>
+                            <span className={`flex items-center gap-0.5 text-[10px] px-1 py-0.5 rounded font-medium shrink-0 ${isIII ? 'text-green-600 bg-green-50 dark:bg-green-900/20' : 'text-destructive bg-destructive/10'}`}>
+                              {isIII ? <ShieldCheck className="w-2.5 h-2.5" /> : <ShieldX className="w-2.5 h-2.5" />}
+                              {anexo || '?'}
+                            </span>
                           );
                         })()}
                       </div>
-                      <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
                     </button>
                   ))}
                 </div>
