@@ -252,17 +252,18 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
         )}
       </div>
 
-      {/* Lista de CNAEs adicionados — abaixo da pesquisa */}
+      {/* Lista de CNAEs adicionados */}
       {visibleActivities.length > 0 && (
-        <div className="mt-4 space-y-3">
-          <div className="space-y-2">
+        <div className="mt-3">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">CNAEs adicionados</p>
+          <div className="border border-border rounded-lg divide-y divide-border">
             {visibleActivities.map((atividade) => {
               const codigo = String(atividade.codigo);
               const isSelected = cnaeEscolhido === codigo;
               return (
-                <div key={codigo} className={`group flex items-center gap-2 p-2 rounded-lg border transition-all ${isSelected ? 'border-primary bg-primary/5' : 'border-border bg-background hover:border-primary/30 hover:bg-muted/30'}`}>
+                <div key={codigo} className={`group flex items-center gap-2 px-2.5 py-1.5 transition-colors ${isSelected ? 'bg-primary/5' : 'hover:bg-muted/30'}`}>
                   <button type="button" onClick={() => handleSelect(atividade)} className="flex items-center gap-2 flex-1 min-w-0 text-left">
-                    <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'border-primary' : 'border-muted-foreground/40'}`}>
+                    <div className={`w-3 h-3 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'border-primary' : 'border-muted-foreground/40'}`}>
                       {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
                     </div>
                     <p className="text-xs text-foreground leading-snug truncate">
@@ -278,8 +279,8 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                       )}
                     </p>
                   </button>
-                  <button type="button" onClick={(e) => handleRemove(e, codigo)} title="Remover atividade" className="shrink-0 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100 mt-0.5">
-                    <Trash2 className="w-4 h-4" />
+                  <button type="button" onClick={(e) => handleRemove(e, codigo)} title="Remover" className="shrink-0 p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100">
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               );
@@ -287,12 +288,10 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
           </div>
 
           {removedCodes.size > 0 && (
-            <button type="button" onClick={() => setRemovedCodes(new Set())} className="text-xs text-muted-foreground hover:text-foreground underline transition-colors">
+            <button type="button" onClick={() => setRemovedCodes(new Set())} className="text-[10px] text-muted-foreground hover:text-foreground underline transition-colors mt-1">
               Restaurar {removedCodes.size} atividade{removedCodes.size > 1 ? 's' : ''} removida{removedCodes.size > 1 ? 's' : ''}
             </button>
           )}
-
-
         </div>
       )}
     </div>
