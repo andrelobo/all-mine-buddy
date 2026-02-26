@@ -441,12 +441,12 @@ const Index = () => {
 
                     {/* Parâmetros Federais */}
                     {regime === 'simples' && (
-                      <div className="section-card">
-                        <h2 className="section-title">
-                          <Settings className="w-5 h-5 text-primary" />
+                      <div className="section-card p-3">
+                        <h2 className="section-title text-sm mb-2">
+                          <Settings className="w-4 h-4 text-primary" />
                           Parâmetros Federais
                         </h2>
-                        <div className="space-y-4 p-4 rounded-lg bg-muted/50 border border-border">
+                        <div className="space-y-2 p-2.5 rounded-lg bg-muted/50 border border-border">
                           <ToggleSwitch
                             checked={regimeApuracaoSNParametro}
                             onChange={(v) => { setRegimeApuracaoSNParametro(v); autosave(); }}
