@@ -33,6 +33,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
   const [manualCnae, setManualCnae] = useState('');
   const [manualCnaeDescricaoIBGE, setManualCnaeDescricaoIBGE] = useState('');
   const [showCnaeDropdown, setShowCnaeDropdown] = useState(false);
+  const [anexoCache, setAnexoCache] = useState<Record<string, string | null>>({});
   const cnaeDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,6 +57,25 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
     }
     return matches;
   }, [manualCnae]);
+
+  // Fetch anexo info for dropdown results
+  useEffect(() => {
+    if (cnaeManualResults.length === 0) return;
+    const toFetch = cnaeManualResults.filter(e => !(e.codigo in anexoCache)).map(e => e.codigo);
+    if (toFetch.length === 0) return;
+    supabase
+      .from('cnae_catalogo')
+      .select('codigo_cnae, anexo')
+      .in('codigo_cnae', toFetch)
+      .then(({ data }) => {
+        const newCache: Record<string, string | null> = {};
+        for (const code of toFetch) newCache[code] = null; // default not found
+        if (data) {
+          for (const row of data) newCache[row.codigo_cnae] = row.anexo;
+        }
+        setAnexoCache(prev => ({ ...prev, ...newCache }));
+      });
+  }, [cnaeManualResults]);
 
   const visibleActivities = manualActivities.filter((a) => !removedCodes.has(String(a.codigo)));
 
@@ -97,26 +117,28 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
     const cleaned = manualCnae.replace(/\D/g, '');
     if (cleaned.length < 7) return;
     if (manualActivities.some((a) => String(a.codigo).replace(/\D/g, '') === cleaned)) return;
+    
+    // Use cache if available, otherwise fetch
+    let anexo: string | null = null;
+    if (cleaned in anexoCache) {
+      anexo = anexoCache[cleaned];
+    } else {
+      anexo = await checkAnexo(cleaned);
+      setAnexoCache(prev => ({ ...prev, [cleaned]: anexo }));
+    }
+
     const nova: CNAEAtividade = {
       codigo: cleaned,
       descricao: manualCnaeDescricaoIBGE || 'Inclusão manual',
       isPrincipal: false,
       isManual: true,
-      anexoLoading: true,
+      anexo,
+      anexoLoading: false,
     };
     setManualActivities((prev) => [...prev, nova]);
     setManualCnae('');
     setManualCnaeDescricaoIBGE('');
     if (!cnaeEscolhido) onCnaeEscolhidoChange(cleaned, nova.descricao);
-
-    const anexo = await checkAnexo(cleaned);
-    setManualActivities((prev) =>
-      prev.map((a) =>
-        String(a.codigo).replace(/\D/g, '') === cleaned
-          ? { ...a, anexo, anexoLoading: false }
-          : a
-      )
-    );
   };
 
   const selectedActivity = manualActivities.find((a) => String(a.codigo) === cnaeEscolhido);
@@ -142,7 +164,20 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                 <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
                   {cnaeManualResults.map(entry => (
                     <button key={entry.codigo} type="button" onClick={() => { handleManualCnaeChange(entry.codigo); setShowCnaeDropdown(false); }} className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors">
-                      <span className="font-mono text-xs font-semibold text-primary">{formatCNAECodeFromList(entry.codigo)}</span>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-xs font-semibold text-primary">{formatCNAECodeFromList(entry.codigo)}</span>
+                        {entry.codigo in anexoCache && (
+                          anexoCache[entry.codigo]?.toUpperCase().includes('III') ? (
+                            <span className="flex items-center gap-0.5 text-[10px] text-green-600 bg-green-50 dark:bg-green-900/20 px-1 py-0.5 rounded font-medium shrink-0">
+                              <ShieldCheck className="w-2.5 h-2.5" /> III
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-0.5 text-[10px] text-destructive bg-destructive/10 px-1 py-0.5 rounded font-medium shrink-0">
+                              <ShieldX className="w-2.5 h-2.5" /> {anexoCache[entry.codigo] || '?'}
+                            </span>
+                          )
+                        )}
+                      </div>
                       <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
                     </button>
                   ))}
