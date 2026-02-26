@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Landmark, Star, Loader2, AlertCircle, Trash2, CheckCircle2, Plus, X, ChevronDown, Search, ShieldCheck, ShieldX } from 'lucide-react';
+import { Briefcase, Star, Loader2, AlertCircle, Trash2, CheckCircle2, Plus, X, ChevronDown, Search, ShieldCheck, ShieldX } from 'lucide-react';
 import { validateCNPJ } from '@/utils/validators';
 import { CNAE_LIST, formatCNAECode as formatCNAECodeFromList, getLC116Item } from '@/utils/cnae-lc116';
 import { Input } from '@/components/ui/input';
@@ -202,7 +202,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
   return (
     <div className="section-card p-3">
       <h2 className="section-title text-sm mb-2">
-        <Landmark className="w-4 h-4 text-primary" />
+        <Briefcase className="w-4 h-4 text-primary" />
         Código Cnae
       </h2>
 
