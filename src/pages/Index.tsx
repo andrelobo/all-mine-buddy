@@ -9,6 +9,7 @@ import CTNSection from '@/components/CTNSection';
 import CNAESection from '@/components/CNAESection';
 import SimplesNacionalSection from '@/components/SimplesNacionalSection';
 import ResumoTributario from '@/components/ResumoTributario';
+import TabelaAnexoIII from '@/components/TabelaAnexoIII';
 import EmpresaCard from '@/components/prestador/EmpresaCard';
 import ContatoCard from '@/components/prestador/ContatoCard';
 import EnderecoCard from '@/components/prestador/EnderecoCard';
@@ -428,6 +429,10 @@ const Index = () => {
                         calculo={snCalculo}
                         visible={snCalculo.valido}
                       />
+                    )}
+
+                    {regime === 'simples' && (
+                      <TabelaAnexoIII faixaAtual={snCalculo.faixa?.faixa ?? null} />
                     )}
                   </div>
                 )}
