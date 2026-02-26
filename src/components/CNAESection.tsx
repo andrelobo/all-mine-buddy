@@ -27,14 +27,11 @@ function formatCNAECode(codigo: number | string): string {
 const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChange }) => {
   const [manualActivities, setManualActivities] = useState<CNAEAtividade[]>([]);
   const [removedCodes, setRemovedCodes] = useState<Set<string>>(new Set());
-
-  // Manual form state
   const [manualCnae, setManualCnae] = useState('');
   const [manualCnaeDescricaoIBGE, setManualCnaeDescricaoIBGE] = useState('');
   const [showCnaeDropdown, setShowCnaeDropdown] = useState(false);
   const cnaeDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Click outside handler
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (cnaeDropdownRef.current && !cnaeDropdownRef.current.contains(e.target as Node)) setShowCnaeDropdown(false);
@@ -43,7 +40,6 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // Search results for CNAE dropdown
   const cnaeManualResults = useMemo(() => {
     const q = manualCnae.trim();
     if (!q) return [];
@@ -106,10 +102,43 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
         Código Cnae
       </h2>
 
-      {(visibleActivities.length > 0) && (
-        <div className="space-y-3">
+      {/* Campo de pesquisa CNAE — acima da lista */}
+      <div className="space-y-3">
+        <div ref={cnaeDropdownRef} className={`radio-card flex flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
+          <div className="text-sm font-bold leading-tight min-h-[2rem] flex items-center" style={{ color: 'hsl(144, 72%, 28%)' }}>Código Cnae<span className="text-red-500">*</span></div>
+          <div className="w-full space-y-1">
+            <div className="relative">
+              <Input placeholder="Ex: 6201-5/00 ou 6201500" value={manualCnae} onChange={e => handleManualCnaeChange(e.target.value)} onFocus={() => { if (manualCnae.trim()) setShowCnaeDropdown(true); }} className="h-8 text-sm pr-8" />
+              <button type="button" onClick={() => setShowCnaeDropdown(v => !v)} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                <ChevronDown className="w-3.5 h-3.5" />
+              </button>
+              {showCnaeDropdown && cnaeManualResults.length > 0 && (
+                <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                  {cnaeManualResults.map(entry => (
+                    <button key={entry.codigo} type="button" onClick={() => { handleManualCnaeChange(entry.codigo); setShowCnaeDropdown(false); }} className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors">
+                      <span className="font-mono text-xs font-semibold text-primary">{formatCNAECodeFromList(entry.codigo)}</span>
+                      <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {manualCnaeDescricaoIBGE && <p className="text-xs text-foreground/70 leading-snug">{manualCnaeDescricaoIBGE}</p>}
+          </div>
+        </div>
 
+        {manualCnae.replace(/\D/g, '') && (
+          <div className="flex justify-end">
+            <Button type="button" size="sm" onClick={handleAddManual} disabled={!manualCnae.replace(/\D/g, '')} className="text-xs gap-1.5">
+              <Plus className="w-3.5 h-3.5" /> Adicionar
+            </Button>
+          </div>
+        )}
+      </div>
 
+      {/* Lista de CNAEs adicionados — abaixo da pesquisa */}
+      {visibleActivities.length > 0 && (
+        <div className="mt-4 space-y-3">
           <div className="space-y-2">
             {visibleActivities.map((atividade) => {
               const codigo = String(atividade.codigo);
@@ -168,40 +197,6 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
           )}
         </div>
       )}
-
-      {/* Campo CNAE manual — sempre visível */}
-      <div className="mt-4 space-y-3">
-        <div ref={cnaeDropdownRef} className={`radio-card flex flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
-          <div className="text-sm font-bold leading-tight min-h-[2rem] flex items-center" style={{ color: 'hsl(144, 72%, 28%)' }}>Código Cnae<span className="text-red-500">*</span></div>
-          <div className="w-full space-y-1">
-            <div className="relative">
-              <Input placeholder="Ex: 6201-5/00 ou 6201500" value={manualCnae} onChange={e => handleManualCnaeChange(e.target.value)} onFocus={() => { if (manualCnae.trim()) setShowCnaeDropdown(true); }} className="h-8 text-sm pr-8" />
-              <button type="button" onClick={() => setShowCnaeDropdown(v => !v)} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-              {showCnaeDropdown && cnaeManualResults.length > 0 && (
-                <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-                  {cnaeManualResults.map(entry => (
-                    <button key={entry.codigo} type="button" onClick={() => { handleManualCnaeChange(entry.codigo); setShowCnaeDropdown(false); }} className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors">
-                      <span className="font-mono text-xs font-semibold text-primary">{formatCNAECodeFromList(entry.codigo)}</span>
-                      <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            {manualCnaeDescricaoIBGE && <p className="text-xs text-foreground/70 leading-snug">{manualCnaeDescricaoIBGE}</p>}
-          </div>
-        </div>
-
-        {manualCnae.replace(/\D/g, '') && (
-          <div className="flex justify-end">
-            <Button type="button" size="sm" onClick={handleAddManual} disabled={!manualCnae.replace(/\D/g, '')} className="text-xs gap-1.5">
-              <Plus className="w-3.5 h-3.5" /> Adicionar
-            </Button>
-          </div>
-        )}
-      </div>
     </div>
   );
 };
