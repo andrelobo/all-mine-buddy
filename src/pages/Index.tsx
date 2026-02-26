@@ -337,14 +337,24 @@ const Index = () => {
             </div>
           </header>
 
+          {/* Dashboard Resumo Tributário - topo fixo */}
+          {activeTab === 'prestador' && regime === 'simples' && snCalculo.valido && (
+            <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-4 pb-0">
+              <ResumoTributario
+                rbt12={snRbt12}
+                cnaeAnexo={snCnaeAnexo || 'III'}
+                calculo={snCalculo}
+                visible={true}
+              />
+            </div>
+          )}
+
           {/* Content */}
-          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-2">
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-4 space-y-2">
 
             {/* ====== PRESTADOR com sub-abas ====== */}
             {activeTab === 'prestador' && (
               <>
-                {/* Sub-abas agora estão no menu lateral */}
-
                 {/* Sub-aba: Dados Cadastrais */}
                 {prestadorSubTab === 'cadastro' && (
                   <div className="space-y-2">
@@ -426,14 +436,6 @@ const Index = () => {
                       <TabelaAnexoIII faixaAtual={snCalculo.faixa?.faixa ?? null} />
                     )}
 
-                    {regime === 'simples' && (
-                      <ResumoTributario
-                        rbt12={snRbt12}
-                        cnaeAnexo={snCnaeAnexo || 'III'}
-                        calculo={snCalculo}
-                        visible={snCalculo.valido}
-                      />
-                    )}
                   </div>
                 )}
 
