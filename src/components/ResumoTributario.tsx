@@ -37,10 +37,6 @@ const ResumoTributario: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, visible 
       <TickerItem label="Alíq. Efetiva" value={formatPercent(calculo.aliquotaEfetiva)} highlight />
       <Separator />
       <TickerItem label="ISS Estimado" value={formatPercent(calculo.issReferencia)} />
-      <Separator />
-      <TickerItem label="Alíq. Nominal" value={formatPercent(calculo.faixa.aliquotaNominal / 100)} />
-      <Separator />
-      <TickerItem label="Ded." value={formatCurrency(calculo.faixa.parcelaDeduzir)} />
     </>
   );
 
