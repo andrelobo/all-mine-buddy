@@ -423,16 +423,16 @@ const Index = () => {
                     )}
 
                     {regime === 'simples' && (
+                      <TabelaAnexoIII faixaAtual={snCalculo.faixa?.faixa ?? null} />
+                    )}
+
+                    {regime === 'simples' && (
                       <ResumoTributario
                         rbt12={snRbt12}
                         cnaeAnexo={snCnaeAnexo || 'III'}
                         calculo={snCalculo}
                         visible={snCalculo.valido}
                       />
-                    )}
-
-                    {regime === 'simples' && (
-                      <TabelaAnexoIII faixaAtual={snCalculo.faixa?.faixa ?? null} />
                     )}
                   </div>
                 )}
