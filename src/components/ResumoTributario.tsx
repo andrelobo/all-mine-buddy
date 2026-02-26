@@ -34,6 +34,12 @@ const ResumoTributario: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, visible 
       <Separator />
       <TickerItem label="RBT12" value={formatCurrency(rbt12)} />
       <Separator />
+      <TickerItem label="Alíq. Nominal" value={formatPercent(calculo.faixa.aliquotaNominal / 100)} />
+      <Separator />
+      <TickerItem label="Dedução" value={formatCurrency(calculo.faixa.parcelaDeduzir)} />
+      <Separator />
+      <TickerItem label="ISS (%)" value={formatPercent(calculo.issReferencia)} />
+      <Separator />
       <div className="flex items-center gap-1.5 px-3 py-0.5 whitespace-nowrap animate-pulse">
         <span className="text-[9px] uppercase tracking-wide text-accent">Alíq. Efetiva</span>
         <span className="text-sm font-bold text-accent">{formatPercent(calculo.aliquotaEfetiva)}</span>
