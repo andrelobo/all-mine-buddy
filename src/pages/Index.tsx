@@ -522,6 +522,7 @@ const Index = () => {
                         }}
                         savedCnaes={config.parametroMunicipal}
                         onCnaesChange={(cnaes) => setConfig(prev => ({ ...prev, parametroMunicipal: cnaes }))}
+                        regimeCnaes={cnaesLista}
                       />
                     </div>
 

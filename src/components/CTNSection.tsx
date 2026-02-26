@@ -28,11 +28,18 @@ interface CnaeAdicionado {
   vinculadoSN?: boolean;
 }
 
+interface RegimeCnaeItem {
+  codigo: number | string;
+  descricao: string;
+  isPrincipal?: boolean;
+}
+
 interface Props {
   ctnSelecionado: string | null;
   onCtnChange: (codigo: string, descricao: string, itemFormatado: string) => void;
   savedCnaes?: CnaeAdicionado[];
   onCnaesChange?: (cnaes: CnaeAdicionado[]) => void;
+  regimeCnaes?: RegimeCnaeItem[];
 }
 
 export type { CnaeAdicionado, CtnNbsVinculo };
@@ -46,7 +53,7 @@ function createVinculo(ctn?: string, ctnDescricao?: string, nbs?: string, nbsDes
   return { id: nextVinculoId(), ctn: ctn || undefined, ctnDescricao, nbs: nbs || undefined, nbsDescricao };
 }
 
-const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange, savedCnaes, onCnaesChange }) => {
+const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange, savedCnaes, onCnaesChange, regimeCnaes }) => {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [cnaes, setCnaesLocal] = useState<CnaeAdicionado[]>(savedCnaes || []);
@@ -65,6 +72,38 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange, savedCnaes, 
       setCnaesLocal(savedCnaes);
     }
   }, [savedCnaes]);
+
+  // Auto-sync CNAEs from regime tributário tab
+  useEffect(() => {
+    if (!regimeCnaes || regimeCnaes.length === 0) return;
+    const existingCodes = new Set(cnaes.map(c => c.codigo));
+    const toAdd: CnaeAdicionado[] = [];
+    for (const rc of regimeCnaes) {
+      const codigo = String(rc.codigo).replace(/\D/g, '');
+      if (!codigo || existingCodes.has(codigo)) continue;
+      const lc = getLC116Item(codigo);
+      const ctnCode = lc?.ctn;
+      const ctnEntry = ctnCode ? getCTNByCode(ctnCode) : null;
+      const vinculo = createVinculo(
+        ctnCode,
+        ctnEntry?.descricao || lc?.descricao,
+        lc?.nbs || ctnEntry?.nbs,
+        lc?.nbs ? (getNBSDescricao(lc.nbs) || lc.nbs) : ctnEntry?.nbs ? (getNBSDescricao(ctnEntry.nbs) || ctnEntry.nbs) : undefined,
+      );
+      toAdd.push({
+        codigo,
+        cnaeDescricao: rc.descricao || 'Importado do Regime',
+        lc116Descricao: lc?.descricao || '',
+        lc116Item: lc?.item || '',
+        vinculos: [vinculo],
+        isPrincipal: !!rc.isPrincipal,
+        vinculadoSN: true,
+      });
+    }
+    if (toAdd.length > 0) {
+      setCnaes(prev => [...prev, ...toAdd]);
+    }
+  }, [regimeCnaes]);
   const [pendingEntry, setPendingEntry] = useState<CNAEEntry | null>(null);
   const [pendingPrincipal, setPendingPrincipal] = useState(false);
   const [pendingVincularSN, setPendingVincularSN] = useState(false);
