@@ -260,53 +260,23 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
               const codigo = String(atividade.codigo);
               const isSelected = cnaeEscolhido === codigo;
               return (
-                <div key={codigo} className={`group flex items-start gap-3 p-3 rounded-lg border transition-all ${isSelected ? 'border-primary bg-primary/5' : 'border-border bg-background hover:border-primary/30 hover:bg-muted/30'}`}>
-                  <button type="button" onClick={() => handleSelect(atividade)} className="flex items-start gap-3 flex-1 min-w-0 text-left">
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${isSelected ? 'border-primary' : 'border-muted-foreground/40'}`}>
-                      {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
+                <div key={codigo} className={`group flex items-center gap-2 p-2 rounded-lg border transition-all ${isSelected ? 'border-primary bg-primary/5' : 'border-border bg-background hover:border-primary/30 hover:bg-muted/30'}`}>
+                  <button type="button" onClick={() => handleSelect(atividade)} className="flex items-center gap-2 flex-1 min-w-0 text-left">
+                    <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'border-primary' : 'border-muted-foreground/40'}`}>
+                      {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
                     </div>
-                    <div className="flex-1 min-w-0 space-y-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {atividade.isManual && (
-                          <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium">Manual</span>
-                        )}
-                        {isSelected && (
-                          <span className="flex items-center gap-1 text-xs text-primary bg-primary/10 px-1.5 py-0.5 rounded font-medium">
-                            <CheckCircle2 className="w-3 h-3" /> Configuração tributária
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-foreground leading-snug">
-                        <span className="font-semibold text-primary font-mono">{formatCNAECode(atividade.codigo)}</span>
-                        <span className="text-muted-foreground mx-1.5">·</span>
-                        {atividade.descricao}
-                      </p>
-                      {atividade.anexoLoading && (
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                          <Loader2 className="w-3 h-3 animate-spin" /> Verificando anexo…
+                    <p className="text-xs text-foreground leading-snug truncate">
+                      {atividade.isManual && <span className="text-muted-foreground font-medium">Manual </span>}
+                      <span className="font-semibold text-primary font-mono">{formatCNAECode(atividade.codigo)}</span>
+                      <span className="text-muted-foreground"> - </span>
+                      <span>{atividade.descricao}</span>
+                      {atividade.anexoLoading && <span className="text-muted-foreground"> - <Loader2 className="w-3 h-3 animate-spin inline" /></span>}
+                      {!atividade.anexoLoading && atividade.anexo !== undefined && (
+                        <span className={atividade.anexo?.toUpperCase().includes('III') ? 'text-green-600' : 'text-destructive'}>
+                          {' - '}{atividade.anexo ? `Anexo ${atividade.anexo}` : 'Não encontrado'}
                         </span>
                       )}
-                      {!atividade.anexoLoading && atividade.anexo !== undefined && (() => {
-                        const isIII = atividade.anexo?.toUpperCase().includes('III');
-                        const aliqRange = getAliquotaRange(atividade.anexo);
-                        return (
-                          <div className="flex items-center gap-2 mt-1 flex-wrap">
-                            {isIII ? (
-                              <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded font-medium w-fit">
-                                <ShieldCheck className="w-3 h-3" /> Anexo III
-                              </span>
-                            ) : (
-                              <span className="flex items-center gap-1 text-xs text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-medium w-fit">
-                                <ShieldX className="w-3 h-3" /> {atividade.anexo ? `Anexo ${atividade.anexo}` : 'Não encontrado no catálogo'}
-                              </span>
-                            )}
-                            {aliqRange && (
-                              <span className="text-xs text-muted-foreground font-medium">Alíquota: {aliqRange}</span>
-                            )}
-                          </div>
-                        );
-                      })()}
-                    </div>
+                    </p>
                   </button>
                   <button type="button" onClick={(e) => handleRemove(e, codigo)} title="Remover atividade" className="shrink-0 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100 mt-0.5">
                     <Trash2 className="w-4 h-4" />
