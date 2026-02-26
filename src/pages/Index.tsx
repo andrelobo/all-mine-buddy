@@ -274,7 +274,7 @@ const Index = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <AppSidebar activeTab={activeTab} onTabChange={handleTabChange} />
+        <AppSidebar activeTab={activeTab} onTabChange={handleTabChange} prestadorSubTab={prestadorSubTab} onPrestadorSubTabChange={setPrestadorSubTab} />
 
         <div className="flex-1 flex flex-col min-w-0">
           {/* Top bar */}
@@ -342,24 +342,7 @@ const Index = () => {
             {/* ====== PRESTADOR com sub-abas ====== */}
             {activeTab === 'prestador' && (
               <>
-                {/* Sub-abas horizontais */}
-                <div className="flex border-b border-border overflow-x-auto -mt-1 mb-2">
-                  {SUB_TABS.map((tab) => (
-                    <button
-                      key={tab.key}
-                      type="button"
-                      onClick={() => setPrestadorSubTab(tab.key)}
-                      className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
-                        prestadorSubTab === tab.key
-                          ? 'border-primary text-primary'
-                          : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
-                      }`}
-                    >
-                      {tab.icon}
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
+                {/* Sub-abas agora estão no menu lateral */}
 
                 {/* Sub-aba: Dados Cadastrais */}
                 {prestadorSubTab === 'cadastro' && (
