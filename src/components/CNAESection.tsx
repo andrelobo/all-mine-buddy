@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Landmark, Star, Loader2, AlertCircle, Trash2, CheckCircle2, Plus, X } from 'lucide-react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Landmark, Star, Loader2, AlertCircle, Trash2, CheckCircle2, Plus, X, ChevronDown } from 'lucide-react';
 import { validateCNPJ } from '@/utils/validators';
-import { getLC116Item } from '@/utils/cnae-lc116';
+import { CNAE_LIST, formatCNAECode as formatCNAECodeFromList, getLC116Item } from '@/utils/cnae-lc116';
+import { getCTNByCode, searchCTN, searchCTNByItem } from '@/utils/ctn-data';
+import { getNBSDescricao, searchNBS, searchNBSByPrefix } from '@/utils/nbs-data';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface CNAEAtividade {
   codigo: number | string;
@@ -28,32 +31,19 @@ async function fetchCNAEFromCNPJ(cnpj: string): Promise<CNAEData> {
   const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleaned}`);
   if (!res.ok) throw new Error('Não foi possível obter os dados do CNPJ.');
   const data = await res.json();
-
   const principal = data.cnae_fiscal
     ? { codigo: data.cnae_fiscal, descricao: data.cnae_fiscal_descricao || '' }
     : null;
-
   const secundarias = (data.cnaes_secundarios || []).map((c: any) => ({
-    codigo: c.codigo,
-    descricao: c.descricao || '',
+    codigo: c.codigo, descricao: c.descricao || '',
   }));
-
   return { principal, secundarias };
 }
 
 function formatCNAECode(codigo: number | string): string {
   const str = String(codigo).replace(/\D/g, '').padStart(7, '0');
-  if (str.length >= 7) {
-    return `${str.slice(0, 4)}-${str.slice(4, 5)}/${str.slice(5, 7)}`;
-  }
+  if (str.length >= 7) return `${str.slice(0, 4)}-${str.slice(4, 5)}/${str.slice(5, 7)}`;
   return str;
-}
-
-function applyCNAEMask(value: string): string {
-  const digits = value.replace(/\D/g, '').slice(0, 7);
-  if (digits.length <= 4) return digits;
-  if (digits.length <= 5) return `${digits.slice(0, 4)}-${digits.slice(4)}`;
-  return `${digits.slice(0, 4)}-${digits.slice(4, 5)}/${digits.slice(5)}`;
 }
 
 const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChange }) => {
@@ -63,20 +53,33 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
   const [manualActivities, setManualActivities] = useState<CNAEAtividade[]>([]);
   const [removedCodes, setRemovedCodes] = useState<Set<string>>(new Set());
   const [showManualForm, setShowManualForm] = useState(false);
-  const [manualCodigo, setManualCodigo] = useState('');
+
+  // Manual form state
+  const [manualCnae, setManualCnae] = useState('');
+  const [manualCtn, setManualCtn] = useState('');
+  const [manualNbs, setManualNbs] = useState('');
   const [manualDescricao, setManualDescricao] = useState('');
+  const [manualCnaeDescricaoIBGE, setManualCnaeDescricaoIBGE] = useState('');
+  const [ctnQuery, setCtnQuery] = useState('');
+  const [detectedItem, setDetectedItem] = useState<string | null>(null);
+  const [nbsQuery, setNbsQuery] = useState('');
+  const [detectedNbsPrefix, setDetectedNbsPrefix] = useState<string | null>(null);
+  const [showCnaeDropdown, setShowCnaeDropdown] = useState(false);
+  const [showCtnDropdown, setShowCtnDropdown] = useState(false);
+  const [showNbsDropdown, setShowNbsDropdown] = useState(false);
+  const cnaeDropdownRef = useRef<HTMLDivElement>(null);
+  const ctnDropdownRef = useRef<HTMLDivElement>(null);
+  const nbsDropdownRef = useRef<HTMLDivElement>(null);
   const lastFetchedCNPJ = useRef('');
 
+  // Auto-fetch CNAEs from CNPJ
   useEffect(() => {
     const cleaned = cnpj.replace(/\D/g, '');
     if (cleaned.length !== 14 || !validateCNPJ(cleaned)) return;
     if (lastFetchedCNPJ.current === cleaned) return;
     lastFetchedCNPJ.current = cleaned;
-
-    setLoading(true);
-    setError(null);
-    setRemovedCodes(new Set());
-    setManualActivities([]);
+    setManualCnae(''); setManualCtn(''); setManualNbs(''); setManualDescricao(''); setManualCnaeDescricaoIBGE('');
+    setLoading(true); setError(null); setRemovedCodes(new Set()); setManualActivities([]);
 
     fetchCNAEFromCNPJ(cleaned)
       .then((data) => {
@@ -84,11 +87,8 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
           ...(data.principal ? [{ ...data.principal, isPrincipal: true }] : []),
           ...data.secundarias.map((s) => ({ ...s, isPrincipal: false })),
         ];
-        // Filtra apenas atividades de serviço (com mapeamento LC 116) e limita a 3
         const serviceOnly = allRaw.filter((a) => getLC116Item(a.codigo) !== null);
-        const limited = serviceOnly.slice(0, 3);
-        setAllActivities(limited);
-
+        setAllActivities(serviceOnly.slice(0, 3));
         if (!cnaeEscolhido && data.principal) {
           onCnaeEscolhidoChange(String(data.principal.codigo), data.principal.descricao);
         }
@@ -97,25 +97,51 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
       .finally(() => setLoading(false));
   }, [cnpj]);
 
+  // Click outside handlers
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (cnaeDropdownRef.current && !cnaeDropdownRef.current.contains(e.target as Node)) setShowCnaeDropdown(false);
+      if (ctnDropdownRef.current && !ctnDropdownRef.current.contains(e.target as Node)) setShowCtnDropdown(false);
+      if (nbsDropdownRef.current && !nbsDropdownRef.current.contains(e.target as Node)) setShowNbsDropdown(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  // Search results for manual dropdowns
+  const cnaeManualResults = useMemo(() => {
+    const q = manualCnae.trim();
+    if (!q) return [];
+    const normalized = q.toLowerCase();
+    const digits = q.replace(/\D/g, '');
+    const matches: typeof CNAE_LIST = [];
+    for (const entry of CNAE_LIST) {
+      if (matches.length >= 30) break;
+      if (digits && entry.codigo.startsWith(digits)) matches.push(entry);
+      else if (entry.descricao.toLowerCase().includes(normalized)) matches.push(entry);
+    }
+    return matches;
+  }, [manualCnae]);
+
+  const ctnResults = useMemo(() => {
+    if (detectedItem) return searchCTNByItem(detectedItem, ctnQuery.trim(), 30);
+    return searchCTN(ctnQuery.trim(), 30);
+  }, [ctnQuery, detectedItem]);
+
+  const nbsResults = useMemo(() => {
+    if (detectedNbsPrefix) return searchNBSByPrefix(detectedNbsPrefix, nbsQuery.trim(), 30);
+    return searchNBS(nbsQuery.trim(), 30);
+  }, [nbsQuery, detectedNbsPrefix]);
+
   const combinedActivities = [...allActivities, ...manualActivities];
-  const visibleActivities = combinedActivities.filter(
-    (a) => !removedCodes.has(String(a.codigo))
-  );
+  const visibleActivities = combinedActivities.filter((a) => !removedCodes.has(String(a.codigo)));
 
   const handleRemove = (e: React.MouseEvent, codigo: string) => {
     e.stopPropagation();
-    setRemovedCodes((prev) => {
-      const next = new Set(prev);
-      next.add(codigo);
-      return next;
-    });
+    setRemovedCodes((prev) => { const next = new Set(prev); next.add(codigo); return next; });
     if (cnaeEscolhido === codigo) {
-      const next = combinedActivities.find(
-        (a) => String(a.codigo) !== codigo && !removedCodes.has(String(a.codigo))
-      );
-      if (next) {
-        onCnaeEscolhidoChange(String(next.codigo), next.descricao);
-      }
+      const next = combinedActivities.find((a) => String(a.codigo) !== codigo && !removedCodes.has(String(a.codigo)));
+      if (next) onCnaeEscolhidoChange(String(next.codigo), next.descricao);
     }
   };
 
@@ -123,28 +149,45 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
     onCnaeEscolhidoChange(String(atividade.codigo), atividade.descricao);
   };
 
+  const handleManualCnaeChange = (value: string) => {
+    setManualCnae(value);
+    setShowCnaeDropdown(value.trim().length > 0);
+    const digits = value.replace(/\D/g, '');
+    const cnaeEntry = CNAE_LIST.find(e => e.codigo === digits);
+    setManualCnaeDescricaoIBGE(cnaeEntry?.descricao || '');
+    if (digits.length >= 7) {
+      const lc = getLC116Item(digits);
+      if (lc) {
+        const itemParts = lc.item.split('.');
+        setDetectedItem(itemParts[0].padStart(2, '0'));
+        if (lc.ctn) { setManualCtn(lc.ctn); setCtnQuery(''); }
+        if (lc.nbs) { setManualNbs(lc.nbs); setNbsQuery(''); setDetectedNbsPrefix(lc.nbs.substring(0, 4)); }
+        else { setDetectedNbsPrefix(null); }
+        setManualDescricao(lc.descricao);
+      } else { setDetectedItem(null); setDetectedNbsPrefix(null); }
+    } else { setDetectedItem(null); setDetectedNbsPrefix(null); }
+  };
+
+  const formatCTNDisplay = (codigo: string) => {
+    if (codigo.length === 6) return `${codigo.slice(0, 2)}.${codigo.slice(2, 4)}.${codigo.slice(4, 6)}`;
+    return codigo;
+  };
+
   const handleAddManual = () => {
-    const cleaned = manualCodigo.replace(/\D/g, '');
+    const cleaned = manualCnae.replace(/\D/g, '');
     if (cleaned.length < 7) return;
-    if (!manualDescricao.trim()) return;
-
-    // Evitar duplicata
     if (combinedActivities.some((a) => String(a.codigo).replace(/\D/g, '') === cleaned)) return;
-
     const nova: CNAEAtividade = {
       codigo: cleaned,
-      descricao: manualDescricao.trim(),
+      descricao: manualCnaeDescricaoIBGE || manualDescricao.trim() || 'Inclusão manual',
       isPrincipal: false,
       isManual: true,
     };
     setManualActivities((prev) => [...prev, nova]);
-    setManualCodigo('');
-    setManualDescricao('');
+    setManualCnae(''); setManualCtn(''); setManualNbs(''); setManualDescricao(''); setManualCnaeDescricaoIBGE('');
+    setCtnQuery(''); setNbsQuery('');
     setShowManualForm(false);
-
-    if (!cnaeEscolhido) {
-      onCnaeEscolhidoChange(cleaned, nova.descricao);
-    }
+    if (!cnaeEscolhido) onCnaeEscolhidoChange(cleaned, nova.descricao);
   };
 
   const cleanedCnpj = cnpj.replace(/\D/g, '');
@@ -227,41 +270,24 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
               const codigo = String(atividade.codigo);
               const isSelected = cnaeEscolhido === codigo;
               return (
-                <div
-                  key={codigo}
-                  className={`group flex items-start gap-3 p-3 rounded-lg border transition-all ${
-                    isSelected
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border bg-background hover:border-primary/30 hover:bg-muted/30'
-                  }`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => handleSelect(atividade)}
-                    className="flex items-start gap-3 flex-1 min-w-0 text-left"
-                  >
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
-                      isSelected ? 'border-primary' : 'border-muted-foreground/40'
-                    }`}>
+                <div key={codigo} className={`group flex items-start gap-3 p-3 rounded-lg border transition-all ${isSelected ? 'border-primary bg-primary/5' : 'border-border bg-background hover:border-primary/30 hover:bg-muted/30'}`}>
+                  <button type="button" onClick={() => handleSelect(atividade)} className="flex items-start gap-3 flex-1 min-w-0 text-left">
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${isSelected ? 'border-primary' : 'border-muted-foreground/40'}`}>
                       {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
                     </div>
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         {atividade.isPrincipal && (
                           <span className="flex items-center gap-1 text-xs text-warning bg-warning/10 px-1.5 py-0.5 rounded font-medium">
-                            <Star className="w-3 h-3" />
-                            Principal
+                            <Star className="w-3 h-3" /> Principal
                           </span>
                         )}
                         {atividade.isManual && (
-                          <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium">
-                            Manual
-                          </span>
+                          <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium">Manual</span>
                         )}
                         {isSelected && (
                           <span className="flex items-center gap-1 text-xs text-primary bg-primary/10 px-1.5 py-0.5 rounded font-medium">
-                            <CheckCircle2 className="w-3 h-3" />
-                            Configuração tributária
+                            <CheckCircle2 className="w-3 h-3" /> Configuração tributária
                           </span>
                         )}
                       </div>
@@ -273,13 +299,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                       {renderLC116Info(atividade.codigo)}
                     </div>
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={(e) => handleRemove(e, codigo)}
-                    title="Remover atividade"
-                    className="shrink-0 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100 mt-0.5"
-                  >
+                  <button type="button" onClick={(e) => handleRemove(e, codigo)} title="Remover atividade" className="shrink-0 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100 mt-0.5">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -287,18 +307,12 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
             })}
 
             {visibleActivities.length === 0 && (
-              <div className="text-center py-4 text-sm text-muted-foreground">
-                Todas as atividades foram removidas.
-              </div>
+              <div className="text-center py-4 text-sm text-muted-foreground">Todas as atividades foram removidas.</div>
             )}
           </div>
 
           {removedCodes.size > 0 && (
-            <button
-              type="button"
-              onClick={() => setRemovedCodes(new Set())}
-              className="text-xs text-muted-foreground hover:text-foreground underline transition-colors"
-            >
+            <button type="button" onClick={() => setRemovedCodes(new Set())} className="text-xs text-muted-foreground hover:text-foreground underline transition-colors">
               Restaurar {removedCodes.size} atividade{removedCodes.size > 1 ? 's' : ''} removida{removedCodes.size > 1 ? 's' : ''}
             </button>
           )}
@@ -315,9 +329,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                   </p>
                   {(() => {
                     const lc = getLC116Item(selectedActivity.codigo);
-                    if (!lc) return (
-                      <p className="text-xs text-muted-foreground/60 italic">Sem correspondência mapeada na LC 116/2003</p>
-                    );
+                    if (!lc) return <p className="text-xs text-muted-foreground/60 italic">Sem correspondência mapeada na LC 116/2003</p>;
                     return renderLC116Info(selectedActivity.codigo);
                   })()}
                 </div>
@@ -327,66 +339,110 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
         </div>
       )}
 
-      {/* Formulário de inclusão manual */}
+      {/* Formulário de inclusão manual — layout 3 colunas igual Parâmetro Municipal */}
       {showManualForm ? (
-        <div className="mt-4 p-3 rounded-lg border border-border bg-muted/20 space-y-3">
+        <div className="mt-4 space-y-3">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium text-foreground">Adicionar CNAE manualmente</p>
-            <button
-              type="button"
-              onClick={() => { setShowManualForm(false); setManualCodigo(''); setManualDescricao(''); }}
-              className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors"
-            >
+            <button type="button" onClick={() => { setShowManualForm(false); setManualCnae(''); setManualCtn(''); setManualNbs(''); setManualDescricao(''); setManualCnaeDescricaoIBGE(''); }} className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors">
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
-          <div className="space-y-2">
-            <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Código CNAE</label>
-              <Input
-                placeholder="0000-0/00"
-                value={manualCodigo}
-                onChange={(e) => setManualCodigo(applyCNAEMask(e.target.value))}
-                className="h-8 text-sm font-mono"
-                maxLength={9}
-              />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-stretch">
+            {/* CNAE Card */}
+            <div ref={cnaeDropdownRef} className={`radio-card flex flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
+              <div className="text-sm font-bold leading-tight min-h-[2rem] flex items-center" style={{ color: 'hsl(144, 72%, 28%)' }}>1. Código Cnae<span className="text-red-500">*</span></div>
+              <div className="w-full space-y-1">
+                <div className="relative">
+                  <Input placeholder="Ex: 6201-5/00 ou 6201500" value={manualCnae} onChange={e => handleManualCnaeChange(e.target.value)} onFocus={() => { if (manualCnae.trim()) setShowCnaeDropdown(true); }} className="h-8 text-sm pr-8" />
+                  <button type="button" onClick={() => setShowCnaeDropdown(v => !v)} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                  {showCnaeDropdown && cnaeManualResults.length > 0 && (
+                    <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                      {cnaeManualResults.map(entry => (
+                        <button key={entry.codigo} type="button" onClick={() => { handleManualCnaeChange(entry.codigo); setShowCnaeDropdown(false); }} className="w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors">
+                          <span className="font-mono text-xs font-semibold text-primary">{formatCNAECodeFromList(entry.codigo)}</span>
+                          <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {manualCnaeDescricaoIBGE && <p className="text-xs text-foreground/70 leading-snug">{manualCnaeDescricaoIBGE}</p>}
+              </div>
             </div>
-            <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Descrição</label>
-              <Input
-                placeholder="Descrição da atividade econômica"
-                value={manualDescricao}
-                onChange={(e) => setManualDescricao(e.target.value)}
-                className="h-8 text-sm"
-              />
+
+            {/* CTN Card */}
+            <div ref={ctnDropdownRef} className={`radio-card flex flex-col items-start ${manualCtn ? 'radio-card-selected' : ''}`}>
+              <div className="text-sm font-bold leading-tight min-h-[2rem] flex items-center" style={{ color: 'hsl(144, 72%, 28%)' }}>2. Código Tributação Nacional<span className="text-red-500">*</span></div>
+              <div className="w-full space-y-1">
+                <div className="relative">
+                  <Input placeholder="Buscar CTN..." value={showCtnDropdown ? ctnQuery : (manualCtn ? formatCTNDisplay(manualCtn) : '')} onChange={e => { setCtnQuery(e.target.value); setShowCtnDropdown(true); }} onFocus={() => { setCtnQuery(''); setShowCtnDropdown(true); }} className="h-8 text-sm pr-8" />
+                  <button type="button" onClick={() => { if (!showCtnDropdown) setCtnQuery(''); setShowCtnDropdown(v => !v); }} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                  {showCtnDropdown && ctnResults.length > 0 && (
+                    <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                      {ctnResults.map(entry => {
+                        const isSelected = manualCtn === entry.codigo;
+                        return (
+                          <button key={entry.codigo} type="button" onClick={() => { setManualCtn(entry.codigo); setCtnQuery(''); setShowCtnDropdown(false); if (entry.nbs && !manualNbs) setManualNbs(entry.nbs); }} className={`w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors ${isSelected ? 'bg-primary/10' : ''}`}>
+                            <span className="font-mono text-xs font-semibold text-primary">{formatCTNDisplay(entry.codigo)}</span>
+                            <span className="text-xs text-muted-foreground ml-2">({entry.itemFormatado})</span>
+                            {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-primary inline ml-2" />}
+                            <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+                {manualCtn && <p className="text-xs text-foreground/70 leading-snug line-clamp-2">{getCTNByCode(manualCtn)?.descricao || ''}</p>}
+              </div>
+            </div>
+
+            {/* NBS Card */}
+            <div ref={nbsDropdownRef} className={`radio-card flex flex-col items-start ${manualNbs ? 'radio-card-selected' : ''}`}>
+              <div className="text-sm font-bold leading-tight min-h-[2rem] flex items-center" style={{ color: 'hsl(144, 72%, 28%)' }}>3. Nomenclatura Brasileira Serviços</div>
+              <div className="w-full space-y-1">
+                <div className="relative">
+                  <Input placeholder="Buscar NBS..." value={showNbsDropdown ? nbsQuery : manualNbs} onChange={e => { setNbsQuery(e.target.value); setShowNbsDropdown(true); }} onFocus={() => { setNbsQuery(''); setShowNbsDropdown(true); }} className="h-8 text-sm pr-8" />
+                  <button type="button" onClick={() => { if (!showNbsDropdown) setNbsQuery(''); setShowNbsDropdown(v => !v); }} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                  {showNbsDropdown && nbsResults.length > 0 && (
+                    <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+                      {nbsResults.map(entry => {
+                        const isSelected = manualNbs === entry.codigo;
+                        return (
+                          <button key={entry.codigo} type="button" onClick={() => { setManualNbs(entry.codigo); setNbsQuery(''); setShowNbsDropdown(false); }} className={`w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors ${isSelected ? 'bg-primary/10' : ''}`}>
+                            <span className="font-mono text-xs font-semibold text-primary">{entry.codigo}</span>
+                            {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-primary inline ml-2" />}
+                            <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+                {manualNbs && <p className="text-xs text-foreground/70 leading-snug line-clamp-2">{getNBSDescricao(manualNbs) || ''}</p>}
+              </div>
             </div>
           </div>
-          <div className="flex gap-2 justify-end">
-            <button
-              type="button"
-              onClick={() => { setShowManualForm(false); setManualCodigo(''); setManualDescricao(''); }}
-              className="text-xs px-3 py-1.5 rounded-md border border-border text-muted-foreground hover:bg-muted transition-colors"
-            >
-              Cancelar
-            </button>
-            <button
-              type="button"
-              onClick={handleAddManual}
-              disabled={manualCodigo.replace(/\D/g, '').length < 7 || !manualDescricao.trim()}
-              className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              Adicionar
-            </button>
-          </div>
+
+          {manualCnae.replace(/\D/g, '') && (
+            <div className="flex justify-end">
+              <Button type="button" size="sm" onClick={handleAddManual} disabled={!manualCnae.replace(/\D/g, '')} className="text-xs gap-1.5">
+                <Plus className="w-3.5 h-3.5" /> Adicionar
+              </Button>
+            </div>
+          )}
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={() => setShowManualForm(true)}
-          className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          Adicionar CNAE manualmente
+        <button type="button" onClick={() => setShowManualForm(true)} className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <Plus className="w-3.5 h-3.5" /> Adicionar CNAE manualmente
         </button>
       )}
     </div>
