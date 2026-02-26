@@ -109,6 +109,15 @@ const Index = () => {
     if (config.cnaesLista && config.cnaesLista.length > 0) setCnaesLista(config.cnaesLista);
   }, [config]);
 
+  // Sincronizar alíquota efetiva do cálculo Simples Nacional com o campo de Parâmetros Fiscais
+  useEffect(() => {
+    if (snCalculo.valido && snCalculo.aliquotaEfetiva > 0) {
+      const efetiva = (snCalculo.aliquotaEfetiva * 100).toFixed(2).replace('.', ',');
+      setAliquotaSN(efetiva);
+      setInformarAliquotaSN(true);
+    }
+  }, [snCalculo.valido, snCalculo.aliquotaEfetiva]);
+
   const checkValidity = useCallback(() => {
     const cnpjOk = validateCNPJ(prestador.cnpj);
     const emailOk = prestador.email === '' || validateEmail(prestador.email);
