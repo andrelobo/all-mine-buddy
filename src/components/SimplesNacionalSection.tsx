@@ -115,15 +115,6 @@ const SimplesNacionalSection: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Distância próxima faixa */}
-      {calculo.valido && distancia && (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-accent/30 border border-accent/50 mb-4">
-          <TrendingUp className="w-4 h-4 text-accent-foreground shrink-0" />
-          <p className="text-sm text-accent-foreground">
-            Faltam <strong>{formatCurrency(distancia.valor)}</strong> para mudar da {distancia.faixaAtual}ª para a {distancia.faixaProxima}ª faixa.
-          </p>
-        </div>
-      )}
 
       {/* Alertas */}
       {alertas.length > 0 && (
