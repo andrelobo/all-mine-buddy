@@ -108,9 +108,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
 
       {(visibleActivities.length > 0) && (
         <div className="space-y-3">
-          <p className="text-xs text-muted-foreground">
-            Selecione o CNAE para configuração tributária.
-          </p>
+
 
           <div className="space-y-2">
             {visibleActivities.map((atividade) => {
