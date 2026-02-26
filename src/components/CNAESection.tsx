@@ -5,7 +5,22 @@ import { CNAE_LIST, formatCNAECode as formatCNAECodeFromList, getLC116Item } fro
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { calcularSimplesAnexoIII, formatPercent } from '@/utils/simples-nacional';
+
+// Faixas de alíquota efetiva mín/máx por anexo do Simples Nacional
+const ALIQUOTA_RANGE: Record<string, { min: string; max: string }> = {
+  'I':   { min: '4,00%',  max: '19,00%' },
+  'II':  { min: '4,50%',  max: '30,00%' },
+  'III': { min: '6,00%',  max: '33,00%' },
+  'IV':  { min: '4,50%',  max: '33,00%' },
+  'V':   { min: '15,50%', max: '30,50%' },
+};
+
+function getAliquotaRange(anexo: string | null | undefined): string | null {
+  if (!anexo) return null;
+  const key = anexo.replace(/[^IViv]/g, '').toUpperCase();
+  const range = ALIQUOTA_RANGE[key];
+  return range ? `${range.min} a ${range.max}` : null;
+}
 
 interface CNAEAtividade {
   codigo: number | string;
@@ -210,13 +225,17 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                         {entry.codigo in anexoCache && (() => {
                           const anexo = anexoCache[entry.codigo];
                           const isIII = anexo?.toUpperCase().includes('III');
-                          const calc = rbt12 > 0 && anexo ? calcularSimplesAnexoIII(rbt12, anexo) : null;
-                          const aliqStr = calc?.valido ? formatPercent(calc.aliquotaEfetiva) : null;
+                          const aliqRange = getAliquotaRange(anexo);
                           return (
-                            <span className={`flex items-center gap-0.5 text-[10px] px-1 py-0.5 rounded font-medium shrink-0 ${isIII ? 'text-green-600 bg-green-50 dark:bg-green-900/20' : 'text-destructive bg-destructive/10'}`}>
-                              {isIII ? <ShieldCheck className="w-2.5 h-2.5" /> : <ShieldX className="w-2.5 h-2.5" />}
-                              {anexo || '?'}{aliqStr && ` · ${aliqStr}`}
-                            </span>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              <span className={`flex items-center gap-0.5 text-[10px] px-1 py-0.5 rounded font-medium ${isIII ? 'text-green-600 bg-green-50 dark:bg-green-900/20' : 'text-destructive bg-destructive/10'}`}>
+                                {isIII ? <ShieldCheck className="w-2.5 h-2.5" /> : <ShieldX className="w-2.5 h-2.5" />}
+                                {anexo || '?'}
+                              </span>
+                              {aliqRange && (
+                                <span className="text-[10px] text-muted-foreground font-medium">{aliqRange}</span>
+                              )}
+                            </div>
                           );
                         })()}
                       </div>
@@ -275,16 +294,22 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                       )}
                       {!atividade.anexoLoading && atividade.anexo !== undefined && (() => {
                         const isIII = atividade.anexo?.toUpperCase().includes('III');
-                        const calc = rbt12 > 0 && atividade.anexo ? calcularSimplesAnexoIII(rbt12, atividade.anexo) : null;
-                        const aliqStr = calc?.valido ? formatPercent(calc.aliquotaEfetiva) : null;
-                        return isIII ? (
-                          <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded font-medium mt-1 w-fit">
-                            <ShieldCheck className="w-3 h-3" /> Anexo III{aliqStr && ` · Alíquota ${aliqStr}`}
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-1 text-xs text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-medium mt-1 w-fit">
-                            <ShieldX className="w-3 h-3" /> {atividade.anexo ? `Anexo ${atividade.anexo}` : 'Não encontrado no catálogo'}{aliqStr && ` · Alíquota ${aliqStr}`}
-                          </span>
+                        const aliqRange = getAliquotaRange(atividade.anexo);
+                        return (
+                          <div className="flex items-center gap-2 mt-1 flex-wrap">
+                            {isIII ? (
+                              <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded font-medium w-fit">
+                                <ShieldCheck className="w-3 h-3" /> Anexo III
+                              </span>
+                            ) : (
+                              <span className="flex items-center gap-1 text-xs text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-medium w-fit">
+                                <ShieldX className="w-3 h-3" /> {atividade.anexo ? `Anexo ${atividade.anexo}` : 'Não encontrado no catálogo'}
+                              </span>
+                            )}
+                            {aliqRange && (
+                              <span className="text-xs text-muted-foreground font-medium">Alíquota: {aliqRange}</span>
+                            )}
+                          </div>
                         );
                       })()}
                     </div>
