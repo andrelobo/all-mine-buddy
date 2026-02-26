@@ -63,18 +63,47 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
     if (cnaeManualResults.length === 0) return;
     const toFetch = cnaeManualResults.filter(e => !(e.codigo in anexoCache)).map(e => e.codigo);
     if (toFetch.length === 0) return;
-    supabase
-      .from('cnae_catalogo')
-      .select('codigo_cnae, anexo')
-      .in('codigo_cnae', toFetch)
-      .then(({ data }) => {
-        const newCache: Record<string, string | null> = {};
-        for (const code of toFetch) newCache[code] = null; // default not found
-        if (data) {
-          for (const row of data) newCache[row.codigo_cnae] = row.anexo;
+
+    const fetchAnexos = async () => {
+      // 1. Batch query from DB
+      const { data } = await supabase
+        .from('cnae_catalogo')
+        .select('codigo_cnae, anexo')
+        .in('codigo_cnae', toFetch);
+
+      const newCache: Record<string, string | null> = {};
+      const found = new Set<string>();
+      if (data) {
+        for (const row of data) {
+          newCache[row.codigo_cnae] = row.anexo;
+          found.add(row.codigo_cnae);
         }
-        setAnexoCache(prev => ({ ...prev, ...newCache }));
+      }
+
+      // 2. For codes not in DB, call AI fallback (limit to first 5 to avoid too many calls)
+      const notFound = toFetch.filter(c => !found.has(c)).slice(0, 5);
+      const aiPromises = notFound.map(async (code) => {
+        const entry = cnaeManualResults.find(e => e.codigo === code);
+        try {
+          const { data: aiData } = await supabase.functions.invoke('cnae-anexo-lookup', {
+            body: { codigo_cnae: code, descricao: entry?.descricao || '' },
+          });
+          newCache[code] = aiData?.success ? aiData.anexo : null;
+        } catch {
+          newCache[code] = null;
+        }
       });
+      await Promise.all(aiPromises);
+
+      // Mark remaining not-fetched as null
+      for (const code of toFetch) {
+        if (!(code in newCache)) newCache[code] = null;
+      }
+
+      setAnexoCache(prev => ({ ...prev, ...newCache }));
+    };
+
+    fetchAnexos();
   }, [cnaeManualResults]);
 
   const visibleActivities = manualActivities.filter((a) => !removedCodes.has(String(a.codigo)));
@@ -100,14 +129,24 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
     setManualCnaeDescricaoIBGE(cnaeEntry?.descricao || '');
   };
 
-  const checkAnexo = async (codigoCnae: string) => {
+  const checkAnexo = async (codigoCnae: string, descricao?: string): Promise<string | null> => {
     try {
+      // 1. Try local database first
       const { data } = await supabase
         .from('cnae_catalogo')
         .select('anexo')
         .eq('codigo_cnae', codigoCnae)
         .maybeSingle();
-      return data?.anexo || null;
+      if (data?.anexo) return data.anexo;
+
+      // 2. Fallback: AI lookup via edge function (also saves to DB)
+      const { data: aiData, error } = await supabase.functions.invoke('cnae-anexo-lookup', {
+        body: { codigo_cnae: codigoCnae, descricao: descricao || '' },
+      });
+      if (!error && aiData?.success) {
+        return aiData.anexo || null;
+      }
+      return null;
     } catch {
       return null;
     }
@@ -123,7 +162,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
     if (cleaned in anexoCache) {
       anexo = anexoCache[cleaned];
     } else {
-      anexo = await checkAnexo(cleaned);
+      anexo = await checkAnexo(cleaned, manualCnaeDescricaoIBGE);
       setAnexoCache(prev => ({ ...prev, [cleaned]: anexo }));
     }
 
