@@ -56,23 +56,6 @@ const SimplesNacionalSection: React.FC<Props> = ({
         Simples Nacional – Anexo III
       </h2>
 
-      {/* CNAE Info */}
-      {cnaePrincipal && (
-        <div className="mb-4 p-3 rounded-lg bg-muted/30 border border-border">
-          <p className="text-xs text-muted-foreground mb-1">CNAE Principal</p>
-          <p className="text-sm font-medium text-foreground">
-            <span className="font-mono text-primary">{formatCNAECode(cnaePrincipal)}</span>
-            {cnaeDescricao && <span className="text-muted-foreground mx-1.5">·</span>}
-            {cnaeDescricao}
-          </p>
-          {cnaeAnexo && (
-            <p className="text-xs mt-1">
-              <span className="font-medium text-foreground/70">Anexo:</span>{' '}
-              <span className={cnaeAnexo === 'III' ? 'text-primary font-semibold' : 'text-destructive font-semibold'}>{cnaeAnexo}</span>
-            </p>
-          )}
-        </div>
-      )}
 
       {/* RBT12 Input */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
