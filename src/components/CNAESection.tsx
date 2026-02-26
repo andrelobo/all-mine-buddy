@@ -72,30 +72,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
   const nbsDropdownRef = useRef<HTMLDivElement>(null);
   const lastFetchedCNPJ = useRef('');
 
-  // Auto-fetch CNAEs from CNPJ
-  useEffect(() => {
-    const cleaned = cnpj.replace(/\D/g, '');
-    if (cleaned.length !== 14 || !validateCNPJ(cleaned)) return;
-    if (lastFetchedCNPJ.current === cleaned) return;
-    lastFetchedCNPJ.current = cleaned;
-    setManualCnae(''); setManualCtn(''); setManualNbs(''); setManualDescricao(''); setManualCnaeDescricaoIBGE('');
-    setLoading(true); setError(null); setRemovedCodes(new Set()); setManualActivities([]);
-
-    fetchCNAEFromCNPJ(cleaned)
-      .then((data) => {
-        const allRaw: CNAEAtividade[] = [
-          ...(data.principal ? [{ ...data.principal, isPrincipal: true }] : []),
-          ...data.secundarias.map((s) => ({ ...s, isPrincipal: false })),
-        ];
-        const serviceOnly = allRaw.filter((a) => getLC116Item(a.codigo) !== null);
-        setAllActivities(serviceOnly.slice(0, 3));
-        if (!cnaeEscolhido && data.principal) {
-          onCnaeEscolhidoChange(String(data.principal.codigo), data.principal.descricao);
-        }
-      })
-      .catch(() => setError('Não foi possível carregar as atividades econômicas.'))
-      .finally(() => setLoading(false));
-  }, [cnpj]);
+  // Auto-fetch desativado — CNAEs serão informados manualmente
 
   // Click outside handlers
   useEffect(() => {
