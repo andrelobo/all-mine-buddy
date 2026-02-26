@@ -279,75 +279,75 @@ const Index = () => {
 
         <div className="flex-1 flex flex-col min-w-0">
           {/* Top bar */}
-          <header className="bg-card border-b border-border sticky top-0 z-10 px-4 sm:px-6 py-2 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <SidebarTrigger />
-              <h2 className="text-base font-semibold text-foreground">{tabTitle}</h2>
+          <header className="bg-card border-b border-border sticky top-0 z-10">
+            <div className="px-4 sm:px-6 py-2 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <SidebarTrigger />
+                <h2 className="text-base font-semibold text-foreground">{tabTitle}</h2>
+              </div>
+
+              <div className="flex items-center gap-3">
+                {activeTab === 'prestador' && configValida && (
+                  <div className="alert-success flex items-center gap-2 text-xs hidden sm:flex">
+                    <CheckCircle className="w-4 h-4" />
+                    Configuração fiscal válida
+                  </div>
+                )}
+
+                {activeTab === 'tomador' && showTomadorForm && (
+                  <button
+                    onClick={() => { setTomador(INITIAL_TOMADOR); setEditingTomadorId(null); setShowTomadorForm(false); }}
+                    className="btn-outline flex items-center gap-2 text-sm py-2"
+                  >
+                    <List className="w-4 h-4" />
+                    <span className="hidden sm:inline">Lista</span>
+                  </button>
+                )}
+
+                {activeTab === 'prestador' && (
+                  <button
+                    onClick={handleSalvar}
+                    disabled={savingPrestador}
+                    className={`flex items-center gap-2 text-sm py-2 btn-primary ${
+                      unsavedPrestador ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2' : ''
+                    }`}
+                  >
+                    {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    <span className="hidden sm:inline">SALVAR</span>
+                  </button>
+                )}
+
+                {activeTab === 'tomador' && showTomadorForm && (
+                  <button onClick={handleSalvarTomador} className="flex items-center gap-2 text-sm py-2 btn-primary">
+                    <Save className="w-4 h-4" />
+                    <span className="hidden sm:inline">{editingTomadorId ? 'Atualizar' : 'SALVAR'}</span>
+                  </button>
+                )}
+
+                {activeTab === 'emissao' && (
+                  <div className="flex items-center gap-2 flex-nowrap">
+                    <button onClick={() => window.print()} className="btn-outline flex items-center gap-2 text-sm py-2 whitespace-nowrap">
+                      <Printer className="w-4 h-4 shrink-0" /><span>Visualizar</span>
+                    </button>
+                    <button onClick={handleEmitir} disabled={savingNota} className="btn-primary flex items-center gap-2 text-sm py-2 whitespace-nowrap">
+                      {savingNota ? <Loader2 className="w-4 h-4 animate-spin shrink-0" /> : <FileOutput className="w-4 h-4 shrink-0" />}
+                      <span>Emitir</span>
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              {activeTab === 'prestador' && configValida && (
-                <div className="alert-success flex items-center gap-2 text-xs hidden sm:flex">
-                  <CheckCircle className="w-4 h-4" />
-                  Configuração fiscal válida
-                </div>
-              )}
-
-              {activeTab === 'tomador' && showTomadorForm && (
-                <button
-                  onClick={() => { setTomador(INITIAL_TOMADOR); setEditingTomadorId(null); setShowTomadorForm(false); }}
-                  className="btn-outline flex items-center gap-2 text-sm py-2"
-                >
-                  <List className="w-4 h-4" />
-                  <span className="hidden sm:inline">Lista</span>
-                </button>
-              )}
-
-              {activeTab === 'prestador' && (
-                <button
-                  onClick={handleSalvar}
-                  disabled={savingPrestador}
-                  className={`flex items-center gap-2 text-sm py-2 btn-primary ${
-                    unsavedPrestador ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2' : ''
-                  }`}
-                >
-                  {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                  <span className="hidden sm:inline">SALVAR</span>
-                </button>
-              )}
-
-              {activeTab === 'tomador' && showTomadorForm && (
-                <button onClick={handleSalvarTomador} className="flex items-center gap-2 text-sm py-2 btn-primary">
-                  <Save className="w-4 h-4" />
-                  <span className="hidden sm:inline">{editingTomadorId ? 'Atualizar' : 'SALVAR'}</span>
-                </button>
-              )}
-
-              {activeTab === 'emissao' && (
-                <div className="flex items-center gap-2 flex-nowrap">
-                  <button onClick={() => window.print()} className="btn-outline flex items-center gap-2 text-sm py-2 whitespace-nowrap">
-                    <Printer className="w-4 h-4 shrink-0" /><span>Visualizar</span>
-                  </button>
-                  <button onClick={handleEmitir} disabled={savingNota} className="btn-primary flex items-center gap-2 text-sm py-2 whitespace-nowrap">
-                    {savingNota ? <Loader2 className="w-4 h-4 animate-spin shrink-0" /> : <FileOutput className="w-4 h-4 shrink-0" />}
-                    <span>Emitir</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          </header>
-
-          {/* Dashboard Resumo Tributário - sticky, visível globalmente */}
-          {regime === 'simples' && snCalculo.valido && (
-            <div className="sticky top-[41px] z-[9]">
+            {/* Dashboard dentro do header */}
+            {regime === 'simples' && snCalculo.valido && (
               <ResumoTributario
                 rbt12={snRbt12}
                 cnaeAnexo={snCnaeAnexo || 'III'}
                 calculo={snCalculo}
                 visible={true}
               />
-            </div>
-          )}
+            )}
+          </header>
 
           {/* Content */}
           <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-4 space-y-2">
