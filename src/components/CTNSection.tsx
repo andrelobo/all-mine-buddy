@@ -384,8 +384,8 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange, savedCnaes, 
   };
 
   return (
-    <div className="mt-5 pt-5 border-t border-border">
-      <h3 className="text-sm font-bold flex items-center gap-2 mb-3" style={{ color: 'hsl(144, 72%, 28%)' }}>
+    <div>
+      <h3 className="text-xs font-bold flex items-center gap-1.5 mb-2" style={{ color: 'hsl(144, 72%, 28%)' }}>
         Parâmetro Municipal
       </h3>
 
