@@ -74,6 +74,8 @@ const Index = () => {
   const [ctnDescricao, setCtnDescricao] = useState<string>('');
   const [ctnItem, setCtnItem] = useState<string>('');
 
+  const [cnaesLista, setCnaesLista] = useState<any[]>(config.cnaesLista || []);
+
   const {
     cnaePrincipal: snCnaePrincipal, setCnaePrincipal: snSetCnaePrincipal,
     cnaeDescricao: snCnaeDescricao, cnaeAnexo: snCnaeAnexo, permiteFatorR: snPermiteFatorR,
@@ -104,6 +106,7 @@ const Index = () => {
     if (config.ctnCodigo) setCtnSelecionado(config.ctnCodigo);
     if (config.ctnDescricao) setCtnDescricao(config.ctnDescricao);
     if (config.ctnItem) setCtnItem(config.ctnItem);
+    if (config.cnaesLista && config.cnaesLista.length > 0) setCnaesLista(config.cnaesLista);
   }, [config]);
 
   const checkValidity = useCallback(() => {
@@ -149,6 +152,7 @@ const Index = () => {
       ctnCodigo: ctnSelecionado || '',
       ctnDescricao, ctnItem,
       cnaePrincipal: snCnaePrincipal,
+      cnaesLista,
       rbt12: snRbt12,
       simplesAnexo: snCnaeAnexo || 'III',
       simplesFaixa: snCalculo.faixa?.faixa || null,
@@ -403,6 +407,8 @@ const Index = () => {
                         setUnsavedPrestador(true);
                       }}
                       rbt12={snRbt12}
+                      cnaesLista={cnaesLista}
+                      onCnaesListaChange={(lista) => { setCnaesLista(lista); setUnsavedPrestador(true); }}
                     />
 
                     {regime === 'simples' && (

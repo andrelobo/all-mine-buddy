@@ -29,6 +29,7 @@ export interface PrestadorConfig {
   ctnItem: string;
   parametroMunicipal: any[];
   cnaePrincipal: string;
+  cnaesLista: any[];
   rbt12: number;
   simplesAnexo: string;
   simplesFaixa: number | null;
@@ -63,6 +64,7 @@ const INITIAL_CONFIG: PrestadorConfig = {
   ctnItem: '',
   parametroMunicipal: [],
   cnaePrincipal: '',
+  cnaesLista: [],
   rbt12: 0,
   simplesAnexo: '',
   simplesFaixa: null,
@@ -121,6 +123,7 @@ export function usePrestador() {
           ctnItem: data.ctn_item || '',
           parametroMunicipal: (data as any).parametro_municipal || [],
           cnaePrincipal: (data as any).cnae_principal || '',
+          cnaesLista: (data as any).cnaes_lista || [],
           rbt12: Number((data as any).rbt12) || 0,
           simplesAnexo: (data as any).simples_anexo || '',
           simplesFaixa: (data as any).simples_faixa || null,
@@ -171,6 +174,7 @@ export function usePrestador() {
         ctn_item: cfg.ctnItem,
         parametro_municipal: cfg.parametroMunicipal,
         cnae_principal: cfg.cnaePrincipal,
+        cnaes_lista: cfg.cnaesLista,
         rbt12: cfg.rbt12,
         simples_anexo: cfg.simplesAnexo,
         simples_faixa: cfg.simplesFaixa,
