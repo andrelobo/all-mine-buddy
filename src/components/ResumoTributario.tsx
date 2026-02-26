@@ -37,8 +37,8 @@ const ResumoTributario: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, visible 
       <TickerItem label="Alíq. Efetiva" value={formatPercent(calculo.aliquotaEfetiva)} highlight />
       <Separator />
       <div className="flex items-center gap-1.5 px-3 py-0.5 whitespace-nowrap animate-pulse">
-        <span className="text-[9px] uppercase tracking-wide text-primary">% ISS</span>
-        <span className="text-sm font-bold text-primary">{formatPercent(calculo.issReferencia)}</span>
+        <span className="text-[9px] uppercase tracking-wide text-accent">ISS (%)</span>
+        <span className="text-sm font-bold text-accent">{formatPercent(calculo.issReferencia)}</span>
       </div>
     </>
   );
