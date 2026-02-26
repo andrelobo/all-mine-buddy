@@ -326,10 +326,8 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-stretch">
-            {/* CNAE Card */}
-            <div ref={cnaeDropdownRef} className={`radio-card flex flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
-              <div className="text-sm font-bold leading-tight min-h-[2rem] flex items-center" style={{ color: 'hsl(144, 72%, 28%)' }}>1. Código Cnae<span className="text-red-500">*</span></div>
+          <div ref={cnaeDropdownRef} className={`radio-card flex flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
+              <div className="text-sm font-bold leading-tight min-h-[2rem] flex items-center" style={{ color: 'hsl(144, 72%, 28%)' }}>Código Cnae<span className="text-red-500">*</span></div>
               <div className="w-full space-y-1">
                 <div className="relative">
                   <Input placeholder="Ex: 6201-5/00 ou 6201500" value={manualCnae} onChange={e => handleManualCnaeChange(e.target.value)} onFocus={() => { if (manualCnae.trim()) setShowCnaeDropdown(true); }} className="h-8 text-sm pr-8" />
@@ -350,64 +348,6 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                 {manualCnaeDescricaoIBGE && <p className="text-xs text-foreground/70 leading-snug">{manualCnaeDescricaoIBGE}</p>}
               </div>
             </div>
-
-            {/* CTN Card */}
-            <div ref={ctnDropdownRef} className={`radio-card flex flex-col items-start ${manualCtn ? 'radio-card-selected' : ''}`}>
-              <div className="text-sm font-bold leading-tight min-h-[2rem] flex items-center" style={{ color: 'hsl(144, 72%, 28%)' }}>2. Código Tributação Nacional<span className="text-red-500">*</span></div>
-              <div className="w-full space-y-1">
-                <div className="relative">
-                  <Input placeholder="Buscar CTN..." value={showCtnDropdown ? ctnQuery : (manualCtn ? formatCTNDisplay(manualCtn) : '')} onChange={e => { setCtnQuery(e.target.value); setShowCtnDropdown(true); }} onFocus={() => { setCtnQuery(''); setShowCtnDropdown(true); }} className="h-8 text-sm pr-8" />
-                  <button type="button" onClick={() => { if (!showCtnDropdown) setCtnQuery(''); setShowCtnDropdown(v => !v); }} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                    <ChevronDown className="w-3.5 h-3.5" />
-                  </button>
-                  {showCtnDropdown && ctnResults.length > 0 && (
-                    <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-                      {ctnResults.map(entry => {
-                        const isSelected = manualCtn === entry.codigo;
-                        return (
-                          <button key={entry.codigo} type="button" onClick={() => { setManualCtn(entry.codigo); setCtnQuery(''); setShowCtnDropdown(false); if (entry.nbs && !manualNbs) setManualNbs(entry.nbs); }} className={`w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors ${isSelected ? 'bg-primary/10' : ''}`}>
-                            <span className="font-mono text-xs font-semibold text-primary">{formatCTNDisplay(entry.codigo)}</span>
-                            <span className="text-xs text-muted-foreground ml-2">({entry.itemFormatado})</span>
-                            {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-primary inline ml-2" />}
-                            <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-                {manualCtn && <p className="text-xs text-foreground/70 leading-snug line-clamp-2">{getCTNByCode(manualCtn)?.descricao || ''}</p>}
-              </div>
-            </div>
-
-            {/* NBS Card */}
-            <div ref={nbsDropdownRef} className={`radio-card flex flex-col items-start ${manualNbs ? 'radio-card-selected' : ''}`}>
-              <div className="text-sm font-bold leading-tight min-h-[2rem] flex items-center" style={{ color: 'hsl(144, 72%, 28%)' }}>3. Nomenclatura Brasileira Serviços</div>
-              <div className="w-full space-y-1">
-                <div className="relative">
-                  <Input placeholder="Buscar NBS..." value={showNbsDropdown ? nbsQuery : manualNbs} onChange={e => { setNbsQuery(e.target.value); setShowNbsDropdown(true); }} onFocus={() => { setNbsQuery(''); setShowNbsDropdown(true); }} className="h-8 text-sm pr-8" />
-                  <button type="button" onClick={() => { if (!showNbsDropdown) setNbsQuery(''); setShowNbsDropdown(v => !v); }} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                    <ChevronDown className="w-3.5 h-3.5" />
-                  </button>
-                  {showNbsDropdown && nbsResults.length > 0 && (
-                    <div className="absolute z-30 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-                      {nbsResults.map(entry => {
-                        const isSelected = manualNbs === entry.codigo;
-                        return (
-                          <button key={entry.codigo} type="button" onClick={() => { setManualNbs(entry.codigo); setNbsQuery(''); setShowNbsDropdown(false); }} className={`w-full text-left px-3 py-2 border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors ${isSelected ? 'bg-primary/10' : ''}`}>
-                            <span className="font-mono text-xs font-semibold text-primary">{entry.codigo}</span>
-                            {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-primary inline ml-2" />}
-                            <p className="text-xs text-foreground/70 line-clamp-1">{entry.descricao}</p>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-                {manualNbs && <p className="text-xs text-foreground/70 leading-snug line-clamp-2">{getNBSDescricao(manualNbs) || ''}</p>}
-              </div>
-            </div>
-          </div>
 
           {manualCnae.replace(/\D/g, '') && (
             <div className="flex justify-end">
