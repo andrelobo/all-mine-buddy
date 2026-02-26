@@ -94,7 +94,12 @@ const Index = () => {
   const [emissaoErrors, setEmissaoErrors] = useState<string[]>([]);
   const [tomadorSubstituto, setTomadorSubstituto] = useState(false);
 
+  // Sync local state from config only on initial load (when config.id first appears)
+  const configSyncedRef = React.useRef(false);
   useEffect(() => {
+    if (configSyncedRef.current) return;
+    if (!config.id) return;
+    configSyncedRef.current = true;
     if (config.regimeTributario) {
       setRegime(config.regimeTributario as RegimeTributario);
       if (config.regimeTributario === 'simples') {
@@ -107,7 +112,7 @@ const Index = () => {
     if (config.ctnDescricao) setCtnDescricao(config.ctnDescricao);
     if (config.ctnItem) setCtnItem(config.ctnItem);
     if (config.cnaesLista && config.cnaesLista.length > 0) setCnaesLista(config.cnaesLista);
-  }, [config]);
+  }, [config.id]);
 
   // Sincronizar alíquota efetiva do cálculo Simples Nacional com o campo de Parâmetros Fiscais
   useEffect(() => {
