@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Briefcase, Star, Loader2, AlertCircle, Trash2, CheckCircle2, Plus, X, ChevronDown, Search, ShieldCheck, ShieldX } from 'lucide-react';
 import { validateCNPJ } from '@/utils/validators';
 import { CNAE_LIST, formatCNAECode as formatCNAECodeFromList, getLC116Item } from '@/utils/cnae-lc116';
@@ -36,7 +36,11 @@ interface Props {
   cnaeEscolhido: string | null;
   onCnaeEscolhidoChange: (codigo: string, descricao: string) => void;
   rbt12?: number;
+  cnaesLista?: CNAEAtividade[];
+  onCnaesListaChange?: (lista: CNAEAtividade[]) => void;
 }
+
+export type { CNAEAtividade };
 
 function formatCNAECode(codigo: number | string): string {
   const str = String(codigo).replace(/\D/g, '').padStart(7, '0');
@@ -44,14 +48,29 @@ function formatCNAECode(codigo: number | string): string {
   return str;
 }
 
-const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChange, rbt12 = 0 }) => {
-  const [manualActivities, setManualActivities] = useState<CNAEAtividade[]>([]);
+const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChange, rbt12 = 0, cnaesLista, onCnaesListaChange }) => {
+  const [manualActivities, setManualActivitiesRaw] = useState<CNAEAtividade[]>(cnaesLista || []);
   const [removedCodes, setRemovedCodes] = useState<Set<string>>(new Set());
   const [manualCnae, setManualCnae] = useState('');
   const [manualCnaeDescricaoIBGE, setManualCnaeDescricaoIBGE] = useState('');
   const [showCnaeDropdown, setShowCnaeDropdown] = useState(false);
   const [anexoCache, setAnexoCache] = useState<Record<string, string | null>>({});
   const cnaeDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Sync from parent on load
+  useEffect(() => {
+    if (cnaesLista && cnaesLista.length > 0 && manualActivities.length === 0) {
+      setManualActivitiesRaw(cnaesLista);
+    }
+  }, [cnaesLista]);
+
+  const setManualActivities = useCallback((updater: CNAEAtividade[] | ((prev: CNAEAtividade[]) => CNAEAtividade[])) => {
+    setManualActivitiesRaw(prev => {
+      const next = typeof updater === 'function' ? updater(prev) : updater;
+      onCnaesListaChange?.(next);
+      return next;
+    });
+  }, [onCnaesListaChange]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {

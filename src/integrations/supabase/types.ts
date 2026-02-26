@@ -146,6 +146,7 @@ export type Database = {
           bairro: string | null
           cep: string | null
           cnae_principal: string | null
+          cnaes_lista: Json | null
           cnpj: string
           complemento: string | null
           created_at: string
@@ -180,6 +181,7 @@ export type Database = {
           bairro?: string | null
           cep?: string | null
           cnae_principal?: string | null
+          cnaes_lista?: Json | null
           cnpj: string
           complemento?: string | null
           created_at?: string
@@ -214,6 +216,7 @@ export type Database = {
           bairro?: string | null
           cep?: string | null
           cnae_principal?: string | null
+          cnaes_lista?: Json | null
           cnpj?: string
           complemento?: string | null
           created_at?: string
