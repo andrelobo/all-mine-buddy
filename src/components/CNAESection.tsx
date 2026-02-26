@@ -181,20 +181,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
             </button>
           )}
 
-          {selectedActivity && (
-            <div className="mt-4 pt-4 border-t border-border">
-              <p className="text-xs text-muted-foreground mb-1.5">CNAE para configuração tributária</p>
-              <div className="flex items-start gap-2 p-2.5 rounded-lg bg-primary/5 border border-primary/20">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-foreground leading-snug">
-                    <span className="font-semibold text-primary font-mono">{formatCNAECode(selectedActivity.codigo)}</span>
-                    <span className="text-muted-foreground mx-1.5">·</span>
-                    {selectedActivity.descricao}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+
         </div>
       )}
     </div>
