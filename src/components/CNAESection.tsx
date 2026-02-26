@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Landmark, Star, Loader2, AlertCircle, Trash2, CheckCircle2, Plus, X, ChevronDown, Search } from 'lucide-react';
+import { Landmark, Star, Loader2, AlertCircle, Trash2, CheckCircle2, Plus, X, ChevronDown, Search, ShieldCheck, ShieldX } from 'lucide-react';
 import { validateCNPJ } from '@/utils/validators';
 import { CNAE_LIST, formatCNAECode as formatCNAECodeFromList, getLC116Item } from '@/utils/cnae-lc116';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 
 interface CNAEAtividade {
   codigo: number | string;
   descricao: string;
   isPrincipal: boolean;
   isManual?: boolean;
+  anexo?: string | null;
+  anexoLoading?: boolean;
 }
 
 interface Props {
@@ -77,7 +80,20 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
     setManualCnaeDescricaoIBGE(cnaeEntry?.descricao || '');
   };
 
-  const handleAddManual = () => {
+  const checkAnexo = async (codigoCnae: string) => {
+    try {
+      const { data } = await supabase
+        .from('cnae_catalogo')
+        .select('anexo')
+        .eq('codigo_cnae', codigoCnae)
+        .maybeSingle();
+      return data?.anexo || null;
+    } catch {
+      return null;
+    }
+  };
+
+  const handleAddManual = async () => {
     const cleaned = manualCnae.replace(/\D/g, '');
     if (cleaned.length < 7) return;
     if (manualActivities.some((a) => String(a.codigo).replace(/\D/g, '') === cleaned)) return;
@@ -86,11 +102,21 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
       descricao: manualCnaeDescricaoIBGE || 'Inclusão manual',
       isPrincipal: false,
       isManual: true,
+      anexoLoading: true,
     };
     setManualActivities((prev) => [...prev, nova]);
     setManualCnae('');
     setManualCnaeDescricaoIBGE('');
     if (!cnaeEscolhido) onCnaeEscolhidoChange(cleaned, nova.descricao);
+
+    const anexo = await checkAnexo(cleaned);
+    setManualActivities((prev) =>
+      prev.map((a) =>
+        String(a.codigo).replace(/\D/g, '') === cleaned
+          ? { ...a, anexo, anexoLoading: false }
+          : a
+      )
+    );
   };
 
   const selectedActivity = manualActivities.find((a) => String(a.codigo) === cnaeEscolhido);
@@ -165,6 +191,22 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                         <span className="text-muted-foreground mx-1.5">·</span>
                         {atividade.descricao}
                       </p>
+                      {atividade.anexoLoading && (
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                          <Loader2 className="w-3 h-3 animate-spin" /> Verificando anexo…
+                        </span>
+                      )}
+                      {!atividade.anexoLoading && atividade.anexo !== undefined && (
+                        atividade.anexo?.toUpperCase().includes('III') ? (
+                          <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded font-medium mt-1 w-fit">
+                            <ShieldCheck className="w-3 h-3" /> Anexo III
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1 text-xs text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-medium mt-1 w-fit">
+                            <ShieldX className="w-3 h-3" /> {atividade.anexo ? `Anexo ${atividade.anexo}` : 'Não encontrado no catálogo'}
+                          </span>
+                        )
+                      )}
                     </div>
                   </button>
                   <button type="button" onClick={(e) => handleRemove(e, codigo)} title="Remover atividade" className="shrink-0 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100 mt-0.5">
