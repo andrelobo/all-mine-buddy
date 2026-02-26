@@ -50,21 +50,20 @@ const SimplesNacionalSection: React.FC<Props> = ({
   };
 
   return (
-    <div className="section-card">
-      <h2 className="section-title">
-        <Calculator className="w-5 h-5 text-primary" />
+    <div className="section-card p-3">
+      <h2 className="section-title text-sm mb-2">
+        <Calculator className="w-4 h-4 text-primary" />
         Simples Nacional – Anexo III
       </h2>
 
-
       {/* RBT12 Input */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
         <div>
-          <label className="field-label">RBT12 – Receita Bruta 12 meses (R$)*</label>
+          <label className="field-label text-xs">RBT12 – Receita Bruta 12 meses (R$)*</label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">R$</span>
+            <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">R$</span>
             <input
-              className="field-input pl-10"
+              className="field-input pl-9 py-1.5 text-sm"
               placeholder="0,00"
               value={rbt12Display}
               onChange={handleRbt12Change}
@@ -73,9 +72,9 @@ const SimplesNacionalSection: React.FC<Props> = ({
         </div>
 
         <div>
-          <label className="field-label">Anexo do Simples</label>
+          <label className="field-label text-xs">Anexo do Simples</label>
           <input
-            className="field-input bg-muted/50"
+            className="field-input bg-muted/50 py-1.5 text-sm"
             value={cnaeAnexo ? `Anexo ${cnaeAnexo}` : 'Não identificado'}
             readOnly
           />
@@ -84,48 +83,47 @@ const SimplesNacionalSection: React.FC<Props> = ({
 
       {/* Resultados calculados */}
       {calculo.valido && calculo.faixa && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
-          <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Faixa</p>
-            <p className="text-lg font-bold text-primary">{calculo.faixa.faixa}ª</p>
-            <p className="text-[10px] text-muted-foreground">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-3">
+          <div className="p-2 rounded-lg bg-primary/5 border border-primary/20">
+            <p className="text-[9px] uppercase tracking-wider text-muted-foreground mb-0.5">Faixa</p>
+            <p className="text-base font-bold text-primary">{calculo.faixa.faixa}ª</p>
+            <p className="text-[9px] text-muted-foreground">
               até {formatCurrency(calculo.faixa.limiteSuperior)}
             </p>
           </div>
 
-          <div className="p-3 rounded-lg bg-muted/30 border border-border">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Alíq. Nominal</p>
-            <p className="text-lg font-bold text-foreground">{formatPercent(calculo.faixa.aliquotaNominal)}</p>
+          <div className="p-2 rounded-lg bg-muted/30 border border-border">
+            <p className="text-[9px] uppercase tracking-wider text-muted-foreground mb-0.5">Alíq. Nominal</p>
+            <p className="text-base font-bold text-foreground">{formatPercent(calculo.faixa.aliquotaNominal)}</p>
           </div>
 
-          <div className="p-3 rounded-lg bg-muted/30 border border-border">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Parcela Deduzir</p>
-            <p className="text-lg font-bold text-foreground">{formatCurrency(calculo.faixa.parcelaDeduzir)}</p>
+          <div className="p-2 rounded-lg bg-muted/30 border border-border">
+            <p className="text-[9px] uppercase tracking-wider text-muted-foreground mb-0.5">Parcela Deduzir</p>
+            <p className="text-base font-bold text-foreground">{formatCurrency(calculo.faixa.parcelaDeduzir)}</p>
           </div>
 
-          <div className="p-3 rounded-lg bg-primary/10 border border-primary/30">
-            <p className="text-[10px] uppercase tracking-wider text-primary mb-1">Alíq. Efetiva</p>
-            <p className="text-xl font-bold text-primary">{formatPercent(calculo.aliquotaEfetiva)}</p>
+          <div className="p-2 rounded-lg bg-primary/10 border border-primary/30">
+            <p className="text-[9px] uppercase tracking-wider text-primary mb-0.5">Alíq. Efetiva</p>
+            <p className="text-lg font-bold text-primary">{formatPercent(calculo.aliquotaEfetiva)}</p>
           </div>
 
-          <div className="p-3 rounded-lg bg-muted/30 border border-border">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">% ISS (ref.)</p>
-            <p className="text-lg font-bold text-foreground">{formatPercent(calculo.issReferencia)}</p>
+          <div className="p-2 rounded-lg bg-muted/30 border border-border">
+            <p className="text-[9px] uppercase tracking-wider text-muted-foreground mb-0.5">% ISS (ref.)</p>
+            <p className="text-base font-bold text-foreground">{formatPercent(calculo.issReferencia)}</p>
           </div>
         </div>
       )}
 
-
       {/* Alertas */}
       {alertas.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {alertas.map((alerta, i) => {
             const isWarning = alerta.includes('desenquadramento') || alerta.includes('não pertence');
             const isInfo = alerta.includes('Fator R') || alerta.includes('Informe');
             return (
               <div
                 key={i}
-                className={`flex items-start gap-2 p-3 rounded-lg border text-sm ${
+                className={`flex items-start gap-2 p-2 rounded-lg border text-xs ${
                   isWarning
                     ? 'bg-destructive/10 border-destructive/20 text-destructive'
                     : isInfo
@@ -133,7 +131,7 @@ const SimplesNacionalSection: React.FC<Props> = ({
                     : 'bg-yellow-500/10 border-yellow-500/20 text-yellow-700 dark:text-yellow-300'
                 }`}
               >
-                {isWarning ? <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" /> : <Info className="w-4 h-4 shrink-0 mt-0.5" />}
+                {isWarning ? <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" /> : <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />}
                 <span>{alerta}</span>
               </div>
             );
@@ -143,8 +141,8 @@ const SimplesNacionalSection: React.FC<Props> = ({
 
       {/* Tabela de referência */}
       {!cnaePrincipal && (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground py-4 justify-center">
-          <Info className="w-4 h-4 shrink-0" />
+        <div className="flex items-center gap-2 text-xs text-muted-foreground py-3 justify-center">
+          <Info className="w-3.5 h-3.5 shrink-0" />
           <span>Selecione um CNAE principal na seção de Parametrização de CNAE para calcular automaticamente.</span>
         </div>
       )}
