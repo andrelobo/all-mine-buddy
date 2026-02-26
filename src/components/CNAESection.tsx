@@ -105,7 +105,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
       {/* Campo de pesquisa CNAE — acima da lista */}
       <div className="space-y-3">
         <div ref={cnaeDropdownRef} className={`radio-card flex flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
-          <div className="text-sm font-bold leading-tight min-h-[2rem] flex items-center gap-1.5" style={{ color: 'hsl(144, 72%, 28%)' }}><Search className="w-4 h-4" />Pesquise</div>
+          <div className="text-sm font-bold leading-tight flex items-center gap-1.5 mb-1.5 text-primary"><Search className="w-4 h-4" />Pesquise</div>
           <div className="w-full space-y-1">
             <div className="relative">
               <Input placeholder="Ex: 6201-5/00 ou 6201500" value={manualCnae} onChange={e => handleManualCnaeChange(e.target.value)} onFocus={() => { if (manualCnae.trim()) setShowCnaeDropdown(true); }} className="h-8 text-sm pr-8" />
