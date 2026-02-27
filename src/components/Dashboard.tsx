@@ -84,7 +84,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
           <p className="text-xs text-muted-foreground">Inteligência fiscal • Simples Nacional – Anexo {cnaeAnexo || 'III'}</p>
         </div>
         <Badge variant="outline" className="text-xs">
-          Janeiro de 2026
+          Janeiro 2026
         </Badge>
       </div>
 
