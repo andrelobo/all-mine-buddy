@@ -83,7 +83,7 @@ const LocalPrestacaoSection: React.FC<Props> = ({ data, onChange }) => {
         Local da Prestação do Serviço
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_0.5fr_3fr] gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_0.5fr_3fr] gap-2">
         <div>
           <label className="field-label flex items-center gap-1">
             <Globe className="w-3.5 h-3.5" />País
