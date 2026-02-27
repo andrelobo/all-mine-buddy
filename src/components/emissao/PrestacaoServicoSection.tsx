@@ -105,7 +105,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       onChange({
         ...data,
         codigoServico: v.ctn,
-        descricaoServico: data.descricaoServico || v.ctnDescricao || entry?.descricao || '',
+        descricaoServico: '',
       });
       setCtnDescricaoSelecionada(v.ctnDescricao || entry?.descricao || '');
     }
