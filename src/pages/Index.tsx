@@ -598,7 +598,7 @@ const Index = () => {
                 <PrestadorSection data={prestador} onChange={setPrestador} onAutosave={autosaveEmissao} optanteSimples={config.optanteSimples} compact />
                 <TomadorEmissao data={tomadorEmissao} onChange={setTomadorEmissao} onTomadorSelecionado={handleTomadorSelecionado} prestadorId={config.id} />
                 <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
-                <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} favoritos={config.parametroMunicipal} optanteSimples={config.optanteSimples} tomadorSubstituto={tomadorSubstituto} />
+                <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} favoritos={config.parametroMunicipal} optanteSimples={config.optanteSimples} tomadorSubstituto={tomadorSubstituto} listaServico={configOperacionais} />
                 <ValoresTotaisSection
                   valorBruto={valores.valorBruto} desconto={valores.desconto} issValor={valores.issValor}
                   issRetido={prestacao.issRetido} retPis={valores.retPis} retCofins={valores.retCofins}

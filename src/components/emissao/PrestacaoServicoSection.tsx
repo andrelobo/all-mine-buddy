@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { Briefcase, Percent, ChevronDown, Search, MapPin, Star } from 'lucide-react';
+import { Briefcase, Percent, ChevronDown, Search, MapPin, Star, List } from 'lucide-react';
 import { searchCTN, getCTNByCode } from '@/utils/ctn-data';
 
 export interface PrestacaoServicoData {
@@ -25,6 +25,12 @@ interface FavoritoItem {
   vinculos: { ctn?: string; ctnDescricao?: string; nbs?: string; nbsDescricao?: string }[];
 }
 
+export interface ListaServicoItem {
+  id: string;
+  natureza: string;
+  descricao: string;
+}
+
 interface Props {
   data: PrestacaoServicoData;
   onChange: (data: PrestacaoServicoData) => void;
@@ -32,6 +38,7 @@ interface Props {
   favoritos?: FavoritoItem[];
   optanteSimples?: boolean;
   tomadorSubstituto?: boolean;
+  listaServico?: ListaServicoItem[];
 }
 
 function formatCurrency(value: string): string {
@@ -63,7 +70,7 @@ interface Municipio {
   nome: string;
 }
 
-const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarRetencoesFederais, favoritos = [], optanteSimples = false, tomadorSubstituto = false }) => {
+const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarRetencoesFederais, favoritos = [], optanteSimples = false, tomadorSubstituto = false, listaServico = [] }) => {
   const update = (field: keyof PrestacaoServicoData, value: string | boolean) => {
     onChange({ ...data, [field]: value });
   };
@@ -194,7 +201,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         <Briefcase className="w-5 h-5 text-primary" />
         Serviço Prestado
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {/* Serviços Favoritos */}
         <div ref={favoritosDropdownRef} className="relative">
           <label className="field-label flex items-center gap-1.5" style={{ color: 'hsl(43, 80%, 45%)' }}><Star className="w-4 h-4" fill="currentColor" />Serviços Favoritos</label>
@@ -317,6 +324,25 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
               <p className="text-xs text-muted-foreground text-center">Nenhum resultado encontrado</p>
             </div>
           )}
+        </div>
+        {/* Lista Serviço */}
+        <div className="relative">
+          <label className="field-label flex items-center gap-1.5"><List className="w-4 h-4 text-primary" />Lista Serviço</label>
+          <select
+            className="field-input"
+            value=""
+            onChange={(e) => {
+              const item = listaServico.find(i => i.id === e.target.value);
+              if (item) {
+                onChange({ ...data, descricaoServico: data.descricaoServico ? `${data.descricaoServico}\n${item.natureza} — ${item.descricao}` : `${item.natureza} — ${item.descricao}` });
+              }
+            }}
+          >
+            <option value="">{listaServico.length > 0 ? 'Selecione...' : 'Nenhum item cadastrado'}</option>
+            {listaServico.map(item => (
+              <option key={item.id} value={item.id}>{item.natureza} — {item.descricao}</option>
+            ))}
+          </select>
         </div>
       </div>
 
