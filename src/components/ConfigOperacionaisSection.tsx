@@ -47,7 +47,7 @@ const ConfigOperacionaisSection: React.FC<Props> = ({ items, onChange }) => {
       <div className="flex items-center justify-between mb-3">
         <h2 className="section-title mb-0">
           <Settings className="w-5 h-5 text-primary" />
-          Natureza
+          Lista Serviço
         </h2>
         <button
           type="button"
