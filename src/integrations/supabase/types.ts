@@ -281,6 +281,60 @@ export type Database = {
         }
         Relationships: []
       }
+      split_payment: {
+        Row: {
+          created_at: string
+          id: string
+          mes_referencia: string
+          nota_fiscal_id: string | null
+          prestador_id: string | null
+          status: string
+          updated_at: string
+          valor_bruto: number
+          valor_liberado: number
+          valor_reservado: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mes_referencia?: string
+          nota_fiscal_id?: string | null
+          prestador_id?: string | null
+          status?: string
+          updated_at?: string
+          valor_bruto?: number
+          valor_liberado?: number
+          valor_reservado?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mes_referencia?: string
+          nota_fiscal_id?: string | null
+          prestador_id?: string | null
+          status?: string
+          updated_at?: string
+          valor_bruto?: number
+          valor_liberado?: number
+          valor_reservado?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "split_payment_nota_fiscal_id_fkey"
+            columns: ["nota_fiscal_id"]
+            isOneToOne: false
+            referencedRelation: "notas_fiscais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "split_payment_prestador_id_fkey"
+            columns: ["prestador_id"]
+            isOneToOne: false
+            referencedRelation: "prestadores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tomadores: {
         Row: {
           bairro: string | null
