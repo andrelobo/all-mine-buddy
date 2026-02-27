@@ -139,12 +139,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                 <p className="text-sm font-bold text-primary">{calculo.valido ? formatPercent(calculo.aliquotaEfetiva) : '–'}</p>
               </div>
             </div>
-            {calculo.faixa && calculo.faixa.faixa < 6 && (
-              <div className="mt-3 p-2 rounded bg-muted/50 text-xs text-muted-foreground">
-                <Info className="w-3 h-3 inline mr-1" />
-                Projeção: faltam <strong>{formatCurrency(calculo.faixa.limiteSuperior - rbt12)}</strong> para mudar para a {calculo.faixa.faixa + 1}ª faixa.
-              </div>
-            )}
           </CardContent>
         </Card>
       </section>
