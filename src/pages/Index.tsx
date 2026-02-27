@@ -286,17 +286,7 @@ const Index = () => {
               <h2 className="text-base font-semibold text-foreground">{tabTitle}</h2>
             </div>
 
-            {/* Dashboard no centro do header */}
-            {regime === 'simples' && snCalculo.valido && (
-              <div className="flex-1 min-w-0 overflow-hidden">
-                <ResumoTributario
-                  rbt12={snRbt12}
-                  cnaeAnexo={snCnaeAnexo || 'III'}
-                  calculo={snCalculo}
-                  visible={true}
-                />
-              </div>
-            )}
+
 
             <div className="flex items-center gap-3 shrink-0">
               {activeTab === 'prestador' && configValida && (
