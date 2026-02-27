@@ -212,7 +212,7 @@ const EmissaoNFSe: React.FC = () => {
         </div>
       )}
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-3">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-4 space-y-2">
         <PrestadorSection data={prestador} onChange={setPrestador} onAutosave={autosave} optanteSimples={config.optanteSimples} compact />
         <TomadorEmissao data={tomador} onChange={setTomador} onTomadorSelecionado={handleTomadorSelecionado} prestadorId={config.id} />
         <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />

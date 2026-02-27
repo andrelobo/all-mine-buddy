@@ -218,7 +218,7 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange, onTomadorSelecionado,
 
   return (
     <div className="section-card">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-2">
         <h2 className="section-title mb-0">
           <Users className="w-5 h-5 text-primary" />
           Tomador(a)
@@ -256,7 +256,7 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange, onTomadorSelecionado,
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_3fr] gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_3fr] gap-3">
         <div>
           <label className="field-label flex items-center gap-1">
             <FileText className="w-3.5 h-3.5" />CNPJ/CPF*

@@ -194,7 +194,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         <Briefcase className="w-5 h-5 text-primary" />
         Serviço Prestado
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Serviços Favoritos */}
         <div ref={favoritosDropdownRef} className="relative">
           <label className="field-label flex items-center gap-1.5" style={{ color: 'hsl(43, 80%, 45%)' }}><Star className="w-4 h-4" fill="currentColor" />Serviços Favoritos</label>
@@ -320,10 +320,10 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-3">
         <label className="field-label">Descrição do Serviço*</label>
         <textarea
-          className="field-input min-h-[80px] resize-y"
+          className="field-input min-h-[60px] resize-y"
           placeholder="Descreva o serviço prestado conforme a NFS-e..."
           value={data.descricaoServico}
           onChange={(e) => update('descricaoServico', e.target.value)}
@@ -332,7 +332,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
 
 
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
         <div>
           <label className="field-label">Valor do Serviço (R$)*</label>
           <input
@@ -375,7 +375,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       </div>
 
       {/* ISS Retido */}
-      <div className="mt-4 flex items-center gap-3">
+      <div className="mt-3 flex items-center gap-3">
         <label className="flex items-center gap-3 cursor-pointer select-none">
           <button
             type="button"
@@ -392,11 +392,11 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
 
       {/* Retenções Federais */}
       {mostrarRetencoesFederais && (
-        <div className="mt-5 pt-5 border-t border-border">
-          <label className="field-label mb-4">
+        <div className="mt-3 pt-3 border-t border-border">
+          <label className="field-label mb-2">
             Retenções Federais
           </label>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {([
               ['retPis', 'PIS'],
               ['retCofins', 'COFINS'],
