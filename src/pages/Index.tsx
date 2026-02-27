@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { Save, CheckCircle, Loader2, List, FileOutput, Printer, AlertCircle, Building2, Landmark, Settings } from 'lucide-react';
+import { Save, CheckCircle, Loader2, List, FileOutput, Printer, AlertCircle, Building2, Landmark, Settings, Trash2 } from 'lucide-react';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/AppSidebar';
 import PrestadorSection from '@/components/PrestadorSection';
@@ -65,7 +65,7 @@ const Index = () => {
   const [prestadorSubTab, setPrestadorSubTab] = useState<PrestadorSubTab>('cadastro');
   const [unsavedPrestador, setUnsavedPrestador] = useState(false);
   
-  const { prestador, setPrestador, config, setConfig, loading: loadingPrestador, saving: savingPrestador, salvarPrestador } = usePrestador();
+  const { prestador, setPrestador, config, setConfig, loading: loadingPrestador, saving: savingPrestador, salvarPrestador, limparPrestador } = usePrestador();
   
   const [regime, setRegime] = useState<RegimeTributario>(null);
   const [informarAliquotaSN, setInformarAliquotaSN] = useState(false);
@@ -317,16 +317,36 @@ const Index = () => {
               )}
 
               {activeTab === 'prestador' && (
-                <button
-                  onClick={handleSalvar}
-                  disabled={savingPrestador}
-                  className={`flex items-center gap-2 text-sm py-2 btn-primary ${
-                    unsavedPrestador ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2' : ''
-                  }`}
-                >
-                  {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                  <span className="hidden sm:inline">SALVAR</span>
-                </button>
+                <>
+                  <button
+                    onClick={() => {
+                      if (window.confirm('Tem certeza que deseja limpar todos os dados do prestador?')) {
+                        limparPrestador();
+                        setRegime(null);
+                        setAliquotaSN('');
+                        setCtnSelecionado(null);
+                        setCtnDescricao('');
+                        setCtnItem('');
+                        setCnaesLista([]);
+                        setUnsavedPrestador(false);
+                      }
+                    }}
+                    className="btn-outline flex items-center gap-2 text-sm py-2 text-destructive border-destructive/30 hover:bg-destructive/10"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span className="hidden sm:inline">Limpar</span>
+                  </button>
+                  <button
+                    onClick={handleSalvar}
+                    disabled={savingPrestador}
+                    className={`flex items-center gap-2 text-sm py-2 btn-primary ${
+                      unsavedPrestador ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2' : ''
+                    }`}
+                  >
+                    {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    <span className="hidden sm:inline">SALVAR</span>
+                  </button>
+                </>
               )}
 
               {activeTab === 'tomador' && showTomadorForm && (
