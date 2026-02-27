@@ -367,21 +367,21 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         {/* Contato */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
           <div>
-            <label className="field-label">Localidade / UF</label>
-            <input
-              className="field-input"
-              placeholder="Cidade - UF"
-              value={data.localidadeUf}
-              onChange={(e) => update('localidadeUf', e.target.value)}
-            />
-          </div>
-          <div>
             <label className="field-label">Complemento</label>
             <input
               className="field-input"
               placeholder="Sala, Andar, etc."
               value={data.complemento}
               onChange={(e) => update('complemento', e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="field-label">Localidade / UF</label>
+            <input
+              className="field-input"
+              placeholder="Cidade - UF"
+              value={data.localidadeUf}
+              onChange={(e) => update('localidadeUf', e.target.value)}
             />
           </div>
           <div>
