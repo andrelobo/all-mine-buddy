@@ -12,6 +12,7 @@ import ResumoTributario from '@/components/ResumoTributario';
 import Dashboard from '@/components/Dashboard';
 import TabelaAnexoIII from '@/components/TabelaAnexoIII';
 import EmpresaCard from '@/components/prestador/EmpresaCard';
+import ConfigOperacionaisSection from '@/components/ConfigOperacionaisSection';
 import ContatoCard from '@/components/prestador/ContatoCard';
 import EnderecoCard from '@/components/prestador/EnderecoCard';
 import { usePrestadorAutoFetch } from '@/hooks/usePrestadorAutoFetch';
@@ -95,6 +96,7 @@ const Index = () => {
   const [localPrestacao, setLocalPrestacao] = useState<LocalPrestacaoData>({ pais: 'Brasil', uf: 'AM', municipio: 'Manaus' });
   const [emissaoErrors, setEmissaoErrors] = useState<string[]>([]);
   const [tomadorSubstituto, setTomadorSubstituto] = useState(false);
+  const [configOperacionais, setConfigOperacionais] = useState<{ id: string; natureza: string; descricao: string }[]>([]);
 
   // Sync local state from config only on initial load (when config.id first appears)
   const configSyncedRef = React.useRef(false);
@@ -542,23 +544,10 @@ const Index = () => {
                       />
                     </div>
 
-                    {/* Configurações Operacionais placeholder */}
-                    <div className="section-card">
-                      <h2 className="section-title">
-                        <Settings className="w-5 h-5 text-primary" />
-                        Configurações Operacionais
-                      </h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="field-label">Natureza</label>
-                          <input className="field-input" placeholder="Informe a natureza" />
-                        </div>
-                        <div>
-                          <label className="field-label">Descrição</label>
-                          <input className="field-input" placeholder="Informe a descrição" />
-                        </div>
-                      </div>
-                    </div>
+                    <ConfigOperacionaisSection
+                      items={configOperacionais}
+                      onChange={setConfigOperacionais}
+                    />
                   </div>
                 )}
               </>
