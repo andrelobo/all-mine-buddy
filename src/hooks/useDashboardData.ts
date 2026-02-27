@@ -158,11 +158,6 @@ export function useDashboardData(prestadorId: string | null, rbt12: number, cnae
   // Alerts
   const alertas = useMemo(() => {
     const list: { tipo: 'warning' | 'danger' | 'info'; mensagem: string }[] = [];
-    if (calculo.faixa && calculo.faixa.faixa < 6) {
-      const diff = calculo.faixa.limiteSuperior - rbt12;
-      if (diff < 50000) list.push({ tipo: 'danger', mensagem: `Risco de subir para a ${calculo.faixa.faixa + 1}ª faixa. Faltam ${formatCurrency(diff)}.` });
-      else if (diff < 150000) list.push({ tipo: 'warning', mensagem: `Atenção: faltam ${formatCurrency(diff)} para mudar de faixa.` });
-    }
     if (kpis.margemLiquida < 20 && kpis.faturamentoMes > 0) {
       list.push({ tipo: 'danger', mensagem: `Margem líquida de ${kpis.margemLiquida.toFixed(1)}% está abaixo de 20%.` });
     }
