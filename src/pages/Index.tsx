@@ -548,9 +548,16 @@ const Index = () => {
                         <Settings className="w-5 h-5 text-primary" />
                         Configurações Operacionais
                       </h2>
-                      <p className="text-sm text-muted-foreground py-4 text-center">
-                        Configurações operacionais adicionais serão disponibilizadas em versões futuras.
-                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="field-label">Natureza</label>
+                          <input className="field-input" placeholder="Informe a natureza" />
+                        </div>
+                        <div>
+                          <label className="field-label">Descrição</label>
+                          <input className="field-input" placeholder="Informe a descrição" />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
