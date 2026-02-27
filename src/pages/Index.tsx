@@ -96,7 +96,14 @@ const Index = () => {
   const [localPrestacao, setLocalPrestacao] = useState<LocalPrestacaoData>({ pais: 'Brasil', uf: 'AM', municipio: 'Manaus' });
   const [emissaoErrors, setEmissaoErrors] = useState<string[]>([]);
   const [tomadorSubstituto, setTomadorSubstituto] = useState(false);
-  const [configOperacionais, setConfigOperacionais] = useState<{ id: string; natureza: string; descricao: string }[]>([]);
+  const [configOperacionais, setConfigOperacionais] = useState<{ id: string; natureza: string; descricao: string }[]>([
+    { id: crypto.randomUUID(), natureza: 'Tributação no município', descricao: 'Serviço tributado no município do prestador' },
+    { id: crypto.randomUUID(), natureza: 'Tributação fora do município', descricao: 'Serviço tributado no município do tomador' },
+    { id: crypto.randomUUID(), natureza: 'Isenção', descricao: 'Serviço isento de ISS' },
+    { id: crypto.randomUUID(), natureza: 'Imune', descricao: 'Serviço imune de tributação' },
+    { id: crypto.randomUUID(), natureza: 'Exigibilidade suspensa por decisão judicial', descricao: 'ISS com exigibilidade suspensa judicialmente' },
+    { id: crypto.randomUUID(), natureza: 'Exigibilidade suspensa por procedimento administrativo', descricao: 'ISS com exigibilidade suspensa administrativamente' },
+  ]);
 
   // Sync local state from config only on initial load (when config.id first appears)
   const configSyncedRef = React.useRef(false);
