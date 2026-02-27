@@ -104,7 +104,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
 
       {/* 1) RESUMO EXECUTIVO - KPIs */}
       <section>
-        <SectionTitle icon={<BarChart3 className="w-4 h-4" />} title="Resumo Executivo" />
+        <SectionTitle icon={<BarChart3 className="w-4 h-4" />} title="Dr. Fiscal IA" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <KPICard title="Receita Jan 2026" value={formatCurrency(kpis.faturamentoMes)} icon={<DollarSign className="w-4 h-4" />} />
           <KPICard title="DAS Estimado" value={formatCurrency(kpis.dasEstimado)} icon={<Wallet className="w-4 h-4" />} accent="text-destructive" />
