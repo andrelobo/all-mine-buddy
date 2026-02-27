@@ -321,7 +321,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           <MapPin className="w-3.5 h-3.5" />
           Endereço
         </label>
-        <div className="grid grid-cols-1 md:grid-cols-[0.4fr_1.6fr_0.35fr_0.8fr_0.8fr] gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-[0.4fr_1.8fr_0.35fr_1fr] gap-4">
           <div>
             <label className="field-label">CEP</label>
             <input
@@ -354,15 +354,6 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
             />
           </div>
           <div>
-            <label className="field-label">Complemento</label>
-            <input
-              className="field-input"
-              placeholder="Sala, Andar, etc."
-              value={data.complemento}
-              onChange={(e) => update('complemento', e.target.value)}
-            />
-          </div>
-          <div>
             <label className="field-label">Bairro/Distrito</label>
             <input
               className="field-input"
@@ -374,7 +365,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
         </div>
 
         {/* Contato */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
           <div>
             <label className="field-label">Localidade / UF</label>
             <input
@@ -382,6 +373,15 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
               placeholder="Cidade - UF"
               value={data.localidadeUf}
               onChange={(e) => update('localidadeUf', e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="field-label">Complemento</label>
+            <input
+              className="field-input"
+              placeholder="Sala, Andar, etc."
+              value={data.complemento}
+              onChange={(e) => update('complemento', e.target.value)}
             />
           </div>
           <div>
