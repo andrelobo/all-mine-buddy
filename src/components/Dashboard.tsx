@@ -105,17 +105,10 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       {/* 1) RESUMO EXECUTIVO - KPIs */}
       <section>
         <SectionTitle icon={<BarChart3 className="w-4 h-4" />} title="Resumo Executivo" />
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <KPICard title="Faturamento Mês" value={formatCurrency(kpis.faturamentoMes)} icon={<DollarSign className="w-4 h-4" />} />
-          <KPICard title="RBT12" value={formatCurrency(kpis.rbt12)} subtitle="Receita acumulada 12m" icon={<TrendingUp className="w-4 h-4" />} />
-          <KPICard title="NFs Emitidas" value={`${kpis.totalNotasMes} / ${kpis.totalNotas}`} subtitle="Mês / Total" icon={<FileText className="w-4 h-4" />} />
           <KPICard title="DAS Estimado" value={formatCurrency(kpis.dasEstimado)} icon={<Wallet className="w-4 h-4" />} accent="text-destructive" />
-          <KPICard title="ISS Retido" value={formatCurrency(kpis.issRetidoMes)} icon={<ShieldCheck className="w-4 h-4" />} />
-          <KPICard title="Valor Líquido" value={formatCurrency(kpis.valorLiquidoMes)} icon={<DollarSign className="w-4 h-4" />} accent="text-green-600" />
-          <KPICard title="Split Reservado" value={formatCurrency(kpis.totalReservado)} subtitle="Provisionamento" icon={<Wallet className="w-4 h-4" />} />
           <KPICard title="Alíq. Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} icon={<Percent className="w-4 h-4" />} />
-          <KPICard title="Margem Líquida" value={`${kpis.margemLiquida.toFixed(1)}%`} icon={<TrendingUp className="w-4 h-4" />} trend={kpis.margemLiquida >= 20 ? 'up' : 'down'} accent={kpis.margemLiquida >= 20 ? 'text-green-600' : 'text-destructive'} />
-          <KPICard title="Retenções Fed." value={formatCurrency(kpis.totalRetencoes)} icon={<AlertCircle className="w-4 h-4" />} />
         </div>
       </section>
 
