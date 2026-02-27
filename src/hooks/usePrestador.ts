@@ -214,6 +214,19 @@ export function usePrestador() {
     }
   }, []);
 
+  const limparPrestador = useCallback(async () => {
+    if (config.id) {
+      try {
+        await supabase.from('prestadores').delete().eq('id', config.id);
+      } catch (err) {
+        console.error('Erro ao excluir prestador:', err);
+      }
+    }
+    setPrestador(INITIAL_PRESTADOR);
+    setConfig(INITIAL_CONFIG);
+    toast.success('Dados do prestador limpos com sucesso!');
+  }, [config.id]);
+
   return {
     prestador,
     setPrestador,
@@ -223,5 +236,6 @@ export function usePrestador() {
     saving,
     salvarPrestador,
     loadPrestador,
+    limparPrestador,
   };
 }
