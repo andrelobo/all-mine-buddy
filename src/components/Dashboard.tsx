@@ -76,7 +76,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
   const pieData = analiseClientes.slice(0, 6).map(c => ({ name: c.nome.substring(0, 20), value: c.faturamento }));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div>
         <h1 className="text-xl font-bold text-foreground">{nomeEmpresa || 'Dashboard Financeiro'}</h1>
