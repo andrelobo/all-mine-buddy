@@ -334,7 +334,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
             onChange={(e) => {
               const item = listaServico.find(i => i.id === e.target.value);
               if (item) {
-                onChange({ ...data, descricaoServico: data.descricaoServico ? `${data.descricaoServico}\n${item.natureza} — ${item.descricao}` : `${item.natureza} — ${item.descricao}` });
+                onChange({ ...data, descricaoServico: data.descricaoServico ? `${data.descricaoServico}\n${item.descricao}` : item.descricao });
               }
             }}
           >
