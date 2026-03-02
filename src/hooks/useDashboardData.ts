@@ -96,14 +96,33 @@ export function useDashboardData(prestadorId: string | null, rbt12: number, cnae
     return Array.from(map.values()).sort((a, b) => a.mes.localeCompare(b.mes));
   }, [notas, calculo.aliquotaEfetiva]);
 
-  // KPIs
+  // KPIs — based on competência (month of data_emissao), defaulting to current month
   const kpis = useMemo(() => {
+    // Find the most recent competência with notas, otherwise use current month
+    const competencias = new Map<string, NotaDashboard[]>();
+    notas.forEach(n => {
+      const d = new Date(n.data_emissao);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      if (!competencias.has(key)) competencias.set(key, []);
+      competencias.get(key)!.push(n);
+    });
+
     const now = new Date();
     const mesAtual = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const notasMes = notas.filter(n => {
-      const d = new Date(n.data_emissao);
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` === mesAtual;
-    });
+
+    // Use current month if it has notas, otherwise use most recent month with notas
+    let mesCompetencia = mesAtual;
+    if (!competencias.has(mesAtual) && competencias.size > 0) {
+      const sorted = Array.from(competencias.keys()).sort().reverse();
+      mesCompetencia = sorted[0];
+    }
+
+    const notasMes = competencias.get(mesCompetencia) || [];
+
+    // Build a readable label for the competência
+    const [year, month] = mesCompetencia.split('-');
+    const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const competenciaLabel = `${meses[parseInt(month) - 1]} ${year}`;
 
     const faturamentoMes = notasMes.reduce((s, n) => s + n.valor_servico, 0);
     const totalNotas = notas.length;
@@ -112,13 +131,13 @@ export function useDashboardData(prestadorId: string | null, rbt12: number, cnae
     const dasEstimado = faturamentoMes * (calculo.aliquotaEfetiva || 0);
     const totalRetencoes = notasMes.reduce((s, n) => s + n.ret_pis + n.ret_cofins + n.ret_csll + n.ret_ir + n.ret_inss, 0);
     const valorLiquidoMes = notasMes.reduce((s, n) => s + n.valor_liquido, 0);
-    const totalReservado = splits.filter(s => s.mes_referencia === mesAtual).reduce((s, sp) => s + sp.valor_reservado, 0);
+    const totalReservado = splits.filter(s => s.mes_referencia === mesCompetencia).reduce((s, sp) => s + sp.valor_reservado, 0);
     const margemLiquida = faturamentoMes > 0 ? ((valorLiquidoMes - dasEstimado) / faturamentoMes) * 100 : 0;
 
     return {
       faturamentoMes, rbt12, totalNotas, totalNotasMes, dasEstimado, issRetidoMes,
       valorLiquidoMes, totalReservado, aliquotaEfetiva: calculo.aliquotaEfetiva,
-      margemLiquida, totalRetencoes,
+      margemLiquida, totalRetencoes, competenciaLabel, mesCompetencia,
     };
   }, [notas, splits, calculo, rbt12]);
 
