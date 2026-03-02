@@ -154,7 +154,14 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
               <TableCell className="text-right text-sm tabular-nums">
                 <span className="inline-flex justify-end w-full"><span className="text-muted-foreground mr-1">R$</span><span className="inline-block min-w-[5.5rem] text-right">{fmt(c.valorServico)}</span></span>
               </TableCell>
-              <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.issRetido)}</TableCell>
+              <TableCell className="text-right text-sm tabular-nums">
+                <span className="inline-flex items-center justify-end gap-1">
+                  R$ {fmt(c.issRetido)}
+                  {c.aliquotaIss > 0 && (
+                    <span className="text-[10px] bg-muted text-muted-foreground rounded-full px-1.5 py-0.5 leading-none">{fmt(c.aliquotaIss)}%</span>
+                  )}
+                </span>
+              </TableCell>
               <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.valorSimples)}</TableCell>
               <TableCell className="text-right text-sm tabular-nums font-medium">R$ {fmt(c.dasAPagar)}</TableCell>
               <TableCell className="text-right text-sm tabular-nums">{fmt(c.percentual)}%</TableCell>
