@@ -412,6 +412,19 @@ const Index = () => {
                       whatsapp={prestador.whatsapp}
                       onFieldChange={autoFetch.handleFieldChange}
                     />
+
+                    <div className="flex justify-end pt-2">
+                      <button
+                        onClick={handleSalvar}
+                        disabled={savingPrestador}
+                        className={`flex items-center gap-2 text-sm py-2 btn-primary ${
+                          unsavedPrestador ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2' : ''
+                        }`}
+                      >
+                        {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                        SALVAR
+                      </button>
+                    </div>
                   </div>
                 )}
 
@@ -458,6 +471,19 @@ const Index = () => {
                     {regime === 'simples' && (
                       <TabelaAnexoIII faixaAtual={snCalculo.faixa?.faixa ?? null} />
                     )}
+
+                    <div className="flex justify-end pt-2">
+                      <button
+                        onClick={handleSalvar}
+                        disabled={savingPrestador}
+                        className={`flex items-center gap-2 text-sm py-2 btn-primary ${
+                          unsavedPrestador ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2' : ''
+                        }`}
+                      >
+                        {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                        SALVAR
+                      </button>
+                    </div>
 
                   </div>
                 )}
@@ -548,6 +574,19 @@ const Index = () => {
                       items={configOperacionais}
                       onChange={setConfigOperacionais}
                     />
+
+                    <div className="flex justify-end pt-2">
+                      <button
+                        onClick={handleSalvar}
+                        disabled={savingPrestador}
+                        className={`flex items-center gap-2 text-sm py-2 btn-primary ${
+                          unsavedPrestador ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2' : ''
+                        }`}
+                      >
+                        {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                        SALVAR
+                      </button>
+                    </div>
                   </div>
                 )}
               </>
