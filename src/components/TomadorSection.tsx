@@ -321,7 +321,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           <MapPin className="w-3.5 h-3.5" />
           Endereço
         </label>
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr_0.8fr_2fr] gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-[0.4fr_2.1fr_0.35fr_1.1fr] gap-4">
           <div>
             <label className="field-label">CEP</label>
             <input
@@ -364,8 +364,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           </div>
         </div>
 
-        {/* Contato */}
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1.5fr_1fr] gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr] gap-4 mt-4">
           <div>
             <label className="field-label">Complemento</label>
             <input
@@ -384,6 +383,9 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
               onChange={(e) => update('localidadeUf', e.target.value)}
             />
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
             <label className="field-label">E-mail</label>
             <input
