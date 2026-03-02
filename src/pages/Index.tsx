@@ -23,7 +23,7 @@ import PrestacaoServicoSection, { type PrestacaoServicoData } from '@/components
 import LocalPrestacaoSection, { type LocalPrestacaoData } from '@/components/emissao/LocalPrestacaoSection';
 import ValoresTotaisSection from '@/components/emissao/ValoresTotaisSection';
 import DANFSePrint from '@/components/emissao/DANFSePrint';
-import NotasFiscaisLista from '@/components/NotasFiscaisLista';
+import FingestClientesTabela from '@/components/FingestClientesTabela';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 import { usePrestador } from '@/hooks/usePrestador';
 import { useTomadores } from '@/hooks/useTomadores';
@@ -692,7 +692,7 @@ const Index = () => {
 
             {/* ====== NOTAS FISCAIS ====== */}
             {activeTab === 'notas' && (
-              <NotasFiscaisLista prestadorId={config.id || null} />
+              <FingestClientesTabela prestadorId={config.id || null} />
             )}
           </main>
         </div>
