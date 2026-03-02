@@ -131,6 +131,8 @@ const Index = () => {
       const efetiva = (snCalculo.aliquotaEfetiva * 100).toFixed(2).replace('.', ',');
       setAliquotaSN(efetiva);
       setInformarAliquotaSN(true);
+      setRegimeApuracaoSNParametro(true);
+      setUnsavedPrestador(true);
     }
   }, [snCalculo.valido, snCalculo.aliquotaEfetiva]);
 
