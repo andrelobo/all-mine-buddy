@@ -126,8 +126,8 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
       <Table className="table-fixed w-full">
         <colgroup>
           <col className="w-[7%]" />
-          <col className="w-[24%]" />
-          <col className="w-[14%]" />
+          <col className="w-[21%]" />
+          <col className="w-[15%]" />
           <col className="w-[7%]" />
           <col className="w-[14%]" />
           <col className="w-[12%]" />
