@@ -4,14 +4,14 @@ import { Loader2, Users, Trash2 } from 'lucide-react';
 import {
   Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell,
 } from '@/components/ui/table';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+
 import { toast } from 'sonner';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-const COLORS = ['hsl(var(--primary))', 'hsl(var(--destructive))', 'hsl(var(--accent))', 'hsl(210 70% 50%)', 'hsl(150 60% 40%)', 'hsl(30 80% 55%)'];
+
 
 interface NotaRow {
   id: string;
@@ -241,39 +241,6 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
         </TableFooter>
       </Table>
     </div>
-
-    {/* Gráficos Pizza */}
-    {totais.valorServico > 0 && (() => {
-      const clienteData = linhas.reduce((acc, l) => {
-        const existing = acc.find(a => a.name === l.nome);
-        if (existing) { existing.value += l.valorServico; }
-        else { acc.push({ name: l.nome, value: l.valorServico }); }
-        return acc;
-      }, [] as { name: string; value: number }[]);
-
-      const chartData = [
-        ...clienteData.map((c, i) => ({ name: c.name, value: c.value, fill: COLORS[i % COLORS.length] })),
-        { name: 'ISSQN Retido', value: totais.issRetido, fill: 'hsl(var(--destructive))' },
-        { name: 'DASN', value: totais.dasAPagar, fill: 'hsl(var(--muted-foreground))' },
-      ].filter(d => d.value > 0);
-
-      const total = chartData.reduce((s, d) => s + d.value, 0);
-
-      return (
-        <div className="section-card mt-4 p-4">
-          <h4 className="text-xs font-semibold text-foreground mb-2 text-center">Receita, Impostos e Clientes</h4>
-          <ResponsiveContainer width="100%" height={220}>
-            <PieChart>
-              <Pie data={chartData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={2} dataKey="value" label={({ name, value }: any) => `${name}: ${fmt((value / total) * 100)}%`} labelLine={true}>
-                {chartData.map((d, i) => <Cell key={i} fill={d.fill} />)}
-              </Pie>
-              <Tooltip formatter={(v: number, name: string) => [`R$ ${fmt(v)} (${fmt(total > 0 ? (v / total) * 100 : 0)}%)`, name]} />
-              
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      );
-    })()}
     </>
   );
 };
