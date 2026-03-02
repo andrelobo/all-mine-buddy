@@ -149,6 +149,7 @@ export type Database = {
           cnaes_lista: Json | null
           cnpj: string
           complemento: string | null
+          config_operacionais: Json | null
           created_at: string
           ctn_codigo: string | null
           ctn_descricao: string | null
@@ -184,6 +185,7 @@ export type Database = {
           cnaes_lista?: Json | null
           cnpj: string
           complemento?: string | null
+          config_operacionais?: Json | null
           created_at?: string
           ctn_codigo?: string | null
           ctn_descricao?: string | null
@@ -219,6 +221,7 @@ export type Database = {
           cnaes_lista?: Json | null
           cnpj?: string
           complemento?: string | null
+          config_operacionais?: Json | null
           created_at?: string
           ctn_codigo?: string | null
           ctn_descricao?: string | null

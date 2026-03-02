@@ -1,0 +1,1 @@
+ALTER TABLE public.prestadores ADD COLUMN IF NOT EXISTS config_operacionais jsonb DEFAULT '[]'::jsonb;
