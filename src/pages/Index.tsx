@@ -268,7 +268,7 @@ const Index = () => {
   };
 
   const autosaveEmissao = useCallback(() => {}, []);
-  const tabTitle = activeTab === 'dashboard' ? 'Dashboard' : activeTab === 'prestador' ? 'O Prestador' : activeTab === 'tomador' ? 'Tomadores' : activeTab === 'notas' ? 'Notas Fiscais' : 'DANFSE';
+  const tabTitle = activeTab === 'dashboard' ? 'Dashboard' : activeTab === 'prestador' ? 'O Prestador' : activeTab === 'tomador' ? 'Tomadores' : activeTab === 'notas' ? 'FinGest' : 'DANFSE';
 
   if (loadingPrestador) {
     return (
