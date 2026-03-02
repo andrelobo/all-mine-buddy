@@ -101,6 +101,7 @@ const Index = () => {
   const [nfseNum, setNfseNum] = useState('');
   const [dpsNum, setDpsNum] = useState('');
   const [serieDpsNum, setSerieDpsNum] = useState('');
+  const [dataEmissao, setDataEmissao] = useState(() => new Date().toISOString().slice(0, 10));
 
   // Sync local state from config only on initial load (when config.id first appears)
   const configSyncedRef = React.useRef(false);
@@ -266,7 +267,7 @@ const Index = () => {
     });
     await salvarNota({
       prestadorId: config.id || null, tomadorId: tomadorId || null,
-      prestacao, localPrestacao, status: 'emitida',
+      prestacao, localPrestacao, status: 'emitida', dataEmissao,
     });
     // Limpar formulário DANFSE para próxima nota
     setTomadorEmissao(INITIAL_TOMADOR_EMISSAO);
@@ -276,6 +277,7 @@ const Index = () => {
     setNfseNum('');
     setDpsNum('');
     setSerieDpsNum('');
+    setDataEmissao(new Date().toISOString().slice(0, 10));
     setTomadorSubstituto(false);
   };
 
@@ -644,7 +646,7 @@ const Index = () => {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div>
                       <label className="field-label">Data de Emissão</label>
-                      <input className="field-input" type="date" defaultValue={new Date().toISOString().slice(0, 10)} />
+                      <input className="field-input" type="date" value={dataEmissao} onChange={e => setDataEmissao(e.target.value)} />
                     </div>
                     <div>
                       <label className="field-label">NFS-e Nº</label>
