@@ -535,9 +535,9 @@ const Index = () => {
                     )}
 
                     {regime && regime !== 'simples' && (
-                      <div className="section-card">
-                        <h2 className="section-title">
-                          <Settings className="w-5 h-5 text-primary" />
+                      <div className="section-card p-3">
+539:                         <h2 className="section-title text-sm mb-2">
+                          <Settings className="w-4 h-4 text-primary" />
                           Parâmetros Federais
                         </h2>
                         <p className="text-sm text-muted-foreground">Configurações federais para {regime === 'presumido' ? 'Lucro Presumido' : 'Lucro Real'} serão disponibilizadas em breve.</p>
