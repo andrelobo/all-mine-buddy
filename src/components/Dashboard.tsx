@@ -107,7 +107,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         <SectionTitle icon={<BarChart3 className="w-4 h-4" />} title="Fiscal IA" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <KPICard title={`Receita ${kpis.competenciaLabel || ''}`} value={formatCurrency(kpis.faturamentoMes)} icon={<DollarSign className="w-4 h-4" />} />
-          <KPICard title="DAS Estimado" value={formatCurrency(kpis.dasEstimado)} icon={<Wallet className="w-4 h-4" />} accent="text-destructive" />
+          <KPICard title="DAS a Pagar" value={formatCurrency(kpis.dasAPagar)} icon={<Wallet className="w-4 h-4" />} accent="text-destructive" />
           <KPICard title="Alíq. Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} icon={<Percent className="w-4 h-4" />} />
         </div>
       </section>
@@ -240,7 +240,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
               </div>
               <div className="text-center p-3 rounded-lg bg-muted/50">
                 <p className="text-[10px] text-muted-foreground uppercase">Saldo Tributário</p>
-                <p className="text-lg font-bold">{formatCurrency(kpis.totalReservado - kpis.dasEstimado)}</p>
+                <p className="text-lg font-bold">{formatCurrency(kpis.totalReservado - kpis.dasAPagar)}</p>
               </div>
             </div>
             {splits.length > 0 ? (
