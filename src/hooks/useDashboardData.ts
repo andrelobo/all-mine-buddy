@@ -129,13 +129,14 @@ export function useDashboardData(prestadorId: string | null, rbt12: number, cnae
     const totalNotasMes = notasMes.length;
     const issRetidoMes = notasMes.filter(n => n.iss_retido).reduce((s, n) => s + n.iss_valor, 0);
     const dasEstimado = faturamentoMes * (calculo.aliquotaEfetiva || 0);
+    const dasAPagar = Math.max(dasEstimado - issRetidoMes, 0);
     const totalRetencoes = notasMes.reduce((s, n) => s + n.ret_pis + n.ret_cofins + n.ret_csll + n.ret_ir + n.ret_inss, 0);
     const valorLiquidoMes = notasMes.reduce((s, n) => s + n.valor_liquido, 0);
     const totalReservado = splits.filter(s => s.mes_referencia === mesCompetencia).reduce((s, sp) => s + sp.valor_reservado, 0);
-    const margemLiquida = faturamentoMes > 0 ? ((valorLiquidoMes - dasEstimado) / faturamentoMes) * 100 : 0;
+    const margemLiquida = faturamentoMes > 0 ? ((valorLiquidoMes - dasAPagar) / faturamentoMes) * 100 : 0;
 
     return {
-      faturamentoMes, rbt12, totalNotas, totalNotasMes, dasEstimado, issRetidoMes,
+      faturamentoMes, rbt12, totalNotas, totalNotasMes, dasEstimado, dasAPagar, issRetidoMes,
       valorLiquidoMes, totalReservado, aliquotaEfetiva: calculo.aliquotaEfetiva,
       margemLiquida, totalRetencoes, competenciaLabel, mesCompetencia,
     };
@@ -190,7 +191,7 @@ export function useDashboardData(prestadorId: string | null, rbt12: number, cnae
   // Cash flow
   const fluxoCaixa = useMemo(() => {
     const operacional = kpis.valorLiquidoMes;
-    const tributario = kpis.dasEstimado + kpis.issRetidoMes;
+    const tributario = kpis.dasAPagar + kpis.issRetidoMes;
     return { operacional, tributario, saldo: operacional - tributario };
   }, [kpis]);
 
