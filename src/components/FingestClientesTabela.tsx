@@ -6,6 +6,8 @@ import {
 } from '@/components/ui/table';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
+const COLORS = ['hsl(var(--primary))', 'hsl(var(--destructive))', 'hsl(var(--accent))', 'hsl(210 70% 50%)', 'hsl(150 60% 40%)', 'hsl(30 80% 55%)'];
+
 interface NotaRow {
   valor_servico: number | null;
   iss_valor: number | null;
@@ -185,33 +187,77 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
       </Table>
     </div>
 
-    {/* Gráfico Pizza - Receita x Impostos */}
+    {/* Gráficos Pizza */}
     {totais.valorServico > 0 && (
       <div className="section-card mt-4 p-4">
-        <h3 className="text-sm font-semibold text-foreground mb-3">Receita x Impostos</h3>
-        <ResponsiveContainer width="100%" height={260}>
-          <PieChart>
-            <Pie
-              data={[
-                { name: 'Receita Líquida', value: Math.max(totais.valorServico - totais.valorSimples, 0) },
-                { name: 'ISSQN Retido', value: totais.issRetido },
-                { name: 'DASN', value: totais.dasAPagar },
-              ]}
-              cx="50%"
-              cy="50%"
-              innerRadius={55}
-              outerRadius={90}
-              paddingAngle={3}
-              dataKey="value"
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
-            >
-              <Cell fill="hsl(var(--primary))" />
-              <Cell fill="hsl(var(--destructive))" />
-              <Cell fill="hsl(var(--accent))" />
-            </Pie>
-            <Tooltip formatter={(v: number) => `R$ ${fmt(v)}`} />
-          </PieChart>
-        </ResponsiveContainer>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Receita */}
+          <div>
+            <h4 className="text-xs font-semibold text-foreground mb-1 text-center">Receita</h4>
+            <ResponsiveContainer width="100%" height={150}>
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'Líquido', value: Math.max(totais.valorServico - totais.valorSimples, 0) },
+                    { name: 'Tributos', value: totais.valorSimples },
+                  ]}
+                  cx="50%" cy="50%" innerRadius={30} outerRadius={50} paddingAngle={3} dataKey="value"
+                >
+                  <Cell fill="hsl(var(--primary))" />
+                  <Cell fill="hsl(var(--muted-foreground))" />
+                </Pie>
+                <Tooltip formatter={(v: number) => `R$ ${fmt(v)}`} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          {/* Impostos */}
+          <div>
+            <h4 className="text-xs font-semibold text-foreground mb-1 text-center">Impostos</h4>
+            <ResponsiveContainer width="100%" height={150}>
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'DASN', value: totais.dasAPagar },
+                    { name: 'ISSQN (R)', value: totais.issRetido },
+                  ].filter(d => d.value > 0)}
+                  cx="50%" cy="50%" innerRadius={30} outerRadius={50} paddingAngle={3} dataKey="value"
+                >
+                  <Cell fill="hsl(var(--destructive))" />
+                  <Cell fill="hsl(var(--accent))" />
+                </Pie>
+                <Tooltip formatter={(v: number) => `R$ ${fmt(v)}`} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          {/* Clientes */}
+          <div>
+            <h4 className="text-xs font-semibold text-foreground mb-1 text-center">Clientes</h4>
+            <ResponsiveContainer width="100%" height={150}>
+              <PieChart>
+                <Pie
+                  data={linhas.reduce((acc, l) => {
+                    const existing = acc.find(a => a.name === l.nome);
+                    if (existing) { existing.value += l.valorServico; }
+                    else { acc.push({ name: l.nome, value: l.valorServico }); }
+                    return acc;
+                  }, [] as { name: string; value: number }[])}
+                  cx="50%" cy="50%" innerRadius={30} outerRadius={50} paddingAngle={3} dataKey="value"
+                >
+                  {linhas.reduce((acc, l) => {
+                    if (!acc.find(a => a === l.nome)) acc.push(l.nome);
+                    return acc;
+                  }, [] as string[]).map((_, i) => (
+                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(v: number) => `R$ ${fmt(v)}`} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
     )}
     </>
