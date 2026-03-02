@@ -1,14 +1,20 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Users } from 'lucide-react';
+import { Loader2, Users, Trash2 } from 'lucide-react';
 import {
   Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell,
 } from '@/components/ui/table';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { toast } from 'sonner';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const COLORS = ['hsl(var(--primary))', 'hsl(var(--destructive))', 'hsl(var(--accent))', 'hsl(210 70% 50%)', 'hsl(150 60% 40%)', 'hsl(30 80% 55%)'];
 
 interface NotaRow {
+  id: string;
   valor_servico: number | null;
   iss_valor: number | null;
   iss_retido: boolean | null;
@@ -23,6 +29,7 @@ function fmt(v: number) {
 }
 
 interface NotaResumo {
+  id: string;
   nome: string;
   doc: string;
   dataEmissao: string;
@@ -45,7 +52,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
 
     const notasQuery = supabase
       .from('notas_fiscais')
-      .select('valor_servico, iss_valor, iss_retido, aliquota, data_emissao, numero_nfse, tomador:tomadores(nome_razao_social, cnpj_cpf)')
+      .select('id, valor_servico, iss_valor, iss_retido, aliquota, data_emissao, numero_nfse, tomador:tomadores(nome_razao_social, cnpj_cpf)')
       .order('data_emissao', { ascending: true });
 
     if (prestadorId) notasQuery.eq('prestador_id', prestadorId);
@@ -87,6 +94,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
       const dataFmt = d ? `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}` : '—';
 
       return {
+        id: (n as any).id,
         nome: tom?.nome_razao_social || 'Sem tomador',
         doc: tom?.cnpj_cpf || '',
         dataEmissao: dataFmt,
@@ -114,6 +122,15 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
     return { linhas, totais };
   }, [notas, aliquotaEfetiva]);
 
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase.from('notas_fiscais').delete().eq('id', id);
+    if (error) {
+      toast.error('Erro ao deletar nota fiscal');
+    } else {
+      toast.success('Nota fiscal deletada');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -137,12 +154,13 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
       <Table className="table-fixed w-full">
         <colgroup>
           <col className="w-[7%]" />
-          <col className="w-[24%]" />
-          <col className="w-[16%]" />
+          <col className="w-[22%]" />
           <col className="w-[15%]" />
           <col className="w-[14%]" />
-          <col className="w-[14%]" />
-          <col className="w-[10%]" />
+          <col className="w-[13%]" />
+          <col className="w-[13%]" />
+          <col className="w-[9%]" />
+          <col className="w-[7%]" />
         </colgroup>
         <TableHeader>
           <TableRow>
@@ -153,11 +171,12 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
             <TableHead className="text-right">AliqSn</TableHead>
             <TableHead className="text-right">DASN</TableHead>
             <TableHead className="text-right">% Fat.</TableHead>
+            <TableHead className="text-center"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {linhas.map((c, i) => (
-            <TableRow key={i}>
+            <TableRow key={c.id}>
               <TableCell className="text-left text-sm tabular-nums">{c.dataEmissao}</TableCell>
               <TableCell className="text-left truncate">
                 <div className="font-medium text-foreground text-sm truncate">{c.nome}</div>
@@ -181,6 +200,29 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
               </TableCell>
               <TableCell className="text-right text-sm tabular-nums font-medium">R$ {fmt(c.dasAPagar)}</TableCell>
               <TableCell className="text-right text-sm tabular-nums">{fmt(c.percentual)}%</TableCell>
+              <TableCell className="text-center">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <button className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Deletar nota fiscal?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Nota de {c.dataEmissao} — {c.nome} — R$ {fmt(c.valorServico)}. Esta ação não pode ser desfeita.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDelete(c.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                        Deletar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -194,6 +236,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
             <TableCell className="text-right tabular-nums">R$ {fmt(totais.valorSimples)}</TableCell>
             <TableCell className="text-right tabular-nums">R$ {fmt(totais.dasAPagar)}</TableCell>
             <TableCell className="text-right tabular-nums">{fmt(totais.percentual)}%</TableCell>
+            <TableCell />
           </TableRow>
         </TableFooter>
       </Table>
