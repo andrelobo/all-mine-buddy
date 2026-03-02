@@ -20,9 +20,9 @@ interface ClienteResumo {
   nome: string;
   doc: string;
   valorServico: number;
-  valorImposto: number;
   issRetido: number;
   valorSimples: number;
+  dasAPagar: number;
   percentual: number;
 }
 
@@ -57,7 +57,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
   }, [prestadorId]);
 
   const { clientes, totais } = useMemo(() => {
-    const map = new Map<string, Omit<ClienteResumo, 'percentual'>>();
+    const map = new Map<string, Omit<ClienteResumo, 'percentual' | 'dasAPagar'>>();
     let totalGeral = 0;
 
     for (const n of notas) {
@@ -71,27 +71,30 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
       const simples = vs * aliquotaEfetiva;
       totalGeral += vs;
 
-      const cur = map.get(key) || { nome, doc, valorServico: 0, valorImposto: 0, issRetido: 0, valorSimples: 0 };
+      const cur = map.get(key) || { nome, doc, valorServico: 0, issRetido: 0, valorSimples: 0 };
       cur.valorServico += vs;
-      cur.valorImposto += iss;
       cur.issRetido += issRet;
       cur.valorSimples += simples;
       map.set(key, cur);
     }
 
     const list = Array.from(map.values())
-      .map(c => ({ ...c, percentual: totalGeral > 0 ? (c.valorServico / totalGeral) * 100 : 0 }))
+      .map(c => ({
+        ...c,
+        dasAPagar: Math.max(c.valorSimples - c.issRetido, 0),
+        percentual: totalGeral > 0 ? (c.valorServico / totalGeral) * 100 : 0,
+      }))
       .sort((a, b) => b.valorServico - a.valorServico);
 
     const totais = list.reduce(
       (acc, c) => ({
         valorServico: acc.valorServico + c.valorServico,
-        valorImposto: acc.valorImposto + c.valorImposto,
         issRetido: acc.issRetido + c.issRetido,
         valorSimples: acc.valorSimples + c.valorSimples,
+        dasAPagar: acc.dasAPagar + c.dasAPagar,
         percentual: acc.percentual + c.percentual,
       }),
-      { valorServico: 0, valorImposto: 0, issRetido: 0, valorSimples: 0, percentual: 0 },
+      { valorServico: 0, issRetido: 0, valorSimples: 0, dasAPagar: 0, percentual: 0 },
     );
 
     return { clientes: list, totais };
@@ -121,9 +124,9 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
           <TableRow>
             <TableHead>Tomador</TableHead>
             <TableHead className="text-right">Valor Serviço</TableHead>
-            <TableHead className="text-right">Valor Imposto</TableHead>
             <TableHead className="text-right">ISS Retido</TableHead>
             <TableHead className="text-right">Simples ({fmt(aliquotaEfetiva * 100)}%)</TableHead>
+            <TableHead className="text-right">DAS a Pagar</TableHead>
             <TableHead className="text-right">% Faturamento</TableHead>
           </TableRow>
         </TableHeader>
@@ -135,10 +138,10 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
                 {c.doc && <div className="text-xs text-muted-foreground">{c.doc}</div>}
               </TableCell>
               <TableCell className="text-right text-sm">R$ {fmt(c.valorServico)}</TableCell>
-              <TableCell className="text-right text-sm">R$ {fmt(c.valorImposto)}</TableCell>
               <TableCell className="text-right text-sm">R$ {fmt(c.issRetido)}</TableCell>
               <TableCell className="text-right text-sm">R$ {fmt(c.valorSimples)}</TableCell>
-              <TableCell className="text-right text-sm font-medium">{fmt(c.percentual)}%</TableCell>
+              <TableCell className="text-right text-sm font-medium">R$ {fmt(c.dasAPagar)}</TableCell>
+              <TableCell className="text-right text-sm">{fmt(c.percentual)}%</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -146,9 +149,9 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
           <TableRow className="font-bold">
             <TableCell>Total</TableCell>
             <TableCell className="text-right">R$ {fmt(totais.valorServico)}</TableCell>
-            <TableCell className="text-right">R$ {fmt(totais.valorImposto)}</TableCell>
             <TableCell className="text-right">R$ {fmt(totais.issRetido)}</TableCell>
             <TableCell className="text-right">R$ {fmt(totais.valorSimples)}</TableCell>
+            <TableCell className="text-right">R$ {fmt(totais.dasAPagar)}</TableCell>
             <TableCell className="text-right">{fmt(totais.percentual)}%</TableCell>
           </TableRow>
         </TableFooter>
