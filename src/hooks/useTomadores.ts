@@ -72,6 +72,7 @@ export function useTomadores(prestadorId?: string) {
 
       let result;
       if (tomador.id) {
+        // Explicit edit by ID
         result = await supabase
           .from('tomadores')
           .update(row)
@@ -79,11 +80,32 @@ export function useTomadores(prestadorId?: string) {
           .select()
           .single();
       } else {
-        result = await supabase
+        // Check if tomador with same cnpj_cpf already exists for this prestador
+        const cleanedDoc = tomador.cnpj_cpf.replace(/\D/g, '');
+        const { data: existingTomadores } = await supabase
           .from('tomadores')
-          .insert(row)
-          .select()
-          .single();
+          .select('id, cnpj_cpf')
+          .eq('prestador_id', tomador.prestador_id || '')
+        ;
+        const existingMatch = existingTomadores?.find(
+          (t) => t.cnpj_cpf.replace(/\D/g, '') === cleanedDoc
+        );
+
+        if (existingMatch) {
+          // Update existing instead of inserting duplicate
+          result = await supabase
+            .from('tomadores')
+            .update(row)
+            .eq('id', existingMatch.id)
+            .select()
+            .single();
+        } else {
+          result = await supabase
+            .from('tomadores')
+            .insert(row)
+            .select()
+            .single();
+        }
       }
 
       if (result.error) throw result.error;
