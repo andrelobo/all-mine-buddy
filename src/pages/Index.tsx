@@ -268,6 +268,15 @@ const Index = () => {
       prestadorId: config.id || null, tomadorId: tomadorId || null,
       prestacao, localPrestacao, status: 'emitida',
     });
+    // Limpar formulário DANFSE para próxima nota
+    setTomadorEmissao(INITIAL_TOMADOR_EMISSAO);
+    setPrestacao(INITIAL_PRESTACAO);
+    setLocalPrestacao({ pais: 'Brasil', uf: 'AM', municipio: 'Manaus' });
+    setEmissaoErrors([]);
+    setNfseNum('');
+    setDpsNum('');
+    setSerieDpsNum('');
+    setTomadorSubstituto(false);
   };
 
   const autosaveEmissao = useCallback(() => {}, []);
