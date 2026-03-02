@@ -627,6 +627,27 @@ const Index = () => {
                     </ul>
                   </div>
                 )}
+                {/* Card superior: Data, NFS-e, DPS, Série DPS */}
+                <div className="section-card p-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div>
+                      <label className="field-label">Data de Emissão</label>
+                      <input className="field-input" type="date" defaultValue={new Date().toISOString().slice(0, 10)} />
+                    </div>
+                    <div>
+                      <label className="field-label">NFS-e Nº</label>
+                      <input className="field-input" type="text" placeholder="Número" readOnly />
+                    </div>
+                    <div>
+                      <label className="field-label">DPS Nº</label>
+                      <input className="field-input" type="text" placeholder="Número" />
+                    </div>
+                    <div>
+                      <label className="field-label">Série DPS Nº</label>
+                      <input className="field-input" type="text" placeholder="Número" />
+                    </div>
+                  </div>
+                </div>
                 <PrestadorSection data={prestador} onChange={setPrestador} onAutosave={autosaveEmissao} optanteSimples={config.optanteSimples} compact />
                 <TomadorEmissao data={tomadorEmissao} onChange={setTomadorEmissao} onTomadorSelecionado={handleTomadorSelecionado} prestadorId={config.id} />
                 <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
