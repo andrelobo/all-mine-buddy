@@ -1,5 +1,5 @@
 import React from 'react';
-import { Building2, Users, Receipt, Landmark, Settings, ClipboardList, LayoutDashboard } from 'lucide-react';
+import { Building2, Users, Receipt, Landmark, Settings, ClipboardList, LayoutDashboard, FileText } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -14,7 +14,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-type ActiveTab = 'dashboard' | 'prestador' | 'tomador' | 'emissao';
+type ActiveTab = 'dashboard' | 'prestador' | 'tomador' | 'emissao' | 'notas';
 type PrestadorSubTab = 'cadastro' | 'regime' | 'parametros';
 
 interface AppSidebarProps {
@@ -139,6 +139,23 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange, prestad
                 >
                   <Receipt className="w-4 h-4" />
                   <span>DANFSE</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {/* Notas Fiscais */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={activeTab === 'notas'}
+                  onClick={() => onTabChange('notas')}
+                  tooltip="Notas Fiscais"
+                  className={
+                    activeTab === 'notas'
+                      ? 'bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground'
+                      : ''
+                  }
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>Notas Fiscais</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
