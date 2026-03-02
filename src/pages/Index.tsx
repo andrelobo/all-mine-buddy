@@ -636,15 +636,15 @@ const Index = () => {
                     </div>
                     <div>
                       <label className="field-label">NFS-e Nº</label>
-                      <input className="field-input" type="text" placeholder="Número" readOnly />
+                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" onChange={e => e.target.value = e.target.value.replace(/\D/g, '')} />
                     </div>
                     <div>
                       <label className="field-label">DPS Nº</label>
-                      <input className="field-input" type="text" placeholder="Número" />
+                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" onChange={e => e.target.value = e.target.value.replace(/\D/g, '')} />
                     </div>
                     <div>
                       <label className="field-label">Série DPS Nº</label>
-                      <input className="field-input" type="text" placeholder="Número" />
+                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" onChange={e => e.target.value = e.target.value.replace(/\D/g, '')} />
                     </div>
                   </div>
                 </div>
