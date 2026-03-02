@@ -125,20 +125,18 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
     <div className="section-card overflow-hidden">
       <Table className="table-fixed w-full">
         <colgroup>
-          <col className="w-[6%]" />
-          <col className="w-[6%]" />
-          <col className="w-[22%]" />
-          <col className="w-[13%]" />
           <col className="w-[7%]" />
-          <col className="w-[13%]" />
-          <col className="w-[11%]" />
+          <col className="w-[24%]" />
+          <col className="w-[14%]" />
+          <col className="w-[7%]" />
+          <col className="w-[14%]" />
+          <col className="w-[12%]" />
           <col className="w-[13%]" />
           <col className="w-[9%]" />
         </colgroup>
         <TableHeader>
           <TableRow>
             <TableHead className="text-left">Data</TableHead>
-            <TableHead className="text-left">NF-e</TableHead>
             <TableHead className="text-left">Tomador</TableHead>
             <TableHead className="text-right">Serviço R$</TableHead>
             <TableHead className="text-right">Alíq. ISS</TableHead>
@@ -152,7 +150,6 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
           {linhas.map((c, i) => (
             <TableRow key={i}>
               <TableCell className="text-left text-sm tabular-nums">{c.dataEmissao}</TableCell>
-              <TableCell className="text-left text-sm tabular-nums">{c.numeroNfse}</TableCell>
               <TableCell className="text-left truncate">
                 <div className="font-medium text-foreground text-sm truncate">{c.nome}</div>
               </TableCell>
@@ -167,7 +164,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
         </TableBody>
         <TableFooter>
           <TableRow className="font-bold">
-            <TableCell className="text-left" colSpan={3}>Total</TableCell>
+            <TableCell className="text-left" colSpan={2}>Total</TableCell>
             <TableCell className="text-right tabular-nums">R$ {fmt(totais.valorServico)}</TableCell>
             <TableCell className="text-right"></TableCell>
             <TableCell className="text-right tabular-nums">R$ {fmt(totais.issRetido)}</TableCell>
