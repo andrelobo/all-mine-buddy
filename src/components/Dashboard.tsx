@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   DollarSign, FileText, TrendingUp, TrendingDown, Percent, ShieldCheck, AlertTriangle,
-  AlertCircle, BarChart3, PieChart, Wallet, ArrowUpRight, ArrowDownRight, Users, Info,
+  AlertCircle, BarChart3, PieChart, Wallet, ArrowUpRight, ArrowDownRight, Users, Info, Gauge,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,10 +12,12 @@ import {
   LineChart, Line, BarChart, Bar, PieChart as RechartsPie, Pie, Cell,
   XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend,
 } from 'recharts';
-import { formatCurrency, formatPercent } from '@/utils/simples-nacional';
+import { formatCurrency, formatPercent, FAIXAS_ANEXO_III, calcularSimplesAnexoIII } from '@/utils/simples-nacional';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import type { CalculoSimplesResult } from '@/utils/simples-nacional';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
+import { Progress } from '@/components/ui/progress';
 
 interface DashboardProps {
   prestadorId: string | null;
@@ -62,6 +64,7 @@ const SectionTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({ icon
 
 const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, cnaeAnexo, regime }) => {
   const { loading, kpis, calculo, dadosMensais, analiseClientes, alertas, fluxoCaixa, splits } = useDashboardData(prestadorId, rbt12, cnaeAnexo);
+  const [simulacaoExtra, setSimulacaoExtra] = useState<string>('');
 
   if (loading) {
     return (
@@ -143,7 +146,102 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         </Card>
       </section>
 
-      {/* 3) GRÁFICOS */}
+      {/* 2.5) INDICADOR DE FAIXA */}
+      {calculo.faixa && (() => {
+        const faixaAtual = calculo.faixa;
+        const limiteSuperior = faixaAtual.limiteSuperior;
+        const faltaProxima = limiteSuperior - rbt12;
+        const progressoPct = ((rbt12 - faixaAtual.limiteInferior) / (limiteSuperior - faixaAtual.limiteInferior)) * 100;
+        const proximaFaixa = FAIXAS_ANEXO_III.find(f => f.faixa === faixaAtual.faixa + 1);
+
+        const extraVal = parseFloat(simulacaoExtra.replace(/\./g, '').replace(',', '.')) || 0;
+        const rbt12Simulado = rbt12 + extraVal;
+        const calculoSimulado = extraVal > 0 ? calcularSimplesAnexoIII(rbt12Simulado, cnaeAnexo || 'III') : null;
+        const mudouFaixa = calculoSimulado?.faixa && calculoSimulado.faixa.faixa !== faixaAtual.faixa;
+
+        return (
+          <section>
+            <SectionTitle icon={<Gauge className="w-4 h-4" />} title="Monitoramento de Faixa" />
+            <Card>
+              <CardContent className="p-4 space-y-4">
+                {/* Alerta de proximidade */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Faixa atual: <span className="font-bold text-foreground">{faixaAtual.faixa}ª</span> (até {formatCurrency(limiteSuperior)})</p>
+                    {proximaFaixa && (
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Faltam <span className="font-bold text-primary">{formatCurrency(faltaProxima)}</span> para a {proximaFaixa.faixa}ª faixa ({formatPercent(proximaFaixa.aliquotaNominal)} nominal)
+                      </p>
+                    )}
+                    {!proximaFaixa && (
+                      <p className="text-xs text-muted-foreground mt-0.5">Você está na faixa máxima do Simples Nacional.</p>
+                    )}
+                  </div>
+                  {faltaProxima < 50000 && proximaFaixa && (
+                    <Badge variant="outline" className="border-destructive text-destructive text-[10px]">
+                      <AlertTriangle className="w-3 h-3 mr-1" /> Próximo da mudança
+                    </Badge>
+                  )}
+                </div>
+
+                {/* Barra de progresso */}
+                <div>
+                  <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+                    <span>{formatCurrency(faixaAtual.limiteInferior)}</span>
+                    <span>{formatCurrency(rbt12)} ({progressoPct.toFixed(0)}%)</span>
+                    <span>{formatCurrency(limiteSuperior)}</span>
+                  </div>
+                  <Progress value={Math.min(progressoPct, 100)} className="h-2.5" />
+                </div>
+
+                {/* Simulação */}
+                <div className="border-t border-border pt-3">
+                  <p className="text-[11px] font-semibold text-foreground mb-2 uppercase tracking-wide">Simulação de Cenário</p>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <label className="text-[10px] text-muted-foreground">Faturamento adicional (R$)</label>
+                      <Input
+                        type="text"
+                        placeholder="Ex: 50.000"
+                        value={simulacaoExtra}
+                        onChange={e => setSimulacaoExtra(e.target.value)}
+                        className="h-8 text-sm mt-1"
+                      />
+                    </div>
+                    {calculoSimulado && (
+                      <div className="flex-1 space-y-1">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">RBT12 simulado:</span>
+                          <span className="font-bold">{formatCurrency(rbt12Simulado)}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Faixa:</span>
+                          <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-foreground'}`}>
+                            {calculoSimulado.faixa?.faixa}ª {mudouFaixa && '⚠️'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Alíq. efetiva:</span>
+                          <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-primary'}`}>
+                            {formatPercent(calculoSimulado.aliquotaEfetiva)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {mudouFaixa && (
+                    <div className="mt-2 p-2 rounded bg-destructive/10 border border-destructive/20 text-destructive text-xs">
+                      <AlertTriangle className="w-3 h-3 inline mr-1" />
+                      Atenção: com esse faturamento adicional, você mudaria da {faixaAtual.faixa}ª para a {calculoSimulado!.faixa!.faixa}ª faixa. A alíquota efetiva passaria de {formatPercent(calculo.aliquotaEfetiva)} para {formatPercent(calculoSimulado!.aliquotaEfetiva)}.
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        );
+      })()}
+
       <section>
         <SectionTitle icon={<BarChart3 className="w-4 h-4" />} title="Gráficos" />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
