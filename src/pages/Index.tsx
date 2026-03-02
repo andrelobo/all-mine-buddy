@@ -310,34 +310,6 @@ const Index = () => {
 
               {activeTab === 'prestador' && (
                 <>
-                  <button
-                    onClick={() => {
-                      if (window.confirm('Tem certeza que deseja limpar todos os dados do prestador?')) {
-                        limparPrestador();
-                        setRegime(null);
-                        setAliquotaSN('');
-                        setCtnSelecionado(null);
-                        setCtnDescricao('');
-                        setCtnItem('');
-                        setCnaesLista([]);
-                        setUnsavedPrestador(false);
-                      }
-                    }}
-                    className="btn-outline flex items-center gap-2 text-sm py-2 text-destructive border-destructive/30 hover:bg-destructive/10"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    <span className="hidden sm:inline">Limpar</span>
-                  </button>
-                  <button
-                    onClick={handleSalvar}
-                    disabled={savingPrestador}
-                    className={`flex items-center gap-2 text-sm py-2 btn-primary ${
-                      unsavedPrestador ? 'animate-bounce ring-2 ring-yellow-400 ring-offset-2' : ''
-                    }`}
-                  >
-                    {savingPrestador ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    <span className="hidden sm:inline">SALVAR</span>
-                  </button>
                 </>
               )}
 
@@ -413,7 +385,25 @@ const Index = () => {
                       onFieldChange={autoFetch.handleFieldChange}
                     />
 
-                    <div className="flex justify-end pt-2">
+                    <div className="flex justify-end gap-3 pt-2">
+                      <button
+                        onClick={() => {
+                          if (window.confirm('Tem certeza que deseja limpar todos os dados do prestador?')) {
+                            limparPrestador();
+                            setRegime(null);
+                            setAliquotaSN('');
+                            setCtnSelecionado(null);
+                            setCtnDescricao('');
+                            setCtnItem('');
+                            setCnaesLista([]);
+                            setUnsavedPrestador(false);
+                          }
+                        }}
+                        className="btn-outline flex items-center gap-2 text-sm py-2 text-destructive border-destructive/30 hover:bg-destructive/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Limpar
+                      </button>
                       <button
                         onClick={handleSalvar}
                         disabled={savingPrestador}
