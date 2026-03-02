@@ -102,7 +102,7 @@ const Index = () => {
   const [dpsNum, setDpsNum] = useState('');
   const [serieDpsNum, setSerieDpsNum] = useState('');
   const [dataEmissao, setDataEmissao] = useState(() => new Date().toISOString().slice(0, 10));
-  const [competencia, setCompetencia] = useState('2026-01');
+  const [competencia, setCompetencia] = useState('01/2026');
 
   // Sync local state from config only on initial load (when config.id first appears)
   const configSyncedRef = React.useRef(false);
@@ -647,7 +647,18 @@ const Index = () => {
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                     <div>
                       <label className="field-label">Competência</label>
-                      <input className="field-input" type="month" value={competencia} onChange={e => setCompetencia(e.target.value)} />
+                      <input
+                        className="field-input"
+                        type="text"
+                        placeholder="mm/aaaa"
+                        maxLength={7}
+                        value={competencia}
+                        onChange={e => {
+                          let v = e.target.value.replace(/[^0-9]/g, '');
+                          if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2, 6);
+                          setCompetencia(v);
+                        }}
+                      />
                     </div>
                     <div>
                       <label className="field-label">Data de Emissão</label>
