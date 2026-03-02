@@ -214,7 +214,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
           <h4 className="text-xs font-semibold text-foreground mb-2 text-center">Receita, Impostos e Clientes</h4>
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
-              <Pie data={chartData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={2} dataKey="value">
+              <Pie data={chartData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={2} dataKey="value" label={({ name, value }: any) => `${name}: ${fmt((value / total) * 100)}%`} labelLine={true}>
                 {chartData.map((d, i) => <Cell key={i} fill={d.fill} />)}
               </Pie>
               <Tooltip formatter={(v: number, name: string) => [`R$ ${fmt(v)} (${fmt(total > 0 ? (v / total) * 100 : 0)}%)`, name]} />
