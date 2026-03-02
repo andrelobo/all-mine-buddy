@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, Users } from 'lucide-react';
 import {
-  Table, TableHeader, TableBody, TableHead, TableRow, TableCell,
+  Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell,
 } from '@/components/ui/table';
 
 interface NotaRow {
@@ -22,32 +22,42 @@ interface ClienteResumo {
   valorServico: number;
   valorImposto: number;
   issRetido: number;
+  valorSimples: number;
   percentual: number;
 }
 
 const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prestadorId }) => {
   const [notas, setNotas] = useState<NotaRow[]>([]);
+  const [aliquotaEfetiva, setAliquotaEfetiva] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       setLoading(true);
-      let query = supabase
+
+      const notasQuery = supabase
         .from('notas_fiscais')
         .select('valor_servico, iss_valor, iss_retido, tomador:tomadores(nome_razao_social, cnpj_cpf)')
         .order('created_at', { ascending: false });
 
-      if (prestadorId) query = query.eq('prestador_id', prestadorId);
+      if (prestadorId) notasQuery.eq('prestador_id', prestadorId);
 
-      const { data } = await query;
-      setNotas((data as any) || []);
+      const [notasRes, prestadorRes] = await Promise.all([
+        notasQuery,
+        prestadorId
+          ? supabase.from('prestadores').select('simples_aliquota_efetiva').eq('id', prestadorId).single()
+          : Promise.resolve({ data: null }),
+      ]);
+
+      setNotas((notasRes.data as any) || []);
+      setAliquotaEfetiva(Number((prestadorRes.data as any)?.simples_aliquota_efetiva) || 0);
       setLoading(false);
     }
     load();
   }, [prestadorId]);
 
-  const clientes = useMemo<ClienteResumo[]>(() => {
-    const map = new Map<string, { nome: string; doc: string; valorServico: number; valorImposto: number; issRetido: number }>();
+  const { clientes, totais } = useMemo(() => {
+    const map = new Map<string, Omit<ClienteResumo, 'percentual'>>();
     let totalGeral = 0;
 
     for (const n of notas) {
@@ -58,19 +68,34 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
       const vs = n.valor_servico ?? 0;
       const iss = n.iss_valor ?? 0;
       const issRet = n.iss_retido ? iss : 0;
+      const simples = vs * (aliquotaEfetiva / 100);
       totalGeral += vs;
 
-      const cur = map.get(key) || { nome, doc, valorServico: 0, valorImposto: 0, issRetido: 0 };
+      const cur = map.get(key) || { nome, doc, valorServico: 0, valorImposto: 0, issRetido: 0, valorSimples: 0 };
       cur.valorServico += vs;
       cur.valorImposto += iss;
       cur.issRetido += issRet;
+      cur.valorSimples += simples;
       map.set(key, cur);
     }
 
-    return Array.from(map.values())
+    const list = Array.from(map.values())
       .map(c => ({ ...c, percentual: totalGeral > 0 ? (c.valorServico / totalGeral) * 100 : 0 }))
       .sort((a, b) => b.valorServico - a.valorServico);
-  }, [notas]);
+
+    const totais = list.reduce(
+      (acc, c) => ({
+        valorServico: acc.valorServico + c.valorServico,
+        valorImposto: acc.valorImposto + c.valorImposto,
+        issRetido: acc.issRetido + c.issRetido,
+        valorSimples: acc.valorSimples + c.valorSimples,
+        percentual: acc.percentual + c.percentual,
+      }),
+      { valorServico: 0, valorImposto: 0, issRetido: 0, valorSimples: 0, percentual: 0 },
+    );
+
+    return { clientes: list, totais };
+  }, [notas, aliquotaEfetiva]);
 
   if (loading) {
     return (
@@ -98,6 +123,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
             <TableHead className="text-right">Valor Serviço</TableHead>
             <TableHead className="text-right">Valor Imposto</TableHead>
             <TableHead className="text-right">ISS Retido</TableHead>
+            <TableHead className="text-right">Simples ({fmt(aliquotaEfetiva)}%)</TableHead>
             <TableHead className="text-right">% Faturamento</TableHead>
           </TableRow>
         </TableHeader>
@@ -111,10 +137,21 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
               <TableCell className="text-right text-sm">R$ {fmt(c.valorServico)}</TableCell>
               <TableCell className="text-right text-sm">R$ {fmt(c.valorImposto)}</TableCell>
               <TableCell className="text-right text-sm">R$ {fmt(c.issRetido)}</TableCell>
+              <TableCell className="text-right text-sm">R$ {fmt(c.valorSimples)}</TableCell>
               <TableCell className="text-right text-sm font-medium">{fmt(c.percentual)}%</TableCell>
             </TableRow>
           ))}
         </TableBody>
+        <TableFooter>
+          <TableRow className="font-bold">
+            <TableCell>Total</TableCell>
+            <TableCell className="text-right">R$ {fmt(totais.valorServico)}</TableCell>
+            <TableCell className="text-right">R$ {fmt(totais.valorImposto)}</TableCell>
+            <TableCell className="text-right">R$ {fmt(totais.issRetido)}</TableCell>
+            <TableCell className="text-right">R$ {fmt(totais.valorSimples)}</TableCell>
+            <TableCell className="text-right">{fmt(totais.percentual)}%</TableCell>
+          </TableRow>
+        </TableFooter>
       </Table>
     </div>
   );
