@@ -126,43 +126,52 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
 
   return (
     <div className="section-card overflow-hidden">
-      <Table>
+      <Table className="table-fixed w-full">
+        <colgroup>
+          <col className="w-[28%]" />
+          <col className="w-[14%]" />
+          <col className="w-[8%]" />
+          <col className="w-[14%]" />
+          <col className="w-[12%]" />
+          <col className="w-[14%]" />
+          <col className="w-[10%]" />
+        </colgroup>
         <TableHeader>
           <TableRow>
-            <TableHead>Tomador</TableHead>
+            <TableHead className="text-left">Tomador</TableHead>
             <TableHead className="text-right">Serviço R$</TableHead>
             <TableHead className="text-right">Alíq. ISS</TableHead>
             <TableHead className="text-right">Retenção Issqn</TableHead>
             <TableHead className="text-right">TribSn ({fmt(aliquotaEfetiva * 100)}%)</TableHead>
             <TableHead className="text-right">DAS a Pagar</TableHead>
-            <TableHead className="text-right">% Faturamento</TableHead>
+            <TableHead className="text-right">% Fat.</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {clientes.map((c) => (
             <TableRow key={c.doc || c.nome}>
-              <TableCell>
-                <div className="font-medium text-foreground text-sm">{c.nome}</div>
+              <TableCell className="text-left truncate">
+                <div className="font-medium text-foreground text-sm truncate">{c.nome}</div>
                 {c.doc && <div className="text-xs text-muted-foreground">{c.doc}</div>}
               </TableCell>
-              <TableCell className="text-right text-sm">R$ {fmt(c.valorServico)}</TableCell>
-              <TableCell className="text-right text-sm">{c.aliquotaIss > 0 ? `${fmt(c.aliquotaIss)}%` : '—'}</TableCell>
-              <TableCell className="text-right text-sm">R$ {fmt(c.issRetido)}</TableCell>
-              <TableCell className="text-right text-sm">R$ {fmt(c.valorSimples)}</TableCell>
-              <TableCell className="text-right text-sm font-medium">R$ {fmt(c.dasAPagar)}</TableCell>
-              <TableCell className="text-right text-sm">{fmt(c.percentual)}%</TableCell>
+              <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.valorServico)}</TableCell>
+              <TableCell className="text-right text-sm tabular-nums">{c.aliquotaIss > 0 ? `${fmt(c.aliquotaIss)}%` : '—'}</TableCell>
+              <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.issRetido)}</TableCell>
+              <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.valorSimples)}</TableCell>
+              <TableCell className="text-right text-sm tabular-nums font-medium">R$ {fmt(c.dasAPagar)}</TableCell>
+              <TableCell className="text-right text-sm tabular-nums">{fmt(c.percentual)}%</TableCell>
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
           <TableRow className="font-bold">
-            <TableCell>Total</TableCell>
-            <TableCell className="text-right">R$ {fmt(totais.valorServico)}</TableCell>
+            <TableCell className="text-left">Total</TableCell>
+            <TableCell className="text-right tabular-nums">R$ {fmt(totais.valorServico)}</TableCell>
             <TableCell className="text-right"></TableCell>
-            <TableCell className="text-right">R$ {fmt(totais.issRetido)}</TableCell>
-            <TableCell className="text-right">R$ {fmt(totais.valorSimples)}</TableCell>
-            <TableCell className="text-right">R$ {fmt(totais.dasAPagar)}</TableCell>
-            <TableCell className="text-right">{fmt(totais.percentual)}%</TableCell>
+            <TableCell className="text-right tabular-nums">R$ {fmt(totais.issRetido)}</TableCell>
+            <TableCell className="text-right tabular-nums">R$ {fmt(totais.valorSimples)}</TableCell>
+            <TableCell className="text-right tabular-nums">R$ {fmt(totais.dasAPagar)}</TableCell>
+            <TableCell className="text-right tabular-nums">{fmt(totais.percentual)}%</TableCell>
           </TableRow>
         </TableFooter>
       </Table>
