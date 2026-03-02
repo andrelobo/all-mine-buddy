@@ -10,6 +10,8 @@ interface NotaRow {
   iss_valor: number | null;
   iss_retido: boolean | null;
   aliquota: number | null;
+  data_emissao: string | null;
+  numero_nfse: string | null;
   tomador: { nome_razao_social: string; cnpj_cpf: string } | null;
 }
 
@@ -17,9 +19,11 @@ function fmt(v: number) {
   return v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-interface ClienteResumo {
+interface NotaResumo {
   nome: string;
   doc: string;
+  dataEmissao: string;
+  numeroNfse: string;
   valorServico: number;
   issRetido: number;
   aliquotaIss: number;
@@ -39,8 +43,8 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
 
       const notasQuery = supabase
         .from('notas_fiscais')
-        .select('valor_servico, iss_valor, iss_retido, aliquota, tomador:tomadores(nome_razao_social, cnpj_cpf)')
-        .order('created_at', { ascending: false });
+        .select('valor_servico, iss_valor, iss_retido, aliquota, data_emissao, numero_nfse, tomador:tomadores(nome_razao_social, cnpj_cpf)')
+        .order('data_emissao', { ascending: true });
 
       if (prestadorId) notasQuery.eq('prestador_id', prestadorId);
 
@@ -58,42 +62,35 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
     load();
   }, [prestadorId]);
 
-  const { clientes, totais } = useMemo(() => {
-    const map = new Map<string, Omit<ClienteResumo, 'percentual' | 'dasAPagar'> & { _hasRetencao: boolean }>();
-    let totalGeral = 0;
+  const { linhas, totais } = useMemo(() => {
+    const totalGeral = notas.reduce((s, n) => s + (n.valor_servico ?? 0), 0);
 
-    for (const n of notas) {
+    const linhas: NotaResumo[] = notas.map(n => {
       const tom = (n as any).tomador;
-      const key = tom?.cnpj_cpf || '_sem_tomador';
-      const nome = tom?.nome_razao_social || 'Sem tomador';
-      const doc = tom?.cnpj_cpf || '';
       const vs = n.valor_servico ?? 0;
       const iss = n.iss_valor ?? 0;
       const issRet = n.iss_retido ? iss : 0;
       const aliqIss = n.iss_retido ? (n.aliquota ?? 0) : 0;
       const simples = vs * aliquotaEfetiva;
-      totalGeral += vs;
+      const das = Math.max(simples - issRet, 0);
+      const d = n.data_emissao ? new Date(n.data_emissao) : null;
+      const dataFmt = d ? `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}` : '—';
 
-      const cur = map.get(key) || { nome, doc, valorServico: 0, issRetido: 0, aliquotaIss: 0, valorSimples: 0, _hasRetencao: false };
-      cur.valorServico += vs;
-      cur.issRetido += issRet;
-      if (n.iss_retido && aliqIss > 0) {
-        cur.aliquotaIss = aliqIss;
-        cur._hasRetencao = true;
-      }
-      cur.valorSimples += simples;
-      map.set(key, cur);
-    }
+      return {
+        nome: tom?.nome_razao_social || 'Sem tomador',
+        doc: tom?.cnpj_cpf || '',
+        dataEmissao: dataFmt,
+        numeroNfse: n.numero_nfse || '—',
+        valorServico: vs,
+        issRetido: issRet,
+        aliquotaIss: aliqIss,
+        valorSimples: simples,
+        dasAPagar: das,
+        percentual: totalGeral > 0 ? (vs / totalGeral) * 100 : 0,
+      };
+    });
 
-    const list = Array.from(map.values())
-      .map(c => ({
-        ...c,
-        dasAPagar: Math.max(c.valorSimples - c.issRetido, 0),
-        percentual: totalGeral > 0 ? (c.valorServico / totalGeral) * 100 : 0,
-      }))
-      .sort((a, b) => b.valorServico - a.valorServico);
-
-    const totais = list.reduce(
+    const totais = linhas.reduce(
       (acc, c) => ({
         valorServico: acc.valorServico + c.valorServico,
         issRetido: acc.issRetido + c.issRetido,
@@ -104,7 +101,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
       { valorServico: 0, issRetido: 0, valorSimples: 0, dasAPagar: 0, percentual: 0 },
     );
 
-    return { clientes: list, totais };
+    return { linhas, totais };
   }, [notas, aliquotaEfetiva]);
 
   if (loading) {
@@ -115,7 +112,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
     );
   }
 
-  if (clientes.length === 0) {
+  if (linhas.length === 0) {
     return (
       <div className="section-card flex flex-col items-center justify-center py-12 text-muted-foreground">
         <Users className="w-10 h-10 mb-3 opacity-40" />
@@ -128,16 +125,20 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
     <div className="section-card overflow-hidden">
       <Table className="table-fixed w-full">
         <colgroup>
-          <col className="w-[28%]" />
-          <col className="w-[14%]" />
-          <col className="w-[8%]" />
-          <col className="w-[14%]" />
-          <col className="w-[12%]" />
-          <col className="w-[14%]" />
-          <col className="w-[10%]" />
+          <col className="w-[6%]" />
+          <col className="w-[6%]" />
+          <col className="w-[22%]" />
+          <col className="w-[13%]" />
+          <col className="w-[7%]" />
+          <col className="w-[13%]" />
+          <col className="w-[11%]" />
+          <col className="w-[13%]" />
+          <col className="w-[9%]" />
         </colgroup>
         <TableHeader>
           <TableRow>
+            <TableHead className="text-left">Data</TableHead>
+            <TableHead className="text-left">NF-e</TableHead>
             <TableHead className="text-left">Tomador</TableHead>
             <TableHead className="text-right">Serviço R$</TableHead>
             <TableHead className="text-right">Alíq. ISS</TableHead>
@@ -148,11 +149,12 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
           </TableRow>
         </TableHeader>
         <TableBody>
-          {clientes.map((c) => (
-            <TableRow key={c.doc || c.nome}>
+          {linhas.map((c, i) => (
+            <TableRow key={i}>
+              <TableCell className="text-left text-sm tabular-nums">{c.dataEmissao}</TableCell>
+              <TableCell className="text-left text-sm tabular-nums">{c.numeroNfse}</TableCell>
               <TableCell className="text-left truncate">
                 <div className="font-medium text-foreground text-sm truncate">{c.nome}</div>
-                {c.doc && <div className="text-xs text-muted-foreground">{c.doc}</div>}
               </TableCell>
               <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.valorServico)}</TableCell>
               <TableCell className="text-right text-sm tabular-nums">{c.aliquotaIss > 0 ? `${fmt(c.aliquotaIss)}%` : '—'}</TableCell>
@@ -165,7 +167,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
         </TableBody>
         <TableFooter>
           <TableRow className="font-bold">
-            <TableCell className="text-left">Total</TableCell>
+            <TableCell className="text-left" colSpan={3}>Total</TableCell>
             <TableCell className="text-right tabular-nums">R$ {fmt(totais.valorServico)}</TableCell>
             <TableCell className="text-right"></TableCell>
             <TableCell className="text-right tabular-nums">R$ {fmt(totais.issRetido)}</TableCell>
