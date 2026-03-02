@@ -45,7 +45,7 @@ const ConfigOperacionaisSection: React.FC<Props> = ({ items, onChange }) => {
   return (
     <div className="section-card p-3">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="section-title text-sm mb-0">
+        <h2 className="section-title text-sm font-bold mb-0">
           <Settings className="w-4 h-4 text-primary" />
           Lista Serviço
         </h2>
