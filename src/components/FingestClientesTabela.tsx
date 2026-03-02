@@ -188,78 +188,37 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
     </div>
 
     {/* Gráficos Pizza */}
-    {totais.valorServico > 0 && (
-      <div className="section-card mt-4 p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {/* Receita */}
-          <div>
-            <h4 className="text-xs font-semibold text-foreground mb-1 text-center">Receita</h4>
-            <ResponsiveContainer width="100%" height={150}>
-              <PieChart>
-                <Pie
-                  data={[
-                    { name: 'Líquido', value: Math.max(totais.valorServico - totais.valorSimples, 0) },
-                    { name: 'Tributos', value: totais.valorSimples },
-                  ]}
-                  cx="50%" cy="50%" innerRadius={30} outerRadius={50} paddingAngle={3} dataKey="value"
-                >
-                  <Cell fill="hsl(var(--primary))" />
-                  <Cell fill="hsl(var(--muted-foreground))" />
-                </Pie>
-                 <Tooltip formatter={(v: number, name: string) => [`R$ ${fmt(v)} (${fmt((v / totais.valorServico) * 100)}%)`, name]} />
-                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} formatter={(value: string, entry: any) => { const v = entry.payload?.value || 0; return `${value}: R$ ${fmt(v)} (${fmt((v / totais.valorServico) * 100)}%)`; }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          {/* Impostos */}
-          <div>
-            <h4 className="text-xs font-semibold text-foreground mb-1 text-center">Impostos</h4>
-            <ResponsiveContainer width="100%" height={150}>
-              <PieChart>
-                <Pie
-                  data={[
-                    { name: 'DASN', value: totais.dasAPagar },
-                    { name: 'ISSQN (R)', value: totais.issRetido },
-                  ].filter(d => d.value > 0)}
-                  cx="50%" cy="50%" innerRadius={30} outerRadius={50} paddingAngle={3} dataKey="value"
-                >
-                  <Cell fill="hsl(var(--destructive))" />
-                  <Cell fill="hsl(var(--accent))" />
-                </Pie>
-                <Tooltip formatter={(v: number, name: string) => { const total = totais.dasAPagar + totais.issRetido; return [`R$ ${fmt(v)} (${fmt(total > 0 ? (v / total) * 100 : 0)}%)`, name]; }} />
-                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} formatter={(value: string, entry: any) => { const v = entry.payload?.value || 0; const total = totais.dasAPagar + totais.issRetido; return `${value}: R$ ${fmt(v)} (${fmt(total > 0 ? (v / total) * 100 : 0)}%)`; }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          {/* Clientes */}
-          <div>
-            <h4 className="text-xs font-semibold text-foreground mb-1 text-center">Clientes</h4>
-            <ResponsiveContainer width="100%" height={180}>
-              <PieChart>
-                <Pie
-                  data={linhas.reduce((acc, l) => {
-                    const existing = acc.find(a => a.name === l.nome);
-                    if (existing) { existing.value += l.valorServico; }
-                    else { acc.push({ name: l.nome, value: l.valorServico }); }
-                    return acc;
-                  }, [] as { name: string; value: number }[])}
-                  cx="50%" cy="50%" innerRadius={30} outerRadius={50} paddingAngle={3} dataKey="value"
-                >
-                  {linhas.reduce((acc, l) => {
-                    if (!acc.find(a => a === l.nome)) acc.push(l.nome);
-                    return acc;
-                  }, [] as string[]).map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(v: number, name: string) => [`R$ ${fmt(v)} (${fmt((v / totais.valorServico) * 100)}%)`, name]} />
-                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} formatter={(value: string, entry: any) => { const v = entry.payload?.value || 0; return `${value}: R$ ${fmt(v)} (${fmt((v / totais.valorServico) * 100)}%)`; }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+    {totais.valorServico > 0 && (() => {
+      const clienteData = linhas.reduce((acc, l) => {
+        const existing = acc.find(a => a.name === l.nome);
+        if (existing) { existing.value += l.valorServico; }
+        else { acc.push({ name: l.nome, value: l.valorServico }); }
+        return acc;
+      }, [] as { name: string; value: number }[]);
+
+      const chartData = [
+        ...clienteData.map((c, i) => ({ name: c.name, value: c.value, fill: COLORS[i % COLORS.length] })),
+        { name: 'ISSQN Retido', value: totais.issRetido, fill: 'hsl(var(--destructive))' },
+        { name: 'DASN', value: totais.dasAPagar, fill: 'hsl(var(--muted-foreground))' },
+      ].filter(d => d.value > 0);
+
+      const total = chartData.reduce((s, d) => s + d.value, 0);
+
+      return (
+        <div className="section-card mt-4 p-4">
+          <h4 className="text-xs font-semibold text-foreground mb-2 text-center">Receita, Impostos e Clientes</h4>
+          <ResponsiveContainer width="100%" height={220}>
+            <PieChart>
+              <Pie data={chartData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={2} dataKey="value">
+                {chartData.map((d, i) => <Cell key={i} fill={d.fill} />)}
+              </Pie>
+              <Tooltip formatter={(v: number, name: string) => [`R$ ${fmt(v)} (${fmt(total > 0 ? (v / total) * 100 : 0)}%)`, name]} />
+              <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} formatter={(value: string, entry: any) => { const v = entry.payload?.value || 0; return `${value}: R$ ${fmt(v)} (${fmt(total > 0 ? (v / total) * 100 : 0)}%)`; }} />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
-      </div>
-    )}
+      );
+    })()}
     </>
   );
 };
