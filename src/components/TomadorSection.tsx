@@ -364,7 +364,7 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr] gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1.5fr_1fr] gap-4 mt-4">
           <div>
             <label className="field-label">Complemento</label>
             <input
@@ -383,9 +383,6 @@ const TomadorSection: React.FC<Props> = ({ data, onChange, onAutosave }) => {
               onChange={(e) => update('localidadeUf', e.target.value)}
             />
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
             <label className="field-label">E-mail</label>
             <input
