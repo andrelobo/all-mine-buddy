@@ -9,6 +9,7 @@ interface NotaRow {
   valor_servico: number | null;
   iss_valor: number | null;
   iss_retido: boolean | null;
+  aliquota: number | null;
   tomador: { nome_razao_social: string; cnpj_cpf: string } | null;
 }
 
@@ -21,6 +22,7 @@ interface ClienteResumo {
   doc: string;
   valorServico: number;
   issRetido: number;
+  aliquotaIss: number;
   valorSimples: number;
   dasAPagar: number;
   percentual: number;
@@ -37,7 +39,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
 
       const notasQuery = supabase
         .from('notas_fiscais')
-        .select('valor_servico, iss_valor, iss_retido, tomador:tomadores(nome_razao_social, cnpj_cpf)')
+        .select('valor_servico, iss_valor, iss_retido, aliquota, tomador:tomadores(nome_razao_social, cnpj_cpf)')
         .order('created_at', { ascending: false });
 
       if (prestadorId) notasQuery.eq('prestador_id', prestadorId);
@@ -57,7 +59,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
   }, [prestadorId]);
 
   const { clientes, totais } = useMemo(() => {
-    const map = new Map<string, Omit<ClienteResumo, 'percentual' | 'dasAPagar'>>();
+    const map = new Map<string, Omit<ClienteResumo, 'percentual' | 'dasAPagar'> & { _hasRetencao: boolean }>();
     let totalGeral = 0;
 
     for (const n of notas) {
@@ -68,12 +70,17 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
       const vs = n.valor_servico ?? 0;
       const iss = n.iss_valor ?? 0;
       const issRet = n.iss_retido ? iss : 0;
+      const aliqIss = n.iss_retido ? (n.aliquota ?? 0) : 0;
       const simples = vs * aliquotaEfetiva;
       totalGeral += vs;
 
-      const cur = map.get(key) || { nome, doc, valorServico: 0, issRetido: 0, valorSimples: 0 };
+      const cur = map.get(key) || { nome, doc, valorServico: 0, issRetido: 0, aliquotaIss: 0, valorSimples: 0, _hasRetencao: false };
       cur.valorServico += vs;
       cur.issRetido += issRet;
+      if (n.iss_retido && aliqIss > 0) {
+        cur.aliquotaIss = aliqIss;
+        cur._hasRetencao = true;
+      }
       cur.valorSimples += simples;
       map.set(key, cur);
     }
@@ -124,6 +131,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
           <TableRow>
             <TableHead>Tomador</TableHead>
             <TableHead className="text-right">Serviço R$</TableHead>
+            <TableHead className="text-right">Alíq. ISS</TableHead>
             <TableHead className="text-right">Retenção Issqn</TableHead>
             <TableHead className="text-right">TribSn ({fmt(aliquotaEfetiva * 100)}%)</TableHead>
             <TableHead className="text-right">DAS a Pagar</TableHead>
@@ -138,6 +146,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
                 {c.doc && <div className="text-xs text-muted-foreground">{c.doc}</div>}
               </TableCell>
               <TableCell className="text-right text-sm">R$ {fmt(c.valorServico)}</TableCell>
+              <TableCell className="text-right text-sm">{c.aliquotaIss > 0 ? `${fmt(c.aliquotaIss)}%` : '—'}</TableCell>
               <TableCell className="text-right text-sm">R$ {fmt(c.issRetido)}</TableCell>
               <TableCell className="text-right text-sm">R$ {fmt(c.valorSimples)}</TableCell>
               <TableCell className="text-right text-sm font-medium">R$ {fmt(c.dasAPagar)}</TableCell>
@@ -149,6 +158,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
           <TableRow className="font-bold">
             <TableCell>Total</TableCell>
             <TableCell className="text-right">R$ {fmt(totais.valorServico)}</TableCell>
+            <TableCell className="text-right"></TableCell>
             <TableCell className="text-right">R$ {fmt(totais.issRetido)}</TableCell>
             <TableCell className="text-right">R$ {fmt(totais.valorSimples)}</TableCell>
             <TableCell className="text-right">R$ {fmt(totais.dasAPagar)}</TableCell>
