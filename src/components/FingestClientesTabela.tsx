@@ -153,7 +153,9 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
               <TableCell className="text-left truncate">
                 <div className="font-medium text-foreground text-sm truncate">{c.nome}</div>
               </TableCell>
-              <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.valorServico)}</TableCell>
+              <TableCell className="text-right text-sm tabular-nums">
+                <span className="inline-flex justify-end w-full"><span className="text-muted-foreground mr-1">R$</span><span className="inline-block min-w-[5.5rem] text-right">{fmt(c.valorServico)}</span></span>
+              </TableCell>
               <TableCell className="text-right text-sm tabular-nums">{c.aliquotaIss > 0 ? `${fmt(c.aliquotaIss)}%` : '—'}</TableCell>
               <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.issRetido)}</TableCell>
               <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.valorSimples)}</TableCell>
@@ -165,7 +167,9 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
         <TableFooter>
           <TableRow className="font-bold">
             <TableCell className="text-left" colSpan={2}>Total</TableCell>
-            <TableCell className="text-right tabular-nums">R$ {fmt(totais.valorServico)}</TableCell>
+            <TableCell className="text-right tabular-nums">
+              <span className="inline-flex justify-end w-full"><span className="text-muted-foreground mr-1">R$</span><span className="inline-block min-w-[5.5rem] text-right">{fmt(totais.valorServico)}</span></span>
+            </TableCell>
             <TableCell className="text-right"></TableCell>
             <TableCell className="text-right tabular-nums">R$ {fmt(totais.issRetido)}</TableCell>
             <TableCell className="text-right tabular-nums">R$ {fmt(totais.valorSimples)}</TableCell>
