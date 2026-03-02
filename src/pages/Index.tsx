@@ -98,6 +98,9 @@ const Index = () => {
   const [emissaoErrors, setEmissaoErrors] = useState<string[]>([]);
   const [tomadorSubstituto, setTomadorSubstituto] = useState(false);
   const [configOperacionais, setConfigOperacionais] = useState<{ id: string; natureza: string; descricao: string }[]>([]);
+  const [nfseNum, setNfseNum] = useState('');
+  const [dpsNum, setDpsNum] = useState('');
+  const [serieDpsNum, setSerieDpsNum] = useState('');
 
   // Sync local state from config only on initial load (when config.id first appears)
   const configSyncedRef = React.useRef(false);
@@ -636,15 +639,15 @@ const Index = () => {
                     </div>
                     <div>
                       <label className="field-label">NFS-e Nº</label>
-                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" onChange={e => e.target.value = e.target.value.replace(/\D/g, '')} />
+                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" value={nfseNum} onChange={e => setNfseNum(e.target.value.replace(/\D/g, ''))} />
                     </div>
                     <div>
                       <label className="field-label">DPS Nº</label>
-                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" onChange={e => e.target.value = e.target.value.replace(/\D/g, '')} />
+                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" value={dpsNum} onChange={e => setDpsNum(e.target.value.replace(/\D/g, ''))} />
                     </div>
                     <div>
                       <label className="field-label">Série DPS Nº</label>
-                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" onChange={e => e.target.value = e.target.value.replace(/\D/g, '')} />
+                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" value={serieDpsNum} onChange={e => setSerieDpsNum(e.target.value.replace(/\D/g, ''))} />
                     </div>
                   </div>
                 </div>
