@@ -1,19 +1,20 @@
-// Tabela Anexo III do Simples Nacional
+// Tabela Anexo III do Simples Nacional (LC 123/2006)
 export interface FaixaAnexoIII {
   faixa: number;
   limiteInferior: number;
   limiteSuperior: number;
   aliquotaNominal: number;
   parcelaDeduzir: number;
+  percentualIss: number;
 }
 
 export const FAIXAS_ANEXO_III: FaixaAnexoIII[] = [
-  { faixa: 1, limiteInferior: 0, limiteSuperior: 180000, aliquotaNominal: 0.06, parcelaDeduzir: 0 },
-  { faixa: 2, limiteInferior: 180000.01, limiteSuperior: 360000, aliquotaNominal: 0.112, parcelaDeduzir: 9360 },
-  { faixa: 3, limiteInferior: 360000.01, limiteSuperior: 720000, aliquotaNominal: 0.135, parcelaDeduzir: 17640 },
-  { faixa: 4, limiteInferior: 720000.01, limiteSuperior: 1800000, aliquotaNominal: 0.16, parcelaDeduzir: 35640 },
-  { faixa: 5, limiteInferior: 1800000.01, limiteSuperior: 3600000, aliquotaNominal: 0.21, parcelaDeduzir: 125640 },
-  { faixa: 6, limiteInferior: 3600000.01, limiteSuperior: 4800000, aliquotaNominal: 0.33, parcelaDeduzir: 648000 },
+  { faixa: 1, limiteInferior: 0, limiteSuperior: 180000, aliquotaNominal: 0.06, parcelaDeduzir: 0, percentualIss: 0.335 },
+  { faixa: 2, limiteInferior: 180000.01, limiteSuperior: 360000, aliquotaNominal: 0.112, parcelaDeduzir: 9360, percentualIss: 0.32 },
+  { faixa: 3, limiteInferior: 360000.01, limiteSuperior: 720000, aliquotaNominal: 0.135, parcelaDeduzir: 17640, percentualIss: 0.325 },
+  { faixa: 4, limiteInferior: 720000.01, limiteSuperior: 1800000, aliquotaNominal: 0.16, parcelaDeduzir: 35640, percentualIss: 0.325 },
+  { faixa: 5, limiteInferior: 1800000.01, limiteSuperior: 3600000, aliquotaNominal: 0.21, parcelaDeduzir: 125640, percentualIss: 0.335 },
+  { faixa: 6, limiteInferior: 3600000.01, limiteSuperior: 4800000, aliquotaNominal: 0.33, parcelaDeduzir: 648000, percentualIss: 0.215 },
 ];
 
 export interface CalculoSimplesResult {
@@ -23,8 +24,6 @@ export interface CalculoSimplesResult {
   alertas: string[];
   valido: boolean;
 }
-
-const PERCENTUAL_ISS_ANEXO_III = 0.335; // 33,5% da alíquota efetiva
 
 export function calcularSimplesAnexoIII(rbt12: number, anexo: string): CalculoSimplesResult {
   const alertas: string[] = [];
@@ -49,7 +48,7 @@ export function calcularSimplesAnexoIII(rbt12: number, anexo: string): CalculoSi
   }
 
   const aliquotaEfetiva = ((rbt12 * faixa.aliquotaNominal) - faixa.parcelaDeduzir) / rbt12;
-  const issReferencia = aliquotaEfetiva * PERCENTUAL_ISS_ANEXO_III;
+  const issReferencia = aliquotaEfetiva * faixa.percentualIss;
 
   return { faixa, aliquotaEfetiva, issReferencia, alertas, valido: true };
 }
