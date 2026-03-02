@@ -123,9 +123,11 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
   }, [notas, aliquotaEfetiva]);
 
   const handleDelete = async (id: string) => {
+    setNotas(prev => prev.filter(n => n.id !== id));
     const { error } = await supabase.from('notas_fiscais').delete().eq('id', id);
     if (error) {
       toast.error('Erro ao deletar nota fiscal');
+      fetchData();
     } else {
       toast.success('Nota fiscal deletada');
     }
