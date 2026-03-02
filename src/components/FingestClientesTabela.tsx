@@ -206,8 +206,8 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
                   <Cell fill="hsl(var(--primary))" />
                   <Cell fill="hsl(var(--muted-foreground))" />
                 </Pie>
-                <Tooltip formatter={(v: number) => `R$ ${fmt(v)}`} />
-                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+                 <Tooltip formatter={(v: number, name: string) => [`R$ ${fmt(v)} (${fmt((v / totais.valorServico) * 100)}%)`, name]} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} formatter={(value: string, entry: any) => { const v = entry.payload?.value || 0; return `${value}: R$ ${fmt(v)} (${fmt((v / totais.valorServico) * 100)}%)`; }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -226,15 +226,15 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
                   <Cell fill="hsl(var(--destructive))" />
                   <Cell fill="hsl(var(--accent))" />
                 </Pie>
-                <Tooltip formatter={(v: number) => `R$ ${fmt(v)}`} />
-                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+                <Tooltip formatter={(v: number, name: string) => { const total = totais.dasAPagar + totais.issRetido; return [`R$ ${fmt(v)} (${fmt(total > 0 ? (v / total) * 100 : 0)}%)`, name]; }} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} formatter={(value: string, entry: any) => { const v = entry.payload?.value || 0; const total = totais.dasAPagar + totais.issRetido; return `${value}: R$ ${fmt(v)} (${fmt(total > 0 ? (v / total) * 100 : 0)}%)`; }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
           {/* Clientes */}
           <div>
             <h4 className="text-xs font-semibold text-foreground mb-1 text-center">Clientes</h4>
-            <ResponsiveContainer width="100%" height={150}>
+            <ResponsiveContainer width="100%" height={180}>
               <PieChart>
                 <Pie
                   data={linhas.reduce((acc, l) => {
@@ -252,8 +252,8 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
                     <Cell key={i} fill={COLORS[i % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v: number) => `R$ ${fmt(v)}`} />
-                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+                <Tooltip formatter={(v: number, name: string) => [`R$ ${fmt(v)} (${fmt((v / totais.valorServico) * 100)}%)`, name]} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} formatter={(value: string, entry: any) => { const v = entry.payload?.value || 0; return `${value}: R$ ${fmt(v)} (${fmt((v / totais.valorServico) * 100)}%)`; }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
