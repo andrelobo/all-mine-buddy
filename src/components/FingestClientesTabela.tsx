@@ -166,7 +166,12 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
                   <span>R$ {fmt(c.issRetido)}</span>
                 </span>
               </TableCell>
-              <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.valorSimples)}</TableCell>
+              <TableCell className="text-right text-sm tabular-nums">
+                <span className="inline-flex flex-col items-end">
+                  <span className="text-[10px] bg-muted text-muted-foreground rounded-full px-1.5 py-0.5 leading-none mb-0.5">{fmt(aliquotaEfetiva * 100)}%</span>
+                  <span>R$ {fmt(c.valorSimples)}</span>
+                </span>
+              </TableCell>
               <TableCell className="text-right text-sm tabular-nums font-medium">R$ {fmt(c.dasAPagar)}</TableCell>
               <TableCell className="text-right text-sm tabular-nums">{fmt(c.percentual)}%</TableCell>
             </TableRow>
