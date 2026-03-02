@@ -4,6 +4,7 @@ import { Loader2, Users } from 'lucide-react';
 import {
   Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell,
 } from '@/components/ui/table';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 interface NotaRow {
   valor_servico: number | null;
@@ -122,6 +123,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
   }
 
   return (
+    <>
     <div className="section-card overflow-hidden">
       <Table className="table-fixed w-full">
         <colgroup>
@@ -182,6 +184,37 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
         </TableFooter>
       </Table>
     </div>
+
+    {/* Gráfico Pizza - Receita x Impostos */}
+    {totais.valorServico > 0 && (
+      <div className="section-card mt-4 p-4">
+        <h3 className="text-sm font-semibold text-foreground mb-3">Receita x Impostos</h3>
+        <ResponsiveContainer width="100%" height={260}>
+          <PieChart>
+            <Pie
+              data={[
+                { name: 'Receita Líquida', value: Math.max(totais.valorServico - totais.valorSimples, 0) },
+                { name: 'ISSQN Retido', value: totais.issRetido },
+                { name: 'DASN', value: totais.dasAPagar },
+              ]}
+              cx="50%"
+              cy="50%"
+              innerRadius={55}
+              outerRadius={90}
+              paddingAngle={3}
+              dataKey="value"
+              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
+            >
+              <Cell fill="hsl(var(--primary))" />
+              <Cell fill="hsl(var(--destructive))" />
+              <Cell fill="hsl(var(--accent))" />
+            </Pie>
+            <Tooltip formatter={(v: number) => `R$ ${fmt(v)}`} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    )}
+    </>
   );
 };
 
