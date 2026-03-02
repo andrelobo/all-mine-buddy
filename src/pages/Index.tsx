@@ -23,6 +23,7 @@ import PrestacaoServicoSection, { type PrestacaoServicoData } from '@/components
 import LocalPrestacaoSection, { type LocalPrestacaoData } from '@/components/emissao/LocalPrestacaoSection';
 import ValoresTotaisSection from '@/components/emissao/ValoresTotaisSection';
 import DANFSePrint from '@/components/emissao/DANFSePrint';
+import NotasFiscaisLista from '@/components/NotasFiscaisLista';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 import { usePrestador } from '@/hooks/usePrestador';
 import { useTomadores } from '@/hooks/useTomadores';
@@ -30,7 +31,7 @@ import { useNotasFiscais } from '@/hooks/useNotasFiscais';
 import { useSimplesNacional } from '@/hooks/useSimplesNacional';
 import type { TomadorDB } from '@/hooks/useTomadores';
 
-type ActiveTab = 'dashboard' | 'prestador' | 'tomador' | 'emissao';
+type ActiveTab = 'dashboard' | 'prestador' | 'tomador' | 'emissao' | 'notas';
 type PrestadorSubTab = 'cadastro' | 'regime' | 'parametros';
 
 const INITIAL_TOMADOR: TomadorData = {
@@ -267,7 +268,7 @@ const Index = () => {
   };
 
   const autosaveEmissao = useCallback(() => {}, []);
-  const tabTitle = activeTab === 'dashboard' ? 'Dashboard' : activeTab === 'prestador' ? 'O Prestador' : activeTab === 'tomador' ? 'Tomadores' : 'DANFSE';
+  const tabTitle = activeTab === 'dashboard' ? 'Dashboard' : activeTab === 'prestador' ? 'O Prestador' : activeTab === 'tomador' ? 'Tomadores' : activeTab === 'notas' ? 'Notas Fiscais' : 'DANFSE';
 
   if (loadingPrestador) {
     return (
@@ -636,6 +637,11 @@ const Index = () => {
                   retCsll={valores.retCsll} retIr={valores.retIr} retInss={valores.retInss}
                 />
               </>
+            )}
+
+            {/* ====== NOTAS FISCAIS ====== */}
+            {activeTab === 'notas' && (
+              <NotasFiscaisLista prestadorId={config.id || null} />
             )}
           </main>
         </div>
