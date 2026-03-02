@@ -123,7 +123,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
         <TableHeader>
           <TableRow>
             <TableHead>Tomador</TableHead>
-            <TableHead className="text-right">Valor Serviço</TableHead>
+            <TableHead className="text-right">Serviço R$</TableHead>
             <TableHead className="text-right">ISS Retido</TableHead>
             <TableHead className="text-right">Simples ({fmt(aliquotaEfetiva * 100)}%)</TableHead>
             <TableHead className="text-right">DAS a Pagar</TableHead>
