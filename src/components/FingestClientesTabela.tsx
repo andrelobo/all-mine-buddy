@@ -40,30 +40,37 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
   const [aliquotaEfetiva, setAliquotaEfetiva] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
+  const fetchData = React.useCallback(async () => {
+    setLoading(true);
 
-      const notasQuery = supabase
-        .from('notas_fiscais')
-        .select('valor_servico, iss_valor, iss_retido, aliquota, data_emissao, numero_nfse, tomador:tomadores(nome_razao_social, cnpj_cpf)')
-        .order('data_emissao', { ascending: true });
+    const notasQuery = supabase
+      .from('notas_fiscais')
+      .select('valor_servico, iss_valor, iss_retido, aliquota, data_emissao, numero_nfse, tomador:tomadores(nome_razao_social, cnpj_cpf)')
+      .order('data_emissao', { ascending: true });
 
-      if (prestadorId) notasQuery.eq('prestador_id', prestadorId);
+    if (prestadorId) notasQuery.eq('prestador_id', prestadorId);
 
-      const [notasRes, prestadorRes] = await Promise.all([
-        notasQuery,
-        prestadorId
-          ? supabase.from('prestadores').select('simples_aliquota_efetiva').eq('id', prestadorId).single()
-          : Promise.resolve({ data: null }),
-      ]);
+    const [notasRes, prestadorRes] = await Promise.all([
+      notasQuery,
+      prestadorId
+        ? supabase.from('prestadores').select('simples_aliquota_efetiva').eq('id', prestadorId).single()
+        : Promise.resolve({ data: null }),
+    ]);
 
-      setNotas((notasRes.data as any) || []);
-      setAliquotaEfetiva(Number((prestadorRes.data as any)?.simples_aliquota_efetiva) || 0);
-      setLoading(false);
-    }
-    load();
+    setNotas((notasRes.data as any) || []);
+    setAliquotaEfetiva(Number((prestadorRes.data as any)?.simples_aliquota_efetiva) || 0);
+    setLoading(false);
   }, [prestadorId]);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('fingest-notas')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notas_fiscais' }, () => fetchData())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchData]);
 
   const { linhas, totais } = useMemo(() => {
     const totalGeral = notas.reduce((s, n) => s + (n.valor_servico ?? 0), 0);
