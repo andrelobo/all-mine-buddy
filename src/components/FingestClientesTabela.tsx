@@ -126,20 +126,18 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
       <Table className="table-fixed w-full">
         <colgroup>
           <col className="w-[7%]" />
-          <col className="w-[21%]" />
+          <col className="w-[24%]" />
+          <col className="w-[16%]" />
           <col className="w-[15%]" />
-          <col className="w-[7%]" />
           <col className="w-[14%]" />
-          <col className="w-[12%]" />
-          <col className="w-[13%]" />
-          <col className="w-[9%]" />
+          <col className="w-[14%]" />
+          <col className="w-[10%]" />
         </colgroup>
         <TableHeader>
           <TableRow>
             <TableHead className="text-left">Data</TableHead>
             <TableHead className="text-left">Tomador</TableHead>
             <TableHead className="text-right">Receita R$</TableHead>
-            <TableHead className="text-right">Alíq. ISS</TableHead>
             <TableHead className="text-right">Retenção Issqn</TableHead>
             <TableHead className="text-right">TribSn ({fmt(aliquotaEfetiva * 100)}%)</TableHead>
             <TableHead className="text-right">DAS a Pagar</TableHead>
@@ -156,7 +154,6 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
               <TableCell className="text-right text-sm tabular-nums">
                 <span className="inline-flex justify-end w-full"><span className="text-muted-foreground mr-1">R$</span><span className="inline-block min-w-[5.5rem] text-right">{fmt(c.valorServico)}</span></span>
               </TableCell>
-              <TableCell className="text-right text-sm tabular-nums">{c.aliquotaIss > 0 ? `${fmt(c.aliquotaIss)}%` : '—'}</TableCell>
               <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.issRetido)}</TableCell>
               <TableCell className="text-right text-sm tabular-nums">R$ {fmt(c.valorSimples)}</TableCell>
               <TableCell className="text-right text-sm tabular-nums font-medium">R$ {fmt(c.dasAPagar)}</TableCell>
@@ -170,7 +167,6 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
             <TableCell className="text-right tabular-nums">
               <span className="inline-flex justify-end w-full"><span className="text-muted-foreground mr-1">R$</span><span className="inline-block min-w-[5.5rem] text-right">{fmt(totais.valorServico)}</span></span>
             </TableCell>
-            <TableCell className="text-right"></TableCell>
             <TableCell className="text-right tabular-nums">R$ {fmt(totais.issRetido)}</TableCell>
             <TableCell className="text-right tabular-nums">R$ {fmt(totais.valorSimples)}</TableCell>
             <TableCell className="text-right tabular-nums">R$ {fmt(totais.dasAPagar)}</TableCell>
