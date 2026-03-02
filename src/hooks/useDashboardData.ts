@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { calcularSimplesAnexoIII, formatCurrency, formatPercent } from '@/utils/simples-nacional';
 
@@ -56,26 +56,34 @@ export function useDashboardData(prestadorId: string | null, rbt12: number, cnae
   const [tomadores, setTomadores] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchAll = React.useCallback(async () => {
     if (!prestadorId) { setLoading(false); return; }
-    const fetchAll = async () => {
-      setLoading(true);
-      const [notasRes, splitsRes, tomadoresRes] = await Promise.all([
-        supabase.from('notas_fiscais').select('*').eq('prestador_id', prestadorId).order('data_emissao', { ascending: true }),
-        supabase.from('split_payment').select('*').eq('prestador_id', prestadorId),
-        supabase.from('tomadores').select('id, nome_razao_social').eq('prestador_id', prestadorId),
-      ]);
-      if (notasRes.data) setNotas(notasRes.data as NotaDashboard[]);
-      if (splitsRes.data) setSplits(splitsRes.data as SplitPaymentRow[]);
-      if (tomadoresRes.data) {
-        const map: Record<string, string> = {};
-        tomadoresRes.data.forEach((t: any) => { map[t.id] = t.nome_razao_social; });
-        setTomadores(map);
-      }
-      setLoading(false);
-    };
-    fetchAll();
+    setLoading(true);
+    const [notasRes, splitsRes, tomadoresRes] = await Promise.all([
+      supabase.from('notas_fiscais').select('*').eq('prestador_id', prestadorId).order('data_emissao', { ascending: true }),
+      supabase.from('split_payment').select('*').eq('prestador_id', prestadorId),
+      supabase.from('tomadores').select('id, nome_razao_social').eq('prestador_id', prestadorId),
+    ]);
+    if (notasRes.data) setNotas(notasRes.data as NotaDashboard[]);
+    if (splitsRes.data) setSplits(splitsRes.data as SplitPaymentRow[]);
+    if (tomadoresRes.data) {
+      const map: Record<string, string> = {};
+      tomadoresRes.data.forEach((t: any) => { map[t.id] = t.nome_razao_social; });
+      setTomadores(map);
+    }
+    setLoading(false);
   }, [prestadorId]);
+
+  useEffect(() => { fetchAll(); }, [fetchAll]);
+
+  useEffect(() => {
+    if (!prestadorId) return;
+    const channel = supabase
+      .channel('dashboard-notas')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notas_fiscais' }, () => fetchAll())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [prestadorId, fetchAll]);
 
   const calculo = useMemo(() => calcularSimplesAnexoIII(rbt12, cnaeAnexo || 'III'), [rbt12, cnaeAnexo]);
 
