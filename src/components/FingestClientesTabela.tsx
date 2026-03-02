@@ -68,7 +68,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
       const vs = n.valor_servico ?? 0;
       const iss = n.iss_valor ?? 0;
       const issRet = n.iss_retido ? iss : 0;
-      const simples = vs * (aliquotaEfetiva / 100);
+      const simples = vs * aliquotaEfetiva;
       totalGeral += vs;
 
       const cur = map.get(key) || { nome, doc, valorServico: 0, valorImposto: 0, issRetido: 0, valorSimples: 0 };
@@ -123,7 +123,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
             <TableHead className="text-right">Valor Serviço</TableHead>
             <TableHead className="text-right">Valor Imposto</TableHead>
             <TableHead className="text-right">ISS Retido</TableHead>
-            <TableHead className="text-right">Simples ({fmt(aliquotaEfetiva)}%)</TableHead>
+            <TableHead className="text-right">Simples ({fmt(aliquotaEfetiva * 100)}%)</TableHead>
             <TableHead className="text-right">% Faturamento</TableHead>
           </TableRow>
         </TableHeader>
