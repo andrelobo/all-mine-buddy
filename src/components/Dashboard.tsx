@@ -66,6 +66,18 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
   const { loading, kpis, calculo, dadosMensais, analiseClientes, alertas, fluxoCaixa, splits } = useDashboardData(prestadorId, rbt12, cnaeAnexo);
   const [simulacaoExtra, setSimulacaoExtra] = useState<string>('');
 
+  const formatCurrencyInput = (value: string) => {
+    const digits = value.replace(/\D/g, '');
+    if (!digits) return '';
+    const num = parseInt(digits, 10) / 100;
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  const parseCurrencyInput = (formatted: string): number => {
+    if (!formatted) return 0;
+    return parseFloat(formatted.replace(/\./g, '').replace(',', '.')) || 0;
+  };
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -205,7 +217,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         const progressoPct = ((rbt12 - faixaAtual.limiteInferior) / (limiteSuperior - faixaAtual.limiteInferior)) * 100;
         const proximaFaixa = FAIXAS_ANEXO_III.find(f => f.faixa === faixaAtual.faixa + 1);
 
-        const extraVal = parseFloat(simulacaoExtra.replace(/\./g, '').replace(',', '.')) || 0;
+        const extraVal = parseCurrencyInput(simulacaoExtra);
         const rbt12Simulado = rbt12 + extraVal;
         const calculoSimulado = extraVal > 0 ? calcularSimplesAnexoIII(rbt12Simulado, cnaeAnexo || 'III') : null;
         const mudouFaixa = calculoSimulado?.faixa && calculoSimulado.faixa.faixa !== faixaAtual.faixa;
@@ -251,13 +263,17 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                   <div className="flex items-center gap-3">
                     <div className="flex-1">
                       <label className="text-[10px] text-muted-foreground">Faturamento adicional (R$)</label>
-                      <Input
-                        type="text"
-                        placeholder="Ex: 50.000"
-                        value={simulacaoExtra}
-                        onChange={e => setSimulacaoExtra(e.target.value)}
-                        className="h-8 text-sm mt-1"
-                      />
+                      <div className="relative mt-1">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R$</span>
+                        <Input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="0,00"
+                          value={simulacaoExtra}
+                          onChange={e => setSimulacaoExtra(formatCurrencyInput(e.target.value))}
+                          className="h-8 text-sm pl-9"
+                        />
+                      </div>
                     </div>
                     {calculoSimulado && (
                       <div className="flex-1 space-y-1">
