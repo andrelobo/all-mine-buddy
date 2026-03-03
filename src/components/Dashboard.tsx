@@ -345,22 +345,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
               )}
             </CardContent>
           </Card>
-
-          {/* Fluxo de Caixa */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Fluxo de Caixa</CardTitle>
-            </CardHeader>
-            <CardContent className="p-4">
-              <div className="space-y-4">
-                <FlowItem label="Caixa Operacional" value={fluxoCaixa.operacional} color="text-green-600" />
-                <FlowItem label="Caixa Tributário" value={-fluxoCaixa.tributario} color="text-destructive" subtitle="DAS + ISS retido" />
-                <div className="border-t border-border pt-3">
-                  <FlowItem label="Saldo Disponível" value={fluxoCaixa.saldo} color={fluxoCaixa.saldo >= 0 ? 'text-green-600' : 'text-destructive'} bold />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </section>
 
