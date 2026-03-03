@@ -31,7 +31,7 @@ const CertificadoDigitalCard: React.FC = () => {
     <div className="section-card">
       <h2 className="section-title">
         <ShieldCheck className="w-5 h-5 text-primary" />
-        Certificado Digital (e-CNPJ)
+        Certificado CNPJ A1
       </h2>
       <input
         ref={inputRef}
