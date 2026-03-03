@@ -1,10 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ShieldCheck, Upload, X, Eye, EyeOff, FileKey2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const CertificadoDigitalCard: React.FC = () => {
-  const [arquivo, setArquivo] = useState<File | null>(null);
   const [nomeArquivo, setNomeArquivo] = useState('');
   const [senha, setSenha] = useState('');
   const [showSenha, setShowSenha] = useState(false);
@@ -18,13 +16,11 @@ const CertificadoDigitalCard: React.FC = () => {
       toast.error('Formato inválido. Use arquivos .pfx ou .p12');
       return;
     }
-    setArquivo(file);
     setNomeArquivo(file.name);
     toast.success(`Certificado "${file.name}" selecionado`);
   };
 
   const handleRemover = () => {
-    setArquivo(null);
     setNomeArquivo('');
     setSenha('');
     if (inputRef.current) inputRef.current.value = '';
@@ -32,58 +28,52 @@ const CertificadoDigitalCard: React.FC = () => {
   };
 
   return (
-    <Card className="border border-border shadow-sm">
-      <CardHeader className="p-3 pb-2">
-        <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
-          <ShieldCheck className="w-4 h-4 text-primary" />
-          Certificado Digital (e-CNPJ)
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-3 pt-0 space-y-3">
-        <input
-          ref={inputRef}
-          type="file"
-          accept=".pfx,.p12"
-          className="hidden"
-          onChange={handleFileSelect}
-        />
-
-        {!nomeArquivo ? (
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            className="w-full border-2 border-dashed border-border rounded-lg p-4 flex flex-col items-center gap-2 hover:border-primary/50 hover:bg-accent/30 transition-colors cursor-pointer"
-          >
-            <Upload className="w-6 h-6 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground font-medium">
-              Clique para importar o certificado
-            </span>
-            <span className="text-[10px] text-muted-foreground/60">
-              Formatos aceitos: .pfx, .p12
-            </span>
-          </button>
-        ) : (
-          <div className="flex items-center gap-2 bg-accent/40 rounded-md px-3 py-2">
-            <FileKey2 className="w-4 h-4 text-primary shrink-0" />
-            <span className="text-xs font-medium text-foreground truncate flex-1">
-              {nomeArquivo}
-            </span>
+    <div className="section-card">
+      <h2 className="section-title">
+        <ShieldCheck className="w-5 h-5 text-primary" />
+        Certificado Digital (e-CNPJ)
+      </h2>
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".pfx,.p12"
+        className="hidden"
+        onChange={handleFileSelect}
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="field-label">Arquivo do Certificado</label>
+          {!nomeArquivo ? (
             <button
               type="button"
-              onClick={handleRemover}
-              className="text-muted-foreground hover:text-destructive transition-colors shrink-0"
+              onClick={() => inputRef.current?.click()}
+              className="field-input w-full flex items-center gap-2 text-muted-foreground cursor-pointer hover:border-primary/50 transition-colors"
             >
-              <X className="w-4 h-4" />
+              <Upload className="w-4 h-4 shrink-0" />
+              <span className="text-sm">Importar .pfx ou .p12</span>
             </button>
-          </div>
-        )}
-
+          ) : (
+            <div className="field-input flex items-center gap-2">
+              <FileKey2 className="w-4 h-4 text-primary shrink-0" />
+              <span className="text-sm font-medium text-foreground truncate flex-1">
+                {nomeArquivo}
+              </span>
+              <button
+                type="button"
+                onClick={handleRemover}
+                className="text-muted-foreground hover:text-destructive transition-colors shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
         <div>
-          <label className="field-label text-xs">Senha do Certificado</label>
+          <label className="field-label">Senha do Certificado</label>
           <div className="relative">
             <input
               type={showSenha ? 'text' : 'password'}
-              className="field-input pr-9 text-sm"
+              className="field-input pr-9"
               placeholder="Digite a senha do certificado"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
@@ -98,8 +88,8 @@ const CertificadoDigitalCard: React.FC = () => {
             </button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
