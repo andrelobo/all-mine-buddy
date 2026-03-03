@@ -37,18 +37,18 @@ const KPICard: React.FC<{
   icon: React.ReactNode; trend?: 'up' | 'down' | null; accent?: string;
 }> = ({ title, value, subtitle, icon, trend, accent }) => (
   <Card className="relative overflow-hidden">
-    <CardContent className="p-4">
+    <CardContent className="p-3">
       <div className="flex items-start justify-between">
-        <div className="space-y-1">
-          <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">{title}</p>
-          <p className={`text-lg font-bold ${accent || 'text-foreground'}`}>{value}</p>
+        <div className="space-y-0.5">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{title}</p>
+          <p className={`text-sm font-bold ${accent || 'text-foreground'}`}>{value}</p>
           {subtitle && <p className="text-[10px] text-muted-foreground">{subtitle}</p>}
         </div>
-        <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">{icon}</div>
+        <div className="p-1.5 rounded-md bg-primary/10 text-primary shrink-0">{icon}</div>
       </div>
       {trend && (
         <div className="absolute bottom-2 right-3">
-          {trend === 'up' ? <ArrowUpRight className="w-3.5 h-3.5 text-green-500" /> : <ArrowDownRight className="w-3.5 h-3.5 text-red-500" />}
+          {trend === 'up' ? <ArrowUpRight className="w-3 h-3 text-green-500" /> : <ArrowDownRight className="w-3 h-3 text-red-500" />}
         </div>
       )}
     </CardContent>
@@ -56,9 +56,9 @@ const KPICard: React.FC<{
 );
 
 const SectionTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({ icon, title }) => (
-  <div className="flex items-center gap-2 mb-3">
-    <div className="p-1.5 rounded-md bg-primary/10 text-primary">{icon}</div>
-    <h3 className="text-sm font-bold text-foreground uppercase tracking-wide">{title}</h3>
+  <div className="flex items-center gap-2 mb-2">
+    <div className="p-1 rounded-md bg-primary/10 text-primary">{icon}</div>
+    <h3 className="text-xs font-bold text-foreground uppercase tracking-wide">{title}</h3>
   </div>
 );
 
@@ -119,19 +119,19 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       <section>
         <SectionTitle icon={<Wallet className="w-4 h-4" />} title="Split Payment" />
         <Card>
-          <CardContent className="p-4">
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              <div className="text-center p-3 rounded-lg bg-muted/50">
+          <CardContent className="p-3">
+            <div className="grid grid-cols-3 gap-3 mb-3">
+              <div className="text-center p-2 rounded-md bg-muted/50">
                 <p className="text-[10px] text-muted-foreground uppercase">Total Reservado</p>
-                <p className="text-lg font-bold">{formatCurrency(kpis.totalReservado)}</p>
+                <p className="text-sm font-bold">{formatCurrency(kpis.totalReservado)}</p>
               </div>
-              <div className="text-center p-3 rounded-lg bg-muted/50">
+              <div className="text-center p-2 rounded-md bg-muted/50">
                 <p className="text-[10px] text-muted-foreground uppercase">% Protegido</p>
-                <p className="text-lg font-bold">{kpis.faturamentoMes > 0 ? ((kpis.totalReservado / kpis.faturamentoMes) * 100).toFixed(1) : '0'}%</p>
+                <p className="text-sm font-bold">{kpis.faturamentoMes > 0 ? ((kpis.totalReservado / kpis.faturamentoMes) * 100).toFixed(1) : '0'}%</p>
               </div>
-              <div className="text-center p-3 rounded-lg bg-muted/50">
+              <div className="text-center p-2 rounded-md bg-muted/50">
                 <p className="text-[10px] text-muted-foreground uppercase">Saldo Tributário</p>
-                <p className="text-lg font-bold">{formatCurrency(kpis.totalReservado - kpis.dasAPagar)}</p>
+                <p className="text-sm font-bold">{formatCurrency(kpis.totalReservado - kpis.dasAPagar)}</p>
               </div>
             </div>
             {splits.length > 0 ? (
@@ -172,8 +172,8 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       <section>
         <SectionTitle icon={<ShieldCheck className="w-4 h-4" />} title="Cálculo Automático – Anexo III" />
         <Card>
-          <CardContent className="p-4">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <CardContent className="p-3">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               <div>
                 <p className="text-[10px] text-muted-foreground uppercase">Receita 12m</p>
                 <p className="text-sm font-bold">{formatCurrency(rbt12)}</p>
