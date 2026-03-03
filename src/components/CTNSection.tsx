@@ -729,25 +729,6 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
   return (
     <div className="group rounded-md border transition-colors border-border bg-background hover:border-primary/20">
       <div className="flex items-start gap-1.5 px-2 py-1.5">
-        {/* Botões excluir e adicionar à esquerda */}
-        <div className="flex flex-col items-center gap-0.5 shrink-0 pt-0.5">
-          <button
-            type="button"
-            onClick={onRemove}
-            title="Remover CNAE"
-            className="p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowAddForm(v => !v)}
-            title="Adicionar novo CTN/NBS"
-            className="p-1 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
-          >
-            <Plus className="w-3.5 h-3.5" />
-          </button>
-        </div>
         {/* Conteúdo CNAE + vínculos */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
@@ -794,6 +775,25 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
               ))}
             </div>
           )}
+        </div>
+        {/* Botões excluir e adicionar à direita, sempre visíveis */}
+        <div className="flex flex-col items-center gap-0.5 shrink-0 pt-0.5">
+          <button
+            type="button"
+            onClick={onRemove}
+            title="Remover CNAE"
+            className="p-1 rounded-md text-destructive/70 hover:text-destructive hover:bg-destructive/10 transition-colors"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowAddForm(v => !v)}
+            title="Adicionar novo CTN/NBS"
+            className="p-1 rounded-md text-primary/70 hover:text-primary hover:bg-primary/10 transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
 
