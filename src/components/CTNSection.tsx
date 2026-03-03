@@ -739,9 +739,9 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
               <span className="text-[10px] font-medium bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded shrink-0">Manual</span>
             )}
           </div>
-          {/* Vínculos CTN/NBS logo abaixo do CNAE */}
+          {/* Vínculos CTN/NBS alinhados abaixo do número */}
           {cnae.vinculos.length > 0 && (
-            <div className="mt-1 ml-6">
+            <div className="mt-1 pl-0">
               {cnae.vinculos.map((vinculo, idx) => (
                 <div
                   key={vinculo.id}
