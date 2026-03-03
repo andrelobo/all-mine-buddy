@@ -744,20 +744,20 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
               {cnae.vinculos.map((vinculo, idx) => (
                 <div
                   key={vinculo.id}
-                  className="flex items-center gap-2 py-0.5 text-xs text-foreground/80"
+                  className="flex items-start gap-2 py-0.5 text-xs text-foreground/80"
                 >
-                  <div className="flex-1 min-w-0 text-justify leading-relaxed">
+                  <div className="flex-1 min-w-0 flex flex-col gap-0.5">
                     {vinculo.ctn && (
-                      <div>
-                        <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.ctn}|</span>
+                      <p className="leading-relaxed text-justify">
+                        <span className="font-mono font-semibold text-primary whitespace-nowrap">|{vinculo.ctn}|</span>
                         {' '}{(vinculo.ctnDescricao || '').replace(/[.\s]+$/, '')}.
-                      </div>
+                      </p>
                     )}
                     {vinculo.nbs && (
-                      <div>
-                        <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.nbs}|</span>
+                      <p className="leading-relaxed text-justify">
+                        <span className="font-mono font-semibold text-primary whitespace-nowrap">|{vinculo.nbs}|</span>
                         {' '}{(vinculo.nbsDescricao || '').replace(/[.\s]+$/, '')}.
-                      </div>
+                      </p>
                     )}
                     {!vinculo.ctn && !vinculo.nbs && <span className="text-muted-foreground italic">Sem CTN/NBS</span>}
                   </div>
@@ -766,7 +766,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
                       type="button"
                       onClick={() => onRemoveVinculo(vinculo.id)}
                       title="Remover vínculo"
-                      className="shrink-0 p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
+                      className="shrink-0 p-1 rounded text-destructive/70 hover:text-destructive hover:bg-destructive/10 transition-colors"
                     >
                       <X className="w-3 h-3" />
                     </button>
