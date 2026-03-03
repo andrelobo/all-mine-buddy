@@ -214,7 +214,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
           <section>
             <SectionTitle icon={<Gauge className="w-4 h-4" />} title="Monitoramento de Faixa" />
             <Card>
-              <CardContent className="p-4 space-y-4">
+              <CardContent className="p-3 space-y-3">
                 {/* Alerta de proximidade */}
                 <div className="flex items-center justify-between">
                   <div>
@@ -295,13 +295,13 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
 
       <section>
         <SectionTitle icon={<BarChart3 className="w-4 h-4" />} title="Gráficos" />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           {/* Faturamento + Tributo Mensal */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Faturamento & Tributo Mensal</CardTitle>
             </CardHeader>
-            <CardContent className="h-64">
+            <CardContent className="h-56 p-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={dadosMensais}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -321,7 +321,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">ISS Retido por Mês</CardTitle>
             </CardHeader>
-            <CardContent className="h-64">
+            <CardContent className="h-56 p-3">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={dadosMensais}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -339,7 +339,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Faturamento por Cliente</CardTitle>
             </CardHeader>
-            <CardContent className="h-64">
+            <CardContent className="h-56 p-3">
               {pieData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPie>
@@ -361,7 +361,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       <section>
         <SectionTitle icon={<Users className="w-4 h-4" />} title="Análise por Cliente – Curva ABC" />
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3">
             {analiseClientes.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
