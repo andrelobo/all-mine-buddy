@@ -118,42 +118,33 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       {/* SPLIT PAYMENT */}
       <section>
         <SectionTitle icon={<Wallet className="w-4 h-4" />} title="Split Payment" />
-        <Card>
-          <CardContent className="p-3">
-            <div className="grid grid-cols-3 gap-3 mb-3">
-              <div className="text-center p-2 rounded-md bg-muted/50">
-                <p className="text-[10px] text-muted-foreground uppercase">Total Reservado</p>
-                <p className="text-sm font-bold">{formatCurrency(kpis.totalReservado)}</p>
-              </div>
-              <div className="text-center p-2 rounded-md bg-muted/50">
-                <p className="text-[10px] text-muted-foreground uppercase">% Protegido</p>
-                <p className="text-sm font-bold">{kpis.faturamentoMes > 0 ? ((kpis.totalReservado / kpis.faturamentoMes) * 100).toFixed(1) : '0'}%</p>
-              </div>
-              <div className="text-center p-2 rounded-md bg-muted/50">
-                <p className="text-[10px] text-muted-foreground uppercase">Saldo Tributário</p>
-                <p className="text-sm font-bold">{formatCurrency(kpis.totalReservado - kpis.dasAPagar)}</p>
-              </div>
-            </div>
-            {splits.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <KPICard title="Total Reservado" value={formatCurrency(kpis.totalReservado)} icon={<ShieldCheck className="w-4 h-4" />} />
+          <KPICard title="% Protegido" value={`${kpis.faturamentoMes > 0 ? ((kpis.totalReservado / kpis.faturamentoMes) * 100).toFixed(1) : '0'}%`} icon={<Percent className="w-4 h-4" />} />
+          <KPICard title="Saldo Tributário" value={formatCurrency(kpis.totalReservado - kpis.dasAPagar)} icon={<Wallet className="w-4 h-4" />} />
+        </div>
+        {splits.length > 0 && (
+          <Card className="mt-3">
+            <CardContent className="p-3">
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
                   <thead>
                     <tr className="border-b text-muted-foreground">
-                      <th className="text-left py-2 px-2">NF</th>
-                      <th className="text-right py-2 px-2">Bruto</th>
-                      <th className="text-right py-2 px-2">Reservado</th>
-                      <th className="text-right py-2 px-2">Liberado</th>
-                      <th className="text-center py-2 px-2">Status</th>
+                      <th className="text-left py-1.5 px-2">NF</th>
+                      <th className="text-right py-1.5 px-2">Bruto</th>
+                      <th className="text-right py-1.5 px-2">Reservado</th>
+                      <th className="text-right py-1.5 px-2">Liberado</th>
+                      <th className="text-center py-1.5 px-2">Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {splits.slice(0, 10).map(s => (
                       <tr key={s.id} className="border-b border-border/50">
-                        <td className="py-2 px-2 font-mono">{s.nota_fiscal_id?.substring(0, 8)}...</td>
-                        <td className="text-right py-2 px-2">{formatCurrency(s.valor_bruto)}</td>
-                        <td className="text-right py-2 px-2 text-destructive">{formatCurrency(s.valor_reservado)}</td>
-                        <td className="text-right py-2 px-2 text-green-600">{formatCurrency(s.valor_liberado)}</td>
-                        <td className="text-center py-2 px-2">
+                        <td className="py-1.5 px-2 font-mono">{s.nota_fiscal_id?.substring(0, 8)}...</td>
+                        <td className="text-right py-1.5 px-2">{formatCurrency(s.valor_bruto)}</td>
+                        <td className="text-right py-1.5 px-2 text-destructive">{formatCurrency(s.valor_reservado)}</td>
+                        <td className="text-right py-1.5 px-2 text-green-600">{formatCurrency(s.valor_liberado)}</td>
+                        <td className="text-center py-1.5 px-2">
                           <Badge variant={s.status === 'pago' ? 'default' : 'outline'} className="text-[9px]">{s.status}</Badge>
                         </td>
                       </tr>
@@ -161,11 +152,9 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                   </tbody>
                 </table>
               </div>
-            ) : (
-              <p className="text-center text-sm text-muted-foreground py-4">Nenhum split registrado ainda.</p>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
       </section>
 
       {/* 2) CÁLCULO ANEXO III */}
