@@ -227,7 +227,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
               {filteredFavoritos.map((fav, idx) => (
                 <div key={fav.codigo} className="border-b border-border/50 last:border-b-0">
                   {/* Cabeçalho CNAE */}
-                  <div className="flex items-center gap-2 px-3 py-2 bg-muted/30">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/30">
                     <span className="text-xs font-bold text-muted-foreground shrink-0">{idx + 1}.</span>
                     <span className="font-mono text-xs font-semibold text-primary">{fav.codigo.replace(/(\d{4})(\d)(\d{2})/, '$1-$2/$3')}</span>
                     <span className="text-xs text-foreground/90 truncate">{fav.cnaeDescricao}</span>
