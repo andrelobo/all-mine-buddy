@@ -410,10 +410,6 @@ const Index = () => {
                     <CertificadoDigitalCard />
 
                     <IdentificacaoDocumentoCard
-                      competencia={competencia}
-                      onCompetenciaChange={setCompetencia}
-                      dataEmissao={dataEmissao}
-                      onDataEmissaoChange={setDataEmissao}
                       nfseNum={nfseNum}
                       onNfseNumChange={setNfseNum}
                       dpsNum={dpsNum}
