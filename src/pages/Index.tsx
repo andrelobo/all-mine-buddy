@@ -16,6 +16,7 @@ import ConfigOperacionaisSection from '@/components/ConfigOperacionaisSection';
 import ContatoCard from '@/components/prestador/ContatoCard';
 import EnderecoCard from '@/components/prestador/EnderecoCard';
 import CertificadoDigitalCard from '@/components/prestador/CertificadoDigitalCard';
+import IdentificacaoDocumentoCard from '@/components/prestador/IdentificacaoDocumentoCard';
 import { usePrestadorAutoFetch } from '@/hooks/usePrestadorAutoFetch';
 import TomadorSection, { type TomadorData } from '@/components/TomadorSection';
 import TomadoresLista from '@/components/TomadoresLista';
@@ -407,6 +408,19 @@ const Index = () => {
                     />
 
                     <CertificadoDigitalCard />
+
+                    <IdentificacaoDocumentoCard
+                      competencia={competencia}
+                      onCompetenciaChange={setCompetencia}
+                      dataEmissao={dataEmissao}
+                      onDataEmissaoChange={setDataEmissao}
+                      nfseNum={nfseNum}
+                      onNfseNumChange={setNfseNum}
+                      dpsNum={dpsNum}
+                      onDpsNumChange={setDpsNum}
+                      serieDpsNum={serieDpsNum}
+                      onSerieDpsNumChange={setSerieDpsNum}
+                    />
 
                     <div className="flex justify-end gap-3 pt-2">
                       <button
