@@ -238,7 +238,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
                       key={vinculo.ctn || vinculo.nbs || vIdx}
                       type="button"
                       onClick={() => handleSelectFavorito(fav, vinculo)}
-                      className="w-full text-left px-3 py-1.5 hover:bg-primary/5 transition-colors"
+                      className="w-full text-left px-3 py-1 hover:bg-primary/5 transition-colors"
                     >
                       <div className="flex-1 min-w-0 flex flex-col gap-0.5 text-xs">
                         {vinculo.ctn && (
