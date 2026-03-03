@@ -69,8 +69,6 @@ const EmpresaCard: React.FC<Props> = ({
       <div className="md:col-span-2">
         <label className="field-label">Nome Fantasia</label>
         <input className="field-input" placeholder="Nome Fantasia" value={data.nomeFantasia} onChange={(e) => onFieldChange('nomeFantasia', e.target.value)} />
-        <label className="field-label">Nome Fantasia</label>
-        <input className="field-input" placeholder="Nome Fantasia" value={data.nomeFantasia} onChange={(e) => onFieldChange('nomeFantasia', e.target.value)} />
       </div>
       <div>
         <div className="flex items-center gap-3">
