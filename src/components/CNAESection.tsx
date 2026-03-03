@@ -295,7 +295,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
                       )}
                     </p>
                   </button>
-                  <button type="button" onClick={(e) => handleRemove(e, codigo)} title="Remover" className="shrink-0 p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100">
+                  <button type="button" onClick={(e) => handleRemove(e, codigo)} title="Remover" className="shrink-0 p-1 rounded text-destructive/70 hover:text-destructive hover:bg-destructive/10 transition-colors">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
