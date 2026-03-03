@@ -766,7 +766,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
               key={vinculo.id}
               className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-foreground/80 border-b border-border/30 last:border-b-0 hover:bg-muted/30"
             >
-              <span className="text-muted-foreground w-4 text-center shrink-0">{idx + 1}.</span>
+              <span className="text-muted-foreground w-4 text-center shrink-0"></span>
               <div className="flex-1 min-w-0 text-justify leading-relaxed">
                 {vinculo.ctn && (
                   <>
