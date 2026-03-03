@@ -727,9 +727,9 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
   };
 
   return (
-    <div className="group rounded-lg border transition-colors border-border bg-background hover:border-primary/20">
+    <div className="group rounded-md border transition-colors border-border bg-background hover:border-primary/20">
       {/* Cabeçalho do CNAE + vínculos CTN/NBS inline */}
-      <div className="flex items-start justify-between gap-2 p-2.5">
+      <div className="flex items-start justify-between gap-1.5 px-2 py-1.5">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold text-muted-foreground shrink-0">{ordem}.</span>
@@ -790,7 +790,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
       </div>
 
       {/* Botão adicionar vínculo */}
-      <div className="px-2.5 py-1.5">
+      <div className="px-2 py-1">
         <button
           type="button"
           onClick={() => setShowAddForm(v => !v)}
