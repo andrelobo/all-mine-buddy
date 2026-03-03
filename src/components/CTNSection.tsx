@@ -760,7 +760,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
 
       {/* Sub-linhas de vínculos CTN/NBS */}
       {cnae.vinculos.length > 0 && (
-        <div className="border-t border-border/50">
+        <div>
           {cnae.vinculos.map((vinculo, idx) => (
             <div
               key={vinculo.id}
