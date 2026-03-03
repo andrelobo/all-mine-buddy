@@ -749,17 +749,16 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
                 >
                   <div className="flex-1 min-w-0 text-justify leading-relaxed">
                     {vinculo.ctn && (
-                      <>
+                      <div>
                         <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.ctn}|</span>
-                        {' '}{(vinculo.ctnDescricao || '').replace(/[.\s]+$/, '')}
-                        {vinculo.nbs ? ' ' : '.'}
-                      </>
+                        {' '}{(vinculo.ctnDescricao || '').replace(/[.\s]+$/, '')}.
+                      </div>
                     )}
                     {vinculo.nbs && (
-                      <>
+                      <div>
                         <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.nbs}|</span>
                         {' '}{(vinculo.nbsDescricao || '').replace(/[.\s]+$/, '')}.
-                      </>
+                      </div>
                     )}
                     {!vinculo.ctn && !vinculo.nbs && <span className="text-muted-foreground italic">Sem CTN/NBS</span>}
                   </div>
