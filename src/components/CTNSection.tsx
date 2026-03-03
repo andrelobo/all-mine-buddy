@@ -728,7 +728,7 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
 
   return (
     <div className="group rounded-lg border transition-colors border-border bg-background hover:border-primary/20">
-      {/* Cabeçalho do CNAE */}
+      {/* Cabeçalho do CNAE + vínculos CTN/NBS inline */}
       <div className="flex items-start justify-between gap-2 p-2.5">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
@@ -739,6 +739,44 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
               <span className="text-[10px] font-medium bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded shrink-0">Manual</span>
             )}
           </div>
+          {/* Vínculos CTN/NBS logo abaixo do CNAE */}
+          {cnae.vinculos.length > 0 && (
+            <div className="mt-1 ml-6">
+              {cnae.vinculos.map((vinculo, idx) => (
+                <div
+                  key={vinculo.id}
+                  className="flex items-center gap-2 py-0.5 text-xs text-foreground/80"
+                >
+                  <div className="flex-1 min-w-0 text-justify leading-relaxed">
+                    {vinculo.ctn && (
+                      <>
+                        <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.ctn}|</span>
+                        {' '}{(vinculo.ctnDescricao || '').replace(/[.\s]+$/, '')}
+                        {vinculo.nbs ? ' ' : '.'}
+                      </>
+                    )}
+                    {vinculo.nbs && (
+                      <>
+                        <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.nbs}|</span>
+                        {' '}{(vinculo.nbsDescricao || '').replace(/[.\s]+$/, '')}.
+                      </>
+                    )}
+                    {!vinculo.ctn && !vinculo.nbs && <span className="text-muted-foreground italic">Sem CTN/NBS</span>}
+                  </div>
+                  {cnae.vinculos.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => onRemoveVinculo(vinculo.id)}
+                      title="Remover vínculo"
+                      className="shrink-0 p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-1 shrink-0">
           <button
@@ -751,46 +789,6 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
           </button>
         </div>
       </div>
-
-      {/* Sub-linhas de vínculos CTN/NBS */}
-      {cnae.vinculos.length > 0 && (
-        <div>
-          {cnae.vinculos.map((vinculo, idx) => (
-            <div
-              key={vinculo.id}
-              className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-foreground/80 border-b border-border/30 last:border-b-0 hover:bg-muted/30"
-            >
-              <span className="text-muted-foreground w-4 text-center shrink-0"></span>
-              <div className="flex-1 min-w-0 text-justify leading-relaxed">
-                {vinculo.ctn && (
-                  <>
-                    <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.ctn}|</span>
-                    {' '}{(vinculo.ctnDescricao || '').replace(/[.\s]+$/, '')}
-                    {vinculo.nbs ? ' ' : '.'}
-                  </>
-                )}
-                {vinculo.nbs && (
-                  <>
-                    <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.nbs}|</span>
-                    {' '}{(vinculo.nbsDescricao || '').replace(/[.\s]+$/, '')}.
-                  </>
-                )}
-                {!vinculo.ctn && !vinculo.nbs && <span className="text-muted-foreground italic">Sem CTN/NBS</span>}
-              </div>
-              {cnae.vinculos.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => onRemoveVinculo(vinculo.id)}
-                  title="Remover vínculo"
-                  className="shrink-0 p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
 
       {/* Botão adicionar vínculo */}
       <div className="px-2.5 py-1.5">
