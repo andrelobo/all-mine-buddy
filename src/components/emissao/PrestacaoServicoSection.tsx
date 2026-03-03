@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { Briefcase, Percent, ChevronDown, Search, MapPin, Star, List } from 'lucide-react';
+import { Briefcase, Percent, ChevronDown, Search, MapPin, Star, List, Hash, FileText, DollarSign, Calculator, BadgePercent, Scissors, ShieldCheck, Receipt } from 'lucide-react';
 import { searchCTN, getCTNByCode } from '@/utils/ctn-data';
 
 export interface PrestacaoServicoData {
@@ -277,7 +277,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
           )}
         </div>
         <div ref={ctnDropdownRef} className="relative">
-          <label className="field-label">Código Tributação Nacional*</label>
+          <label className="field-label flex items-center gap-1.5"><Hash className="w-4 h-4 text-primary" />Código Tributação Nacional*</label>
           <div className="relative">
             <input
               className="field-input pr-8"
@@ -345,7 +345,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       </div>
 
       <div className="mt-3">
-        <label className="field-label">Descrição do Serviço*</label>
+        <label className="field-label flex items-center gap-1.5"><FileText className="w-4 h-4 text-primary" />Descrição do Serviço*</label>
         <textarea
           className="field-input min-h-[60px] resize-y"
           placeholder="Descreva o serviço prestado conforme a NFS-e..."
@@ -358,7 +358,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
         <div>
-          <label className="field-label">Valor do Serviço (R$)*</label>
+          <label className="field-label flex items-center gap-1.5"><DollarSign className="w-4 h-4 text-primary" />Valor do Serviço (R$)*</label>
           <input
             className="field-input text-right"
             placeholder="0,00"
@@ -367,7 +367,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
           />
         </div>
         <div>
-          <label className="field-label">Alíquota %{optanteSimples && !tomadorSubstituto ? '' : '*'}</label>
+          <label className="field-label flex items-center gap-1.5"><BadgePercent className="w-4 h-4 text-primary" />Alíquota %{optanteSimples && !tomadorSubstituto ? '' : '*'}</label>
           <input
             className={`field-input text-right ${optanteSimples && !tomadorSubstituto ? 'bg-muted/30 text-muted-foreground' : ''}`}
             placeholder={optanteSimples && !tomadorSubstituto ? '0,00' : '0,00'}
@@ -379,7 +379,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
           />
         </div>
         <div>
-          <label className="field-label">Base de Cálculo (R$)</label>
+          <label className="field-label flex items-center gap-1.5"><Calculator className="w-4 h-4 text-primary" />Base de Cálculo (R$)</label>
           <input
             className="field-input text-right bg-muted/30"
             placeholder="0,00"
@@ -388,7 +388,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
           />
         </div>
         <div>
-          <label className="field-label">Desconto (R$)</label>
+          <label className="field-label flex items-center gap-1.5"><Scissors className="w-4 h-4 text-primary" />Desconto (R$)</label>
           <input
             className="field-input text-right"
             placeholder="0,00"
@@ -417,8 +417,8 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       {/* Retenções Federais */}
       {mostrarRetencoesFederais && (
         <div className="mt-3 pt-3 border-t border-border">
-          <label className="field-label mb-2">
-            Retenções Federais
+          <label className="field-label mb-2 flex items-center gap-1.5">
+            <ShieldCheck className="w-4 h-4 text-primary" />Retenções Federais
           </label>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {([
