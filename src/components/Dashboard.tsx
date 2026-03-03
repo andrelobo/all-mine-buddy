@@ -115,6 +115,59 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         </div>
       </section>
 
+      {/* SPLIT PAYMENT */}
+      <section>
+        <SectionTitle icon={<Wallet className="w-4 h-4" />} title="Split Payment" />
+        <Card>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="text-center p-3 rounded-lg bg-muted/50">
+                <p className="text-[10px] text-muted-foreground uppercase">Total Reservado</p>
+                <p className="text-lg font-bold">{formatCurrency(kpis.totalReservado)}</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-muted/50">
+                <p className="text-[10px] text-muted-foreground uppercase">% Protegido</p>
+                <p className="text-lg font-bold">{kpis.faturamentoMes > 0 ? ((kpis.totalReservado / kpis.faturamentoMes) * 100).toFixed(1) : '0'}%</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-muted/50">
+                <p className="text-[10px] text-muted-foreground uppercase">Saldo Tributário</p>
+                <p className="text-lg font-bold">{formatCurrency(kpis.totalReservado - kpis.dasAPagar)}</p>
+              </div>
+            </div>
+            {splits.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b text-muted-foreground">
+                      <th className="text-left py-2 px-2">NF</th>
+                      <th className="text-right py-2 px-2">Bruto</th>
+                      <th className="text-right py-2 px-2">Reservado</th>
+                      <th className="text-right py-2 px-2">Liberado</th>
+                      <th className="text-center py-2 px-2">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {splits.slice(0, 10).map(s => (
+                      <tr key={s.id} className="border-b border-border/50">
+                        <td className="py-2 px-2 font-mono">{s.nota_fiscal_id?.substring(0, 8)}...</td>
+                        <td className="text-right py-2 px-2">{formatCurrency(s.valor_bruto)}</td>
+                        <td className="text-right py-2 px-2 text-destructive">{formatCurrency(s.valor_reservado)}</td>
+                        <td className="text-right py-2 px-2 text-green-600">{formatCurrency(s.valor_liberado)}</td>
+                        <td className="text-center py-2 px-2">
+                          <Badge variant={s.status === 'pago' ? 'default' : 'outline'} className="text-[9px]">{s.status}</Badge>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="text-center text-sm text-muted-foreground py-4">Nenhum split registrado ainda.</p>
+            )}
+          </CardContent>
+        </Card>
+      </section>
+
       {/* 2) CÁLCULO ANEXO III */}
       <section>
         <SectionTitle icon={<ShieldCheck className="w-4 h-4" />} title="Cálculo Automático – Anexo III" />
@@ -320,59 +373,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
             </CardContent>
           </Card>
         </div>
-      </section>
-
-      {/* 4) SPLIT PAYMENT */}
-      <section>
-        <SectionTitle icon={<Wallet className="w-4 h-4" />} title="Split Payment" />
-        <Card>
-          <CardContent className="p-4">
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              <div className="text-center p-3 rounded-lg bg-muted/50">
-                <p className="text-[10px] text-muted-foreground uppercase">Total Reservado</p>
-                <p className="text-lg font-bold">{formatCurrency(kpis.totalReservado)}</p>
-              </div>
-              <div className="text-center p-3 rounded-lg bg-muted/50">
-                <p className="text-[10px] text-muted-foreground uppercase">% Protegido</p>
-                <p className="text-lg font-bold">{kpis.faturamentoMes > 0 ? ((kpis.totalReservado / kpis.faturamentoMes) * 100).toFixed(1) : '0'}%</p>
-              </div>
-              <div className="text-center p-3 rounded-lg bg-muted/50">
-                <p className="text-[10px] text-muted-foreground uppercase">Saldo Tributário</p>
-                <p className="text-lg font-bold">{formatCurrency(kpis.totalReservado - kpis.dasAPagar)}</p>
-              </div>
-            </div>
-            {splits.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="border-b text-muted-foreground">
-                      <th className="text-left py-2 px-2">NF</th>
-                      <th className="text-right py-2 px-2">Bruto</th>
-                      <th className="text-right py-2 px-2">Reservado</th>
-                      <th className="text-right py-2 px-2">Liberado</th>
-                      <th className="text-center py-2 px-2">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {splits.slice(0, 10).map(s => (
-                      <tr key={s.id} className="border-b border-border/50">
-                        <td className="py-2 px-2 font-mono">{s.nota_fiscal_id?.substring(0, 8)}...</td>
-                        <td className="text-right py-2 px-2">{formatCurrency(s.valor_bruto)}</td>
-                        <td className="text-right py-2 px-2 text-destructive">{formatCurrency(s.valor_reservado)}</td>
-                        <td className="text-right py-2 px-2 text-green-600">{formatCurrency(s.valor_liberado)}</td>
-                        <td className="text-center py-2 px-2">
-                          <Badge variant={s.status === 'pago' ? 'default' : 'outline'} className="text-[9px]">{s.status}</Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p className="text-center text-sm text-muted-foreground py-4">Nenhum split registrado ainda.</p>
-            )}
-          </CardContent>
-        </Card>
       </section>
 
       {/* 5) ANÁLISE POR CLIENTE */}
