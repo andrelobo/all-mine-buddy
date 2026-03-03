@@ -241,19 +241,18 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
                       className="w-full text-left px-3 py-1.5 hover:bg-primary/5 transition-colors flex items-start gap-2"
                     >
                       <span className="text-muted-foreground text-xs w-6 text-right shrink-0">{vIdx + 1}.</span>
-                      <div className="flex-1 min-w-0 text-xs leading-relaxed">
+                      <div className="flex-1 min-w-0 flex flex-col gap-0.5 text-xs">
                         {vinculo.ctn && (
-                          <>
-                            <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.ctn}|</span>
-                            {' '}{(vinculo.ctnDescricao || '').replace(/[.\s]+$/, '')}
-                            {vinculo.nbs ? ' ' : '.'}
-                          </>
+                          <p className="leading-relaxed text-justify">
+                            <span className="font-mono font-semibold text-primary whitespace-nowrap">|{vinculo.ctn}|</span>
+                            {' '}{(vinculo.ctnDescricao || '').replace(/[.\s]+$/, '')}.
+                          </p>
                         )}
                         {vinculo.nbs && (
-                          <>
-                            <span className="font-mono font-semibold text-primary" style={{whiteSpace:'nowrap'}}>|{vinculo.nbs}|</span>
+                          <p className="leading-relaxed text-justify">
+                            <span className="font-mono font-semibold text-primary whitespace-nowrap">|{vinculo.nbs}|</span>
                             {' '}{(vinculo.nbsDescricao || '').replace(/[.\s]+$/, '')}.
-                          </>
+                          </p>
                         )}
                         {!vinculo.ctn && !vinculo.nbs && <span className="text-muted-foreground italic">Sem CTN/NBS</span>}
                       </div>
