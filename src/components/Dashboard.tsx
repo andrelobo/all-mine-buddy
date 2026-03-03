@@ -157,7 +157,16 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         )}
       </section>
 
-      {/* 2) CÁLCULO ANEXO III */}
+      {/* FLUXO DE CAIXA */}
+      <section>
+        <SectionTitle icon={<TrendingUp className="w-4 h-4" />} title="Fluxo de Caixa" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <KPICard title="Caixa Operacional" value={formatCurrency(fluxoCaixa.operacional)} icon={<TrendingUp className="w-4 h-4" />} accent="text-green-600" />
+          <KPICard title="Caixa Tributário" value={formatCurrency(-fluxoCaixa.tributario)} subtitle="DAS + ISS retido" icon={<TrendingDown className="w-4 h-4" />} accent="text-destructive" />
+          <KPICard title="Saldo Disponível" value={formatCurrency(fluxoCaixa.saldo)} icon={<DollarSign className="w-4 h-4" />} accent={fluxoCaixa.saldo >= 0 ? 'text-green-600' : 'text-destructive'} />
+        </div>
+      </section>
+
       <section>
         <SectionTitle icon={<ShieldCheck className="w-4 h-4" />} title="Cálculo Automático – Anexo III" />
         <Card>
