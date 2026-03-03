@@ -728,8 +728,27 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
 
   return (
     <div className="group rounded-md border transition-colors border-border bg-background hover:border-primary/20">
-      {/* Cabeçalho do CNAE + vínculos CTN/NBS inline */}
-      <div className="flex items-start justify-between gap-1.5 px-2 py-1.5">
+      <div className="flex items-start gap-1.5 px-2 py-1.5">
+        {/* Botões excluir e adicionar à esquerda */}
+        <div className="flex flex-col items-center gap-0.5 shrink-0 pt-0.5">
+          <button
+            type="button"
+            onClick={onRemove}
+            title="Remover CNAE"
+            className="p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowAddForm(v => !v)}
+            title="Adicionar novo CTN/NBS"
+            className="p-1 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" />
+          </button>
+        </div>
+        {/* Conteúdo CNAE + vínculos */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold text-muted-foreground shrink-0">{ordem}.</span>
@@ -739,7 +758,6 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
               <span className="text-[10px] font-medium bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded shrink-0">Manual</span>
             )}
           </div>
-          {/* Vínculos CTN/NBS alinhados abaixo do número */}
           {cnae.vinculos.length > 0 && (
             <div className="mt-1 pl-0">
               {cnae.vinculos.map((vinculo, idx) => (
@@ -777,28 +795,6 @@ const CnaeListItem: React.FC<CnaeListItemProps> = ({
             </div>
           )}
         </div>
-        <div className="flex items-center gap-1 shrink-0">
-          <button
-            type="button"
-            onClick={onRemove}
-            title="Remover CNAE"
-            className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Botão adicionar vínculo */}
-      <div className="px-2 py-1">
-        <button
-          type="button"
-          onClick={() => setShowAddForm(v => !v)}
-          title="Adicionar novo CTN/NBS"
-          className="p-1.5 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
-        >
-          <Plus className="w-3.5 h-3.5" />
-        </button>
       </div>
 
       {/* Formulário inline para adicionar novo vínculo CTN/NBS */}
