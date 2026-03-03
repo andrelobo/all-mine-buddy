@@ -15,6 +15,7 @@ import EmpresaCard from '@/components/prestador/EmpresaCard';
 import ConfigOperacionaisSection from '@/components/ConfigOperacionaisSection';
 import ContatoCard from '@/components/prestador/ContatoCard';
 import EnderecoCard from '@/components/prestador/EnderecoCard';
+import CertificadoDigitalCard from '@/components/prestador/CertificadoDigitalCard';
 import { usePrestadorAutoFetch } from '@/hooks/usePrestadorAutoFetch';
 import TomadorSection, { type TomadorData } from '@/components/TomadorSection';
 import TomadoresLista from '@/components/TomadoresLista';
@@ -404,6 +405,8 @@ const Index = () => {
                       whatsapp={prestador.whatsapp}
                       onFieldChange={autoFetch.handleFieldChange}
                     />
+
+                    <CertificadoDigitalCard />
 
                     <div className="flex justify-end gap-3 pt-2">
                       <button
