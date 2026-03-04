@@ -167,7 +167,7 @@ const FingestClientesTabela: React.FC<{ prestadorId: string | null }> = ({ prest
         <TableHeader>
           <TableRow>
             <TableHead className="text-left">Data</TableHead>
-            <TableHead className="text-left">Tomador</TableHead>
+            <TableHead className="text-left">Tomador(a)</TableHead>
             <TableHead className="text-right">Receita R$</TableHead>
             <TableHead className="text-right">ISSQN (R)</TableHead>
             <TableHead className="text-right">AliqSn</TableHead>
