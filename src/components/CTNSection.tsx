@@ -430,10 +430,6 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange, savedCnaes, 
 
   return (
     <div>
-      <h3 className="text-xs font-bold flex items-center gap-1.5 mb-2" style={{ color: 'hsl(144, 72%, 28%)' }}>
-        Parâmetro Municipal
-      </h3>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 items-stretch">
         {/* CNAE Card */}
         <div ref={cnaeDropdownRef} className={`radio-card flex flex-col items-start ${manualCnae ? 'radio-card-selected' : ''}`}>
