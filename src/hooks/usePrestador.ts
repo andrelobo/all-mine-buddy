@@ -189,6 +189,7 @@ export function usePrestador() {
         simples_parcela_deduzir: cfg.simplesParcalaDeduzir,
         simples_aliquota_efetiva: cfg.simplesAliquotaEfetiva,
         simples_data_calculo: cfg.simplesAliquotaEfetiva > 0 ? new Date().toISOString() : null,
+        simples_parametro_iss: cfg.simplesParametroIss,
       } as any;
 
       let result;
