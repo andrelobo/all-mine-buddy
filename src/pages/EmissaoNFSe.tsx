@@ -275,6 +275,7 @@ const EmissaoNFSe: React.FC = () => {
             value={simplesParametroIss}
             onChange={handleParametroIssChange}
             onAutosave={autosave}
+            disabled
           />
         )}
 
