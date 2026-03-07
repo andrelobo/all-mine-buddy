@@ -1,0 +1,1 @@
+ALTER TABLE public.prestadores ADD COLUMN IF NOT EXISTS simples_parametro_iss text NULL DEFAULT '';

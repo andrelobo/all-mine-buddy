@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/AppSidebar';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
+import ParametrosTributariosSNCard, { type ParametroISSOption } from '@/components/ParametrosTributariosSNCard';
 import CTNSection from '@/components/CTNSection';
 import CNAESection from '@/components/CNAESection';
 import SimplesNacionalSection from '@/components/SimplesNacionalSection';
@@ -76,6 +77,7 @@ const Index = () => {
   const [aliquotaSN, setAliquotaSN] = useState('');
   const [regimeApuracaoSNParametro, setRegimeApuracaoSNParametro] = useState(false);
   const [configValida, setConfigValida] = useState(false);
+  const [simplesParametroIss, setSimplesParametroIss] = useState<ParametroISSOption>('');
   const [ctnSelecionado, setCtnSelecionado] = useState<string | null>(null);
   const [ctnDescricao, setCtnDescricao] = useState<string>('');
   const [ctnItem, setCtnItem] = useState<string>('');
@@ -125,6 +127,7 @@ const Index = () => {
     if (config.ctnItem) setCtnItem(config.ctnItem);
     if (config.cnaesLista && config.cnaesLista.length > 0) setCnaesLista(config.cnaesLista);
     if (config.configOperacionais && config.configOperacionais.length > 0) setConfigOperacionais(config.configOperacionais);
+    if (config.simplesParametroIss) setSimplesParametroIss(config.simplesParametroIss as ParametroISSOption);
   }, [config.id]);
 
   // Sincronizar alíquota efetiva do cálculo Simples Nacional com o campo de Parâmetros Fiscais
@@ -189,6 +192,7 @@ const Index = () => {
       simplesAliquotaNominal: snCalculo.faixa?.aliquotaNominal || 0,
       simplesParcalaDeduzir: snCalculo.faixa?.parcelaDeduzir || 0,
       simplesAliquotaEfetiva: snCalculo.aliquotaEfetiva || 0,
+      simplesParametroIss: simplesParametroIss,
     };
     const result = await salvarPrestador(prestador, cfg);
     if (result) setUnsavedPrestador(false);
@@ -493,6 +497,14 @@ const Index = () => {
 
                     {regime === 'simples' && (
                       <TabelaAnexoIII faixaAtual={snCalculo.faixa?.faixa ?? null} />
+                    )}
+
+                    {regime === 'simples' && (
+                      <ParametrosTributariosSNCard
+                        value={simplesParametroIss}
+                        onChange={setSimplesParametroIss}
+                        onAutosave={autosave}
+                      />
                     )}
 
                     <div className="flex justify-end pt-2">

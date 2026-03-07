@@ -37,6 +37,7 @@ export interface PrestadorConfig {
   simplesAliquotaNominal: number;
   simplesParcalaDeduzir: number;
   simplesAliquotaEfetiva: number;
+  simplesParametroIss: string;
 }
 
 const INITIAL_PRESTADOR: PrestadorData = {
@@ -73,6 +74,7 @@ const INITIAL_CONFIG: PrestadorConfig = {
   simplesAliquotaNominal: 0,
   simplesParcalaDeduzir: 0,
   simplesAliquotaEfetiva: 0,
+  simplesParametroIss: '',
 };
 
 export function usePrestador() {
@@ -133,6 +135,7 @@ export function usePrestador() {
           simplesAliquotaNominal: Number((data as any).simples_aliquota_nominal) || 0,
           simplesParcalaDeduzir: Number((data as any).simples_parcela_deduzir) || 0,
           simplesAliquotaEfetiva: Number((data as any).simples_aliquota_efetiva) || 0,
+          simplesParametroIss: (data as any).simples_parametro_iss || '',
         });
       }
     } catch (err) {
@@ -186,6 +189,7 @@ export function usePrestador() {
         simples_parcela_deduzir: cfg.simplesParcalaDeduzir,
         simples_aliquota_efetiva: cfg.simplesAliquotaEfetiva,
         simples_data_calculo: cfg.simplesAliquotaEfetiva > 0 ? new Date().toISOString() : null,
+        simples_parametro_iss: cfg.simplesParametroIss,
       } as any;
 
       let result;
