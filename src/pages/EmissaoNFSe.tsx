@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import vascoEscudo from '@/assets/vasco-escudo.png';
 import { Shield, FileOutput, Save, ArrowLeft, AlertCircle, Printer, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
