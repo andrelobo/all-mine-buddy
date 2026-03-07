@@ -1,0 +1,1 @@
+ALTER TABLE public.notas_fiscais ADD COLUMN parametro_iss_aplicado text DEFAULT '';

@@ -57,6 +57,7 @@ export type Database = {
           local_prestacao_pais: string | null
           local_prestacao_uf: string | null
           numero_nfse: string | null
+          parametro_iss_aplicado: string | null
           prestador_id: string | null
           ret_cofins: number | null
           ret_csll: number | null
@@ -84,6 +85,7 @@ export type Database = {
           local_prestacao_pais?: string | null
           local_prestacao_uf?: string | null
           numero_nfse?: string | null
+          parametro_iss_aplicado?: string | null
           prestador_id?: string | null
           ret_cofins?: number | null
           ret_csll?: number | null
@@ -111,6 +113,7 @@ export type Database = {
           local_prestacao_pais?: string | null
           local_prestacao_uf?: string | null
           numero_nfse?: string | null
+          parametro_iss_aplicado?: string | null
           prestador_id?: string | null
           ret_cofins?: number | null
           ret_csll?: number | null
