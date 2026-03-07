@@ -78,6 +78,7 @@ export function useNotasFiscais() {
     localPrestacao: { pais: string; uf: string; municipio: string };
     status?: string;
     dataEmissao?: string;
+    parametroIssAplicado?: string;
   }) => {
     setSaving(true);
     try {
@@ -118,6 +119,7 @@ export function useNotasFiscais() {
         ret_ir: retIr,
         ret_inss: retInss,
         valor_liquido: valorLiquido,
+        parametro_iss_aplicado: params.parametroIssAplicado || '',
         ...(params.dataEmissao ? { data_emissao: new Date(params.dataEmissao + 'T12:00:00').toISOString() } : {}),
       };
 
