@@ -37,6 +37,7 @@ export interface PrestadorConfig {
   simplesAliquotaNominal: number;
   simplesParcalaDeduzir: number;
   simplesAliquotaEfetiva: number;
+  simplesParametroIss: string;
 }
 
 const INITIAL_PRESTADOR: PrestadorData = {
@@ -73,6 +74,7 @@ const INITIAL_CONFIG: PrestadorConfig = {
   simplesAliquotaNominal: 0,
   simplesParcalaDeduzir: 0,
   simplesAliquotaEfetiva: 0,
+  simplesParametroIss: '',
 };
 
 export function usePrestador() {
