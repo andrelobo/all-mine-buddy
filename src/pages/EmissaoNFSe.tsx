@@ -165,9 +165,7 @@ const EmissaoNFSe: React.FC = () => {
     if (!prestacao.descricaoServico) erros.push('Descrição do serviço é obrigatória.');
     if (!prestacao.valorServico || parseCurrency(prestacao.valorServico) <= 0) erros.push('Valor do serviço deve ser maior que zero.');
     if (!prestacao.aliquota && !(config.optanteSimples && !tomadorSubstituto)) erros.push('Alíquota é obrigatória.');
-    if (config.optanteSimples && config.simplesAnexo === 'III' && !simplesParametroIss) {
-      erros.push('Selecione o Parâmetro Tributário (Prestação Serviço) antes de emitir.');
-    }
+    // Parâmetro ISS agora é determinado automaticamente
     return erros;
   };
 

@@ -305,9 +305,7 @@ const Index = () => {
     if (!prestacao.descricaoServico) erros.push('Descrição do serviço é obrigatória.');
     if (!prestacao.valorServico || parseCurrency(prestacao.valorServico) <= 0) erros.push('Valor do serviço deve ser maior que zero.');
     if (!prestacao.aliquota && !(config.optanteSimples && !tomadorSubstituto)) erros.push('Alíquota é obrigatória.');
-    if (config.optanteSimples && config.simplesAnexo === 'III' && !simplesParametroIss) {
-      erros.push('Parâmetro Tributário do Simples Nacional Anexo III não configurado. Configure na aba Regime Tributário.');
-    }
+    // Parâmetro ISS agora é determinado automaticamente, não precisa validar configuração prévia
     return erros;
   };
 
