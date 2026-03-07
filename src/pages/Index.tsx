@@ -95,14 +95,14 @@ const Index = () => {
   const [showTomadorForm, setShowTomadorForm] = useState(false);
   const { tomadores: tomadoresList, loading: loadingTomadores, salvarTomador, excluirTomador } = useTomadores(config.id);
 
-  const { salvarNota, saving: savingNota } = useNotasFiscais();
+  const { salvarNota, saving: savingNota, obterProximoNumeroNfse } = useNotasFiscais();
   const [tomadorEmissao, setTomadorEmissao] = useState<TomadorEmissaoData>(INITIAL_TOMADOR_EMISSAO);
   const [prestacao, setPrestacao] = useState<PrestacaoServicoData>(INITIAL_PRESTACAO);
   const [localPrestacao, setLocalPrestacao] = useState<LocalPrestacaoData>({ pais: 'Brasil', uf: 'AM', municipio: 'Manaus' });
   const [emissaoErrors, setEmissaoErrors] = useState<string[]>([]);
   const [tomadorSubstituto, setTomadorSubstituto] = useState(false);
   const [configOperacionais, setConfigOperacionais] = useState<{ id: string; natureza: string; descricao: string }[]>([]);
-  const [nfseNum, setNfseNum] = useState('');
+  const [nfseNum, setNfseNum] = useState('...');
   const [dpsNum] = useState('1');
   const [serieDpsNum] = useState('1');
   const [dataEmissao, setDataEmissao] = useState(() => new Date().toISOString().slice(0, 10));
