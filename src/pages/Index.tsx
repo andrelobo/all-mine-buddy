@@ -217,9 +217,18 @@ const Index = () => {
   const handleTomadorSelecionado = useCallback((t: TomadorDB) => {
     const isSub = !!t.substituto_tributario;
     setTomadorSubstituto(isSub);
-    if (isSub) { setPrestacao(prev => ({ ...prev, issRetido: true })); }
-    else { setPrestacao(prev => ({ ...prev, issRetido: false, aliquota: config.optanteSimples ? '' : prev.aliquota })); }
-  }, [config.optanteSimples]);
+    if (config.optanteSimples && simplesParametroIss) {
+      if (simplesParametroIss === 'iss_retencao_substituicao' || isSub) {
+        setPrestacao(prev => ({ ...prev, issRetido: true }));
+      } else {
+        setPrestacao(prev => ({ ...prev, issRetido: false }));
+      }
+    } else if (isSub) {
+      setPrestacao(prev => ({ ...prev, issRetido: true }));
+    } else {
+      setPrestacao(prev => ({ ...prev, issRetido: false, aliquota: config.optanteSimples ? '' : prev.aliquota }));
+    }
+  }, [config.optanteSimples, simplesParametroIss]);
 
   const valores = useMemo(() => {
     const valorBruto = parseCurrency(prestacao.valorServico);
@@ -258,7 +267,9 @@ const Index = () => {
     if (!prestacao.descricaoServico) erros.push('Descrição do serviço é obrigatória.');
     if (!prestacao.valorServico || parseCurrency(prestacao.valorServico) <= 0) erros.push('Valor do serviço deve ser maior que zero.');
     if (!prestacao.aliquota && !(config.optanteSimples && !tomadorSubstituto)) erros.push('Alíquota é obrigatória.');
-    return erros;
+    if (config.optanteSimples && config.simplesAnexo === 'III' && !simplesParametroIss) {
+      erros.push('Parâmetro Tributário do Simples Nacional Anexo III não configurado. Configure na aba Regime Tributário.');
+    }
   };
 
   const handleEmitir = async () => {
@@ -709,6 +720,22 @@ const Index = () => {
                 <TomadorEmissao data={tomadorEmissao} onChange={setTomadorEmissao} onTomadorSelecionado={handleTomadorSelecionado} prestadorId={config.id} />
                 <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
                 <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} favoritos={config.parametroMunicipal} optanteSimples={config.optanteSimples} tomadorSubstituto={tomadorSubstituto} listaServico={configOperacionais} />
+                {config.optanteSimples && config.simplesAnexo === 'III' && !simplesParametroIss && (
+                  <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span className="text-sm text-amber-700">Parâmetro Tributário do Simples Nacional Anexo III não configurado. <button onClick={() => setActiveTab('prestador')} className="underline font-medium">Configure na aba Regime Tributário</button>.</span>
+                  </div>
+                )}
+                {simplesParametroIss && config.optanteSimples && (
+                  <div className="p-3 rounded-lg bg-primary/5 border border-primary/20 flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-primary shrink-0" />
+                    <span className="text-sm text-foreground"><span className="font-medium">Parâmetro Tributário Aplicado:</span> {
+                      simplesParametroIss === 'iss_outro_municipio' ? 'Anexo III – ISS devido a outro(s) Município(s)' :
+                      simplesParametroIss === 'iss_proprio_municipio' ? 'Anexo III – ISS devido ao próprio Município' :
+                      'Anexo III – Com retenção/substituição tributária de ISS'
+                    }</span>
+                  </div>
+                )}
                 <ValoresTotaisSection
                   valorBruto={valores.valorBruto} desconto={valores.desconto} issValor={valores.issValor}
                   issRetido={prestacao.issRetido} retPis={valores.retPis} retCofins={valores.retCofins}
