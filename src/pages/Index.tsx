@@ -305,7 +305,7 @@ const Index = () => {
     setPrestacao(INITIAL_PRESTACAO);
     setLocalPrestacao({ pais: 'Brasil', uf: 'AM', municipio: 'Manaus' });
     setEmissaoErrors([]);
-    setNfseNum('');
+    fetchProximoNfse();
     setDataEmissao(new Date().toISOString().slice(0, 10));
     setTomadorSubstituto(false);
   };
@@ -434,7 +434,7 @@ const Index = () => {
 
                     <IdentificacaoDocumentoCard
                       nfseNum={nfseNum}
-                      onNfseNumChange={setNfseNum}
+                      onNfseNumChange={() => {}}
                       dpsNum={dpsNum}
                       onDpsNumChange={() => {}}
                       serieDpsNum={serieDpsNum}
@@ -705,7 +705,7 @@ const Index = () => {
                     </div>
                     <div>
                       <label className="field-label">NFS-e Nº</label>
-                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" value={nfseNum} onChange={e => setNfseNum(e.target.value.replace(/\D/g, ''))} />
+                      <input className="field-input bg-muted/30" type="text" value={nfseNum} readOnly />
                     </div>
                     <div>
                       <label className="field-label">DPS Nº</label>
