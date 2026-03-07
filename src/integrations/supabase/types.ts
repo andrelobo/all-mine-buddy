@@ -172,6 +172,7 @@ export type Database = {
           simples_anexo: string | null
           simples_data_calculo: string | null
           simples_faixa: number | null
+          simples_parametro_iss: string | null
           simples_parcela_deduzir: number | null
           suframa: string | null
           updated_at: string
@@ -208,6 +209,7 @@ export type Database = {
           simples_anexo?: string | null
           simples_data_calculo?: string | null
           simples_faixa?: number | null
+          simples_parametro_iss?: string | null
           simples_parcela_deduzir?: number | null
           suframa?: string | null
           updated_at?: string
@@ -244,6 +246,7 @@ export type Database = {
           simples_anexo?: string | null
           simples_data_calculo?: string | null
           simples_faixa?: number | null
+          simples_parametro_iss?: string | null
           simples_parcela_deduzir?: number | null
           suframa?: string | null
           updated_at?: string
