@@ -11,6 +11,7 @@ interface Props {
   value: ParametroISSOption;
   onChange: (v: ParametroISSOption) => void;
   onAutosave: () => void;
+  disabled?: boolean;
 }
 
 const OPTIONS: { value: ParametroISSOption; label: string }[] = [
@@ -28,10 +29,11 @@ const OPTIONS: { value: ParametroISSOption; label: string }[] = [
   },
 ];
 
-const ParametrosTributariosSNCard: React.FC<Props> = ({ value, onChange, onAutosave }) => {
+const ParametrosTributariosSNCard: React.FC<Props> = ({ value, onChange, onAutosave, disabled = false }) => {
   const [open, setOpen] = useState(true);
 
   const handleSelect = (opt: ParametroISSOption) => {
+    if (disabled) return;
     onChange(opt);
     onAutosave();
   };
