@@ -224,11 +224,39 @@ const Index = () => {
     setTomador(INITIAL_TOMADOR); setEditingTomadorId(null); setShowTomadorForm(false);
   };
 
+  // Determinar automaticamente o parâmetro ISS com base nas prioridades
+  const determinarParametroIssEmissao = useCallback((isSub: boolean, localMunicipio: string, localUf: string): ParametroISSOption => {
+    if (!config.optanteSimples || config.simplesAnexo !== 'III') return '' as ParametroISSOption;
+    // PRIORIDADE 1: Tomador substituto tributário
+    if (isSub) return 'iss_retencao_substituicao';
+    // PRIORIDADE 2: Município da prestação = Manaus/AM (município do estabelecimento)
+    const isManaus = localMunicipio.toLowerCase().includes('manaus') && localUf.toUpperCase() === 'AM';
+    if (isManaus) return 'iss_proprio_municipio';
+    // PRIORIDADE 3: Município diferente
+    return 'iss_outro_municipio';
+  }, [config.optanteSimples, config.simplesAnexo]);
+
+  // Recalcular parâmetro ISS quando local de prestação muda
+  const handleLocalPrestacaoChange = useCallback((newLocal: LocalPrestacaoData) => {
+    setLocalPrestacao(newLocal);
+    if (config.optanteSimples && config.simplesAnexo === 'III') {
+      const param = determinarParametroIssEmissao(tomadorSubstituto, newLocal.municipio, newLocal.uf);
+      setSimplesParametroIss(param);
+      if (param === 'iss_retencao_substituicao' || tomadorSubstituto) {
+        setPrestacao(prev => ({ ...prev, issRetido: true }));
+      } else {
+        setPrestacao(prev => ({ ...prev, issRetido: false }));
+      }
+    }
+  }, [config.optanteSimples, config.simplesAnexo, tomadorSubstituto, determinarParametroIssEmissao]);
+
   const handleTomadorSelecionado = useCallback((t: TomadorDB) => {
     const isSub = !!t.substituto_tributario;
     setTomadorSubstituto(isSub);
-    if (config.optanteSimples && simplesParametroIss) {
-      if (simplesParametroIss === 'iss_retencao_substituicao' || isSub) {
+    if (config.optanteSimples && config.simplesAnexo === 'III') {
+      const param = determinarParametroIssEmissao(isSub, localPrestacao.municipio, localPrestacao.uf);
+      setSimplesParametroIss(param);
+      if (param === 'iss_retencao_substituicao' || isSub) {
         setPrestacao(prev => ({ ...prev, issRetido: true }));
       } else {
         setPrestacao(prev => ({ ...prev, issRetido: false }));
@@ -238,7 +266,7 @@ const Index = () => {
     } else {
       setPrestacao(prev => ({ ...prev, issRetido: false, aliquota: config.optanteSimples ? '' : prev.aliquota }));
     }
-  }, [config.optanteSimples, simplesParametroIss]);
+  }, [config.optanteSimples, config.simplesAnexo, localPrestacao, determinarParametroIssEmissao]);
 
   const valores = useMemo(() => {
     const valorBruto = parseCurrency(prestacao.valorServico);
@@ -277,9 +305,7 @@ const Index = () => {
     if (!prestacao.descricaoServico) erros.push('Descrição do serviço é obrigatória.');
     if (!prestacao.valorServico || parseCurrency(prestacao.valorServico) <= 0) erros.push('Valor do serviço deve ser maior que zero.');
     if (!prestacao.aliquota && !(config.optanteSimples && !tomadorSubstituto)) erros.push('Alíquota é obrigatória.');
-    if (config.optanteSimples && config.simplesAnexo === 'III' && !simplesParametroIss) {
-      erros.push('Parâmetro Tributário do Simples Nacional Anexo III não configurado. Configure na aba Regime Tributário.');
-    }
+    // Parâmetro ISS agora é determinado automaticamente, não precisa validar configuração prévia
     return erros;
   };
 
@@ -296,9 +322,14 @@ const Index = () => {
       localidade_uf: tomadorEmissao.localidadeUf, email: tomadorEmissao.email, whatsapp: '',
       pais: tomadorEmissao.pais || 'Brasil',
     });
+    // Determinar parâmetro ISS final para salvar na nota
+    const parametroIssAplicado = config.optanteSimples && config.simplesAnexo === 'III'
+      ? determinarParametroIssEmissao(tomadorSubstituto, localPrestacao.municipio, localPrestacao.uf)
+      : '';
     await salvarNota({
       prestadorId: config.id || null, tomadorId: tomadorId || null,
       prestacao, localPrestacao, status: 'emitida', dataEmissao,
+      parametroIssAplicado,
     });
     // Limpar formulário DANFSE para próxima nota
     setTomadorEmissao(INITIAL_TOMADOR_EMISSAO);
@@ -518,6 +549,13 @@ const Index = () => {
                       <TabelaAnexoIII faixaAtual={snCalculo.faixa?.faixa ?? null} />
                     )}
 
+                    {regime === 'simples' && snCnaeAnexo === 'III' && !snPermiteFatorR && (
+                      <ParametrosTributariosSNCard
+                        value={simplesParametroIss}
+                        onChange={(v) => { setSimplesParametroIss(v); setUnsavedPrestador(true); }}
+                        onAutosave={autosave}
+                      />
+                    )}
 
                     <div className="flex justify-end pt-2">
                       <button
@@ -719,7 +757,7 @@ const Index = () => {
                 </div>
                 <PrestadorSection data={prestador} onChange={setPrestador} onAutosave={autosaveEmissao} optanteSimples={config.optanteSimples} compact />
                 <TomadorEmissao data={tomadorEmissao} onChange={setTomadorEmissao} onTomadorSelecionado={handleTomadorSelecionado} prestadorId={config.id} />
-                <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
+                <LocalPrestacaoSection data={localPrestacao} onChange={handleLocalPrestacaoChange} />
                 <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} favoritos={config.parametroMunicipal} optanteSimples={config.optanteSimples} tomadorSubstituto={tomadorSubstituto} listaServico={configOperacionais} />
                 {config.optanteSimples && config.simplesAnexo === 'III' && !simplesParametroIss && (
                   <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center gap-2">
