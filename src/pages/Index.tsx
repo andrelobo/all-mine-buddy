@@ -427,9 +427,9 @@ const Index = () => {
                       nfseNum={nfseNum}
                       onNfseNumChange={setNfseNum}
                       dpsNum={dpsNum}
-                      onDpsNumChange={setDpsNum}
+                      onDpsNumChange={() => {}}
                       serieDpsNum={serieDpsNum}
-                      onSerieDpsNumChange={setSerieDpsNum}
+                      onSerieDpsNumChange={() => {}}
                     />
 
                     <div className="flex justify-end gap-3 pt-2">
