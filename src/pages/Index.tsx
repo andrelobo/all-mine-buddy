@@ -270,6 +270,7 @@ const Index = () => {
     if (config.optanteSimples && config.simplesAnexo === 'III' && !simplesParametroIss) {
       erros.push('Parâmetro Tributário do Simples Nacional Anexo III não configurado. Configure na aba Regime Tributário.');
     }
+    return erros;
   };
 
   const handleEmitir = async () => {
