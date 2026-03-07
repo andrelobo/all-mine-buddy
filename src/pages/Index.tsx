@@ -103,8 +103,8 @@ const Index = () => {
   const [tomadorSubstituto, setTomadorSubstituto] = useState(false);
   const [configOperacionais, setConfigOperacionais] = useState<{ id: string; natureza: string; descricao: string }[]>([]);
   const [nfseNum, setNfseNum] = useState('');
-  const [dpsNum, setDpsNum] = useState('');
-  const [serieDpsNum, setSerieDpsNum] = useState('');
+  const [dpsNum] = useState('1');
+  const [serieDpsNum] = useState('1');
   const [dataEmissao, setDataEmissao] = useState(() => new Date().toISOString().slice(0, 10));
   const [competencia, setCompetencia] = useState('01/2026');
 
@@ -296,8 +296,6 @@ const Index = () => {
     setLocalPrestacao({ pais: 'Brasil', uf: 'AM', municipio: 'Manaus' });
     setEmissaoErrors([]);
     setNfseNum('');
-    setDpsNum('');
-    setSerieDpsNum('');
     setDataEmissao(new Date().toISOString().slice(0, 10));
     setTomadorSubstituto(false);
   };
@@ -702,11 +700,11 @@ const Index = () => {
                     </div>
                     <div>
                       <label className="field-label">DPS Nº</label>
-                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" value={dpsNum} onChange={e => setDpsNum(e.target.value.replace(/\D/g, ''))} />
+                      <input className="field-input bg-muted/30" type="text" value="1" readOnly />
                     </div>
                     <div>
                       <label className="field-label">Série DPS Nº</label>
-                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" value={serieDpsNum} onChange={e => setSerieDpsNum(e.target.value.replace(/\D/g, ''))} />
+                      <input className="field-input bg-muted/30" type="text" value="1" readOnly />
                     </div>
                   </div>
                 </div>
