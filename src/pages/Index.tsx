@@ -77,6 +77,7 @@ const Index = () => {
   const [aliquotaSN, setAliquotaSN] = useState('');
   const [regimeApuracaoSNParametro, setRegimeApuracaoSNParametro] = useState(false);
   const [configValida, setConfigValida] = useState(false);
+  const [simplesParametroIss, setSimplesParametroIss] = useState<ParametroISSOption>('');
   const [ctnSelecionado, setCtnSelecionado] = useState<string | null>(null);
   const [ctnDescricao, setCtnDescricao] = useState<string>('');
   const [ctnItem, setCtnItem] = useState<string>('');
