@@ -23,7 +23,7 @@ const IdentificacaoDocumentoCard: React.FC<Props> = ({
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
         <label className="field-label">NFS-e Nº</label>
-        <input className="field-input" placeholder="Número" value={nfseNum} onChange={e => onNfseNumChange(e.target.value.replace(/\D/g, ''))} />
+        <input className="field-input bg-muted/30" value={nfseNum} readOnly />
       </div>
       <div>
         <label className="field-label">DPS Nº</label>

@@ -41,6 +41,23 @@ function parsePercent(value: string): number {
 export function useNotasFiscais() {
   const [saving, setSaving] = useState(false);
 
+  const obterProximoNumeroNfse = useCallback(async (prestadorId: string | null): Promise<string> => {
+    try {
+      let query = supabase
+        .from('notas_fiscais')
+        .select('numero_nfse')
+        .order('numero_nfse', { ascending: false })
+        .limit(1);
+      if (prestadorId) query = query.eq('prestador_id', prestadorId);
+      const { data } = await query;
+      const ultimo = data?.[0]?.numero_nfse;
+      const proximoNum = ultimo ? parseInt(ultimo, 10) + 1 : 1;
+      return String(proximoNum);
+    } catch {
+      return '1';
+    }
+  }, []);
+
   const salvarNota = useCallback(async (params: {
     prestadorId: string | null;
     tomadorId: string | null;
@@ -77,9 +94,12 @@ export function useNotasFiscais() {
       const totalRetencoes = retPis + retCofins + retCsll + retIr + retInss + (params.prestacao.issRetido ? issValor : 0);
       const valorLiquido = valorServico - desconto - totalRetencoes;
 
+      const numeroNfse = await obterProximoNumeroNfse(params.prestadorId);
+
       const row = {
         prestador_id: params.prestadorId || null,
         tomador_id: params.tomadorId || null,
+        numero_nfse: numeroNfse,
         status: params.status || 'rascunho',
         codigo_servico: params.prestacao.codigoServico,
         descricao_servico: params.prestacao.descricaoServico,
@@ -108,7 +128,7 @@ export function useNotasFiscais() {
         .single();
 
       if (error) throw error;
-      toast.success('Nota fiscal salva com sucesso!');
+      toast.success(`NFS-e Nº ${numeroNfse} emitida com sucesso!`);
       return data.id;
     } catch (err: any) {
       toast.error('Erro ao salvar nota fiscal: ' + (err.message || ''));
@@ -116,7 +136,7 @@ export function useNotasFiscais() {
     } finally {
       setSaving(false);
     }
-  }, []);
+  }, [obterProximoNumeroNfse]);
 
-  return { saving, salvarNota };
+  return { saving, salvarNota, obterProximoNumeroNfse };
 }

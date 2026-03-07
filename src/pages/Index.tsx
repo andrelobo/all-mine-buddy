@@ -95,18 +95,28 @@ const Index = () => {
   const [showTomadorForm, setShowTomadorForm] = useState(false);
   const { tomadores: tomadoresList, loading: loadingTomadores, salvarTomador, excluirTomador } = useTomadores(config.id);
 
-  const { salvarNota, saving: savingNota } = useNotasFiscais();
+  const { salvarNota, saving: savingNota, obterProximoNumeroNfse } = useNotasFiscais();
   const [tomadorEmissao, setTomadorEmissao] = useState<TomadorEmissaoData>(INITIAL_TOMADOR_EMISSAO);
   const [prestacao, setPrestacao] = useState<PrestacaoServicoData>(INITIAL_PRESTACAO);
   const [localPrestacao, setLocalPrestacao] = useState<LocalPrestacaoData>({ pais: 'Brasil', uf: 'AM', municipio: 'Manaus' });
   const [emissaoErrors, setEmissaoErrors] = useState<string[]>([]);
   const [tomadorSubstituto, setTomadorSubstituto] = useState(false);
   const [configOperacionais, setConfigOperacionais] = useState<{ id: string; natureza: string; descricao: string }[]>([]);
-  const [nfseNum, setNfseNum] = useState('');
+  const [nfseNum, setNfseNum] = useState('...');
   const [dpsNum] = useState('1');
   const [serieDpsNum] = useState('1');
   const [dataEmissao, setDataEmissao] = useState(() => new Date().toISOString().slice(0, 10));
   const [competencia, setCompetencia] = useState('01/2026');
+
+  // Auto-fetch próximo número NFS-e
+  const fetchProximoNfse = useCallback(async () => {
+    const num = await obterProximoNumeroNfse(config.id || null);
+    setNfseNum(num);
+  }, [config.id, obterProximoNumeroNfse]);
+
+  useEffect(() => {
+    if (config.id) fetchProximoNfse();
+  }, [config.id, fetchProximoNfse]);
 
   // Sync local state from config only on initial load (when config.id first appears)
   const configSyncedRef = React.useRef(false);
@@ -295,7 +305,7 @@ const Index = () => {
     setPrestacao(INITIAL_PRESTACAO);
     setLocalPrestacao({ pais: 'Brasil', uf: 'AM', municipio: 'Manaus' });
     setEmissaoErrors([]);
-    setNfseNum('');
+    fetchProximoNfse();
     setDataEmissao(new Date().toISOString().slice(0, 10));
     setTomadorSubstituto(false);
   };
@@ -323,7 +333,6 @@ const Index = () => {
               <SidebarTrigger />
               <h2 className="text-base font-semibold text-foreground">{tabTitle}</h2>
             </div>
-
 
 
             <div className="flex items-center gap-3 shrink-0">
@@ -425,7 +434,7 @@ const Index = () => {
 
                     <IdentificacaoDocumentoCard
                       nfseNum={nfseNum}
-                      onNfseNumChange={setNfseNum}
+                      onNfseNumChange={() => {}}
                       dpsNum={dpsNum}
                       onDpsNumChange={() => {}}
                       serieDpsNum={serieDpsNum}
@@ -696,7 +705,7 @@ const Index = () => {
                     </div>
                     <div>
                       <label className="field-label">NFS-e Nº</label>
-                      <input className="field-input" type="text" placeholder="Número" inputMode="numeric" value={nfseNum} onChange={e => setNfseNum(e.target.value.replace(/\D/g, ''))} />
+                      <input className="field-input bg-muted/30" type="text" value={nfseNum} readOnly />
                     </div>
                     <div>
                       <label className="field-label">DPS Nº</label>
