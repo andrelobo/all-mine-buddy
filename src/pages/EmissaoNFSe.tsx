@@ -254,11 +254,13 @@ const EmissaoNFSe: React.FC = () => {
         <TomadorEmissao data={tomador} onChange={setTomador} onTomadorSelecionado={handleTomadorSelecionado} prestadorId={config.id} />
         <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
         <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} favoritos={config.parametroMunicipal} optanteSimples={config.optanteSimples} tomadorSubstituto={tomadorSubstituto} />
-        {isSimplesSemParametro && (
-          <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-            <span className="text-sm text-amber-700">Parâmetro Tributário do Simples Nacional Anexo III não configurado. <button onClick={() => navigate('/')} className="underline font-medium">Configure na aba Regime Tributário</button>.</span>
-          </div>
+        
+        {showParametroCard && (
+          <ParametrosTributariosSNCard
+            value={simplesParametroIss}
+            onChange={handleParametroIssChange}
+            onAutosave={autosave}
+          />
         )}
 
         {parametroIssLabel && (
