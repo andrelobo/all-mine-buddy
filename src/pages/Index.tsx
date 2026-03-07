@@ -127,6 +127,7 @@ const Index = () => {
     if (config.ctnItem) setCtnItem(config.ctnItem);
     if (config.cnaesLista && config.cnaesLista.length > 0) setCnaesLista(config.cnaesLista);
     if (config.configOperacionais && config.configOperacionais.length > 0) setConfigOperacionais(config.configOperacionais);
+    if (config.simplesParametroIss) setSimplesParametroIss(config.simplesParametroIss as ParametroISSOption);
   }, [config.id]);
 
   // Sincronizar alíquota efetiva do cálculo Simples Nacional com o campo de Parâmetros Fiscais
