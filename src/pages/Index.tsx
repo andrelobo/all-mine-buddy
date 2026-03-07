@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/AppSidebar';
 import PrestadorSection from '@/components/PrestadorSection';
 import RegimeEParametrosSection, { type RegimeTributario } from '@/components/RegimeEParametrosSection';
+import ParametrosTributariosSNCard, { type ParametroISSOption } from '@/components/ParametrosTributariosSNCard';
 import CTNSection from '@/components/CTNSection';
 import CNAESection from '@/components/CNAESection';
 import SimplesNacionalSection from '@/components/SimplesNacionalSection';
