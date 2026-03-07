@@ -1,5 +1,5 @@
 import React from 'react';
-import { Landmark, Percent } from 'lucide-react';
+import { Landmark, Scale, Info } from 'lucide-react';
 
 export type RegimeTributario = 'simples' | 'presumido' | 'real' | null;
 
