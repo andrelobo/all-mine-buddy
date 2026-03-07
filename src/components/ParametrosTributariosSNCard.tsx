@@ -59,7 +59,8 @@ const ParametrosTributariosSNCard: React.FC<Props> = ({ value, onChange, onAutos
               key={opt.value}
               type="button"
               onClick={() => handleSelect(opt.value)}
-              className={`radio-card text-left p-2.5 w-full ${value === opt.value ? 'radio-card-selected' : ''}`}
+              disabled={disabled}
+              className={`radio-card text-left p-2.5 w-full ${value === opt.value ? 'radio-card-selected' : ''} ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
               <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
                 value === opt.value ? 'border-primary' : 'border-muted-foreground/40'
