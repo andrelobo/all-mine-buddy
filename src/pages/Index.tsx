@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { Save, CheckCircle, Loader2, List, FileOutput, Printer, AlertCircle, Building2, Landmark, Settings, Trash2 } from 'lucide-react';
+import { Save, CheckCircle, Loader2, List, FileOutput, Printer, AlertCircle, Building2, Landmark, Settings, Trash2, Shield } from 'lucide-react';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/AppSidebar';
 import PrestadorSection from '@/components/PrestadorSection';
