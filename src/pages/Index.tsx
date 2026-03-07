@@ -108,6 +108,16 @@ const Index = () => {
   const [dataEmissao, setDataEmissao] = useState(() => new Date().toISOString().slice(0, 10));
   const [competencia, setCompetencia] = useState('01/2026');
 
+  // Auto-fetch próximo número NFS-e
+  const fetchProximoNfse = useCallback(async () => {
+    const num = await obterProximoNumeroNfse(config.id || null);
+    setNfseNum(num);
+  }, [config.id, obterProximoNumeroNfse]);
+
+  useEffect(() => {
+    if (config.id) fetchProximoNfse();
+  }, [config.id, fetchProximoNfse]);
+
   // Sync local state from config only on initial load (when config.id first appears)
   const configSyncedRef = React.useRef(false);
   useEffect(() => {
