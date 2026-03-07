@@ -38,7 +38,7 @@ const ParametrosTributariosSNCard: React.FC<Props> = ({ value, onChange, onAutos
     <div className="section-card p-3">
       <h2 className="section-title text-sm mb-3">
         <Scale className="w-4 h-4 text-primary" />
-        Parâmetros Tributários – Simples Nacional Anexo III (Sem Fator R)
+        Prestação Serviço, exceto para o exterior
       </h2>
 
       <div className="space-y-2">
