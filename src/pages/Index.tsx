@@ -192,6 +192,7 @@ const Index = () => {
       simplesAliquotaNominal: snCalculo.faixa?.aliquotaNominal || 0,
       simplesParcalaDeduzir: snCalculo.faixa?.parcelaDeduzir || 0,
       simplesAliquotaEfetiva: snCalculo.aliquotaEfetiva || 0,
+      simplesParametroIss: simplesParametroIss,
     };
     const result = await salvarPrestador(prestador, cfg);
     if (result) setUnsavedPrestador(false);
