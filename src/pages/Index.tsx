@@ -324,16 +324,6 @@ const Index = () => {
               <h2 className="text-base font-semibold text-foreground">{tabTitle}</h2>
             </div>
 
-  // Auto-fetch próximo número NFS-e
-  const fetchProximoNfse = useCallback(async () => {
-    const num = await obterProximoNumeroNfse(config.id || null);
-    setNfseNum(num);
-  }, [config.id, obterProximoNumeroNfse]);
-
-  useEffect(() => {
-    if (config.id) fetchProximoNfse();
-  }, [config.id, fetchProximoNfse]);
-
 
             <div className="flex items-center gap-3 shrink-0">
               {activeTab === 'prestador' && configValida && (
