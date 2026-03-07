@@ -54,7 +54,7 @@ const EmissaoNFSe: React.FC = () => {
   const [errors, setErrors] = useState<string[]>([]);
   const [tomadorSubstituto, setTomadorSubstituto] = useState(false);
   const [simplesParametroIss, setSimplesParametroIss] = useState<ParametroISSOption>('');
-  const [parametroAutoAplicado, setParametroAutoAplicado] = useState(false);
+  
 
   const autosave = useCallback(() => {}, []);
 
