@@ -640,7 +640,10 @@ const CTNSection: React.FC<Props> = ({ ctnSelecionado, onCtnChange, savedCnaes, 
       {/* Lista de CNAEs adicionados — agrupado por CNAE, 1:N vínculos */}
       {cnaes.length > 0 && (
         <div className="mt-1 space-y-2">
-          
+          <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: 'hsl(43, 80%, 45%)' }}>
+            <Star className="w-4 h-4" fill="currentColor" />
+            Serviços Favoritos
+          </h3>
           <div className="space-y-1.5">
             {cnaes.map((cnae, index) => (
               <CnaeListItem
