@@ -55,15 +55,35 @@ const EmissaoNFSe: React.FC = () => {
 
   const autosave = useCallback(() => {}, []);
 
+  // Resolve o label do parâmetro ISS do Simples Nacional
+  const parametroIssLabel = useMemo(() => {
+    const map: Record<string, string> = {
+      'iss_outro_municipio': 'Anexo III – ISS devido a outro(s) Município(s)',
+      'iss_proprio_municipio': 'Anexo III – ISS devido ao próprio Município',
+      'iss_retencao_substituicao': 'Anexo III – Com retenção/substituição tributária de ISS',
+    };
+    return config.simplesParametroIss ? map[config.simplesParametroIss] || '' : '';
+  }, [config.simplesParametroIss]);
+
+  const isSimplesSemParametro = config.optanteSimples && config.simplesAnexo === 'III' && !config.simplesParametroIss;
+
   const handleTomadorSelecionado = useCallback((t: TomadorDB) => {
     const isSub = !!t.substituto_tributario;
     setTomadorSubstituto(isSub);
-    if (isSub) {
+
+    // Aplicar automaticamente as regras do parâmetro ISS do Simples Nacional
+    if (config.optanteSimples && config.simplesParametroIss) {
+      if (config.simplesParametroIss === 'iss_retencao_substituicao' || isSub) {
+        setPrestacao(prev => ({ ...prev, issRetido: true }));
+      } else {
+        setPrestacao(prev => ({ ...prev, issRetido: false }));
+      }
+    } else if (isSub) {
       setPrestacao(prev => ({ ...prev, issRetido: true }));
     } else {
       setPrestacao(prev => ({ ...prev, issRetido: false, aliquota: config.optanteSimples ? '' : prev.aliquota }));
     }
-  }, [config.optanteSimples]);
+  }, [config.optanteSimples, config.simplesParametroIss]);
 
   const valores = useMemo(() => {
     const valorBruto = parseCurrency(prestacao.valorServico);
@@ -108,6 +128,9 @@ const EmissaoNFSe: React.FC = () => {
     if (!prestacao.descricaoServico) erros.push('Descrição do serviço é obrigatória.');
     if (!prestacao.valorServico || parseCurrency(prestacao.valorServico) <= 0) erros.push('Valor do serviço deve ser maior que zero.');
     if (!prestacao.aliquota && !(config.optanteSimples && !tomadorSubstituto)) erros.push('Alíquota é obrigatória.');
+    if (config.optanteSimples && config.simplesAnexo === 'III' && !config.simplesParametroIss) {
+      erros.push('Parâmetro Tributário do Simples Nacional Anexo III não configurado. Configure na aba Regime Tributário.');
+    }
     return erros;
   };
 
@@ -217,6 +240,20 @@ const EmissaoNFSe: React.FC = () => {
         <TomadorEmissao data={tomador} onChange={setTomador} onTomadorSelecionado={handleTomadorSelecionado} prestadorId={config.id} />
         <LocalPrestacaoSection data={localPrestacao} onChange={setLocalPrestacao} />
         <PrestacaoServicoSection data={prestacao} onChange={handlePrestacaoChange} mostrarRetencoesFederais={true} favoritos={config.parametroMunicipal} optanteSimples={config.optanteSimples} tomadorSubstituto={tomadorSubstituto} />
+        {isSimplesSemParametro && (
+          <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+            <span className="text-sm text-amber-700">Parâmetro Tributário do Simples Nacional Anexo III não configurado. <button onClick={() => navigate('/')} className="underline font-medium">Configure na aba Regime Tributário</button>.</span>
+          </div>
+        )}
+
+        {parametroIssLabel && (
+          <div className="p-3 rounded-lg bg-primary/5 border border-primary/20 flex items-center gap-2">
+            <Shield className="w-4 h-4 text-primary shrink-0" />
+            <span className="text-sm text-foreground"><span className="font-medium">Parâmetro Tributário Aplicado:</span> {parametroIssLabel}</span>
+          </div>
+        )}
+
         <ValoresTotaisSection
           valorBruto={valores.valorBruto}
           desconto={valores.desconto}
