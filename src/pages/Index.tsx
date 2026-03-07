@@ -511,13 +511,6 @@ const Index = () => {
                       <TabelaAnexoIII faixaAtual={snCalculo.faixa?.faixa ?? null} />
                     )}
 
-                    {regime === 'simples' && (
-                      <ParametrosTributariosSNCard
-                        value={simplesParametroIss}
-                        onChange={setSimplesParametroIss}
-                        onAutosave={autosave}
-                      />
-                    )}
 
                     <div className="flex justify-end pt-2">
                       <button
