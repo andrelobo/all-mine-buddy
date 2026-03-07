@@ -54,8 +54,25 @@ const EmissaoNFSe: React.FC = () => {
   const [errors, setErrors] = useState<string[]>([]);
   const [tomadorSubstituto, setTomadorSubstituto] = useState(false);
   const [simplesParametroIss, setSimplesParametroIss] = useState<ParametroISSOption>('');
+  const [parametroAutoAplicado, setParametroAutoAplicado] = useState(false);
 
   const autosave = useCallback(() => {}, []);
+
+  // Auto-aplicar parâmetro ISS da configuração do prestador ao carregar
+  useEffect(() => {
+    if (!loadingPrestador && config.optanteSimples && config.simplesAnexo === 'III' && config.simplesParametroIss && !parametroAutoAplicado) {
+      const param = config.simplesParametroIss as ParametroISSOption;
+      setSimplesParametroIss(param);
+      setParametroAutoAplicado(true);
+      // Aplicar regra de ISS retido automaticamente
+      if (param === 'iss_retencao_substituicao') {
+        setPrestacao(prev => ({ ...prev, issRetido: true }));
+      }
+    } else if (!loadingPrestador && config.optanteSimples && config.simplesAnexo === 'III' && !config.simplesParametroIss && !parametroAutoAplicado) {
+      setParametroAutoAplicado(true);
+      toast.warning('Parâmetro tributário não configurado. Selecione o parâmetro na aba "Regime Tributário" ou defina abaixo antes de emitir.');
+    }
+  }, [loadingPrestador, config.optanteSimples, config.simplesAnexo, config.simplesParametroIss, parametroAutoAplicado]);
 
   const showParametroCard = config.optanteSimples && config.simplesAnexo === 'III';
 
