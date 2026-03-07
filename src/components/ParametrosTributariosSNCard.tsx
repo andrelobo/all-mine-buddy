@@ -11,6 +11,7 @@ interface Props {
   value: ParametroISSOption;
   onChange: (v: ParametroISSOption) => void;
   onAutosave: () => void;
+  disabled?: boolean;
 }
 
 const OPTIONS: { value: ParametroISSOption; label: string }[] = [
@@ -28,10 +29,11 @@ const OPTIONS: { value: ParametroISSOption; label: string }[] = [
   },
 ];
 
-const ParametrosTributariosSNCard: React.FC<Props> = ({ value, onChange, onAutosave }) => {
+const ParametrosTributariosSNCard: React.FC<Props> = ({ value, onChange, onAutosave, disabled = false }) => {
   const [open, setOpen] = useState(true);
 
   const handleSelect = (opt: ParametroISSOption) => {
+    if (disabled) return;
     onChange(opt);
     onAutosave();
   };
@@ -57,7 +59,8 @@ const ParametrosTributariosSNCard: React.FC<Props> = ({ value, onChange, onAutos
               key={opt.value}
               type="button"
               onClick={() => handleSelect(opt.value)}
-              className={`radio-card text-left p-2.5 w-full ${value === opt.value ? 'radio-card-selected' : ''}`}
+              disabled={disabled}
+              className={`radio-card text-left p-2.5 w-full ${value === opt.value ? 'radio-card-selected' : ''} ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
               <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
                 value === opt.value ? 'border-primary' : 'border-muted-foreground/40'
