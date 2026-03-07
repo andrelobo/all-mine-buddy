@@ -27,11 +27,11 @@ const IdentificacaoDocumentoCard: React.FC<Props> = ({
       </div>
       <div>
         <label className="field-label">DPS Nº</label>
-        <input className="field-input" placeholder="Número" value={dpsNum} onChange={e => onDpsNumChange(e.target.value.replace(/\D/g, ''))} />
+        <input className="field-input bg-muted/30" value={dpsNum} readOnly />
       </div>
       <div>
         <label className="field-label">Série DPS Nº</label>
-        <input className="field-input" placeholder="Número" value={serieDpsNum} onChange={e => onSerieDpsNumChange(e.target.value.replace(/\D/g, ''))} />
+        <input className="field-input bg-muted/30" value={serieDpsNum} readOnly />
       </div>
     </div>
   </div>
