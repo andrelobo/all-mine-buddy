@@ -200,6 +200,10 @@ const EmissaoNFSe: React.FC = () => {
       pais: tomador.pais || 'Brasil',
     });
 
+    // Determinar parâmetro ISS final
+    const parametroIssAplicado = config.optanteSimples && config.simplesAnexo === 'III'
+      ? determinarParametroIssEmissao(tomadorSubstituto, localPrestacao.municipio, localPrestacao.uf)
+      : '';
     // Save nota fiscal
     await salvarNota({
       prestadorId: config.id || null,
@@ -207,6 +211,7 @@ const EmissaoNFSe: React.FC = () => {
       prestacao,
       localPrestacao,
       status: 'emitida',
+      parametroIssAplicado,
     });
   };
 
