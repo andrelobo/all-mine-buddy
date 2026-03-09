@@ -1,19 +1,19 @@
 import React, { useMemo } from 'react';
 import {
-  ShieldCheck, Percent, DollarSign, TrendingUp, Scale, BarChart3, PieChart as PieIcon,
-  ArrowUpRight, AlertTriangle, Gauge, Receipt, Calculator,
+  Percent, DollarSign, Scale, Calculator, ShieldCheck, Receipt,
+  PieChart as PieIcon,
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import {
-  LineChart, Line, BarChart, Bar, PieChart as RechartsPie, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend, Area, AreaChart,
-  ComposedChart,
+  PieChart as RechartsPie, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend,
+  Bar, BarChart, Line, ComposedChart,
 } from 'recharts';
 import { FAIXAS_ANEXO_III, formatCurrency, formatPercent, calcularSimplesAnexoIII } from '@/utils/simples-nacional';
-import type { CalculoSimplesResult, FaixaAnexoIII } from '@/utils/simples-nacional';
+import type { CalculoSimplesResult } from '@/utils/simples-nacional';
 import type { MesData } from '@/hooks/useDashboardData';
+import DashboardCard from './DashboardCard';
+import BigNumber from './BigNumber';
 
 interface Props {
   rbt12: number;
@@ -36,34 +36,10 @@ const PIE_COLORS = [
   'hsl(0, 72%, 55%)', 'hsl(280, 60%, 55%)', 'hsl(190, 70%, 45%)',
 ];
 
-const KPI: React.FC<{ title: string; value: string; icon: React.ReactNode; accent?: string; sub?: string }> = ({ title, value, icon, accent, sub }) => (
-  <Card className="relative overflow-hidden">
-    <CardContent className="p-3">
-      <div className="flex items-start justify-between">
-        <div className="space-y-0.5">
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{title}</p>
-          <p className={`text-sm font-bold ${accent || 'text-foreground'}`}>{value}</p>
-          {sub && <p className="text-[10px] text-muted-foreground">{sub}</p>}
-        </div>
-        <div className="p-1.5 rounded-md bg-primary/10 text-primary shrink-0">{icon}</div>
-      </div>
-    </CardContent>
-  </Card>
-);
-
-const SectionTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({ icon, title }) => (
-  <div className="flex items-center gap-2 mb-2">
-    <div className="p-1 rounded-md bg-primary/10 text-primary">{icon}</div>
-    <h3 className="text-xs font-bold text-foreground uppercase tracking-wide">{title}</h3>
-  </div>
-);
-
 const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais }) => {
-  // Composição tributária do DAS
   const composicaoTributaria = useMemo(() => {
     if (!calculo.faixa || !calculo.valido) return [];
     const aliqEfetiva = calculo.aliquotaEfetiva;
-    // Percentuais internos do Anexo III (LC 123/2006 Art. 18)
     const percISS = calculo.faixa.percentualIss;
     const percIRPJ = 0.04;
     const percCSLL = 0.035;
@@ -80,7 +56,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     ];
   }, [calculo, kpis.faturamentoMes]);
 
-  // Dados por faixa comparativa
   const faixasComparativo = useMemo(() => {
     return FAIXAS_ANEXO_III.map(f => {
       const rbtMeio = (f.limiteInferior + f.limiteSuperior) / 2;
@@ -95,7 +70,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     });
   }, [calculo]);
 
-  // Evolução tributária mensal (receita vs DAS vs ISS)
   const evolucaoMensal = useMemo(() => {
     return dadosMensais.map(m => ({
       label: m.label,
@@ -109,115 +83,119 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
   const pieComposicao = composicaoTributaria.map(c => ({ name: c.tributo, value: c.valor }));
 
+  const renderCenterLabel = ({ viewBox }: any) => {
+    const { cx, cy } = viewBox;
+    return (
+      <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central">
+        <tspan x={cx} dy="-6" className="fill-foreground text-lg font-extrabold">
+          {formatPercent(kpis.aliquotaEfetiva)}
+        </tspan>
+        <tspan x={cx} dy="16" className="fill-muted-foreground text-[9px]">
+          ALÍQ. EFETIVA
+        </tspan>
+      </text>
+    );
+  };
+
   return (
     <div className="space-y-4">
-      {/* HEADER */}
-      <SectionTitle icon={<Scale className="w-4 h-4" />} title="Apuração Simples Nacional" />
+      {/* ROW 1: RBA Big Numbers + Composição Pie */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* RBA Card with big numbers */}
+        <DashboardCard
+          title={`RBA ${kpis.competenciaLabel}`}
+          subtitle="Receita Bruta Acumulada"
+          headerColor="blue"
+          className="lg:col-span-2"
+        >
+          <div className="grid grid-cols-3 gap-4 py-2">
+            <BigNumber
+              value={formatCurrency(kpis.faturamentoMes)}
+              label="Faturamento"
+              accent="text-primary"
+              size="md"
+            />
+            <BigNumber
+              value={formatCurrency(kpis.dasEstimado)}
+              label="DAS Estimado"
+              accent="text-destructive"
+              size="md"
+            />
+            <BigNumber
+              value={formatCurrency(kpis.dasAPagar)}
+              label="A Recolher"
+              accent="text-destructive"
+              badge="A PAGAR"
+              badgeVariant="destructive"
+              size="md"
+            />
+          </div>
+          <div className="border-t border-border mt-2 pt-3 grid grid-cols-3 gap-4">
+            <BigNumber
+              value={formatPercent(kpis.aliquotaEfetiva)}
+              label="Alíq. Efetiva"
+              accent="text-primary"
+              size="sm"
+            />
+            <BigNumber
+              value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'}
+              label="Alíq. ISS"
+              accent="text-foreground"
+              size="sm"
+            />
+            <BigNumber
+              value={`- ${formatCurrency(kpis.issRetidoMes)}`}
+              label="ISS Retido"
+              accent="text-accent"
+              size="sm"
+            />
+          </div>
+        </DashboardCard>
 
-      {/* RBA + PIZZA lado a lado */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        {/* RBA Card - 2 colunas */}
-        <Card className="border-primary/30 lg:col-span-2">
-          <CardHeader className="py-2 px-3">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-primary flex items-center gap-2">
-              <Calculator className="w-4 h-4" />
-              RBA {kpis.competenciaLabel}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-3 pb-3 pt-0">
-            <div className="grid grid-cols-2 gap-2">
-              {/* Coluna esquerda: Faturamento, Aliq Efetiva, Aliq ISS empilhados */}
-              <div className="space-y-2">
-                <div className="p-2 rounded-md bg-muted/50">
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><DollarSign className="w-3 h-3 text-primary" />Faturamento</p>
-                  <p className="text-sm font-bold text-foreground mt-0.5">{formatCurrency(kpis.faturamentoMes)}</p>
-                </div>
-                <div className="p-2 rounded-md bg-muted/50">
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Percent className="w-3 h-3 text-primary" />Aliq. Efetiva</p>
-                  <p className="text-sm font-bold text-primary mt-0.5">{formatPercent(kpis.aliquotaEfetiva)}</p>
-                </div>
-                <div className="p-2 rounded-md bg-muted/50">
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Scale className="w-3 h-3 text-primary" />Alíq. ISS</p>
-                  <p className="text-sm font-bold text-primary mt-0.5">{calculo.valido ? formatPercent(calculo.issReferencia) : '–'}</p>
-                </div>
+        {/* Pie Chart Donut with center % */}
+        <DashboardCard title="Composição do DAS" headerColor="blue">
+          {pieComposicao.length > 0 && kpis.faturamentoMes > 0 ? (
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-full h-44">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RechartsPie>
+                    <Pie
+                      data={pieComposicao}
+                      cx="50%" cy="50%" outerRadius={75} innerRadius={40}
+                      dataKey="value" nameKey="name"
+                      labelLine={false} label={false}
+                    >
+                      {pieComposicao.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                    </Pie>
+                    <Tooltip formatter={(v: number) => formatCurrency(v)} />
+                  </RechartsPie>
+                </ResponsiveContainer>
               </div>
-              {/* Coluna direita: DAS, ISS Retido, A Recolher */}
-              <div className="space-y-2">
-                <div className="p-2 rounded-md bg-muted/50">
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Receipt className="w-3 h-3 text-destructive" />DAS Estimado</p>
-                  <p className="text-sm font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasEstimado)}</p>
-                </div>
-                <div className="p-2 rounded-md bg-muted/50">
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-primary" />ISS Retido</p>
-                  <p className="text-sm font-bold text-primary mt-0.5">- {formatCurrency(kpis.issRetidoMes)}</p>
-                </div>
-                <div className="p-2 rounded-md bg-muted/50">
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Calculator className="w-3 h-3 text-destructive" />A Recolher</p>
-                  <p className="text-sm font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasAPagar)}</p>
-                </div>
+              <div className="w-full space-y-1">
+                {composicaoTributaria.map(c => (
+                  <div key={c.tributo} className="flex items-center justify-between text-[10px]">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: c.cor }} />
+                      <span className="text-muted-foreground font-semibold">{c.tributo}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-muted-foreground">{(c.aliquota * 100).toFixed(2)}%</span>
+                      <span className="font-bold text-foreground w-16 text-right">{formatCurrency(c.valor)}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Pizza composição + legenda */}
-        <Card>
-          <CardHeader className="py-2 px-3">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-              <PieIcon className="w-3.5 h-3.5" />
-              Composição do DAS
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-3 pt-0">
-            {pieComposicao.length > 0 && kpis.faturamentoMes > 0 ? (
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-full h-44">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RechartsPie>
-                      <Pie
-                        data={pieComposicao}
-                        cx="50%" cy="50%" outerRadius={70} innerRadius={30}
-                        dataKey="value" nameKey="name"
-                        labelLine={false}
-                        label={false}
-                      >
-                        {pieComposicao.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-                      </Pie>
-                      <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                    </RechartsPie>
-                  </ResponsiveContainer>
-                </div>
-                {/* Legenda com valores e percentuais */}
-                <div className="w-full space-y-1">
-                  {composicaoTributaria.map(c => (
-                    <div key={c.tributo} className="flex items-center justify-between text-[10px]">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: c.cor }} />
-                        <span className="text-muted-foreground font-medium">{c.tributo}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">{(c.aliquota * 100).toFixed(2)}%</span>
-                        <span className="font-bold text-foreground w-16 text-right">{formatCurrency(c.valor)}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-40 text-muted-foreground text-sm">Sem dados</div>
-            )}
-          </CardContent>
-        </Card>
+          ) : (
+            <div className="flex items-center justify-center h-40 text-muted-foreground text-sm">Sem dados</div>
+          )}
+        </DashboardCard>
       </div>
 
-      {/* Tabela composição detalhada */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Detalhamento por Tributo
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-3">
+      {/* ROW 2: Detalhamento + Evolução */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Detalhamento por Tributo */}
+        <DashboardCard title="Detalhamento por Tributo" headerColor="green">
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
@@ -232,7 +210,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                 {composicaoTributaria.map(c => (
                   <tr key={c.tributo} className="border-b border-border/50">
                     <td className="py-1.5 px-2 font-medium flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: c.cor }} />
+                      <span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ backgroundColor: c.cor }} />
                       {c.tributo}
                     </td>
                     <td className="text-right py-1.5 px-2">{(c.percentual * 100).toFixed(2)}%</td>
@@ -240,7 +218,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                     <td className="text-right py-1.5 px-2">{formatCurrency(c.valor)}</td>
                   </tr>
                 ))}
-                <tr className="font-bold">
+                <tr className="font-bold bg-muted/30">
                   <td className="py-1.5 px-2">Total DAS</td>
                   <td className="text-right py-1.5 px-2">100%</td>
                   <td className="text-right py-1.5 px-2">{calculo.valido ? formatPercent(calculo.aliquotaEfetiva) : '–'}</td>
@@ -249,17 +227,30 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               </tbody>
             </table>
           </div>
-        </CardContent>
-      </Card>
+        </DashboardCard>
 
-      {/* EVOLUÇÃO MENSAL - Receita x DAS x ISS */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Evolução Mensal – Receita × Tributos
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="h-64 p-3">
+        {/* Comparativo de Faixas */}
+        <DashboardCard title="Comparativo de Alíquotas por Faixa" headerColor="orange">
+          <div className="h-52">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={faixasComparativo}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="faixa" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
+                <Tooltip formatter={(v: number) => `${v}%`} />
+                <Legend wrapperStyle={{ fontSize: 10 }} />
+                <Bar dataKey="aliqNominal" fill="hsl(220, 70%, 50%)" name="Nominal" radius={[4, 4, 0, 0]} opacity={0.4} />
+                <Bar dataKey="aliqEfetiva" fill="hsl(220, 70%, 50%)" name="Efetiva" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="issEfetivo" fill="hsl(160, 60%, 45%)" name="ISS Efetivo" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </DashboardCard>
+      </div>
+
+      {/* ROW 3: Evolução Mensal full width */}
+      <DashboardCard title="Evolução Mensal – Receita × Tributos" headerColor="blue">
+        <div className="h-60">
           {evolucaoMensal.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={evolucaoMensal}>
@@ -282,78 +273,48 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           ) : (
             <div className="flex items-center justify-center h-full text-muted-foreground text-sm">Sem dados mensais</div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </DashboardCard>
 
-      {/* COMPARATIVO DE FAIXAS */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Comparativo de Alíquotas por Faixa
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="h-56 p-3">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={faixasComparativo}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="faixa" tick={{ fontSize: 10 }} />
-              <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
-              <Tooltip formatter={(v: number) => `${v}%`} />
-              <Legend wrapperStyle={{ fontSize: 10 }} />
-              <Bar dataKey="aliqNominal" fill="hsl(220, 70%, 50%)" name="Nominal" radius={[4, 4, 0, 0]} opacity={0.4} />
-              <Bar dataKey="aliqEfetiva" fill="hsl(220, 70%, 50%)" name="Efetiva" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="issEfetivo" fill="hsl(160, 60%, 45%)" name="ISS Efetivo" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      {/* TABELA FAIXAS */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Tabela Anexo III – Faixas do Simples Nacional
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-3">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b text-muted-foreground">
-                  <th className="text-center py-1.5 px-2">Faixa</th>
-                  <th className="text-right py-1.5 px-2">De</th>
-                  <th className="text-right py-1.5 px-2">Até</th>
-                  <th className="text-right py-1.5 px-2">Alíq. Nominal</th>
-                  <th className="text-right py-1.5 px-2">Parcela Ded.</th>
-                  <th className="text-right py-1.5 px-2">Alíq. Efetiva*</th>
-                  <th className="text-right py-1.5 px-2">% ISS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {FAIXAS_ANEXO_III.map(f => {
-                  const rbtRef = (f.limiteInferior + f.limiteSuperior) / 2;
-                  const c = calcularSimplesAnexoIII(rbtRef > 0 ? rbtRef : 90000, 'III');
-                  const isAtual = calculo.faixa?.faixa === f.faixa;
-                  return (
-                    <tr key={f.faixa} className={`border-b border-border/50 ${isAtual ? 'bg-primary/10 font-bold' : ''}`}>
-                      <td className="text-center py-1.5 px-2">
-                        {f.faixa}ª {isAtual && <Badge variant="default" className="text-[8px] ml-1">Atual</Badge>}
-                      </td>
-                      <td className="text-right py-1.5 px-2">{formatCurrency(f.limiteInferior)}</td>
-                      <td className="text-right py-1.5 px-2">{formatCurrency(f.limiteSuperior)}</td>
-                      <td className="text-right py-1.5 px-2">{(f.aliquotaNominal * 100).toFixed(2)}%</td>
-                      <td className="text-right py-1.5 px-2">{formatCurrency(f.parcelaDeduzir)}</td>
-                      <td className="text-right py-1.5 px-2 text-primary">{formatPercent(c.aliquotaEfetiva)}</td>
-                      <td className="text-right py-1.5 px-2">{(f.percentualIss * 100).toFixed(1)}%</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            <p className="text-[9px] text-muted-foreground mt-1">*Alíquota efetiva calculada no ponto médio da faixa</p>
-          </div>
-        </CardContent>
-      </Card>
+      {/* ROW 4: Tabela Faixas */}
+      <DashboardCard title="Tabela Anexo III – Faixas do Simples Nacional" headerColor="purple">
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b text-muted-foreground">
+                <th className="text-center py-1.5 px-2">Faixa</th>
+                <th className="text-right py-1.5 px-2">De</th>
+                <th className="text-right py-1.5 px-2">Até</th>
+                <th className="text-right py-1.5 px-2">Alíq. Nominal</th>
+                <th className="text-right py-1.5 px-2">Parcela Ded.</th>
+                <th className="text-right py-1.5 px-2">Alíq. Efetiva*</th>
+                <th className="text-right py-1.5 px-2">% ISS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {FAIXAS_ANEXO_III.map(f => {
+                const rbtRef = (f.limiteInferior + f.limiteSuperior) / 2;
+                const c = calcularSimplesAnexoIII(rbtRef > 0 ? rbtRef : 90000, 'III');
+                const isAtual = calculo.faixa?.faixa === f.faixa;
+                return (
+                  <tr key={f.faixa} className={`border-b border-border/50 ${isAtual ? 'bg-primary/10 font-bold' : ''}`}>
+                    <td className="text-center py-1.5 px-2">
+                      {f.faixa}ª {isAtual && <Badge variant="default" className="text-[8px] ml-1">Atual</Badge>}
+                    </td>
+                    <td className="text-right py-1.5 px-2">{formatCurrency(f.limiteInferior)}</td>
+                    <td className="text-right py-1.5 px-2">{formatCurrency(f.limiteSuperior)}</td>
+                    <td className="text-right py-1.5 px-2">{(f.aliquotaNominal * 100).toFixed(2)}%</td>
+                    <td className="text-right py-1.5 px-2">{formatCurrency(f.parcelaDeduzir)}</td>
+                    <td className="text-right py-1.5 px-2 text-primary">{formatPercent(c.aliquotaEfetiva)}</td>
+                    <td className="text-right py-1.5 px-2">{(f.percentualIss * 100).toFixed(1)}%</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <p className="text-[9px] text-muted-foreground mt-1">*Alíquota efetiva calculada no ponto médio da faixa</p>
+        </div>
+      </DashboardCard>
     </div>
   );
 };
