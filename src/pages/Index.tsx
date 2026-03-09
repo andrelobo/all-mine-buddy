@@ -33,6 +33,7 @@ import { useTomadores } from '@/hooks/useTomadores';
 import { useNotasFiscais } from '@/hooks/useNotasFiscais';
 import { useSimplesNacional } from '@/hooks/useSimplesNacional';
 import type { TomadorDB } from '@/hooks/useTomadores';
+import { calcularSimplesAnexoIII } from '@/utils/simples-nacional';
 
 type ActiveTab = 'dashboard' | 'prestador' | 'tomador' | 'emissao' | 'notas';
 type PrestadorSubTab = 'cadastro' | 'regime' | 'parametros';
