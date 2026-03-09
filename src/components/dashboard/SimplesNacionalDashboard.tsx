@@ -163,11 +163,12 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
   );
 };
 
-/* Sub-component for Resumo items */
-const ResumoItem: React.FC<{ label: string; value: string; accent?: string }> = ({ label, value, accent = 'text-foreground' }) => (
-  <div className="leading-none">
-    <p className="text-[9px] text-muted-foreground uppercase tracking-wide leading-none">{label}</p>
-    <p className={`text-xs font-bold ${accent} tabular-nums leading-tight`}>{value}</p>
+/* Sub-component for Financeiro rows — matches Partilha row style */
+const FinRow: React.FC<{ label: string; value: string; accent?: string }> = ({ label, value, accent = 'text-foreground' }) => (
+  <div className="flex items-center gap-2 text-[9px]">
+    <span className="w-28 font-semibold text-muted-foreground shrink-0">{label}</span>
+    <div className="flex-1" />
+    <span className={`tabular-nums font-bold ${accent}`}>{value}</span>
   </div>
 );
 
