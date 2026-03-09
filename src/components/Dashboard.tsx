@@ -94,20 +94,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
 
   return (
     <div className="space-y-4">
-      {/* KPIs BAR */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {[
-          { label: 'Receita', value: formatCurrency(kpis.faturamentoMes), accent: 'text-accent' },
-          { label: 'Aliq. Efetiva', value: formatPercent(kpis.aliquotaEfetiva), accent: 'text-primary' },
-          { label: 'Alíq. ISS', value: calculo.valido ? formatPercent(calculo.issReferencia) : '–', accent: 'text-foreground' },
-          { label: 'A Recolher', value: formatCurrency(kpis.dasAPagar), accent: 'text-destructive' },
-        ].map((k, i) => (
-          <div key={i} className="rounded-lg border border-border bg-card p-3 text-center">
-            <p className="text-[9px] text-muted-foreground uppercase tracking-wide font-semibold">{k.label}</p>
-            <p className={`text-lg font-bold ${k.accent}`}>{k.value}</p>
-          </div>
-        ))}
-      </div>
 
       {/* SMART ALERTS */}
       {smartAlerts.length > 0 && (
