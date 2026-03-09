@@ -112,7 +112,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
   return (
     <div className="space-y-4">
       {/* HEADER */}
-      <SectionTitle icon={<Scale className="w-4 h-4" />} title="Apuração Simples Nacional – Anexo III" />
+      <SectionTitle icon={<Scale className="w-4 h-4" />} title="Apuração Simples Nacional" />
 
       {/* APURAÇÃO DO PERÍODO - PRIMEIRO */}
       <Card className="border-primary/30">
