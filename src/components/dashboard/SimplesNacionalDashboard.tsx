@@ -121,12 +121,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
       </div>
 
-      {/* Row 2: Simulador + Partilha */}
+      {/* Row 2: Partilha */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-        <DashboardCard title="Simulador 25 de Março" headerColor="orange">
-          <SimuladorCenario rbt12={rbt12} cnaeAnexo={cnaeAnexo} faturamentoAtual={kpis.faturamentoMes} />
-        </DashboardCard>
-
         <DashboardCard title="Partilha Pgdas" headerColor="blue">
           {composicaoTributaria.length > 0 && kpis.faturamentoMes > 0 ? (
             <div className="h-full flex flex-col justify-between gap-1">
