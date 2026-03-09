@@ -123,7 +123,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           </CardTitle>
         </CardHeader>
         <CardContent className="px-3 pb-3 pt-0">
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-6 gap-2">
             <div className="p-2 rounded-md bg-muted/50">
               <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><DollarSign className="w-3 h-3 text-primary" />Faturamento</p>
               <p className="text-xs font-bold text-foreground mt-0.5">{formatCurrency(kpis.faturamentoMes)}</p>
@@ -131,6 +131,10 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             <div className="p-2 rounded-md bg-muted/50">
               <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Percent className="w-3 h-3 text-primary" />Aliq. Efetiva</p>
               <p className="text-xs font-bold text-primary mt-0.5">{formatPercent(kpis.aliquotaEfetiva)}</p>
+            </div>
+            <div className="p-2 rounded-md bg-muted/50">
+              <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Scale className="w-3 h-3 text-primary" />Alíq. ISS</p>
+              <p className="text-xs font-bold text-primary mt-0.5">{calculo.valido ? formatPercent(calculo.issReferencia) : '–'}</p>
             </div>
             <div className="p-2 rounded-md bg-muted/50">
               <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Receipt className="w-3 h-3 text-destructive" />DAS Estimado</p>
