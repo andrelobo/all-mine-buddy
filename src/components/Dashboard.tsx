@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, TrendingUp, TrendingDown, Shield, DollarSign, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
-  LineChart, Line, BarChart, Bar, PieChart as RechartsPie, Pie, Cell,
+  PieChart as RechartsPie, Pie, Cell,
   XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend,
+  BarChart, Bar,
 } from 'recharts';
 import { formatCurrency, formatPercent, FAIXAS_ANEXO_III, calcularSimplesAnexoIII } from '@/utils/simples-nacional';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
 import SimplesNacionalDashboard from '@/components/dashboard/SimplesNacionalDashboard';
 import DashboardCard from '@/components/dashboard/DashboardCard';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
-import AlertBadges from '@/components/dashboard/AlertBadges';
 
 interface DashboardProps {
   prestadorId: string | null;
@@ -23,12 +22,10 @@ interface DashboardProps {
   regime: string | null;
 }
 
-const CHART_GREEN = 'hsl(160, 60%, 45%)';
-const CHART_GREEN_LIGHT = 'hsl(160, 50%, 65%)';
-
 const PIE_COLORS = [
   'hsl(160, 60%, 45%)', 'hsl(160, 40%, 60%)', 'hsl(160, 30%, 72%)',
   'hsl(38, 80%, 55%)', 'hsl(220, 60%, 55%)', 'hsl(280, 50%, 55%)',
+  'hsl(340, 60%, 55%)', 'hsl(200, 50%, 55%)',
 ];
 
 const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, cnaeAnexo, regime }) => {
@@ -59,41 +56,75 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
     );
   }
 
-  const pieData = analiseClientes.slice(0, 6).map(c => ({ name: c.nome.substring(0, 20), value: c.faturamento }));
+  // Revenue by client pie data
+  const pieClientes = analiseClientes.slice(0, 6).map(c => ({
+    name: c.nome.length > 18 ? c.nome.substring(0, 18) + '…' : c.nome,
+    value: c.faturamento,
+    percentual: c.percentual,
+  }));
 
-  const smartAlerts = [
-    ...alertas,
-    ...(kpis.faturamentoMes > 0 && dadosMensais.length >= 2 ? (() => {
-      const prev = dadosMensais[dadosMensais.length - 2]?.faturamento || 0;
-      const curr = kpis.faturamentoMes;
-      if (prev > 0) {
-        const change = ((curr - prev) / prev) * 100;
-        if (Math.abs(change) > 5) {
-          return [{ tipo: change > 0 ? 'success' as const : 'warning' as const, mensagem: `Receita ${change > 0 ? 'aumentou' : 'diminuiu'} ${Math.abs(change).toFixed(0)}%` }];
-        }
+  // Smart alerts
+  const smartAlerts: { tipo: string; mensagem: string; icon: React.ReactNode }[] = [];
+  alertas.forEach(a => {
+    smartAlerts.push({
+      tipo: a.tipo,
+      mensagem: a.mensagem,
+      icon: a.tipo === 'danger' ? <AlertTriangle className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />,
+    });
+  });
+  if (kpis.faturamentoMes > 0 && dadosMensais.length >= 2) {
+    const prev = dadosMensais[dadosMensais.length - 2]?.faturamento || 0;
+    if (prev > 0) {
+      const change = ((kpis.faturamentoMes - prev) / prev) * 100;
+      if (Math.abs(change) > 5) {
+        smartAlerts.push({
+          tipo: change > 0 ? 'success' : 'warning',
+          mensagem: `Receita ${change > 0 ? '↑' : '↓'} ${Math.abs(change).toFixed(0)}% vs mês anterior`,
+          icon: change > 0 ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />,
+        });
       }
-      return [];
-    })() : []),
-  ];
+    }
+  }
+
+  // Simulação de faixa
+  const extraVal = parseCurrencyInput(simulacaoExtra);
+  const rbt12Simulado = rbt12 + extraVal;
+  const calculoSimulado = extraVal > 0 ? calcularSimplesAnexoIII(rbt12Simulado, cnaeAnexo || 'III') : null;
+  const mudouFaixa = calculoSimulado?.faixa && calculo.faixa && calculoSimulado.faixa.faixa !== calculo.faixa.faixa;
 
   return (
     <div className="space-y-4">
-
-      {/* HEADER BAR — CredBusiness style */}
+      {/* HEADER */}
       <DashboardHeader
         nomeEmpresa={nomeEmpresa || 'Empresa'}
-        titulo="Painel Fiscal"
+        titulo="Painel Fiscal Inteligente"
         kpis={[
-          { label: 'Faturamento', value: formatCurrency(kpis.faturamentoMes) },
-          { label: 'DAS Estimado', value: formatCurrency(kpis.dasEstimado), accent: 'text-destructive-foreground' },
-          { label: 'Caixa Disponível', value: formatCurrency(fluxoCaixa.saldo) },
+          { label: 'Receita', value: formatCurrency(kpis.faturamentoMes) },
+          { label: 'DAS', value: formatCurrency(kpis.dasEstimado), accent: 'text-destructive-foreground' },
+          { label: 'Disponível', value: formatCurrency(fluxoCaixa.saldo) },
         ]}
       />
 
-      {/* ALERT BADGES */}
-      <AlertBadges alertas={smartAlerts} />
+      {/* SMART ALERTS */}
+      {smartAlerts.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {smartAlerts.map((a, i) => (
+            <Badge
+              key={i}
+              variant="outline"
+              className={`text-[10px] gap-1 py-1 ${
+                a.tipo === 'danger' ? 'border-destructive text-destructive' :
+                a.tipo === 'warning' ? 'border-[hsl(38,80%,55%)] text-[hsl(38,80%,45%)]' :
+                a.tipo === 'success' ? 'border-accent text-accent' : 'border-primary text-primary'
+              }`}
+            >
+              {a.icon} {a.mensagem}
+            </Badge>
+          ))}
+        </div>
+      )}
 
-      {/* SIMPLES NACIONAL */}
+      {/* SIMPLES NACIONAL SECTION */}
       <SimplesNacionalDashboard
         rbt12={rbt12}
         cnaeAnexo={cnaeAnexo}
@@ -102,252 +133,199 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         dadosMensais={dadosMensais}
       />
 
-      {/* SPLIT PAYMENT + FLUXO DE CAIXA */}
+      {/* ROW: Split Payment + Receita por Cliente */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <DashboardCard title="Split de Impostos">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Recebimentos do Mês</span>
-              <span className="text-sm font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</span>
-            </div>
-            <div className="flex items-center justify-between bg-destructive/5 rounded-lg px-3 py-2">
-              <span className="text-xs text-muted-foreground">Separado para Impostos</span>
-              <span className="text-sm font-bold text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
-            </div>
-            <div className="flex items-center justify-between bg-accent/5 rounded-lg px-3 py-2">
-              <span className="text-xs font-medium text-muted-foreground">Disponível para Uso</span>
-              <span className="text-lg font-extrabold text-accent">{formatCurrency(fluxoCaixa.saldo)}</span>
-            </div>
-          </div>
-        </DashboardCard>
-
-        <DashboardCard title="Financeiro">
+        {/* Split Payment */}
+        <DashboardCard title="Split Payment — Reserva Tributária" headerColor="green">
           <div className="space-y-3">
             <div className="grid grid-cols-3 gap-2">
-              <div className="text-center p-2 rounded-lg bg-muted/50">
-                <p className="text-[10px] text-muted-foreground">Entradas</p>
-                <p className="text-sm font-bold text-accent">{formatCurrency(fluxoCaixa.operacional)}</p>
+              <div className="text-center p-2.5 rounded-lg bg-muted/50">
+                <p className="text-[9px] text-muted-foreground uppercase">Recebido</p>
+                <p className="text-sm font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</p>
               </div>
-              <div className="text-center p-2 rounded-lg bg-muted/50">
-                <p className="text-[10px] text-muted-foreground">Saídas</p>
-                <p className="text-sm font-bold text-destructive">{formatCurrency(fluxoCaixa.tributario)}</p>
+              <div className="text-center p-2.5 rounded-lg bg-destructive/5">
+                <p className="text-[9px] text-muted-foreground uppercase">Reservado</p>
+                <p className="text-sm font-bold text-destructive">{formatCurrency(kpis.dasEstimado)}</p>
               </div>
-              <div className="text-center p-2 rounded-lg bg-muted/50">
-                <p className="text-[10px] text-muted-foreground">Projetado</p>
-                <p className="text-sm font-bold text-foreground">{formatCurrency(fluxoCaixa.saldo)}</p>
+              <div className="text-center p-2.5 rounded-lg bg-accent/5">
+                <p className="text-[9px] text-muted-foreground uppercase">Liberado</p>
+                <p className="text-sm font-bold text-accent">{formatCurrency(fluxoCaixa.saldo)}</p>
               </div>
             </div>
-            <div className="h-36">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={dadosMensais}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="label" tick={{ fontSize: 9 }} />
-                  <YAxis tick={{ fontSize: 9 }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
-                  <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                  <Line type="monotone" dataKey="faturamento" stroke={CHART_GREEN} name="Receita" strokeWidth={2} dot={{ r: 3, fill: CHART_GREEN }} />
-                  <Line type="monotone" dataKey="tributoEstimado" stroke="hsl(38, 80%, 55%)" name="Tributo" strokeWidth={2} dot={{ r: 3 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </DashboardCard>
-      </div>
-
-      {/* MONITORAMENTO DE FAIXA */}
-      {calculo.faixa && (() => {
-        const faixaAtual = calculo.faixa;
-        const limiteSuperior = faixaAtual.limiteSuperior;
-        const faltaProxima = limiteSuperior - rbt12;
-        const progressoPct = ((rbt12 - faixaAtual.limiteInferior) / (limiteSuperior - faixaAtual.limiteInferior)) * 100;
-        const proximaFaixa = FAIXAS_ANEXO_III.find(f => f.faixa === faixaAtual.faixa + 1);
-
-        const extraVal = parseCurrencyInput(simulacaoExtra);
-        const rbt12Simulado = rbt12 + extraVal;
-        const calculoSimulado = extraVal > 0 ? calcularSimplesAnexoIII(rbt12Simulado, cnaeAnexo || 'III') : null;
-        const mudouFaixa = calculoSimulado?.faixa && calculoSimulado.faixa.faixa !== faixaAtual.faixa;
-
-        return (
-          <DashboardCard
-            title="Monitoramento de Faixa"
-            rightHeader={faltaProxima < 50000 && proximaFaixa ? (
-              <Badge variant="outline" className="border-warning text-warning text-[9px]">⚠️ Próximo da mudança</Badge>
-            ) : undefined}
-          >
-            <div className="space-y-3">
-              <div>
-                <p className="text-xs text-muted-foreground">Faixa atual: <span className="font-bold text-foreground">{faixaAtual.faixa}ª</span> (até {formatCurrency(limiteSuperior)})</p>
-                {proximaFaixa && (
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Faltam <span className="font-bold text-accent">{formatCurrency(faltaProxima)}</span> para a {proximaFaixa.faixa}ª faixa
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-                  <span>{formatCurrency(faixaAtual.limiteInferior)}</span>
-                  <span>{formatCurrency(rbt12)} ({progressoPct.toFixed(0)}%)</span>
-                  <span>{formatCurrency(limiteSuperior)}</span>
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-accent" />
+              <div className="flex-1">
+                <div className="h-3 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-accent rounded-full transition-all"
+                    style={{ width: `${kpis.faturamentoMes > 0 ? Math.min((kpis.dasEstimado / kpis.faturamentoMes) * 100, 100) : 0}%` }}
+                  />
                 </div>
-                <Progress value={Math.min(progressoPct, 100)} className="h-2.5" />
               </div>
-
-              <div className="border-t border-border pt-3">
-                <p className="text-[11px] font-semibold text-foreground mb-2 uppercase tracking-wide">Simulação de Cenário</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex-1">
-                    <label className="text-[10px] text-muted-foreground">Faturamento adicional (R$)</label>
-                    <div className="relative mt-1">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R$</span>
-                      <Input
-                        type="text"
-                        inputMode="numeric"
-                        placeholder="0,00"
-                        value={simulacaoExtra}
-                        onChange={e => setSimulacaoExtra(formatCurrencyInput(e.target.value))}
-                        className="h-8 text-sm pl-9"
-                      />
-                    </div>
-                  </div>
-                  {calculoSimulado && (
-                    <div className="flex-1 space-y-1">
-                      <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">RBT12:</span>
-                        <span className="font-bold">{formatCurrency(rbt12Simulado)}</span>
-                      </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">Faixa:</span>
-                        <span className={`font-bold ${mudouFaixa ? 'text-destructive' : ''}`}>
-                          {calculoSimulado.faixa?.faixa}ª {mudouFaixa && '⚠️'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">Alíq.:</span>
-                        <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-accent'}`}>
-                          {formatPercent(calculoSimulado.aliquotaEfetiva)}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {mudouFaixa && (
-                  <div className="mt-2 p-2 rounded bg-destructive/10 border border-destructive/20 text-destructive text-xs">
-                    <AlertTriangle className="w-3 h-3 inline mr-1" />
-                    Mudança da {faixaAtual.faixa}ª para a {calculoSimulado!.faixa!.faixa}ª faixa. Alíquota: {formatPercent(calculo.aliquotaEfetiva)} → {formatPercent(calculoSimulado!.aliquotaEfetiva)}.
-                  </div>
-                )}
-              </div>
+              <span className="text-[10px] font-bold text-accent">
+                {kpis.faturamentoMes > 0 ? ((kpis.dasEstimado / kpis.faturamentoMes) * 100).toFixed(1) : 0}% protegido
+              </span>
             </div>
-          </DashboardCard>
-        );
-      })()}
-
-      {/* GRÁFICOS — ISS Retido + Faturamento por Cliente */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <DashboardCard title="ISS Retido por Mês">
-          <div className="h-48">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={dadosMensais}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="label" tick={{ fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
-                <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                <Bar dataKey="issRetido" fill={CHART_GREEN} name="ISS Retido" radius={[3, 3, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </DashboardCard>
-
-        <DashboardCard title="Faturamento por Cliente">
-          <div className="h-48">
-            {pieData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <RechartsPie>
-                  <Pie data={pieData} cx="50%" cy="50%" outerRadius={75} innerRadius={35} dataKey="value" nameKey="name" labelLine={false} label={false}>
-                    {pieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-                  </Pie>
-                  <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                  <Legend wrapperStyle={{ fontSize: 9 }} />
-                </RechartsPie>
-              </ResponsiveContainer>
-            ) : (
-              <div className="flex items-center justify-center h-full text-muted-foreground text-sm">Sem dados</div>
+            {splits.length > 0 && (
+              <div className="overflow-x-auto max-h-32">
+                <table className="w-full text-[10px]">
+                  <thead>
+                    <tr className="border-b text-muted-foreground">
+                      <th className="text-left py-1 px-1">NF</th>
+                      <th className="text-right py-1 px-1">Bruto</th>
+                      <th className="text-right py-1 px-1">Reservado</th>
+                      <th className="text-center py-1 px-1">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {splits.slice(0, 5).map(s => (
+                      <tr key={s.id} className="border-b border-border/50">
+                        <td className="py-1 px-1 font-mono">{s.nota_fiscal_id?.substring(0, 8)}</td>
+                        <td className="text-right py-1 px-1">{formatCurrency(s.valor_bruto)}</td>
+                        <td className="text-right py-1 px-1 text-destructive">{formatCurrency(s.valor_reservado)}</td>
+                        <td className="text-center py-1 px-1">
+                          <Badge variant={s.status === 'pago' ? 'default' : 'outline'} className="text-[8px]">{s.status}</Badge>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </DashboardCard>
+
+        {/* Receita por Cliente — Pie */}
+        <DashboardCard title="Composição de Receita por Cliente" headerColor="blue">
+          {pieClientes.length > 0 ? (
+            <div className="flex items-start gap-3">
+              <div className="flex-1 h-52">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RechartsPie>
+                    <Pie
+                      data={pieClientes}
+                      cx="50%" cy="50%" outerRadius={85} innerRadius={30}
+                      dataKey="value" nameKey="name"
+                      labelLine={false}
+                      label={({ percent }) => percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''}
+                    >
+                      {pieClientes.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                    </Pie>
+                    <Tooltip formatter={(v: number) => formatCurrency(v)} />
+                  </RechartsPie>
+                </ResponsiveContainer>
+              </div>
+              <div className="w-40 space-y-1.5 pt-2">
+                {analiseClientes.slice(0, 6).map((c, i) => (
+                  <div key={c.tomadorId} className="flex items-center justify-between text-[10px]">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: PIE_COLORS[i % PIE_COLORS.length] }} />
+                      <span className="text-muted-foreground truncate max-w-[80px]">{c.nome}</span>
+                    </div>
+                    <span className="font-bold">{c.percentual.toFixed(0)}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-52 text-muted-foreground text-sm">Sem clientes</div>
+          )}
+        </DashboardCard>
       </div>
 
-      {/* CLIENTES */}
-      <DashboardCard title="Clientes">
-        {analiseClientes.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b text-muted-foreground">
-                  <th className="text-left py-2 px-2">Cliente</th>
-                  <th className="text-right py-2 px-2">Faturamento</th>
-                  <th className="text-right py-2 px-2">NFs</th>
-                  <th className="text-right py-2 px-2">Ticket Médio</th>
-                  <th className="text-right py-2 px-2">%</th>
-                  <th className="text-center py-2 px-2">Curva</th>
-                </tr>
-              </thead>
-              <tbody>
-                {analiseClientes.map(c => (
-                  <tr key={c.tomadorId} className="border-b border-border/50">
-                    <td className="py-2 px-2 font-medium truncate max-w-[200px]">{c.nome}</td>
-                    <td className="text-right py-2 px-2">{formatCurrency(c.faturamento)}</td>
-                    <td className="text-right py-2 px-2">{c.quantidadeNf}</td>
-                    <td className="text-right py-2 px-2">{formatCurrency(c.ticketMedio)}</td>
-                    <td className="text-right py-2 px-2">{c.percentual.toFixed(1)}%</td>
-                    <td className="text-center py-2 px-2">
-                      <Badge variant={c.classificacao === 'A' ? 'default' : 'outline'} className={`text-[9px] ${
-                        c.classificacao === 'A' ? 'bg-accent' : ''
-                      }`}>
-                        {c.classificacao}
-                      </Badge>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-center text-sm text-muted-foreground py-4">Nenhuma nota fiscal emitida.</p>
-        )}
-      </DashboardCard>
-
-      {/* Split table */}
-      {splits.length > 0 && (
-        <DashboardCard title="Split Payment – Detalhamento">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b text-muted-foreground">
-                  <th className="text-left py-1.5 px-2">NF</th>
-                  <th className="text-right py-1.5 px-2">Bruto</th>
-                  <th className="text-right py-1.5 px-2">Reservado</th>
-                  <th className="text-right py-1.5 px-2">Liberado</th>
-                  <th className="text-center py-1.5 px-2">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {splits.slice(0, 10).map(s => (
-                  <tr key={s.id} className="border-b border-border/50">
-                    <td className="py-1.5 px-2 font-mono">{s.nota_fiscal_id?.substring(0, 8)}...</td>
-                    <td className="text-right py-1.5 px-2">{formatCurrency(s.valor_bruto)}</td>
-                    <td className="text-right py-1.5 px-2 text-destructive">{formatCurrency(s.valor_reservado)}</td>
-                    <td className="text-right py-1.5 px-2 text-accent">{formatCurrency(s.valor_liberado)}</td>
-                    <td className="text-center py-1.5 px-2">
-                      <Badge variant={s.status === 'pago' ? 'default' : 'outline'} className="text-[9px]">{s.status}</Badge>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {/* ROW: Simulador de Faixa + Análise de Clientes */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Simulador */}
+        <DashboardCard title="Simulador de Cenário" headerColor="orange">
+          <div className="space-y-3">
+            <p className="text-[10px] text-muted-foreground">Simule o impacto de receita adicional na sua faixa do Simples Nacional.</p>
+            <div className="flex items-end gap-3">
+              <div className="flex-1">
+                <label className="text-[10px] text-muted-foreground">Faturamento adicional</label>
+                <div className="relative mt-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R$</span>
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="0,00"
+                    value={simulacaoExtra}
+                    onChange={e => setSimulacaoExtra(formatCurrencyInput(e.target.value))}
+                    className="h-8 text-sm pl-9"
+                  />
+                </div>
+              </div>
+              {calculoSimulado && (
+                <div className="flex-1 space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">RBT12 simulado:</span>
+                    <span className="font-bold">{formatCurrency(rbt12Simulado)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Faixa:</span>
+                    <span className={`font-bold ${mudouFaixa ? 'text-destructive' : ''}`}>
+                      {calculoSimulado.faixa?.faixa}ª {mudouFaixa && '⚠️'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Alíquota:</span>
+                    <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-accent'}`}>
+                      {formatPercent(calculoSimulado.aliquotaEfetiva)}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+            {mudouFaixa && (
+              <div className="p-2.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>
+                  <strong>Alerta:</strong> Mudança da {calculo.faixa!.faixa}ª para a {calculoSimulado!.faixa!.faixa}ª faixa.
+                  Alíquota efetiva: {formatPercent(calculo.aliquotaEfetiva)} → {formatPercent(calculoSimulado!.aliquotaEfetiva)}.
+                </span>
+              </div>
+            )}
           </div>
         </DashboardCard>
-      )}
+
+        {/* Análise por Cliente — Tabela */}
+        <DashboardCard title="Análise por Cliente — Curva ABC" headerColor="default">
+          {analiseClientes.length > 0 ? (
+            <div className="overflow-x-auto max-h-48">
+              <table className="w-full text-[10px]">
+                <thead>
+                  <tr className="border-b text-muted-foreground">
+                    <th className="text-left py-1.5 px-1">Cliente</th>
+                    <th className="text-right py-1.5 px-1">Receita</th>
+                    <th className="text-right py-1.5 px-1">NFs</th>
+                    <th className="text-right py-1.5 px-1">%</th>
+                    <th className="text-center py-1.5 px-1">Curva</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {analiseClientes.map(c => (
+                    <tr key={c.tomadorId} className="border-b border-border/50">
+                      <td className="py-1.5 px-1 font-medium truncate max-w-[140px]">{c.nome}</td>
+                      <td className="text-right py-1.5 px-1">{formatCurrency(c.faturamento)}</td>
+                      <td className="text-right py-1.5 px-1">{c.quantidadeNf}</td>
+                      <td className="text-right py-1.5 px-1">{c.percentual.toFixed(1)}%</td>
+                      <td className="text-center py-1.5 px-1">
+                        <Badge
+                          variant={c.classificacao === 'A' ? 'default' : 'outline'}
+                          className={`text-[8px] ${c.classificacao === 'A' ? 'bg-accent' : c.classificacao === 'B' ? 'border-[hsl(38,80%,55%)] text-[hsl(38,80%,45%)]' : ''}`}
+                        >
+                          {c.classificacao}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-center text-sm text-muted-foreground py-4">Nenhuma nota emitida.</p>
+          )}
+        </DashboardCard>
+      </div>
     </div>
   );
 };
