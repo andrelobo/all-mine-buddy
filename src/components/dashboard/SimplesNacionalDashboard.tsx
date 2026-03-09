@@ -110,9 +110,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           </div>
         </DashboardCard>
 
-        <DashboardCard title="Simulador de Cenário" headerColor="green">
-          <SimuladorCenario rbt12={rbt12} cnaeAnexo={cnaeAnexo} faturamentoAtual={kpis.faturamentoMes} />
-        </DashboardCard>
 
         <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
           <FaixaThermometer rbt12={rbt12} calculo={calculo} />
