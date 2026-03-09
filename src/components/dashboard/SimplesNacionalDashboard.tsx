@@ -84,10 +84,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
   return (
     <div className="space-y-4">
-      {/* ROW 1: Termômetro de Faixa */}
-      <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
-        <FaixaThermometer rbt12={rbt12} calculo={calculo} />
-      </DashboardCard>
 
       {/* ROW 2: Resumo Tributário (coluna) + Composição DAS (pie) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
