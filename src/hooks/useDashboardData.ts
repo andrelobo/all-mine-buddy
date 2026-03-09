@@ -164,7 +164,7 @@ export function useDashboardData(prestadorId: string | null, rbt12: number, cnae
     const sorted = Array.from(map.entries())
       .map(([tid, c]) => ({
         tomadorId: tid,
-        nome: tomadores[tid] || 'Cliente sem nome',
+        nome: tomadores[tid]?.nome || 'Cliente sem nome',
         faturamento: c.faturamento,
         quantidadeNf: c.qtd,
         ticketMedio: c.qtd > 0 ? c.faturamento / c.qtd : 0,
