@@ -89,7 +89,7 @@ const EmissoesResumoMini: React.FC<Props> = ({ notas, tomadores, aliquotaEfetiva
           <span className="w-12 text-right text-foreground">{totais.issRet > 0 ? `(${fmt(totais.issRet)})` : '—'}</span>
           <span className="w-10 text-right" />
           <span className="w-12 text-right text-destructive">{fmt(totais.das)}</span>
-          <span className="w-8 text-right text-muted-foreground">{fmt(totais.percentual)}%</span>
+          
         </div>
       </div>
     </div>
