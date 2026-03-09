@@ -88,33 +88,31 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       {/* 1: Resumo Tributário + 2: Composição DAS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <DashboardCard title={`Resumo Tributário — ${kpis.competenciaLabel}`} headerColor="green">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-3">
+          <div className="space-y-2.5">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
               <ResumoItem label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
-              <ResumoItem label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
-              <ResumoItem label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
-            </div>
-            <div className="space-y-3">
               <ResumoItem label="DAS Estimado" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
+              <ResumoItem label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
               <ResumoItem label="ISS Retido (dedução)" value={`- ${formatCurrency(kpis.issRetidoMes)}`} accent="text-accent" />
+              <ResumoItem label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
               <ResumoItem label="Retenções Federais" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
             </div>
-            <div className="col-span-2 bg-destructive/10 rounded-lg px-3 py-2.5 flex items-center justify-between">
+            <div className="bg-destructive/10 rounded-lg px-3 py-2 flex items-center justify-between">
               <span className="text-xs font-semibold text-muted-foreground">DAS a Recolher</span>
-              <span className="text-lg font-extrabold text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
+              <span className="text-lg font-extrabold text-destructive tabular-nums">{formatCurrency(kpis.dasAPagar)}</span>
             </div>
           </div>
         </DashboardCard>
 
         <DashboardCard title="Composição do DAS" headerColor="blue">
           {pieComposicao.length > 0 && kpis.faturamentoMes > 0 ? (
-            <div className="flex items-start gap-4">
-              <div className="flex-1 h-52">
+            <div className="flex items-center gap-4">
+              <div className="flex-1 h-48">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPie>
                     <Pie
                       data={pieComposicao}
-                      cx="50%" cy="50%" outerRadius={90} innerRadius={35}
+                      cx="50%" cy="50%" outerRadius={85} innerRadius={32}
                       dataKey="value" nameKey="name"
                       labelLine={false} label={renderPieLabel}
                     >
@@ -124,24 +122,24 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                   </RechartsPie>
                 </ResponsiveContainer>
               </div>
-              <div className="w-36 space-y-1.5 pt-2">
+              <div className="w-36 space-y-1.5">
                 {composicaoTributaria.map(c => (
                   <div key={c.tributo} className="flex items-center justify-between text-[10px]">
                     <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: c.cor }} />
+                      <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: c.cor }} />
                       <span className="text-muted-foreground">{c.tributo}</span>
                     </div>
-                    <span className="font-bold text-foreground">{formatCurrency(c.valor)}</span>
+                    <span className="font-bold text-foreground tabular-nums">{formatCurrency(c.valor)}</span>
                   </div>
                 ))}
-                <div className="border-t border-border pt-1 flex items-center justify-between text-[10px] font-bold">
+                <div className="border-t border-border pt-1.5 flex items-center justify-between text-[10px] font-bold">
                   <span>Total</span>
-                  <span className="text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
+                  <span className="text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</span>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-52 text-muted-foreground text-sm">Sem dados para exibir</div>
+            <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">Sem dados para exibir</div>
           )}
         </DashboardCard>
       </div>
