@@ -92,6 +92,8 @@ const Index = () => {
     rbt12: snRbt12, setRbt12: snSetRbt12, calculo: snCalculo, alertas: snAlertas,
   } = useSimplesNacional(config.cnaePrincipal, config.rbt12);
 
+  const { kpis: dashKpis, calculo: dashCalculo } = useDashboardData(config.id || null, snRbt12, snCnaeAnexo || 'III');
+
   const [tomador, setTomador] = useState<TomadorData>(INITIAL_TOMADOR);
   const [editingTomadorId, setEditingTomadorId] = useState<string | null>(null);
   const [showTomadorForm, setShowTomadorForm] = useState(false);
