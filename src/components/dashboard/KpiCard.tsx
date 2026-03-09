@@ -7,9 +7,9 @@ interface KpiCardProps {
 }
 
 const KpiCard: React.FC<KpiCardProps> = ({ label, value, accent }) => (
-  <div className="flex flex-col items-center justify-center">
-    <p className="text-[10px] text-sidebar-foreground/60 font-medium uppercase tracking-wide">{label}</p>
-    <p className={`text-lg font-extrabold leading-tight ${accent || 'text-sidebar-foreground'}`}>{value}</p>
+  <div className="flex flex-col items-center justify-center min-w-[90px]">
+    <p className="text-[9px] text-sidebar-foreground/50 font-semibold uppercase tracking-widest">{label}</p>
+    <p className={`text-xl font-black leading-tight tracking-tight ${accent || 'text-sidebar-foreground'}`}>{value}</p>
   </div>
 );
 
