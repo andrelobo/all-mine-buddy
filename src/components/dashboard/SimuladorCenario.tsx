@@ -43,6 +43,7 @@ const SimuladorCenario: React.FC<Props> = ({ rbt12, cnaeAnexo, faturamentoAtual 
 
   return (
     <div className="space-y-3">
+      <p className="text-[9px] text-muted-foreground">Simule o impacto de receita adicional na sua faixa do Simples Nacional.</p>
       <div>
         <label className="text-[9px] text-muted-foreground uppercase tracking-wide">Faturamento Simulado</label>
         <div className="flex items-center gap-2 mt-1">
