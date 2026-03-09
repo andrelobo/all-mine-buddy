@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { AlertTriangle, TrendingUp, TrendingDown, Shield, DollarSign, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -29,7 +29,12 @@ const PIE_COLORS = [
 ];
 
 const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, cnaeAnexo, regime }) => {
-  const { loading, kpis, calculo, dadosMensais, analiseClientes, alertas, fluxoCaixa, splits } = useDashboardData(prestadorId, rbt12, cnaeAnexo);
+  const { loading, notas, kpis, calculo, dadosMensais, analiseClientes, alertas, fluxoCaixa, splits } = useDashboardData(prestadorId, rbt12, cnaeAnexo);
+  const tomadoresMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    analiseClientes.forEach(c => { map[c.tomadorId] = c.nome; });
+    return map;
+  }, [analiseClientes]);
   const [simulacaoExtra, setSimulacaoExtra] = useState<string>('');
 
   const formatCurrencyInput = (value: string) => {
@@ -121,6 +126,8 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         calculo={calculo}
         kpis={kpis}
         dadosMensais={dadosMensais}
+        notas={notas}
+        tomadores={tomadoresMap}
       />
 
       {/* ROW: Split Payment + Receita por Cliente */}

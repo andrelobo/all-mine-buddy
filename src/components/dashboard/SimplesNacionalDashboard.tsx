@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
+import type { NotaDashboard } from '@/hooks/useDashboardData';
 import {
   PieChart as RechartsPie, Pie, Cell,
   XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend,
@@ -11,6 +12,7 @@ import type { MesData } from '@/hooks/useDashboardData';
 import DashboardCard from './DashboardCard';
 import FaixaThermometer from './FaixaThermometer';
 import SimuladorCenario from './SimuladorCenario';
+import EmissoesResumoMini from './EmissoesResumoMini';
 
 interface Props {
   rbt12: number;
@@ -24,8 +26,11 @@ interface Props {
     totalRetencoes: number;
     aliquotaEfetiva: number;
     competenciaLabel: string;
+    mesCompetencia: string;
   };
   dadosMensais: MesData[];
+  notas: NotaDashboard[];
+  tomadores: Record<string, string>;
 }
 
 const CHART_GREEN = 'hsl(160, 60%, 45%)';
@@ -35,7 +40,7 @@ const PIE_COLORS = [
   'hsl(38, 80%, 55%)', 'hsl(220, 60%, 55%)', 'hsl(280, 50%, 55%)',
 ];
 
-const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais }) => {
+const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais, notas, tomadores }) => {
   const composicaoTributaria = useMemo(() => {
     if (!calculo.faixa || !calculo.valido) return [];
     const aliqEfetiva = calculo.aliquotaEfetiva;
@@ -99,6 +104,12 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <ResumoItem label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
               <ResumoItem label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
             </div>
+            <EmissoesResumoMini
+              notas={notas}
+              tomadores={tomadores}
+              aliquotaEfetiva={kpis.aliquotaEfetiva}
+              mesCompetencia={kpis.mesCompetencia}
+            />
             <div className="bg-destructive/10 rounded-md px-2 py-0.5 flex items-center justify-between mt-auto">
               <span className="text-[9px] font-semibold text-muted-foreground">A RECOLHER PGDAS</span>
               <span className="text-base font-extrabold text-destructive tabular-nums">{formatCurrency(kpis.dasAPagar)}</span>
