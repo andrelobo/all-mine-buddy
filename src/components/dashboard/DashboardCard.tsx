@@ -1,39 +1,37 @@
 import React from 'react';
 
 interface DashboardCardProps {
-  title: string;
-  headerColor?: 'blue' | 'green' | 'red' | 'orange' | 'purple';
+  title?: string;
+  borderColor?: 'blue' | 'green' | 'red' | 'orange' | 'purple' | 'none';
   children: React.ReactNode;
   className?: string;
-  subtitle?: string;
   rightHeader?: React.ReactNode;
 }
 
-const colorMap = {
-  blue: 'bg-primary',
-  green: 'bg-accent',
-  red: 'bg-destructive',
-  orange: 'bg-warning',
-  purple: 'bg-[hsl(280,60%,55%)]',
+const borderMap = {
+  blue: 'border-l-4 border-l-primary',
+  green: 'border-l-4 border-l-accent',
+  red: 'border-l-4 border-l-destructive',
+  orange: 'border-l-4 border-l-warning',
+  purple: 'border-l-4 border-l-[hsl(280,60%,55%)]',
+  none: '',
 };
 
 const DashboardCard: React.FC<DashboardCardProps> = ({
   title,
-  headerColor = 'blue',
+  borderColor = 'none',
   children,
   className = '',
-  subtitle,
   rightHeader,
 }) => (
-  <div className={`rounded-lg border border-border bg-card text-card-foreground shadow-sm overflow-hidden ${className}`}>
-    <div className={`${colorMap[headerColor]} px-3 py-2 flex items-center justify-between`}>
-      <div>
-        <h3 className="text-xs font-bold text-primary-foreground uppercase tracking-wide">{title}</h3>
-        {subtitle && <p className="text-[10px] text-primary-foreground/70">{subtitle}</p>}
+  <div className={`rounded-lg border border-border bg-card text-card-foreground shadow-sm overflow-hidden ${borderMap[borderColor]} ${className}`}>
+    {title && (
+      <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+        {rightHeader && <div>{rightHeader}</div>}
       </div>
-      {rightHeader && <div>{rightHeader}</div>}
-    </div>
-    <div className="p-3">{children}</div>
+    )}
+    <div className="p-4">{children}</div>
   </div>
 );
 

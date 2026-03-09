@@ -1,8 +1,4 @@
 import React, { useMemo } from 'react';
-import {
-  Percent, DollarSign, Scale, Calculator, ShieldCheck, Receipt,
-  PieChart as PieIcon,
-} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   PieChart as RechartsPie, Pie, Cell,
@@ -13,7 +9,6 @@ import { FAIXAS_ANEXO_III, formatCurrency, formatPercent, calcularSimplesAnexoII
 import type { CalculoSimplesResult } from '@/utils/simples-nacional';
 import type { MesData } from '@/hooks/useDashboardData';
 import DashboardCard from './DashboardCard';
-import BigNumber from './BigNumber';
 
 interface Props {
   rbt12: number;
@@ -76,92 +71,56 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       receita: m.faturamento,
       das: m.tributoEstimado,
       issRetido: m.issRetido,
-      dasLiquido: Math.max(m.tributoEstimado - m.issRetido, 0),
       cargaTributaria: m.faturamento > 0 ? +((m.tributoEstimado / m.faturamento) * 100).toFixed(2) : 0,
     }));
   }, [dadosMensais]);
 
   const pieComposicao = composicaoTributaria.map(c => ({ name: c.tributo, value: c.valor }));
 
-  const renderCenterLabel = ({ viewBox }: any) => {
-    const { cx, cy } = viewBox;
-    return (
-      <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central">
-        <tspan x={cx} dy="-6" className="fill-foreground text-lg font-extrabold">
-          {formatPercent(kpis.aliquotaEfetiva)}
-        </tspan>
-        <tspan x={cx} dy="16" className="fill-muted-foreground text-[9px]">
-          ALÍQ. EFETIVA
-        </tspan>
-      </text>
-    );
-  };
-
   return (
     <div className="space-y-4">
-      {/* ROW 1: RBA Big Numbers + Composição Pie */}
+      {/* ROW 1: RBA Resumo + Composição Pie */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* RBA Card with big numbers */}
-        <DashboardCard
-          title={`RBA ${kpis.competenciaLabel}`}
-          subtitle="Receita Bruta Acumulada"
-          headerColor="blue"
-          className="lg:col-span-2"
-        >
-          <div className="grid grid-cols-3 gap-4 py-2">
-            <BigNumber
-              value={formatCurrency(kpis.faturamentoMes)}
-              label="Faturamento"
-              accent="text-primary"
-              size="md"
-            />
-            <BigNumber
-              value={formatCurrency(kpis.dasEstimado)}
-              label="DAS Estimado"
-              accent="text-destructive"
-              size="md"
-            />
-            <BigNumber
-              value={formatCurrency(kpis.dasAPagar)}
-              label="A Recolher"
-              accent="text-destructive"
-              badge="A PAGAR"
-              badgeVariant="destructive"
-              size="md"
-            />
-          </div>
-          <div className="border-t border-border mt-2 pt-3 grid grid-cols-3 gap-4">
-            <BigNumber
-              value={formatPercent(kpis.aliquotaEfetiva)}
-              label="Alíq. Efetiva"
-              accent="text-primary"
-              size="sm"
-            />
-            <BigNumber
-              value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'}
-              label="Alíq. ISS"
-              accent="text-foreground"
-              size="sm"
-            />
-            <BigNumber
-              value={`- ${formatCurrency(kpis.issRetidoMes)}`}
-              label="ISS Retido"
-              accent="text-accent"
-              size="sm"
-            />
+        {/* RBA Card */}
+        <DashboardCard title={`Apuração ${kpis.competenciaLabel}`} borderColor="blue" className="lg:col-span-2">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">Faturamento</span>
+              <span className="text-sm font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">DAS Estimado</span>
+              <span className="text-sm font-bold text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">Alíq. Efetiva</span>
+              <span className="text-sm font-bold text-primary">{formatPercent(kpis.aliquotaEfetiva)}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">ISS Retido</span>
+              <span className="text-sm font-bold text-accent">- {formatCurrency(kpis.issRetidoMes)}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">Alíq. ISS</span>
+              <span className="text-sm font-bold text-foreground">{calculo.valido ? formatPercent(calculo.issReferencia) : '–'}</span>
+            </div>
+            <div className="flex items-center justify-between bg-destructive/5 rounded-lg px-2 py-1">
+              <span className="text-xs font-medium text-muted-foreground">A Recolher</span>
+              <span className="text-base font-extrabold text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
+            </div>
           </div>
         </DashboardCard>
 
-        {/* Pie Chart Donut with center % */}
-        <DashboardCard title="Composição do DAS" headerColor="blue">
+        {/* Pizza composição */}
+        <DashboardCard title="Composição do DAS" borderColor="blue">
           {pieComposicao.length > 0 && kpis.faturamentoMes > 0 ? (
             <div className="flex flex-col items-center gap-2">
-              <div className="w-full h-44">
+              <div className="w-full h-40">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPie>
                     <Pie
                       data={pieComposicao}
-                      cx="50%" cy="50%" outerRadius={75} innerRadius={40}
+                      cx="50%" cy="50%" outerRadius={70} innerRadius={35}
                       dataKey="value" nameKey="name"
                       labelLine={false} label={false}
                     >
@@ -192,10 +151,9 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
       </div>
 
-      {/* ROW 2: Detalhamento + Evolução */}
+      {/* ROW 2: Detalhamento + Comparativo */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Detalhamento por Tributo */}
-        <DashboardCard title="Detalhamento por Tributo" headerColor="green">
+        <DashboardCard title="Detalhamento por Tributo" borderColor="green">
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
@@ -229,9 +187,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           </div>
         </DashboardCard>
 
-        {/* Comparativo de Faixas */}
-        <DashboardCard title="Comparativo de Alíquotas por Faixa" headerColor="orange">
-          <div className="h-52">
+        <DashboardCard title="Comparativo por Faixa" borderColor="orange">
+          <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={faixasComparativo}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -248,9 +205,9 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
       </div>
 
-      {/* ROW 3: Evolução Mensal full width */}
-      <DashboardCard title="Evolução Mensal – Receita × Tributos" headerColor="blue">
-        <div className="h-60">
+      {/* ROW 3: Evolução Mensal */}
+      <DashboardCard title="Evolução Mensal – Receita × Tributos" borderColor="blue">
+        <div className="h-56">
           {evolucaoMensal.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={evolucaoMensal}>
@@ -258,11 +215,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                 <XAxis dataKey="label" tick={{ fontSize: 10 }} />
                 <YAxis yAxisId="left" tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
                 <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
-                <Tooltip
-                  formatter={(v: number, name: string) =>
-                    name === 'Carga %' ? `${v}%` : formatCurrency(v)
-                  }
-                />
+                <Tooltip formatter={(v: number, name: string) => name === 'Carga %' ? `${v}%` : formatCurrency(v)} />
                 <Legend wrapperStyle={{ fontSize: 10 }} />
                 <Bar yAxisId="left" dataKey="receita" fill="hsl(220, 70%, 50%)" name="Receita" radius={[4, 4, 0, 0]} opacity={0.3} />
                 <Bar yAxisId="left" dataKey="das" fill="hsl(0, 72%, 55%)" name="DAS Total" radius={[4, 4, 0, 0]} opacity={0.7} />
@@ -277,7 +230,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       </DashboardCard>
 
       {/* ROW 4: Tabela Faixas */}
-      <DashboardCard title="Tabela Anexo III – Faixas do Simples Nacional" headerColor="purple">
+      <DashboardCard title="Tabela Anexo III – Faixas do Simples Nacional" borderColor="purple">
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
