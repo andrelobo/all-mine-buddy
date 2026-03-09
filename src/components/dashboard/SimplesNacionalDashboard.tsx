@@ -127,7 +127,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                 );
               })}
               <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold mt-auto">
-                <span className="w-10 shrink-0">Total</span>
+                <span className="w-10 shrink-0 truncate" title="Documento de Arrecadação do Simples Nacional">DAS</span>
                 <div className="flex-1" />
                 <span className="w-12 text-right tabular-nums">{formatPercent(kpis.aliquotaEfetiva)}</span>
                 <span className="w-16 text-right tabular-nums text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
