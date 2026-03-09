@@ -3,7 +3,7 @@ import type { NotaDashboard } from '@/hooks/useDashboardData';
 
 interface Props {
   notas: NotaDashboard[];
-  tomadores: Record<string, string>;
+  tomadores: Record<string, { nome: string; subTrib: boolean }>;
   aliquotaEfetiva: number;
   mesCompetencia: string;
 }

@@ -30,7 +30,7 @@ interface Props {
   };
   dadosMensais: MesData[];
   notas: NotaDashboard[];
-  tomadores: Record<string, string>;
+  tomadores: Record<string, { nome: string; subTrib: boolean }>;
 }
 
 const CHART_GREEN = 'hsl(160, 60%, 45%)';
