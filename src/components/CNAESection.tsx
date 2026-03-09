@@ -271,7 +271,7 @@ const CNAESection: React.FC<Props> = ({ cnpj, cnaeEscolhido, onCnaeEscolhidoChan
       {/* Lista de CNAEs adicionados */}
       {manualActivities.length > 0 && (
         <div className="mt-3">
-          <p className="section-title text-sm mb-1.5"><Briefcase className="w-4 h-4 text-primary" />Lista Cnae</p>
+          <p className="section-title text-sm mb-1.5"><Briefcase className="w-4 h-4 text-primary" />Cnae Anexo</p>
           <div className="border border-border rounded-lg divide-y divide-border">
             {manualActivities.map((atividade) => {
               const codigo = String(atividade.codigo);
