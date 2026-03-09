@@ -10,6 +10,7 @@ import type { CalculoSimplesResult } from '@/utils/simples-nacional';
 import type { MesData } from '@/hooks/useDashboardData';
 import DashboardCard from './DashboardCard';
 import FaixaThermometer from './FaixaThermometer';
+import SimuladorCenario from './SimuladorCenario';
 
 interface Props {
   rbt12: number;
