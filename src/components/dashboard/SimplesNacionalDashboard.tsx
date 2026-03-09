@@ -123,7 +123,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
       {/* Row 2: Simulador + Partilha */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-        <DashboardCard title="Simulador de Cenário" headerColor="orange">
+        <DashboardCard title="Simulador 25 de Março" headerColor="orange">
           <SimuladorCenario rbt12={rbt12} cnaeAnexo={cnaeAnexo} faturamentoAtual={kpis.faturamentoMes} />
         </DashboardCard>
 
