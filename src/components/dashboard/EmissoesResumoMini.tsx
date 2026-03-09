@@ -63,7 +63,7 @@ const EmissoesResumoMini: React.FC<Props> = ({ notas, tomadores, aliquotaEfetiva
           <span className="w-12 text-right">ISSQN(R)</span>
           <span className="w-10 text-right">AliqSn</span>
           <span className="w-12 text-right">DASN</span>
-          <span className="w-8 text-right">%Fat</span>
+          
         </div>
 
         {/* Rows */}
