@@ -410,7 +410,7 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-5">
               {[
-                { label: 'Receita', value: formatCurrency(dashKpis.faturamentoMes) },
+                { label: 'Receita RPA', value: formatCurrency(dashKpis.faturamentoMes) },
                 { label: 'Aliq. Efetiva', value: formatPercent(dashKpis.aliquotaEfetiva) },
                 { label: 'Alíq. ISS', value: dashCalculo.valido ? formatPercent(dashCalculo.issReferencia) : '–' },
                 { label: 'A Recolher', value: formatCurrency(dashKpis.dasAPagar), accent: true },
