@@ -181,7 +181,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       </section>
 
       <SimplesNacionalDashboard
-      <SimplesNacionalDashboard
         rbt12={rbt12}
         cnaeAnexo={cnaeAnexo}
         calculo={calculo}
