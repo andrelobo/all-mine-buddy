@@ -126,6 +126,8 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         calculo={calculo}
         kpis={kpis}
         dadosMensais={dadosMensais}
+        notas={notas}
+        tomadores={tomadoresMap}
       />
 
       {/* ROW: Split Payment + Receita por Cliente */}
