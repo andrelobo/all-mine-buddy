@@ -125,30 +125,36 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             </CardTitle>
           </CardHeader>
           <CardContent className="px-3 pb-3 pt-0">
-            <div className="grid grid-cols-3 gap-2">
-              <div className="p-2 rounded-md bg-muted/50">
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><DollarSign className="w-3 h-3 text-primary" />Faturamento</p>
-                <p className="text-sm font-bold text-foreground mt-0.5">{formatCurrency(kpis.faturamentoMes)}</p>
+            <div className="grid grid-cols-2 gap-2">
+              {/* Coluna esquerda: Faturamento, Aliq Efetiva, Aliq ISS empilhados */}
+              <div className="space-y-2">
+                <div className="p-2 rounded-md bg-muted/50">
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><DollarSign className="w-3 h-3 text-primary" />Faturamento</p>
+                  <p className="text-sm font-bold text-foreground mt-0.5">{formatCurrency(kpis.faturamentoMes)}</p>
+                </div>
+                <div className="p-2 rounded-md bg-muted/50">
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Percent className="w-3 h-3 text-primary" />Aliq. Efetiva</p>
+                  <p className="text-sm font-bold text-primary mt-0.5">{formatPercent(kpis.aliquotaEfetiva)}</p>
+                </div>
+                <div className="p-2 rounded-md bg-muted/50">
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Scale className="w-3 h-3 text-primary" />Alíq. ISS</p>
+                  <p className="text-sm font-bold text-primary mt-0.5">{calculo.valido ? formatPercent(calculo.issReferencia) : '–'}</p>
+                </div>
               </div>
-              <div className="p-2 rounded-md bg-muted/50">
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Percent className="w-3 h-3 text-primary" />Aliq. Efetiva</p>
-                <p className="text-sm font-bold text-primary mt-0.5">{formatPercent(kpis.aliquotaEfetiva)}</p>
-              </div>
-              <div className="p-2 rounded-md bg-muted/50">
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Scale className="w-3 h-3 text-primary" />Alíq. ISS</p>
-                <p className="text-sm font-bold text-primary mt-0.5">{calculo.valido ? formatPercent(calculo.issReferencia) : '–'}</p>
-              </div>
-              <div className="p-2 rounded-md bg-muted/50">
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Receipt className="w-3 h-3 text-destructive" />DAS Estimado</p>
-                <p className="text-sm font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasEstimado)}</p>
-              </div>
-              <div className="p-2 rounded-md bg-muted/50">
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-primary" />ISS Retido</p>
-                <p className="text-sm font-bold text-primary mt-0.5">- {formatCurrency(kpis.issRetidoMes)}</p>
-              </div>
-              <div className="p-2 rounded-md bg-muted/50">
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Calculator className="w-3 h-3 text-destructive" />A Recolher</p>
-                <p className="text-sm font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasAPagar)}</p>
+              {/* Coluna direita: DAS, ISS Retido, A Recolher */}
+              <div className="space-y-2">
+                <div className="p-2 rounded-md bg-muted/50">
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Receipt className="w-3 h-3 text-destructive" />DAS Estimado</p>
+                  <p className="text-sm font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasEstimado)}</p>
+                </div>
+                <div className="p-2 rounded-md bg-muted/50">
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-primary" />ISS Retido</p>
+                  <p className="text-sm font-bold text-primary mt-0.5">- {formatCurrency(kpis.issRetidoMes)}</p>
+                </div>
+                <div className="p-2 rounded-md bg-muted/50">
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Calculator className="w-3 h-3 text-destructive" />A Recolher</p>
+                  <p className="text-sm font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasAPagar)}</p>
+                </div>
               </div>
             </div>
           </CardContent>
