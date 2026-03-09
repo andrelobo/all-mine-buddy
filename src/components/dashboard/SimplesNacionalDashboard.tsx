@@ -89,8 +89,27 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         <FaixaThermometer rbt12={rbt12} calculo={calculo} />
       </DashboardCard>
 
-      {/* ROW 2: Composição DAS (pie) */}
+      {/* ROW 2: Resumo Tributário + Composição DAS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Resumo Tributário */}
+        <DashboardCard title={`Resumo Tributário — ${kpis.competenciaLabel}`} headerColor="green">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
+              <ResumoItem label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
+              <ResumoItem label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
+              <ResumoItem label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
+            </div>
+            <div className="space-y-3">
+              <ResumoItem label="DAS Estimado" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
+              <ResumoItem label="ISS Retido (dedução)" value={`- ${formatCurrency(kpis.issRetidoMes)}`} accent="text-accent" />
+              <ResumoItem label="Retenções Federais" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
+            </div>
+            <div className="col-span-2 bg-destructive/10 rounded-lg px-3 py-2.5 flex items-center justify-between">
+              <span className="text-xs font-semibold text-muted-foreground">DAS a Recolher</span>
+              <span className="text-lg font-extrabold text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
+            </div>
+          </div>
+        </DashboardCard>
 
         {/* Composição do DAS — Gráfico de Pizza */}
         <DashboardCard title="Composição do DAS" headerColor="blue">
