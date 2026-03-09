@@ -88,8 +88,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       {/* 1: Resumo Tributário + 2: Composição DAS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
-          <div className="space-y-2">
-            <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+          <div className="space-y-1.5">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
               <ResumoItem label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
               <ResumoItem label="DAS Estimado" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
               <ResumoItem label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
@@ -97,7 +97,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <ResumoItem label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
               <ResumoItem label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
             </div>
-            <div className="bg-destructive/10 rounded-md px-2.5 py-1.5 flex items-center justify-between">
+            <div className="bg-destructive/10 rounded-md px-3 py-2 flex items-center justify-between mt-2">
               <span className="text-[9px] font-semibold text-muted-foreground">A RECOLHER PGDAS</span>
               <span className="text-base font-extrabold text-destructive tabular-nums">{formatCurrency(kpis.dasAPagar)}</span>
             </div>
