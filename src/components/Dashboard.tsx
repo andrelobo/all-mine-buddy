@@ -102,7 +102,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
           { label: 'Receita', value: formatCurrency(kpis.faturamentoMes) },
           { label: 'Aliq. Efetiva', value: formatPercent(kpis.aliquotaEfetiva) },
           { label: 'Alíq. ISS', value: calculo.valido ? formatPercent(calculo.issReferencia) : '–' },
-          { label: 'Simples', value: calculo.faixa ? `${calculo.faixa.faixa}ª Faixa` : '–' },
+          { label: 'A Recolher', value: formatCurrency(kpis.dasAPagar), accent: 'text-destructive-foreground' },
         ]}
       />
 
