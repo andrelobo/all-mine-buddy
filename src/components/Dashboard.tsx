@@ -218,7 +218,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-52 text-muted-foreground text-sm">Sem clientes</div>
+            <div className="flex items-center justify-center h-40 text-muted-foreground text-xs">Sem clientes</div>
           )}
         </DashboardCard>
       </div>
