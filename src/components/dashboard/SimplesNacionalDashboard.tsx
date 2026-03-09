@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
+import type { NotaDashboard } from '@/hooks/useDashboardData';
 import {
   PieChart as RechartsPie, Pie, Cell,
   XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend,
