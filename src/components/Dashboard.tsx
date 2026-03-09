@@ -278,45 +278,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
             )}
           </div>
         </DashboardCard>
-
-        {/* Análise por Cliente — Tabela */}
-        <DashboardCard title="Análise por Cliente — Curva ABC" headerColor="default">
-          {analiseClientes.length > 0 ? (
-            <div className="overflow-x-auto max-h-48">
-              <table className="w-full text-[10px]">
-                <thead>
-                  <tr className="border-b text-muted-foreground">
-                    <th className="text-left py-1.5 px-1">Cliente</th>
-                    <th className="text-right py-1.5 px-1">Receita</th>
-                    <th className="text-right py-1.5 px-1">NFs</th>
-                    <th className="text-right py-1.5 px-1">%</th>
-                    <th className="text-center py-1.5 px-1">Curva</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {analiseClientes.map(c => (
-                    <tr key={c.tomadorId} className="border-b border-border/50">
-                      <td className="py-1.5 px-1 font-medium truncate max-w-[140px]">{c.nome}</td>
-                      <td className="text-right py-1.5 px-1">{formatCurrency(c.faturamento)}</td>
-                      <td className="text-right py-1.5 px-1">{c.quantidadeNf}</td>
-                      <td className="text-right py-1.5 px-1">{c.percentual.toFixed(1)}%</td>
-                      <td className="text-center py-1.5 px-1">
-                        <Badge
-                          variant={c.classificacao === 'A' ? 'default' : 'outline'}
-                          className={`text-[8px] ${c.classificacao === 'A' ? 'bg-accent' : c.classificacao === 'B' ? 'border-[hsl(38,80%,55%)] text-[hsl(38,80%,45%)]' : ''}`}
-                        >
-                          {c.classificacao}
-                        </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="text-center text-sm text-muted-foreground py-4">Nenhuma nota emitida.</p>
-          )}
-        </DashboardCard>
       </div>
     </div>
   );
