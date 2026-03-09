@@ -71,18 +71,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     aliquota: c.aliquota,
   }));
 
-  const renderPieLabel = ({ cx, cy, midAngle, outerRadius, aliquota, name }: any) => {
-    const RADIAN = Math.PI / 180;
-    const radius = outerRadius + 14;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-    const anchor = x > cx ? 'start' : 'end';
-    return (
-      <text x={x} y={y} fill="hsl(var(--foreground))" textAnchor={anchor} dominantBaseline="central" fontSize={8} fontWeight="600">
-        {`${name} ${(aliquota * 100).toFixed(2)}%`}
-      </text>
-    );
-  };
+  /* Labels are shown in the side legend instead of on the chart */
 
   return (
     <div className="space-y-2">
