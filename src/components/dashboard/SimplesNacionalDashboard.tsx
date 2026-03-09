@@ -10,6 +10,7 @@ import type { CalculoSimplesResult } from '@/utils/simples-nacional';
 import type { MesData } from '@/hooks/useDashboardData';
 import DashboardCard from './DashboardCard';
 import FaixaThermometer from './FaixaThermometer';
+import SimuladorCenario from './SimuladorCenario';
 
 interface Props {
   rbt12: number;
@@ -84,14 +85,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
   return (
     <div className="space-y-4">
-      {/* ROW 1: Termômetro de Faixa */}
-      <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
-        <FaixaThermometer rbt12={rbt12} calculo={calculo} />
-      </DashboardCard>
-
-      {/* ROW 2: Resumo Tributário + Composição DAS */}
+      {/* 1: Resumo Tributário + 2: Composição DAS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Resumo Tributário */}
         <DashboardCard title={`Resumo Tributário — ${kpis.competenciaLabel}`} headerColor="green">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-3">
@@ -111,7 +106,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           </div>
         </DashboardCard>
 
-        {/* Composição do DAS — Gráfico de Pizza */}
         <DashboardCard title="Composição do DAS" headerColor="blue">
           {pieComposicao.length > 0 && kpis.faturamentoMes > 0 ? (
             <div className="flex items-start gap-4">
@@ -152,28 +146,16 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
       </div>
 
-      {/* ROW 3: Evolução Mensal */}
-      <DashboardCard title="Evolução Mensal — Receita × Carga Tributária" headerColor="default">
-        <div className="h-56">
-          {evolucaoMensal.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={evolucaoMensal}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="label" tick={{ fontSize: 10 }} />
-                <YAxis yAxisId="left" tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
-                <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
-                <Tooltip formatter={(v: number, name: string) => name === 'Carga %' ? `${v}%` : formatCurrency(v)} />
-                <Legend wrapperStyle={{ fontSize: 10 }} />
-                <Bar yAxisId="left" dataKey="receita" fill={CHART_GREEN} name="Receita" radius={[3, 3, 0, 0]} opacity={0.4} />
-                <Bar yAxisId="left" dataKey="das" fill={CHART_GREEN} name="DAS" radius={[3, 3, 0, 0]} />
-                <Line yAxisId="right" type="monotone" dataKey="cargaTributaria" stroke="hsl(38, 80%, 55%)" name="Carga %" strokeWidth={2} dot={{ r: 3 }} />
-              </ComposedChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="flex items-center justify-center h-full text-muted-foreground text-sm">Sem dados mensais</div>
-          )}
-        </div>
-      </DashboardCard>
+      {/* 3: Termômetro de Faixa + 4: Simulador de Cenário */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
+          <FaixaThermometer rbt12={rbt12} calculo={calculo} />
+        </DashboardCard>
+
+        <DashboardCard title="Simulador de Cenário" headerColor="default">
+          <SimuladorCenario rbt12={rbt12} cnaeAnexo={cnaeAnexo} faturamentoAtual={kpis.faturamentoMes} />
+        </DashboardCard>
+      </div>
     </div>
   );
 };
