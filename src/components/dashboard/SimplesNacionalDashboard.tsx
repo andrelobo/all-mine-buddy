@@ -144,6 +144,16 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
       </div>
 
+      {/* Emissões do mês */}
+      <DashboardCard title={`Emissões ${kpis.competenciaLabel}`} headerColor="green">
+        <EmissoesResumoMini
+          notas={notas}
+          tomadores={tomadores}
+          aliquotaEfetiva={kpis.aliquotaEfetiva}
+          mesCompetencia={kpis.mesCompetencia}
+        />
+      </DashboardCard>
+
       {/* 3: Termômetro de Faixa + 4: Simulador de Cenário */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
