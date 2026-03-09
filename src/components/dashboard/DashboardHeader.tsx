@@ -8,7 +8,7 @@ interface Props {
 }
 
 const DashboardHeader: React.FC<Props> = ({ nomeEmpresa, titulo, kpis }) => (
-  <div className="rounded-xl bg-gradient-to-r from-sidebar-background via-sidebar-background to-sidebar-background/90 text-sidebar-foreground px-8 py-6 shadow-lg border border-sidebar-border">
+  <div className="rounded-xl bg-[hsl(216,60%,16%)] text-white px-8 py-6 shadow-lg">
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4">
         <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
