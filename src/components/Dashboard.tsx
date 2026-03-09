@@ -93,7 +93,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
   const mudouFaixa = calculoSimulado?.faixa && calculo.faixa && calculoSimulado.faixa.faixa !== calculo.faixa.faixa;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
 
       {/* SMART ALERTS */}
       {smartAlerts.length > 0 && (
@@ -124,7 +124,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       />
 
       {/* ROW: Split Payment + Receita por Cliente */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Split Payment */}
         <DashboardCard title="Split Payment — Reserva Tributária" headerColor="green">
           <div className="space-y-3">
@@ -189,12 +189,12 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         <DashboardCard title="Composição de Receita por Cliente" headerColor="blue">
           {pieClientes.length > 0 ? (
             <div className="flex items-start gap-3">
-              <div className="flex-1 h-52">
+              <div className="flex-1 aspect-square max-h-44">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPie>
                     <Pie
                       data={pieClientes}
-                      cx="50%" cy="50%" outerRadius={85} innerRadius={30}
+                      cx="50%" cy="50%" outerRadius="78%" innerRadius="34%"
                       dataKey="value" nameKey="name"
                       labelLine={false}
                       label={({ percent }) => percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''}
@@ -218,13 +218,13 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-52 text-muted-foreground text-sm">Sem clientes</div>
+            <div className="flex items-center justify-center h-40 text-muted-foreground text-xs">Sem clientes</div>
           )}
         </DashboardCard>
       </div>
 
       {/* ROW: Simulador de Faixa + Análise de Clientes */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Simulador */}
         <DashboardCard title="Simulador de Cenário" headerColor="orange">
           <div className="space-y-3">

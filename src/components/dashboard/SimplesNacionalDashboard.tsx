@@ -84,12 +84,12 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* 1: Resumo Tributário + 2: Composição DAS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <DashboardCard title={`Resumo Tributário — ${kpis.competenciaLabel}`} headerColor="green">
-          <div className="space-y-2.5">
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+          <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
               <ResumoItem label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
               <ResumoItem label="DAS Estimado" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
               <ResumoItem label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
@@ -97,22 +97,22 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <ResumoItem label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
               <ResumoItem label="Retenções Federais" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
             </div>
-            <div className="bg-destructive/10 rounded-lg px-3 py-2 flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground">DAS a Recolher</span>
-              <span className="text-lg font-extrabold text-destructive tabular-nums">{formatCurrency(kpis.dasAPagar)}</span>
+            <div className="bg-destructive/10 rounded-md px-2.5 py-1.5 flex items-center justify-between">
+              <span className="text-[9px] font-semibold text-muted-foreground">DAS a Recolher</span>
+              <span className="text-base font-extrabold text-destructive tabular-nums">{formatCurrency(kpis.dasAPagar)}</span>
             </div>
           </div>
         </DashboardCard>
 
         <DashboardCard title="Composição do DAS" headerColor="blue">
           {pieComposicao.length > 0 && kpis.faturamentoMes > 0 ? (
-            <div className="flex items-center gap-4">
-              <div className="flex-1 aspect-square max-h-52">
+            <div className="flex items-center gap-3">
+              <div className="flex-1 aspect-square max-h-44">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPie>
                     <Pie
                       data={pieComposicao}
-                      cx="50%" cy="50%" outerRadius="80%" innerRadius="35%"
+                      cx="50%" cy="50%" outerRadius="78%" innerRadius="34%"
                       dataKey="value" nameKey="name"
                       labelLine={false} label={renderPieLabel}
                     >
@@ -122,30 +122,30 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                   </RechartsPie>
                 </ResponsiveContainer>
               </div>
-              <div className="w-36 space-y-1.5">
+              <div className="w-32 space-y-1">
                 {composicaoTributaria.map(c => (
-                  <div key={c.tributo} className="flex items-center justify-between text-[10px]">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: c.cor }} />
+                  <div key={c.tributo} className="flex items-center justify-between text-[9px]">
+                    <div className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-sm shrink-0" style={{ backgroundColor: c.cor }} />
                       <span className="text-muted-foreground">{c.tributo}</span>
                     </div>
                     <span className="font-bold text-foreground tabular-nums">{formatCurrency(c.valor)}</span>
                   </div>
                 ))}
-                <div className="border-t border-border pt-1.5 flex items-center justify-between text-[10px] font-bold">
+                <div className="border-t border-border pt-1 flex items-center justify-between text-[9px] font-bold">
                   <span>Total</span>
                   <span className="text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</span>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">Sem dados para exibir</div>
+            <div className="flex items-center justify-center h-40 text-muted-foreground text-xs">Sem dados para exibir</div>
           )}
         </DashboardCard>
       </div>
 
       {/* 3: Termômetro de Faixa + 4: Simulador de Cenário */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
           <FaixaThermometer rbt12={rbt12} calculo={calculo} />
         </DashboardCard>
@@ -161,8 +161,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 /* Sub-component for Resumo items */
 const ResumoItem: React.FC<{ label: string; value: string; accent?: string }> = ({ label, value, accent = 'text-foreground' }) => (
   <div>
-    <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</p>
-    <p className={`text-sm font-bold ${accent}`}>{value}</p>
+    <p className="text-[9px] text-muted-foreground uppercase tracking-wide leading-tight">{label}</p>
+    <p className={`text-xs font-bold ${accent} tabular-nums`}>{value}</p>
   </div>
 );
 
