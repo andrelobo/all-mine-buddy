@@ -100,8 +100,9 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         titulo="Painel Fiscal Inteligente"
         kpis={[
           { label: 'Receita', value: formatCurrency(kpis.faturamentoMes) },
-          { label: 'DAS', value: formatCurrency(kpis.dasEstimado), accent: 'text-destructive-foreground' },
-          { label: 'Disponível', value: formatCurrency(fluxoCaixa.saldo) },
+          { label: 'Aliq. Efetiva', value: formatPercent(kpis.aliquotaEfetiva) },
+          { label: 'Alíq. ISS', value: calculo.valido ? formatPercent(calculo.issReferencia) : '–' },
+          { label: 'Simples', value: calculo.faixa ? `${calculo.faixa.faixa}ª Faixa` : '–' },
         ]}
       />
 
