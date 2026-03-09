@@ -94,38 +94,45 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     <div className="space-y-2">
       {/* Row 1: Financeiro + Termômetro */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-        <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
-          <div className="h-full flex gap-4">
-            {/* Coluna Esquerda: Receita */}
-            <div className="flex-1 flex flex-col gap-1">
-              <span className="text-[8px] text-muted-foreground uppercase tracking-wider font-semibold mb-0.5">Receita</span>
-              <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
-              <FinRow label="Base de Cálculo" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
-              <FinRow label="Alíq. Efetiva SN" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
-              <FinRow label="Alíq. ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
-              <div className="flex-1" />
-              <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold">
-                <span className="shrink-0">RECEITA LÍQUIDA</span>
-                <div className="flex-1" />
-                <span className="tabular-nums text-foreground">{formatCurrency(kpis.faturamentoMes - kpis.dasAPagar)}</span>
+        <DashboardCard title={`PGDAS-D — ${kpis.competenciaLabel}`} headerColor="green">
+          <div className="h-full flex flex-col gap-1.5">
+            {/* Seção: Período e Enquadramento */}
+            <div className="bg-muted/30 rounded px-2 py-1">
+              <span className="text-[8px] text-muted-foreground uppercase tracking-wider font-semibold">Enquadramento</span>
+              <div className="grid grid-cols-3 gap-x-3 mt-1">
+                <FinField label="Período" value={kpis.competenciaLabel} />
+                <FinField label="Anexo" value={cnaeAnexo || 'III'} />
+                <FinField label="Faixa" value={calculo.valido ? `${calculo.faixa?.faixa}ª` : '–'} />
               </div>
             </div>
 
-            {/* Separador */}
-            <div className="w-px bg-border" />
-
-            {/* Coluna Direita: Tributos */}
-            <div className="flex-1 flex flex-col gap-1">
-              <span className="text-[8px] text-muted-foreground uppercase tracking-wider font-semibold mb-0.5">Tributos</span>
-              <FinRow label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
-              <FinRow label="(−) ISS Retido" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
-              <FinRow label="(−) Retenções" value={`(${formatCurrency(kpis.totalRetencoes)})`} accent="text-muted-foreground" />
-              <div className="flex-1" />
-              <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold">
-                <span className="shrink-0">A RECOLHER PGDAS</span>
-                <div className="flex-1" />
-                <span className="tabular-nums text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
+            {/* Seção: RBT12 e Alíquotas */}
+            <div className="bg-muted/30 rounded px-2 py-1">
+              <span className="text-[8px] text-muted-foreground uppercase tracking-wider font-semibold">Cálculo</span>
+              <div className="grid grid-cols-2 gap-x-3 mt-1">
+                <FinField label="RBT12" value={formatCurrency(rbt12)} />
+                <FinField label="Alíq. Nominal" value={calculo.valido ? formatPercent(calculo.faixa?.aliquotaNominal ?? 0) : '–'} />
+                <FinField label="Parcela a Deduzir" value={calculo.valido ? formatCurrency(calculo.faixa?.parcelaDeduzir ?? 0) : '–'} />
+                <FinField label="Alíq. Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
               </div>
+            </div>
+
+            {/* Seção: Apuração */}
+            <div className="bg-muted/30 rounded px-2 py-1">
+              <span className="text-[8px] text-muted-foreground uppercase tracking-wider font-semibold">Apuração</span>
+              <div className="flex flex-col gap-0.5 mt-1">
+                <FinRow label="Receita Bruta (PA)" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
+                <FinRow label="Tributo Devido" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
+                <FinRow label="(−) ISS Retido" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
+                <FinRow label="(−) Retenções" value={`(${formatCurrency(kpis.totalRetencoes)})`} accent="text-muted-foreground" />
+              </div>
+            </div>
+
+            {/* Rodapé: Valor a Recolher */}
+            <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold mt-auto">
+              <span className="shrink-0">VALOR A RECOLHER (DAS)</span>
+              <div className="flex-1" />
+              <span className="tabular-nums text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
             </div>
           </div>
         </DashboardCard>
