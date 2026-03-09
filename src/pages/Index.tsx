@@ -34,6 +34,7 @@ import { useNotasFiscais } from '@/hooks/useNotasFiscais';
 import { useSimplesNacional } from '@/hooks/useSimplesNacional';
 import type { TomadorDB } from '@/hooks/useTomadores';
 import { calcularSimplesAnexoIII, formatCurrency, formatPercent } from '@/utils/simples-nacional';
+import { useDashboardData } from '@/hooks/useDashboardData';
 
 type ActiveTab = 'dashboard' | 'prestador' | 'tomador' | 'emissao' | 'notas';
 type PrestadorSubTab = 'cadastro' | 'regime' | 'parametros';
@@ -90,6 +91,8 @@ const Index = () => {
     cnaeDescricao: snCnaeDescricao, cnaeAnexo: snCnaeAnexo, permiteFatorR: snPermiteFatorR,
     rbt12: snRbt12, setRbt12: snSetRbt12, calculo: snCalculo, alertas: snAlertas,
   } = useSimplesNacional(config.cnaePrincipal, config.rbt12);
+
+  const { kpis: dashKpis, calculo: dashCalculo } = useDashboardData(config.id || null, snRbt12, snCnaeAnexo || 'III');
 
   const [tomador, setTomador] = useState<TomadorData>(INITIAL_TOMADOR);
   const [editingTomadorId, setEditingTomadorId] = useState<string | null>(null);
@@ -407,10 +410,10 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-5">
               {[
-                { label: 'Receita', value: formatCurrency(snCalculo.valido ? snRbt12 / 12 : 0) },
-                { label: 'Aliq. Efetiva', value: snCalculo.valido ? formatPercent(snCalculo.aliquotaEfetiva) : '–' },
-                { label: 'Alíq. ISS', value: snCalculo.valido ? formatPercent(snCalculo.issReferencia) : '–' },
-                { label: 'A Recolher', value: formatCurrency(snCalculo.valido ? (snRbt12 / 12) * snCalculo.aliquotaEfetiva : 0), accent: true },
+                { label: 'Receita', value: formatCurrency(dashKpis.faturamentoMes) },
+                { label: 'Aliq. Efetiva', value: formatPercent(dashKpis.aliquotaEfetiva) },
+                { label: 'Alíq. ISS', value: dashCalculo.valido ? formatPercent(dashCalculo.issReferencia) : '–' },
+                { label: 'A Recolher', value: formatCurrency(dashKpis.dasAPagar), accent: true },
               ].map((k, i) => (
                 <React.Fragment key={i}>
                   {i > 0 && <div className="h-5 w-px bg-white/10" />}
