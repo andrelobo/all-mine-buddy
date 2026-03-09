@@ -153,7 +153,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         <CardContent className="p-3">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <div className="text-center">
-              <p className="text-[10px] text-muted-foreground uppercase">Receita Bruta</p>
+              <p className="text-[10px] text-muted-foreground uppercase">Faturamento</p>
               <p className="text-sm font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</p>
             </div>
             <div className="text-center">
