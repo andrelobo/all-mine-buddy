@@ -93,7 +93,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
   const mudouFaixa = calculoSimulado?.faixa && calculo.faixa && calculoSimulado.faixa.faixa !== calculo.faixa.faixa;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
 
       {/* SMART ALERTS */}
       {smartAlerts.length > 0 && (
