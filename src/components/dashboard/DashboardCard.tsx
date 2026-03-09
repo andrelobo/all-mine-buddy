@@ -30,7 +30,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
         {rightHeader && <div>{rightHeader}</div>}
       </div>
     )}
-    <div className="p-3">{children}</div>
+    <div className="p-2">{children}</div>
   </div>
 );
 
