@@ -187,61 +187,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
           </div>
         </DashboardCard>
       </div>
-
-      {/* ROW: Simulador de Faixa + Análise de Clientes */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        {/* Simulador */}
-        <DashboardCard title="Simulador de Cenário" headerColor="orange">
-          <div className="space-y-3">
-            <p className="text-[10px] text-muted-foreground">Simule o impacto de receita adicional na sua faixa do Simples Nacional.</p>
-            <div className="flex items-end gap-3">
-              <div className="flex-1">
-                <label className="text-[10px] text-muted-foreground">Faturamento adicional</label>
-                <div className="relative mt-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R$</span>
-                  <Input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="0,00"
-                    value={simulacaoExtra}
-                    onChange={e => setSimulacaoExtra(formatCurrencyInput(e.target.value))}
-                    className="h-8 text-sm pl-9"
-                  />
-                </div>
-              </div>
-              {calculoSimulado && (
-                <div className="flex-1 space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">RBT12 simulado:</span>
-                    <span className="font-bold">{formatCurrency(rbt12Simulado)}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Faixa:</span>
-                    <span className={`font-bold ${mudouFaixa ? 'text-destructive' : ''}`}>
-                      {calculoSimulado.faixa?.faixa}ª {mudouFaixa && '⚠️'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Alíquota:</span>
-                    <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-accent'}`}>
-                      {formatPercent(calculoSimulado.aliquotaEfetiva)}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-            {mudouFaixa && (
-              <div className="p-2.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>
-                  <strong>Alerta:</strong> Mudança da {calculo.faixa!.faixa}ª para a {calculoSimulado!.faixa!.faixa}ª faixa.
-                  Alíquota efetiva: {formatPercent(calculo.aliquotaEfetiva)} → {formatPercent(calculoSimulado!.aliquotaEfetiva)}.
-                </span>
-              </div>
-            )}
-          </div>
-        </DashboardCard>
-      </div>
     </div>
   );
 };
