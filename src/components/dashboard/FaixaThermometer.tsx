@@ -21,12 +21,12 @@ const FaixaThermometer: React.FC<Props> = ({ rbt12, calculo }) => {
   const faixaAtual = calculo.faixa;
 
   // Gauge SVG params
-  const cx = 130;
-  const cy = 130;
-  const radius = 100;
-  const strokeWidth = 28;
-  const startAngle = 180; // left
-  const endAngle = 0; // right (semicircle)
+  const cx = 110;
+  const cy = 110;
+  const radius = 85;
+  const strokeWidth = 22;
+  const startAngle = 180;
+  const endAngle = 0;
   const totalAngle = 180;
 
   // Build arcs for each faixa
