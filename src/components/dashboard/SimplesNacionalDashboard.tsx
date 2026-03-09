@@ -93,7 +93,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <ResumoItem label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
               <ResumoItem label="DAS Estimado" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
               <ResumoItem label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
-              <ResumoItem label="ISS Retido (dedução)" value={`- ${formatCurrency(kpis.issRetidoMes)}`} accent="text-accent" />
+              <ResumoItem label="Retido ISS (T)" value={`- ${formatCurrency(kpis.issRetidoMes)}`} accent="text-accent" />
               <ResumoItem label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
               <ResumoItem label="Retenções Federais" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
             </div>
