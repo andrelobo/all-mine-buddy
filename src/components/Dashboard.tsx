@@ -180,7 +180,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         </div>
       </section>
 
-      <section>
+      <SimplesNacionalDashboard
       <SimplesNacionalDashboard
         rbt12={rbt12}
         cnaeAnexo={cnaeAnexo}
