@@ -107,42 +107,30 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
 
         <DashboardCard title="Partilha Pgdas" headerColor="blue">
-          {pieComposicao.length > 0 && kpis.faturamentoMes > 0 ? (
-            <div className="h-full flex items-center gap-3">
-              <div className="flex-1 h-full min-h-0">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RechartsPie>
-                    <Pie
-                      data={pieComposicao}
-                      cx="50%" cy="50%" outerRadius="78%" innerRadius="30%"
-                      dataKey="value" nameKey="name"
-                      labelLine={false} label={renderPieLabel}
-                    >
-                      {pieComposicao.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-                    </Pie>
-                    <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                  </RechartsPie>
-                </ResponsiveContainer>
-              </div>
-              <div className="w-36 space-y-1">
-                {composicaoTributaria.map(c => (
-                  <div key={c.tributo} className="flex items-center justify-between text-[9px]">
-                    <div className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-sm shrink-0" style={{ backgroundColor: c.cor }} />
-                      <span className="text-muted-foreground">{c.tributo}</span>
+          {composicaoTributaria.length > 0 && kpis.faturamentoMes > 0 ? (
+            <div className="h-full flex flex-col justify-between gap-1">
+              {composicaoTributaria.map(c => {
+                const maxPerc = Math.max(...composicaoTributaria.map(t => t.percentual));
+                const barWidth = maxPerc > 0 ? (c.percentual / maxPerc) * 100 : 0;
+                return (
+                  <div key={c.tributo} className="flex items-center gap-2 text-[9px]">
+                    <span className="w-10 font-semibold text-muted-foreground shrink-0">{c.tributo}</span>
+                    <div className="flex-1 h-3.5 bg-muted/40 rounded-sm overflow-hidden relative">
+                      <div
+                        className="h-full rounded-sm transition-all"
+                        style={{ width: `${barWidth}%`, backgroundColor: c.cor }}
+                      />
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-muted-foreground tabular-nums">{formatPercent(c.aliquota)}</span>
-                      <span className="font-bold text-foreground tabular-nums">{formatCurrency(c.valor)}</span>
-                    </div>
+                    <span className="w-12 text-right tabular-nums text-muted-foreground">{formatPercent(c.aliquota)}</span>
+                    <span className="w-16 text-right tabular-nums font-bold text-foreground">{formatCurrency(c.valor)}</span>
                   </div>
-                ))}
-                <div className="border-t border-border pt-1 flex items-center justify-between text-[9px] font-bold">
-                  <span>Total</span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="tabular-nums">{formatPercent(kpis.aliquotaEfetiva)}</span>
-                    <span className="text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</span>
-                  </div>
+                );
+              })}
+              <div className="border-t border-border pt-1 flex items-center justify-between text-[9px] font-bold mt-auto">
+                <span>Total</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="tabular-nums">{formatPercent(kpis.aliquotaEfetiva)}</span>
+                  <span className="text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</span>
                 </div>
               </div>
             </div>
