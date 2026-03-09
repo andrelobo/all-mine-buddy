@@ -161,8 +161,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 /* Sub-component for Resumo items */
 const ResumoItem: React.FC<{ label: string; value: string; accent?: string }> = ({ label, value, accent = 'text-foreground' }) => (
   <div>
-    <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</p>
-    <p className={`text-sm font-bold ${accent}`}>{value}</p>
+    <p className="text-[9px] text-muted-foreground uppercase tracking-wide leading-tight">{label}</p>
+    <p className={`text-xs font-bold ${accent} tabular-nums`}>{value}</p>
   </div>
 );
 

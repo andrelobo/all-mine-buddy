@@ -224,7 +224,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       </div>
 
       {/* ROW: Simulador de Faixa + Análise de Clientes */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Simulador */}
         <DashboardCard title="Simulador de Cenário" headerColor="orange">
           <div className="space-y-3">
