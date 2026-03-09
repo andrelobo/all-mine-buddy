@@ -147,7 +147,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         <CardHeader className="pb-2">
           <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
             <Receipt className="w-3.5 h-3.5" />
-            Apuração – {kpis.competenciaLabel}
+            RBA {kpis.competenciaLabel}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-3">
