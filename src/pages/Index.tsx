@@ -400,7 +400,6 @@ const Index = () => {
               <SidebarTrigger />
               <h2 className="text-base font-semibold text-foreground">{tabTitle}</h2>
             </div>
-import { calcularSimplesAnexoIII } from '@/utils/simples-nacional';
 
             <div className="flex items-center gap-3 shrink-0">
               {activeTab === 'prestador' && configValida && (
