@@ -184,6 +184,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             )}
           </CardContent>
         </Card>
+      </div>
 
       {/* Tabela composição detalhada */}
       <Card>
