@@ -157,6 +157,10 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <p className="text-xs font-bold text-foreground mt-0.5">{formatCurrency(kpis.faturamentoMes)}</p>
             </div>
             <div className="text-center p-2 rounded-md bg-muted/50">
+              <p className="text-[9px] text-muted-foreground uppercase tracking-wide">Alíquota Efetiva</p>
+              <p className="text-xs font-bold text-primary mt-0.5">{formatPercent(kpis.aliquotaEfetiva)}</p>
+            </div>
+            <div className="text-center p-2 rounded-md bg-muted/50">
               <p className="text-[9px] text-muted-foreground uppercase tracking-wide">DAS Estimado</p>
               <p className="text-xs font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasEstimado)}</p>
             </div>
@@ -167,12 +171,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             <div className="text-center p-2 rounded-md bg-muted/50">
               <p className="text-[9px] text-muted-foreground uppercase tracking-wide">DAS a Pagar</p>
               <p className="text-xs font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasAPagar)}</p>
-            </div>
-            <div className="text-center p-2 rounded-md bg-muted/50">
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wide">Alíquota Efetiva</p>
-              <p className="text-xs font-bold text-primary mt-0.5">
-                {formatPercent(kpis.aliquotaEfetiva)}
-              </p>
             </div>
           </div>
         </CardContent>
