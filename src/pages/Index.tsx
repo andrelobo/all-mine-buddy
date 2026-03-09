@@ -102,7 +102,7 @@ const Index = () => {
   const [emissaoErrors, setEmissaoErrors] = useState<string[]>([]);
   const [tomadorSubstituto, setTomadorSubstituto] = useState(false);
   const [configOperacionais, setConfigOperacionais] = useState<{ id: string; natureza: string; descricao: string }[]>([]);
-  const [nfseNum, setNfseNum] = useState('...');
+  const [nfseNum, setNfseNum] = useState('1');
   const [dpsNum] = useState('1');
   const [serieDpsNum] = useState('1');
   const [dataEmissao, setDataEmissao] = useState(() => new Date().toISOString().slice(0, 10));
