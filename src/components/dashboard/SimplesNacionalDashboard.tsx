@@ -87,7 +87,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     <div className="space-y-3">
       {/* 1: Resumo Tributário + 2: Composição DAS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <DashboardCard title={`QFiscal ${kpis.competenciaLabel}`} headerColor="green">
+        <DashboardCard title="Resumo" headerColor="green">
           <div className="space-y-2">
             <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
               <ResumoItem label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
