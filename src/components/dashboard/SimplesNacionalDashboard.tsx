@@ -114,35 +114,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       {/* HEADER */}
       <SectionTitle icon={<Scale className="w-4 h-4" />} title="Apuração Simples Nacional – Anexo III" />
 
-      {/* KPIs TRIBUTÁRIOS */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <KPI
-          title="Alíquota Nominal"
-          value={calculo.faixa ? formatPercent(calculo.faixa.aliquotaNominal) : '–'}
-          icon={<Percent className="w-4 h-4" />}
-          sub={calculo.faixa ? `Faixa ${calculo.faixa.faixa}ª` : ''}
-        />
-        <KPI
-          title="Alíquota Efetiva"
-          value={calculo.valido ? formatPercent(calculo.aliquotaEfetiva) : '–'}
-          icon={<Calculator className="w-4 h-4" />}
-          accent="text-primary"
-          sub="(RBT12×Alíq−PD)÷RBT12"
-        />
-        <KPI
-          title="ISS Efetivo"
-          value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'}
-          icon={<Receipt className="w-4 h-4" />}
-          sub={calculo.faixa ? `${(calculo.faixa.percentualIss * 100).toFixed(1)}% do DAS` : ''}
-        />
-        <KPI
-          title="Parcela a Deduzir"
-          value={calculo.faixa ? formatCurrency(calculo.faixa.parcelaDeduzir) : '–'}
-          icon={<DollarSign className="w-4 h-4" />}
-        />
-      </div>
-
-      {/* APURAÇÃO DO PERÍODO */}
+      {/* APURAÇÃO DO PERÍODO - PRIMEIRO */}
       <Card className="border-primary/30">
         <CardHeader className="py-2 px-3">
           <CardTitle className="text-xs font-semibold uppercase tracking-wide text-primary flex items-center gap-2">
