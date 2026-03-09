@@ -95,7 +95,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <ResumoItem label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
               <ResumoItem label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
               <ResumoItem label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
-              <ResumoItem label="Retenções Federais" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
+              <ResumoItem label="Retenções (F)" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
             </div>
             <div className="bg-destructive/10 rounded-md px-2.5 py-1.5 flex items-center justify-between">
               <span className="text-[9px] font-semibold text-muted-foreground">DAS a Recolher</span>
