@@ -88,8 +88,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       {/* 1: Resumo Tributário + 2: Composição DAS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
-          <div className="space-y-1">
-            <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+          <div className="space-y-0.5">
+            <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
               <ResumoItem label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
               <ResumoItem label="DAS Estimado" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
               <ResumoItem label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
@@ -97,7 +97,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <ResumoItem label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
               <ResumoItem label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
             </div>
-            <div className="bg-destructive/10 rounded-md px-2 py-1 flex items-center justify-between">
+            <div className="bg-destructive/10 rounded-md px-2 py-0.5 flex items-center justify-between">
               <span className="text-[9px] font-semibold text-muted-foreground">A RECOLHER PGDAS</span>
               <span className="text-base font-extrabold text-destructive tabular-nums">{formatCurrency(kpis.dasAPagar)}</span>
             </div>
@@ -160,9 +160,9 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
 /* Sub-component for Resumo items */
 const ResumoItem: React.FC<{ label: string; value: string; accent?: string }> = ({ label, value, accent = 'text-foreground' }) => (
-  <div>
-    <p className="text-[9px] text-muted-foreground uppercase tracking-wide leading-tight">{label}</p>
-    <p className={`text-xs font-bold ${accent} tabular-nums`}>{value}</p>
+  <div className="leading-none">
+    <p className="text-[9px] text-muted-foreground uppercase tracking-wide leading-none">{label}</p>
+    <p className={`text-xs font-bold ${accent} tabular-nums leading-tight`}>{value}</p>
   </div>
 );
 
