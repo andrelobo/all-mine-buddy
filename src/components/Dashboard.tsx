@@ -118,6 +118,14 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         </div>
       )}
 
+      <SimplesNacionalDashboard
+        rbt12={rbt12}
+        cnaeAnexo={cnaeAnexo}
+        calculo={calculo}
+        kpis={kpis}
+        dadosMensais={dadosMensais}
+      />
+
       {/* 1) RESUMO EXECUTIVO - KPIs */}
       <section>
         <SectionTitle icon={<BarChart3 className="w-4 h-4" />} title="Fiscal IA" />
@@ -179,14 +187,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
           <KPICard title="Saldo Disponível" value={formatCurrency(fluxoCaixa.saldo)} icon={<DollarSign className="w-4 h-4" />} accent={fluxoCaixa.saldo >= 0 ? 'text-green-600' : 'text-destructive'} />
         </div>
       </section>
-
-      <SimplesNacionalDashboard
-        rbt12={rbt12}
-        cnaeAnexo={cnaeAnexo}
-        calculo={calculo}
-        kpis={kpis}
-        dadosMensais={dadosMensais}
-      />
 
       {/* 2.5) INDICADOR DE FAIXA */}
       {calculo.faixa && (() => {
