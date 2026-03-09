@@ -144,33 +144,33 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
       {/* APURAÇÃO DO PERÍODO */}
       <Card className="border-primary/30">
-        <CardHeader className="pb-2">
+        <CardHeader className="py-2 px-3">
           <CardTitle className="text-xs font-semibold uppercase tracking-wide text-primary flex items-center gap-2">
             <Calculator className="w-4 h-4" />
             RBA {kpis.competenciaLabel}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-3">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <div className="text-center">
-              <p className="text-[10px] text-muted-foreground uppercase">Faturamento</p>
-              <p className="text-sm font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</p>
+        <CardContent className="px-3 pb-3 pt-0">
+          <div className="grid grid-cols-5 gap-2">
+            <div className="text-center p-2 rounded-md bg-muted/50">
+              <p className="text-[9px] text-muted-foreground uppercase tracking-wide">Faturamento</p>
+              <p className="text-xs font-bold text-foreground mt-0.5">{formatCurrency(kpis.faturamentoMes)}</p>
             </div>
-            <div className="text-center">
-              <p className="text-[10px] text-muted-foreground uppercase">DAS Estimado</p>
-              <p className="text-sm font-bold text-destructive">{formatCurrency(kpis.dasEstimado)}</p>
+            <div className="text-center p-2 rounded-md bg-muted/50">
+              <p className="text-[9px] text-muted-foreground uppercase tracking-wide">DAS Estimado</p>
+              <p className="text-xs font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasEstimado)}</p>
             </div>
-            <div className="text-center">
-              <p className="text-[10px] text-muted-foreground uppercase">ISS Retido</p>
-              <p className="text-sm font-bold text-primary">- {formatCurrency(kpis.issRetidoMes)}</p>
+            <div className="text-center p-2 rounded-md bg-muted/50">
+              <p className="text-[9px] text-muted-foreground uppercase tracking-wide">ISS Retido</p>
+              <p className="text-xs font-bold text-primary mt-0.5">- {formatCurrency(kpis.issRetidoMes)}</p>
             </div>
-            <div className="text-center">
-              <p className="text-[10px] text-muted-foreground uppercase">DAS a Pagar</p>
-              <p className="text-sm font-bold text-destructive">{formatCurrency(kpis.dasAPagar)}</p>
+            <div className="text-center p-2 rounded-md bg-muted/50">
+              <p className="text-[9px] text-muted-foreground uppercase tracking-wide">DAS a Pagar</p>
+              <p className="text-xs font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasAPagar)}</p>
             </div>
-            <div className="text-center">
-              <p className="text-[10px] text-muted-foreground uppercase">Carga Tributária</p>
-              <p className="text-sm font-bold text-primary">
+            <div className="text-center p-2 rounded-md bg-muted/50">
+              <p className="text-[9px] text-muted-foreground uppercase tracking-wide">Carga Tributária</p>
+              <p className="text-xs font-bold text-primary mt-0.5">
                 {kpis.faturamentoMes > 0 ? ((kpis.dasEstimado / kpis.faturamentoMes) * 100).toFixed(2) : '0,00'}%
               </p>
             </div>
