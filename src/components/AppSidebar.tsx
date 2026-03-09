@@ -39,7 +39,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange, prestad
       <SidebarHeader className="p-4">
         <div className="flex items-center">
           <span className="text-sm font-bold text-sidebar-foreground leading-tight">
-            Skalë Software
+            Burgus Ltda
           </span>
         </div>
       </SidebarHeader>
