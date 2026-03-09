@@ -113,9 +113,10 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                   <RechartsPie>
                     <Pie
                       data={pieComposicao}
-                      cx="50%" cy="50%" outerRadius="78%" innerRadius="34%"
+                      cx="50%" cy="50%" outerRadius="58%" innerRadius="28%"
                       dataKey="value" nameKey="name"
-                      labelLine={false} label={renderPieLabel}
+                      labelLine={{ stroke: 'hsl(var(--muted-foreground))', strokeWidth: 0.5 }}
+                      label={renderPieLabel}
                     >
                       {pieComposicao.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                     </Pie>
