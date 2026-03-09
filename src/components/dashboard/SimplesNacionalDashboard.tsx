@@ -84,9 +84,9 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* 1: Resumo Tributário + 2: Composição DAS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
           <div className="space-y-0.5">
             <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
