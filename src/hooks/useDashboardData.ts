@@ -53,7 +53,7 @@ export interface MesData {
 export function useDashboardData(prestadorId: string | null, rbt12: number, cnaeAnexo: string) {
   const [notas, setNotas] = useState<NotaDashboard[]>([]);
   const [splits, setSplits] = useState<SplitPaymentRow[]>([]);
-  const [tomadores, setTomadores] = useState<Record<string, string>>({});
+  const [tomadores, setTomadores] = useState<Record<string, { nome: string; subTrib: boolean }>>({});
   const [loading, setLoading] = useState(true);
 
   const fetchAll = React.useCallback(async () => {
