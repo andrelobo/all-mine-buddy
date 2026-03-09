@@ -13,6 +13,7 @@ import DANFSePrint from '@/components/emissao/DANFSePrint';
 import ParametrosTributariosSNCard, { type ParametroISSOption } from '@/components/ParametrosTributariosSNCard';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 import { usePrestador } from '@/hooks/usePrestador';
+import { calcularSimplesAnexoIII } from '@/utils/simples-nacional';
 import { useNotasFiscais } from '@/hooks/useNotasFiscais';
 import { useTomadores } from '@/hooks/useTomadores';
 
