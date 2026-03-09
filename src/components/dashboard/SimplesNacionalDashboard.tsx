@@ -160,7 +160,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           </CardContent>
         </Card>
 
-        {/* Pizza composição - 1 coluna */}
+        {/* Pizza composição + legenda */}
         <Card>
           <CardHeader className="py-2 px-3">
             <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
@@ -168,25 +168,43 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               Composição do DAS
             </CardTitle>
           </CardHeader>
-          <CardContent className="h-48 p-3 pt-0">
+          <CardContent className="p-3 pt-0">
             {pieComposicao.length > 0 && kpis.faturamentoMes > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <RechartsPie>
-                  <Pie
-                    data={pieComposicao}
-                    cx="50%" cy="50%" outerRadius={65} innerRadius={35}
-                    dataKey="value" nameKey="name"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    labelLine={false}
-                    style={{ fontSize: 8 }}
-                  >
-                    {pieComposicao.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-                  </Pie>
-                  <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                </RechartsPie>
-              </ResponsiveContainer>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-full h-44">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsPie>
+                      <Pie
+                        data={pieComposicao}
+                        cx="50%" cy="50%" outerRadius={70} innerRadius={30}
+                        dataKey="value" nameKey="name"
+                        labelLine={false}
+                        label={false}
+                      >
+                        {pieComposicao.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                      </Pie>
+                      <Tooltip formatter={(v: number) => formatCurrency(v)} />
+                    </RechartsPie>
+                  </ResponsiveContainer>
+                </div>
+                {/* Legenda com valores e percentuais */}
+                <div className="w-full space-y-1">
+                  {composicaoTributaria.map(c => (
+                    <div key={c.tributo} className="flex items-center justify-between text-[10px]">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: c.cor }} />
+                        <span className="text-muted-foreground font-medium">{c.tributo}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">{(c.aliquota * 100).toFixed(2)}%</span>
+                        <span className="font-bold text-foreground w-16 text-right">{formatCurrency(c.valor)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             ) : (
-              <div className="flex items-center justify-center h-full text-muted-foreground text-sm">Sem dados</div>
+              <div className="flex items-center justify-center h-40 text-muted-foreground text-sm">Sem dados</div>
             )}
           </CardContent>
         </Card>
