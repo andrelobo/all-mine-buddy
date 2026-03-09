@@ -92,17 +92,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
   return (
     <div className="space-y-2">
-      {/* Row 1: NFSE + Financeiro */}
+      {/* Row 1: Financeiro + Emitidas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-        <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
-          <EmissoesResumoMini
-            notas={notas}
-            tomadores={tomadores}
-            aliquotaEfetiva={kpis.aliquotaEfetiva}
-            mesCompetencia={kpis.mesCompetencia}
-          />
-        </DashboardCard>
-
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
           <div className="h-full flex flex-col justify-between gap-1">
             <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
@@ -118,9 +109,18 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             </div>
           </div>
         </DashboardCard>
+
+        <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
+          <EmissoesResumoMini
+            notas={notas}
+            tomadores={tomadores}
+            aliquotaEfetiva={kpis.aliquotaEfetiva}
+            mesCompetencia={kpis.mesCompetencia}
+          />
+        </DashboardCard>
       </div>
 
-      {/* Row 2: Partilha */}
+      {/* Row 2: Partilha (Simulado) + Termômetro */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <DashboardCard title="Partilha Pgdas" headerColor="blue">
           {composicaoTributaria.length > 0 && kpis.faturamentoMes > 0 ? (
@@ -153,12 +153,11 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             <div className="flex items-center justify-center h-full text-muted-foreground text-xs">Sem dados para exibir</div>
           )}
         </DashboardCard>
-      </div>
 
-      {/* Termômetro de Faixa */}
-      <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
-        <FaixaThermometer rbt12={rbt12} calculo={calculo} />
-      </DashboardCard>
+        <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
+          <FaixaThermometer rbt12={rbt12} calculo={calculo} />
+        </DashboardCard>
+      </div>
     </div>
   );
 };
