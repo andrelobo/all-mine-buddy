@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-  DollarSign, FileText, TrendingUp, TrendingDown, Percent, ShieldCheck, AlertTriangle,
-  BarChart3, Wallet, Users, Gauge,
+  DollarSign, TrendingUp, TrendingDown, Percent, ShieldCheck, AlertTriangle,
+  BarChart3, Wallet, Users, Gauge, Lightbulb, Clock, TrendingUp as TUp,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -10,13 +10,13 @@ import {
 } from 'recharts';
 import { formatCurrency, formatPercent, FAIXAS_ANEXO_III, calcularSimplesAnexoIII } from '@/utils/simples-nacional';
 import { useDashboardData } from '@/hooks/useDashboardData';
-import type { CalculoSimplesResult } from '@/utils/simples-nacional';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import SimplesNacionalDashboard from '@/components/dashboard/SimplesNacionalDashboard';
 import DashboardCard from '@/components/dashboard/DashboardCard';
-import BigNumber from '@/components/dashboard/BigNumber';
+import KpiCard from '@/components/dashboard/KpiCard';
+import AlertBadges from '@/components/dashboard/AlertBadges';
 
 interface DashboardProps {
   prestadorId: string | null;
@@ -50,36 +50,56 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-28 rounded-lg" />)}
+        <div className="grid grid-cols-3 gap-3">
+          {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-lg" />)}
         </div>
+        <Skeleton className="h-64 rounded-lg" />
       </div>
     );
   }
 
   const pieData = analiseClientes.slice(0, 6).map(c => ({ name: c.nome.substring(0, 20), value: c.faturamento }));
 
-  return (
-    <div className="space-y-4">
+  // Build smart alerts
+  const smartAlerts = [
+    ...alertas,
+    ...(kpis.faturamentoMes > 0 && dadosMensais.length >= 2 ? (() => {
+      const prev = dadosMensais[dadosMensais.length - 2]?.faturamento || 0;
+      const curr = kpis.faturamentoMes;
+      if (prev > 0) {
+        const change = ((curr - prev) / prev) * 100;
+        if (Math.abs(change) > 5) {
+          return [{ tipo: change > 0 ? 'success' as const : 'warning' as const, mensagem: `Receita ${change > 0 ? 'aumentou' : 'diminuiu'} ${Math.abs(change).toFixed(0)}%` }];
+        }
+      }
+      return [];
+    })() : []),
+  ];
 
-      {/* ALERTAS */}
-      {alertas.length > 0 && (
-        <div className="space-y-2">
-          {alertas.map((a, i) => (
-            <div
-              key={i}
-              className={`flex items-center gap-2 p-3 rounded-lg border text-sm ${
-                a.tipo === 'danger' ? 'bg-destructive/10 border-destructive/20 text-destructive'
-                : a.tipo === 'warning' ? 'bg-warning/10 border-warning/20 text-warning'
-                : 'bg-primary/10 border-primary/20 text-primary'
-              }`}
-            >
-              <AlertTriangle className="w-4 h-4 shrink-0" />
-              {a.mensagem}
-            </div>
-          ))}
-        </div>
-      )}
+  return (
+    <div className="space-y-5">
+
+      {/* TOP KPI BAR — Skale style */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <KpiCard
+          label={`Faturamento ${kpis.competenciaLabel}`}
+          value={formatCurrency(kpis.faturamentoMes)}
+          borderColor="blue"
+          accent="text-primary"
+        />
+        <KpiCard
+          label="Impostos Provisionados"
+          value={formatCurrency(kpis.dasEstimado)}
+          borderColor="red"
+          accent="text-destructive"
+        />
+        <KpiCard
+          label="Caixa Disponível"
+          value={formatCurrency(fluxoCaixa.saldo)}
+          borderColor="green"
+          accent={fluxoCaixa.saldo >= 0 ? 'text-accent' : 'text-destructive'}
+        />
+      </div>
 
       {/* SIMPLES NACIONAL */}
       <SimplesNacionalDashboard
@@ -90,83 +110,61 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         dadosMensais={dadosMensais}
       />
 
-      {/* ROW: Fiscal IA + Split Payment + Fluxo de Caixa */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Fiscal IA */}
-        <DashboardCard title="Fiscal IA" headerColor="blue" subtitle={kpis.competenciaLabel}>
-          <div className="space-y-3">
-            <BigNumber value={formatCurrency(kpis.faturamentoMes)} label="Receita" accent="text-primary" size="md" />
-            <div className="grid grid-cols-2 gap-2">
-              <BigNumber value={formatCurrency(kpis.dasAPagar)} label="DAS a Pagar" accent="text-destructive" size="sm" badge="A PAGAR" badgeVariant="destructive" />
-              <BigNumber value={formatPercent(kpis.aliquotaEfetiva)} label="Alíq. Efetiva" accent="text-primary" size="sm" />
+      {/* SPLIT PAYMENT + FLUXO DE CAIXA */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Split de Impostos */}
+        <DashboardCard title="Split de Impostos" borderColor="green">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Recebimentos do Mês</span>
+              <span className="text-lg font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</span>
+            </div>
+            <div className="flex items-center justify-between bg-destructive/5 rounded-lg px-3 py-2">
+              <span className="text-sm text-muted-foreground">Separado para Impostos</span>
+              <span className="text-lg font-bold text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
+            </div>
+            <div className="flex items-center justify-between bg-accent/5 rounded-lg px-3 py-2">
+              <span className="text-sm font-medium text-muted-foreground">Disponível para Uso</span>
+              <span className="text-xl font-extrabold text-accent">{formatCurrency(fluxoCaixa.saldo)}</span>
             </div>
           </div>
         </DashboardCard>
 
-        {/* Split Payment */}
-        <DashboardCard title="Split Payment" headerColor="green">
+        {/* Financeiro */}
+        <DashboardCard title="Financeiro" borderColor="blue">
           <div className="space-y-3">
-            <BigNumber value={formatCurrency(kpis.totalReservado)} label="Total Reservado" accent="text-accent" size="md" />
-            <div className="grid grid-cols-2 gap-2">
-              <BigNumber
-                value={`${kpis.faturamentoMes > 0 ? ((kpis.totalReservado / kpis.faturamentoMes) * 100).toFixed(1) : '0'}%`}
-                label="% Protegido"
-                accent="text-foreground"
-                size="sm"
-              />
-              <BigNumber
-                value={formatCurrency(kpis.totalReservado - kpis.dasAPagar)}
-                label="Saldo Tributário"
-                accent={kpis.totalReservado - kpis.dasAPagar >= 0 ? 'text-accent' : 'text-destructive'}
-                size="sm"
-              />
+            <div className="grid grid-cols-3 gap-2">
+              <div className="text-center p-2 rounded-lg bg-muted/50">
+                <p className="text-[10px] text-muted-foreground">Entradas</p>
+                <p className="text-sm font-bold text-accent">{formatCurrency(fluxoCaixa.operacional)}</p>
+              </div>
+              <div className="text-center p-2 rounded-lg bg-muted/50">
+                <p className="text-[10px] text-muted-foreground">Saídas</p>
+                <p className="text-sm font-bold text-destructive">{formatCurrency(fluxoCaixa.tributario)}</p>
+              </div>
+              <div className="text-center p-2 rounded-lg bg-muted/50">
+                <p className="text-[10px] text-muted-foreground">Caixa Projetado</p>
+                <p className="text-sm font-bold text-primary">{formatCurrency(fluxoCaixa.saldo)}</p>
+              </div>
             </div>
-          </div>
-        </DashboardCard>
-
-        {/* Fluxo de Caixa */}
-        <DashboardCard title="Fluxo de Caixa" headerColor="orange">
-          <div className="space-y-3">
-            <BigNumber value={formatCurrency(fluxoCaixa.saldo)} label="Saldo Disponível" accent={fluxoCaixa.saldo >= 0 ? 'text-accent' : 'text-destructive'} size="md" />
-            <div className="grid grid-cols-2 gap-2">
-              <BigNumber value={formatCurrency(fluxoCaixa.operacional)} label="Caixa Operacional" accent="text-accent" size="sm" />
-              <BigNumber value={formatCurrency(-fluxoCaixa.tributario)} label="Caixa Tributário" accent="text-destructive" size="sm" />
+            <div className="h-36">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={dadosMensais}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="label" tick={{ fontSize: 9 }} />
+                  <YAxis tick={{ fontSize: 9 }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
+                  <Tooltip formatter={(v: number) => formatCurrency(v)} />
+                  <Line type="monotone" dataKey="faturamento" stroke="hsl(220, 70%, 50%)" name="Receita" strokeWidth={2} dot={{ r: 2 }} />
+                  <Line type="monotone" dataKey="tributoEstimado" stroke="hsl(0, 72%, 55%)" name="Tributo" strokeWidth={2} dot={{ r: 2 }} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </DashboardCard>
       </div>
 
-      {/* Split Payment Table */}
-      {splits.length > 0 && (
-        <DashboardCard title="Split Payment – Detalhamento" headerColor="green">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b text-muted-foreground">
-                  <th className="text-left py-1.5 px-2">NF</th>
-                  <th className="text-right py-1.5 px-2">Bruto</th>
-                  <th className="text-right py-1.5 px-2">Reservado</th>
-                  <th className="text-right py-1.5 px-2">Liberado</th>
-                  <th className="text-center py-1.5 px-2">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {splits.slice(0, 10).map(s => (
-                  <tr key={s.id} className="border-b border-border/50">
-                    <td className="py-1.5 px-2 font-mono">{s.nota_fiscal_id?.substring(0, 8)}...</td>
-                    <td className="text-right py-1.5 px-2">{formatCurrency(s.valor_bruto)}</td>
-                    <td className="text-right py-1.5 px-2 text-destructive">{formatCurrency(s.valor_reservado)}</td>
-                    <td className="text-right py-1.5 px-2 text-accent">{formatCurrency(s.valor_liberado)}</td>
-                    <td className="text-center py-1.5 px-2">
-                      <Badge variant={s.status === 'pago' ? 'default' : 'outline'} className="text-[9px]">{s.status}</Badge>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </DashboardCard>
-      )}
+      {/* ALERT BADGES — Skale style */}
+      <AlertBadges alertas={smartAlerts} />
 
       {/* MONITORAMENTO DE FAIXA */}
       {calculo.faixa && (() => {
@@ -184,24 +182,19 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         return (
           <DashboardCard
             title="Monitoramento de Faixa"
-            headerColor="red"
+            borderColor="orange"
             rightHeader={faltaProxima < 50000 && proximaFaixa ? (
-              <Badge variant="outline" className="border-primary-foreground/50 text-primary-foreground text-[9px]">
-                ⚠️ Próximo da mudança
-              </Badge>
+              <Badge variant="outline" className="border-warning text-warning text-[9px]">⚠️ Próximo da mudança</Badge>
             ) : undefined}
           >
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground">Faixa atual: <span className="font-bold text-foreground">{faixaAtual.faixa}ª</span> (até {formatCurrency(limiteSuperior)})</p>
-                  {proximaFaixa && (
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Faltam <span className="font-bold text-primary">{formatCurrency(faltaProxima)}</span> para a {proximaFaixa.faixa}ª faixa
-                    </p>
-                  )}
-                  {!proximaFaixa && <p className="text-xs text-muted-foreground mt-0.5">Faixa máxima do Simples Nacional.</p>}
-                </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Faixa atual: <span className="font-bold text-foreground">{faixaAtual.faixa}ª</span> (até {formatCurrency(limiteSuperior)})</p>
+                {proximaFaixa && (
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Faltam <span className="font-bold text-primary">{formatCurrency(faltaProxima)}</span> para a {proximaFaixa.faixa}ª faixa
+                  </p>
+                )}
               </div>
 
               <div>
@@ -233,17 +226,17 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                   {calculoSimulado && (
                     <div className="flex-1 space-y-1">
                       <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">RBT12 simulado:</span>
+                        <span className="text-muted-foreground">RBT12:</span>
                         <span className="font-bold">{formatCurrency(rbt12Simulado)}</span>
                       </div>
                       <div className="flex justify-between text-xs">
                         <span className="text-muted-foreground">Faixa:</span>
-                        <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-foreground'}`}>
+                        <span className={`font-bold ${mudouFaixa ? 'text-destructive' : ''}`}>
                           {calculoSimulado.faixa?.faixa}ª {mudouFaixa && '⚠️'}
                         </span>
                       </div>
                       <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">Alíq. efetiva:</span>
+                        <span className="text-muted-foreground">Alíq.:</span>
                         <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-primary'}`}>
                           {formatPercent(calculoSimulado.aliquotaEfetiva)}
                         </span>
@@ -254,7 +247,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                 {mudouFaixa && (
                   <div className="mt-2 p-2 rounded bg-destructive/10 border border-destructive/20 text-destructive text-xs">
                     <AlertTriangle className="w-3 h-3 inline mr-1" />
-                    Atenção: mudança da {faixaAtual.faixa}ª para a {calculoSimulado!.faixa!.faixa}ª faixa. Alíquota de {formatPercent(calculo.aliquotaEfetiva)} → {formatPercent(calculoSimulado!.aliquotaEfetiva)}.
+                    Mudança da {faixaAtual.faixa}ª para a {calculoSimulado!.faixa!.faixa}ª faixa. Alíquota: {formatPercent(calculo.aliquotaEfetiva)} → {formatPercent(calculoSimulado!.aliquotaEfetiva)}.
                   </div>
                 )}
               </div>
@@ -265,24 +258,8 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
 
       {/* GRÁFICOS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <DashboardCard title="Faturamento & Tributo Mensal" headerColor="blue">
-          <div className="h-52">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={dadosMensais}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="label" tick={{ fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
-                <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                <Legend wrapperStyle={{ fontSize: 10 }} />
-                <Line type="monotone" dataKey="faturamento" stroke="hsl(220, 70%, 50%)" name="Faturamento" strokeWidth={2} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="tributoEstimado" stroke="hsl(0, 72%, 55%)" name="Tributo Est." strokeWidth={2} dot={{ r: 3 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </DashboardCard>
-
-        <DashboardCard title="ISS Retido por Mês" headerColor="green">
-          <div className="h-52">
+        <DashboardCard title="ISS Retido por Mês" borderColor="green">
+          <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={dadosMensais}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -295,12 +272,12 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
           </div>
         </DashboardCard>
 
-        <DashboardCard title="Faturamento por Cliente" headerColor="orange">
-          <div className="h-52">
+        <DashboardCard title="Faturamento por Cliente" borderColor="blue">
+          <div className="h-48">
             {pieData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <RechartsPie>
-                  <Pie data={pieData} cx="50%" cy="50%" outerRadius={80} innerRadius={35} dataKey="value" nameKey="name" labelLine={false} label={false}>
+                  <Pie data={pieData} cx="50%" cy="50%" outerRadius={75} innerRadius={35} dataKey="value" nameKey="name" labelLine={false} label={false}>
                     {pieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                   </Pie>
                   <Tooltip formatter={(v: number) => formatCurrency(v)} />
@@ -315,7 +292,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       </div>
 
       {/* ANÁLISE POR CLIENTE */}
-      <DashboardCard title="Análise por Cliente – Curva ABC" headerColor="purple">
+      <DashboardCard title="Clientes" borderColor="purple">
         {analiseClientes.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
@@ -350,9 +327,41 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
             </table>
           </div>
         ) : (
-          <p className="text-center text-sm text-muted-foreground py-4">Nenhuma nota fiscal emitida ainda.</p>
+          <p className="text-center text-sm text-muted-foreground py-4">Nenhuma nota fiscal emitida.</p>
         )}
       </DashboardCard>
+
+      {/* Split table */}
+      {splits.length > 0 && (
+        <DashboardCard title="Split Payment – Detalhamento" borderColor="green">
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b text-muted-foreground">
+                  <th className="text-left py-1.5 px-2">NF</th>
+                  <th className="text-right py-1.5 px-2">Bruto</th>
+                  <th className="text-right py-1.5 px-2">Reservado</th>
+                  <th className="text-right py-1.5 px-2">Liberado</th>
+                  <th className="text-center py-1.5 px-2">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {splits.slice(0, 10).map(s => (
+                  <tr key={s.id} className="border-b border-border/50">
+                    <td className="py-1.5 px-2 font-mono">{s.nota_fiscal_id?.substring(0, 8)}...</td>
+                    <td className="text-right py-1.5 px-2">{formatCurrency(s.valor_bruto)}</td>
+                    <td className="text-right py-1.5 px-2 text-destructive">{formatCurrency(s.valor_reservado)}</td>
+                    <td className="text-right py-1.5 px-2 text-accent">{formatCurrency(s.valor_liberado)}</td>
+                    <td className="text-center py-1.5 px-2">
+                      <Badge variant={s.status === 'pago' ? 'default' : 'outline'} className="text-[9px]">{s.status}</Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </DashboardCard>
+      )}
     </div>
   );
 };
