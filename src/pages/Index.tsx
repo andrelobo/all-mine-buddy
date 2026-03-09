@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { Save, CheckCircle, Loader2, List, FileOutput, Printer, AlertCircle, Building2, Landmark, Settings, Trash2, Shield } from 'lucide-react';
+import { Save, CheckCircle, Loader2, List, FileOutput, Printer, AlertCircle, Building2, Landmark, Settings, Trash2, Shield, BotMessageSquare } from 'lucide-react';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/AppSidebar';
 import PrestadorSection from '@/components/PrestadorSection';
@@ -406,7 +406,7 @@ const Index = () => {
             <div className="flex items-center gap-4 shrink-0">
               <SidebarTrigger className="text-white hover:text-white/80" />
               <div className="h-5 w-px bg-white/20" />
-              <span className="text-[10px] font-semibold text-white/50 tracking-widest">Inteligência Fiscal IA</span>
+              <span className="text-[10px] font-semibold text-white/50 tracking-widest flex items-center gap-1.5"><BotMessageSquare className="w-4 h-4" /> Inteligência Fiscal IA</span>
             </div>
             <div className="flex items-center gap-5">
               {[
