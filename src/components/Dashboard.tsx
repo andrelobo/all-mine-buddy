@@ -181,34 +181,13 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       </section>
 
       <section>
-        <SectionTitle icon={<ShieldCheck className="w-4 h-4" />} title="Cálculo Automático – Anexo III" />
-        <Card>
-          <CardContent className="p-3">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-              <div>
-                <p className="text-[10px] text-muted-foreground uppercase">Receita 12m</p>
-                <p className="text-sm font-bold">{formatCurrency(rbt12)}</p>
-              </div>
-              <div>
-                <p className="text-[10px] text-muted-foreground uppercase">Faixa</p>
-                <p className="text-sm font-bold">{calculo.faixa ? `${calculo.faixa.faixa}ª` : '–'}</p>
-              </div>
-              <div>
-                <p className="text-[10px] text-muted-foreground uppercase">Alíq. Nominal</p>
-                <p className="text-sm font-bold">{calculo.faixa ? formatPercent(calculo.faixa.aliquotaNominal) : '–'}</p>
-              </div>
-              <div>
-                <p className="text-[10px] text-muted-foreground uppercase">Parcela Deduzir</p>
-                <p className="text-sm font-bold">{calculo.faixa ? formatCurrency(calculo.faixa.parcelaDeduzir) : '–'}</p>
-              </div>
-              <div>
-                <p className="text-[10px] text-muted-foreground uppercase">Alíq. Efetiva</p>
-                <p className="text-sm font-bold text-primary">{calculo.valido ? formatPercent(calculo.aliquotaEfetiva) : '–'}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
+      <SimplesNacionalDashboard
+        rbt12={rbt12}
+        cnaeAnexo={cnaeAnexo}
+        calculo={calculo}
+        kpis={kpis}
+        dadosMensais={dadosMensais}
+      />
 
       {/* 2.5) INDICADOR DE FAIXA */}
       {calculo.faixa && (() => {
