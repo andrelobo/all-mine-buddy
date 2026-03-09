@@ -33,7 +33,7 @@ import { useTomadores } from '@/hooks/useTomadores';
 import { useNotasFiscais } from '@/hooks/useNotasFiscais';
 import { useSimplesNacional } from '@/hooks/useSimplesNacional';
 import type { TomadorDB } from '@/hooks/useTomadores';
-import { calcularSimplesAnexoIII } from '@/utils/simples-nacional';
+import { calcularSimplesAnexoIII, formatCurrency, formatPercent } from '@/utils/simples-nacional';
 
 type ActiveTab = 'dashboard' | 'prestador' | 'tomador' | 'emissao' | 'notas';
 type PrestadorSubTab = 'cadastro' | 'regime' | 'parametros';
@@ -399,11 +399,27 @@ const Index = () => {
 
         <div className="flex-1 flex flex-col min-w-0">
           {/* Top bar */}
-          <header className="bg-[hsl(216,60%,16%)] sticky top-0 z-10 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-2">
+          <header className="bg-[hsl(216,60%,16%)] sticky top-0 z-10 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
             <div className="flex items-center gap-4 shrink-0">
               <SidebarTrigger className="text-white hover:text-white/80" />
               <div className="h-5 w-px bg-white/20" />
               <span className="text-[10px] font-semibold text-white/50 uppercase tracking-widest">Painel Fiscal Inteligente</span>
+            </div>
+            <div className="flex items-center gap-5">
+              {[
+                { label: 'Receita', value: formatCurrency(snCalculo.valido ? snRbt12 / 12 : 0) },
+                { label: 'Aliq. Efetiva', value: snCalculo.valido ? formatPercent(snCalculo.aliquotaEfetiva) : '–' },
+                { label: 'Alíq. ISS', value: snCalculo.valido ? formatPercent(snCalculo.issReferencia) : '–' },
+                { label: 'A Recolher', value: formatCurrency(snCalculo.valido ? (snRbt12 / 12) * snCalculo.aliquotaEfetiva : 0), accent: true },
+              ].map((k, i) => (
+                <React.Fragment key={i}>
+                  {i > 0 && <div className="h-5 w-px bg-white/10" />}
+                  <div className="text-center">
+                    <p className="text-[8px] text-white/40 uppercase tracking-widest font-medium">{k.label}</p>
+                    <p className={`text-xs font-bold ${k.accent ? 'text-red-300' : 'text-white'}`}>{k.value}</p>
+                  </div>
+                </React.Fragment>
+              ))}
             </div>
 
             <div className="flex items-center gap-3 shrink-0">
