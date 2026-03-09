@@ -157,7 +157,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <p className="text-xs font-bold text-foreground mt-0.5">{formatCurrency(kpis.faturamentoMes)}</p>
             </div>
             <div className="p-2 rounded-md bg-muted/50">
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Percent className="w-3 h-3 text-primary" />Alíquota Efetiva</p>
+              <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Percent className="w-3 h-3 text-primary" />Aliq. Efetiva</p>
               <p className="text-xs font-bold text-primary mt-0.5">{formatPercent(kpis.aliquotaEfetiva)}</p>
             </div>
             <div className="p-2 rounded-md bg-muted/50">
