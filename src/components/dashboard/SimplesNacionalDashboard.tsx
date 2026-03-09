@@ -184,50 +184,48 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             )}
           </CardContent>
         </Card>
-      </div>
 
-        {/* Tabela composição detalhada */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Detalhamento por Tributo
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-3">
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="border-b text-muted-foreground">
-                    <th className="text-left py-1.5 px-2">Tributo</th>
-                    <th className="text-right py-1.5 px-2">% no DAS</th>
-                    <th className="text-right py-1.5 px-2">Alíq. Efetiva</th>
-                    <th className="text-right py-1.5 px-2">Valor Est.</th>
+      {/* Tabela composição detalhada */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Detalhamento por Tributo
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-3">
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b text-muted-foreground">
+                  <th className="text-left py-1.5 px-2">Tributo</th>
+                  <th className="text-right py-1.5 px-2">% no DAS</th>
+                  <th className="text-right py-1.5 px-2">Alíq. Efetiva</th>
+                  <th className="text-right py-1.5 px-2">Valor Est.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {composicaoTributaria.map(c => (
+                  <tr key={c.tributo} className="border-b border-border/50">
+                    <td className="py-1.5 px-2 font-medium flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: c.cor }} />
+                      {c.tributo}
+                    </td>
+                    <td className="text-right py-1.5 px-2">{(c.percentual * 100).toFixed(2)}%</td>
+                    <td className="text-right py-1.5 px-2">{(c.aliquota * 100).toFixed(4)}%</td>
+                    <td className="text-right py-1.5 px-2">{formatCurrency(c.valor)}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {composicaoTributaria.map(c => (
-                    <tr key={c.tributo} className="border-b border-border/50">
-                      <td className="py-1.5 px-2 font-medium flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: c.cor }} />
-                        {c.tributo}
-                      </td>
-                      <td className="text-right py-1.5 px-2">{(c.percentual * 100).toFixed(2)}%</td>
-                      <td className="text-right py-1.5 px-2">{(c.aliquota * 100).toFixed(4)}%</td>
-                      <td className="text-right py-1.5 px-2">{formatCurrency(c.valor)}</td>
-                    </tr>
-                  ))}
-                  <tr className="font-bold">
-                    <td className="py-1.5 px-2">Total DAS</td>
-                    <td className="text-right py-1.5 px-2">100%</td>
-                    <td className="text-right py-1.5 px-2">{calculo.valido ? formatPercent(calculo.aliquotaEfetiva) : '–'}</td>
-                    <td className="text-right py-1.5 px-2">{formatCurrency(kpis.dasEstimado)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                ))}
+                <tr className="font-bold">
+                  <td className="py-1.5 px-2">Total DAS</td>
+                  <td className="text-right py-1.5 px-2">100%</td>
+                  <td className="text-right py-1.5 px-2">{calculo.valido ? formatPercent(calculo.aliquotaEfetiva) : '–'}</td>
+                  <td className="text-right py-1.5 px-2">{formatCurrency(kpis.dasEstimado)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* EVOLUÇÃO MENSAL - Receita x DAS x ISS */}
       <Card>
