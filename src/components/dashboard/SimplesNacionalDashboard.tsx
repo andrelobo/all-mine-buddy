@@ -104,7 +104,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           </div>
         </DashboardCard>
 
-        <DashboardCard title="Partilha Simples" headerColor="blue">
+        <DashboardCard title="Partilha Pgdas" headerColor="blue">
           {pieComposicao.length > 0 && kpis.faturamentoMes > 0 ? (
             <div className="h-full flex items-center gap-3">
               <div className="flex-1 h-full min-h-0">
