@@ -410,10 +410,10 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-5">
               {[
-                { label: 'Receita', value: formatCurrency(snCalculo.valido ? snRbt12 / 12 : 0) },
-                { label: 'Aliq. Efetiva', value: snCalculo.valido ? formatPercent(snCalculo.aliquotaEfetiva) : '–' },
-                { label: 'Alíq. ISS', value: snCalculo.valido ? formatPercent(snCalculo.issReferencia) : '–' },
-                { label: 'A Recolher', value: formatCurrency(snCalculo.valido ? (snRbt12 / 12) * snCalculo.aliquotaEfetiva : 0), accent: true },
+                { label: 'Receita', value: formatCurrency(dashKpis.faturamentoMes) },
+                { label: 'Aliq. Efetiva', value: formatPercent(dashKpis.aliquotaEfetiva) },
+                { label: 'Alíq. ISS', value: dashCalculo.valido ? formatPercent(dashCalculo.issReferencia) : '–' },
+                { label: 'A Recolher', value: formatCurrency(dashKpis.dasAPagar), accent: true },
               ].map((k, i) => (
                 <React.Fragment key={i}>
                   {i > 0 && <div className="h-5 w-px bg-white/10" />}
