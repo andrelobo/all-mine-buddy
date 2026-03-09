@@ -63,7 +63,7 @@ const EmissoesResumoMini: React.FC<Props> = ({ notas, tomadores, aliquotaEfetiva
           <span className="w-12 text-right">ISSQN(R)</span>
           <span className="w-10 text-right">AliqSn</span>
           <span className="w-12 text-right">DASN</span>
-          <span className="w-8 text-right">%Fat</span>
+          
         </div>
 
         {/* Rows */}
@@ -77,7 +77,7 @@ const EmissoesResumoMini: React.FC<Props> = ({ notas, tomadores, aliquotaEfetiva
             </span>
             <span className="w-10 text-right text-muted-foreground">{fmt(aliquotaEfetiva * 100)}%</span>
             <span className="w-12 text-right font-bold text-destructive">{fmt(l.das)}</span>
-            <span className="w-8 text-right text-muted-foreground">{fmt(l.percentual)}%</span>
+            
           </div>
         ))}
 
@@ -89,7 +89,7 @@ const EmissoesResumoMini: React.FC<Props> = ({ notas, tomadores, aliquotaEfetiva
           <span className="w-12 text-right text-foreground">{totais.issRet > 0 ? `(${fmt(totais.issRet)})` : '—'}</span>
           <span className="w-10 text-right" />
           <span className="w-12 text-right text-destructive">{fmt(totais.das)}</span>
-          <span className="w-8 text-right text-muted-foreground">{fmt(totais.percentual)}%</span>
+          
         </div>
       </div>
     </div>
