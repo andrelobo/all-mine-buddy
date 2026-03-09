@@ -417,9 +417,9 @@ const Index = () => {
               ].map((k, i) => (
                 <React.Fragment key={i}>
                   {i > 0 && <div className="h-5 w-px bg-white/10" />}
-                  <div className="text-center">
+                  <div className="text-left">
                     <p className="text-[8px] text-white/40 uppercase tracking-widest font-medium">{k.label}</p>
-                    <p className={`text-xs font-bold ${k.accent ? 'text-red-300' : 'text-white'}`}>{k.value}</p>
+                    <p className={`text-xs font-bold tabular-nums ${k.accent ? 'text-red-300' : 'text-white'}`}>{k.value}</p>
                   </div>
                 </React.Fragment>
               ))}
