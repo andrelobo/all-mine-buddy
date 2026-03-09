@@ -92,8 +92,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
   return (
     <div className="space-y-2">
-      {/* Row 1: Financeiro + Simulador + Termômetro */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+      {/* Row 1: Financeiro + Termômetro */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
           <div className="h-full flex flex-col justify-between gap-1">
             <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
@@ -108,10 +108,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <span className="tabular-nums text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
             </div>
           </div>
-        </DashboardCard>
-
-        <DashboardCard title="Simulador de Cenário" headerColor="orange">
-          <SimuladorCenario rbt12={rbt12} cnaeAnexo={cnaeAnexo} faturamentoAtual={kpis.faturamentoMes} />
         </DashboardCard>
 
         <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
