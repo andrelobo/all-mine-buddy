@@ -20,16 +20,17 @@ const FaixaThermometer: React.FC<Props> = ({ rbt12, calculo }) => {
   const maxRbt = FAIXAS_ANEXO_III[FAIXAS_ANEXO_III.length - 1].limiteSuperior;
   const faixaAtual = calculo.faixa;
 
-  // Gauge SVG params
-  const svgW = 160;
-  const svgH = 90;
+  // Gauge SVG params — compact
+  const svgW = 180;
+  const svgH = 105;
   const cx = svgW / 2;
-  const cy = 82;
-  const radius = 64;
-  const strokeWidth = 16;
+  const cy = 95;
+  const radius = 72;
+  const strokeWidth = 18;
   const startAngle = 180;
   const totalAngle = 180;
 
+  // Build arcs for each faixa
   const faixaArcs = FAIXAS_ANEXO_III.map((f, i) => {
     const startPct = f.limiteInferior / maxRbt;
     const endPct = f.limiteSuperior / maxRbt;
@@ -38,7 +39,7 @@ const FaixaThermometer: React.FC<Props> = ({ rbt12, calculo }) => {
     return { ...f, index: i, arcStart, arcEnd, color: FAIXA_COLORS[i] };
   });
 
-  // Needle
+  // Needle angle
   const needlePct = Math.min(rbt12 / maxRbt, 1);
   const needleAngle = startAngle - needlePct * totalAngle;
   const needleRad = (needleAngle * Math.PI) / 180;
@@ -57,67 +58,68 @@ const FaixaThermometer: React.FC<Props> = ({ rbt12, calculo }) => {
     return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`;
   };
 
+  // Margem para próxima faixa
   const falta = faixaAtual ? faixaAtual.limiteSuperior - rbt12 : 0;
 
   return (
-    <div className="h-full flex flex-col justify-between gap-1">
-      {/* Gauge centrado */}
-      <div className="flex justify-center">
-        <div className="relative" style={{ width: svgW, height: svgH }}>
-          <svg width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`}>
-            {faixaArcs.map(f => (
-              <path
-                key={f.faixa}
-                d={describeArc(f.arcStart, f.arcEnd, radius)}
-                fill="none"
-                stroke={f.color}
-                strokeWidth={strokeWidth}
-                strokeLinecap="butt"
-                opacity={faixaAtual?.faixa === f.faixa ? 1 : 0.35}
-              />
-            ))}
-            <line x1={cx} y1={cy} x2={nx} y2={ny} stroke="hsl(var(--foreground))" strokeWidth={2} strokeLinecap="round" />
-            <circle cx={cx} cy={cy} r={3} fill="hsl(var(--foreground))" />
-            <circle cx={cx} cy={cy} r={1.5} fill="hsl(var(--background))" />
-          </svg>
-          {/* RBT12 value */}
-          <div className="absolute left-1/2 -translate-x-1/2" style={{ bottom: 0 }}>
-            <p className="text-xs font-black text-foreground text-center leading-none tabular-nums">{formatCurrency(rbt12)}</p>
-            <p className="text-[7px] text-muted-foreground text-center">RBT12</p>
-          </div>
-          <span className="absolute left-0 text-[7px] text-muted-foreground" style={{ bottom: 0 }}>R$ 0</span>
-          <span className="absolute right-0 text-[7px] text-muted-foreground" style={{ bottom: 0 }}>{formatCurrency(maxRbt)}</span>
+    <div className="flex flex-col items-center gap-2 h-full">
+      {/* Gauge */}
+      <div className="relative flex-shrink-0" style={{ width: svgW, height: svgH }}>
+        <svg width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`}>
+          {/* Faixa arcs */}
+          {faixaArcs.map(f => (
+            <path
+              key={f.faixa}
+              d={describeArc(f.arcStart, f.arcEnd, radius)}
+              fill="none"
+              stroke={f.color}
+              strokeWidth={strokeWidth}
+              strokeLinecap="butt"
+              opacity={faixaAtual?.faixa === f.faixa ? 1 : 0.35}
+            />
+          ))}
+          {/* Needle */}
+          <line x1={cx} y1={cy} x2={nx} y2={ny} stroke="hsl(var(--foreground))" strokeWidth={2} strokeLinecap="round" />
+          <circle cx={cx} cy={cy} r={3.5} fill="hsl(var(--foreground))" />
+          <circle cx={cx} cy={cy} r={1.5} fill="hsl(var(--background))" />
+        </svg>
+        {/* Central value */}
+        <div className="absolute left-1/2 -translate-x-1/2" style={{ bottom: 2 }}>
+          <p className="text-sm font-black text-foreground text-center leading-none tabular-nums">{formatCurrency(rbt12)}</p>
+          <p className="text-[7px] text-muted-foreground text-center mt-0.5">RBT12</p>
         </div>
+        {/* Min / Max labels */}
+        <span className="absolute left-1 text-[7px] text-muted-foreground font-medium" style={{ bottom: 0 }}>
+          {formatCurrency(0)}
+        </span>
+        <span className="absolute right-1 text-[7px] text-muted-foreground font-medium" style={{ bottom: 0 }}>
+          {formatCurrency(maxRbt)}
+        </span>
       </div>
 
-      {/* Faixas legend — same row style as Partilha/Financeiro */}
-      {FAIXAS_ANEXO_III.map((f, i) => {
-        const isAtual = faixaAtual?.faixa === f.faixa;
-        return (
-          <div key={f.faixa} className={`flex items-center gap-2 text-[9px] ${isAtual ? 'font-bold' : ''}`}>
-            <span className="w-2 h-2 rounded-sm flex-shrink-0" style={{ backgroundColor: FAIXA_COLORS[i], opacity: isAtual ? 1 : 0.45 }} />
-            <span className={`w-14 shrink-0 ${isAtual ? 'text-foreground' : 'text-muted-foreground'}`}>
-              {f.faixa}ª Faixa
-            </span>
-            <div className="flex-1" />
-            <span className="w-10 text-right tabular-nums text-muted-foreground">{(f.aliquotaNominal * 100).toFixed(1)}%</span>
-            {isAtual ? (
-              <span className="w-12 text-right text-[7px] bg-accent text-accent-foreground px-1 py-0.5 rounded font-bold leading-none">ATUAL</span>
-            ) : (
-              <span className="w-12" />
-            )}
+      {/* Legend */}
+      <div className="w-full space-y-0.5">
+        {FAIXAS_ANEXO_III.map((f, i) => {
+          const isAtual = faixaAtual?.faixa === f.faixa;
+          return (
+            <div key={f.faixa} className={`flex items-center gap-1.5 text-[9px] ${isAtual ? 'font-bold' : ''}`}>
+              <span className="w-2 h-2 rounded-sm flex-shrink-0" style={{ backgroundColor: FAIXA_COLORS[i], opacity: isAtual ? 1 : 0.45 }} />
+              <span className={`flex-1 ${isAtual ? 'text-foreground' : 'text-muted-foreground'}`}>
+                {f.faixa}ª Faixa
+              </span>
+              <span className="text-muted-foreground tabular-nums">{(f.aliquotaNominal * 100).toFixed(1)}%</span>
+              {isAtual && <span className="text-[7px] bg-accent text-accent-foreground px-1 py-0.5 rounded font-bold leading-none">ATUAL</span>}
+            </div>
+          );
+        })}
+        {faixaAtual && (
+          <div className="pt-1 border-t border-border mt-0.5">
+            <p className="text-[8px] text-muted-foreground">
+              Margem p/ próxima faixa: <span className={`font-bold ${falta < 50000 ? 'text-destructive' : 'text-accent'}`}>{formatCurrency(falta)}</span>
+            </p>
           </div>
-        );
-      })}
-
-      {/* Footer — margem */}
-      {faixaAtual && (
-        <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold mt-auto">
-          <span className="shrink-0">MARGEM P/ PRÓXIMA FAIXA</span>
-          <div className="flex-1" />
-          <span className={`tabular-nums ${falta < 50000 ? 'text-destructive' : 'text-accent'}`}>{formatCurrency(falta)}</span>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
