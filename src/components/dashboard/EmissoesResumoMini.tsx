@@ -54,50 +54,48 @@ const EmissoesResumoMini: React.FC<Props> = ({ notas, tomadores, aliquotaEfetiva
   );
 
   return (
-    <div>
-      <div className="space-y-1">
-        {/* Header */}
-        <div className="flex items-center gap-2 text-[9px] font-semibold text-muted-foreground uppercase">
-          <span className="w-10 shrink-0">Data</span>
-          <span className="flex-1 truncate">Tomador</span>
-          <span className="w-10 text-center">SubTrib</span>
-          <span className="w-16 text-right">Receita</span>
-          <span className="w-14 text-right">ISSQN(R)</span>
-          <span className="w-12 text-right">AliqSn</span>
-          <span className="w-16 text-right">DASN</span>
-        </div>
+    <div className="h-full flex flex-col justify-between gap-1">
+      {/* Header */}
+      <div className="flex items-center gap-2 text-[9px] font-semibold text-muted-foreground uppercase">
+        <span className="w-10 shrink-0">Data</span>
+        <span className="flex-1 truncate">Tomador</span>
+        <span className="w-10 text-center">SubTrib</span>
+        <span className="w-16 text-right">Receita</span>
+        <span className="w-14 text-right">ISSQN(R)</span>
+        <span className="w-12 text-right">AliqSn</span>
+        <span className="w-16 text-right">DASN</span>
+      </div>
 
-        {/* Rows */}
-        {linhas.map((l, i) => (
-          <div key={i} className="flex items-center gap-2 text-[9px] tabular-nums">
-            <span className="w-10 shrink-0 text-muted-foreground">{l.dataFmt}</span>
-            <span className="flex-1 truncate text-foreground font-medium">{l.nome}</span>
-            <span className="w-10 text-center">
-              {l.subTrib ? (
-                <span className="text-[8px] bg-accent/15 text-accent rounded-full px-1.5 py-0.5 font-semibold">Sim</span>
-              ) : (
-                <span className="text-[8px] text-muted-foreground">Não</span>
-              )}
-            </span>
-            <span className="w-16 text-right text-foreground">{fmt(l.vs)}</span>
-            <span className="w-14 text-right text-foreground">
-              {l.issRet > 0 ? `(${fmt(l.issRet)})` : '—'}
-            </span>
-            <span className="w-12 text-right text-muted-foreground">{fmt(aliquotaEfetiva * 100)}%</span>
-            <span className="w-16 text-right font-bold text-destructive">{fmt(l.das)}</span>
-          </div>
-        ))}
-
-        {/* Footer */}
-        <div className="flex items-center gap-2 text-[9px] font-bold border-t border-border pt-1 tabular-nums">
-          <span className="w-10 shrink-0" />
-          <span className="flex-1 text-foreground">Total</span>
-          <span className="w-10" />
-          <span className="w-16 text-right text-foreground">{fmt(totais.vs)}</span>
-          <span className="w-14 text-right text-foreground">{totais.issRet > 0 ? `(${fmt(totais.issRet)})` : '—'}</span>
-          <span className="w-12 text-right" />
-          <span className="w-16 text-right text-destructive">{fmt(totais.das)}</span>
+      {/* Rows */}
+      {linhas.map((l, i) => (
+        <div key={i} className="flex items-center gap-2 text-[9px] tabular-nums">
+          <span className="w-10 shrink-0 text-muted-foreground">{l.dataFmt}</span>
+          <span className="flex-1 truncate text-foreground font-medium">{l.nome}</span>
+          <span className="w-10 text-center">
+            {l.subTrib ? (
+              <span className="text-[8px] bg-accent/15 text-accent rounded-full px-1.5 py-0.5 font-semibold">Sim</span>
+            ) : (
+              <span className="text-[8px] text-muted-foreground">Não</span>
+            )}
+          </span>
+          <span className="w-16 text-right text-foreground">{fmt(l.vs)}</span>
+          <span className="w-14 text-right text-foreground">
+            {l.issRet > 0 ? `(${fmt(l.issRet)})` : '—'}
+          </span>
+          <span className="w-12 text-right text-muted-foreground">{fmt(aliquotaEfetiva * 100)}%</span>
+          <span className="w-16 text-right font-bold text-destructive">{fmt(l.das)}</span>
         </div>
+      ))}
+
+      {/* Footer */}
+      <div className="flex items-center gap-2 text-[9px] font-bold border-t border-border pt-1 tabular-nums mt-auto">
+        <span className="w-10 shrink-0" />
+        <span className="flex-1 text-foreground">Total</span>
+        <span className="w-10" />
+        <span className="w-16 text-right text-foreground">{fmt(totais.vs)}</span>
+        <span className="w-14 text-right text-foreground">{totais.issRet > 0 ? `(${fmt(totais.issRet)})` : '—'}</span>
+        <span className="w-12 text-right" />
+        <span className="w-16 text-right text-destructive">{fmt(totais.das)}</span>
       </div>
     </div>
   );
