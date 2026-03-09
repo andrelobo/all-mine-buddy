@@ -104,12 +104,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <ResumoItem label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
               <ResumoItem label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
             </div>
-            <EmissoesResumoMini
-              notas={notas}
-              tomadores={tomadores}
-              aliquotaEfetiva={kpis.aliquotaEfetiva}
-              mesCompetencia={kpis.mesCompetencia}
-            />
             <div className="bg-destructive/10 rounded-md px-2 py-0.5 flex items-center justify-between mt-auto">
               <span className="text-[9px] font-semibold text-muted-foreground">A RECOLHER PGDAS</span>
               <span className="text-base font-extrabold text-destructive tabular-nums">{formatCurrency(kpis.dasAPagar)}</span>
@@ -149,6 +143,16 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           )}
         </DashboardCard>
       </div>
+
+      {/* Emissões do mês */}
+      <DashboardCard title={`Emissões ${kpis.competenciaLabel}`} headerColor="green">
+        <EmissoesResumoMini
+          notas={notas}
+          tomadores={tomadores}
+          aliquotaEfetiva={kpis.aliquotaEfetiva}
+          mesCompetencia={kpis.mesCompetencia}
+        />
+      </DashboardCard>
 
       {/* 3: Termômetro de Faixa + 4: Simulador de Cenário */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
