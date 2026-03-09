@@ -406,7 +406,7 @@ const Index = () => {
             <div className="flex items-center gap-4 shrink-0">
               <SidebarTrigger className="text-white hover:text-white/80" />
               <div className="h-5 w-px bg-white/20" />
-              <span className="text-[10px] font-semibold text-white/50 uppercase tracking-widest">Painel Fiscal Inteligente</span>
+              <span className="text-[10px] font-semibold text-white/50 uppercase tracking-widest">Inteligência Fiscal IA</span>
             </div>
             <div className="flex items-center gap-5">
               {[
