@@ -405,26 +405,6 @@ const Index = () => {
               <div className="h-5 w-px bg-white/20" />
               <span className="text-[10px] font-semibold text-white/50 uppercase tracking-widest">Painel Fiscal Inteligente</span>
             </div>
-            <div className="flex items-center gap-1">
-              {[
-                { key: 'dashboard' as ActiveTab, label: 'Dashboard' },
-                { key: 'prestador' as ActiveTab, label: 'O Prestador' },
-                { key: 'tomador' as ActiveTab, label: 'Tomadores' },
-                { key: 'emissao' as ActiveTab, label: 'DANFSE' },
-              ].map(item => (
-                <button
-                  key={item.key}
-                  onClick={() => handleTabChange(item.key)}
-                  className={`px-3 py-1.5 rounded text-[10px] font-semibold uppercase tracking-wide transition-colors ${
-                    activeTab === item.key
-                      ? 'bg-white/20 text-white'
-                      : 'text-white/60 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
 
             <div className="flex items-center gap-3 shrink-0">
               {activeTab === 'prestador' && configValida && (
