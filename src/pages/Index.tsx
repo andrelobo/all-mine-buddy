@@ -33,6 +33,7 @@ import { useTomadores } from '@/hooks/useTomadores';
 import { useNotasFiscais } from '@/hooks/useNotasFiscais';
 import { useSimplesNacional } from '@/hooks/useSimplesNacional';
 import type { TomadorDB } from '@/hooks/useTomadores';
+import { calcularSimplesAnexoIII } from '@/utils/simples-nacional';
 
 type ActiveTab = 'dashboard' | 'prestador' | 'tomador' | 'emissao' | 'notas';
 type PrestadorSubTab = 'cadastro' | 'regime' | 'parametros';
@@ -291,17 +292,21 @@ const Index = () => {
     if (config.optanteSimples && config.simplesAnexo === 'III') {
       const param = determinarParametroIssEmissao(isSub, localPrestacao.municipio, localPrestacao.uf);
       setSimplesParametroIss(param);
-      if (param === 'iss_retencao_substituicao' || isSub) {
-        setPrestacao(prev => ({ ...prev, issRetido: true }));
+      if (isSub) {
+        const calculo = calcularSimplesAnexoIII(config.rbt12, config.simplesAnexo);
+        const issPercent = calculo.valido ? (calculo.issReferencia * 100).toFixed(2).replace('.', ',') : '';
+        setPrestacao(prev => ({ ...prev, issRetido: true, aliquota: issPercent }));
       } else {
-        setPrestacao(prev => ({ ...prev, issRetido: false }));
+        setPrestacao(prev => ({ ...prev, issRetido: false, aliquota: '' }));
       }
     } else if (isSub) {
-      setPrestacao(prev => ({ ...prev, issRetido: true }));
+      const calculo = calcularSimplesAnexoIII(config.rbt12, config.simplesAnexo || '');
+      const issPercent = calculo.valido ? (calculo.issReferencia * 100).toFixed(2).replace('.', ',') : '';
+      setPrestacao(prev => ({ ...prev, issRetido: true, aliquota: issPercent || prev.aliquota }));
     } else {
       setPrestacao(prev => ({ ...prev, issRetido: false, aliquota: config.optanteSimples ? '' : prev.aliquota }));
     }
-  }, [config.optanteSimples, config.simplesAnexo, localPrestacao, determinarParametroIssEmissao]);
+  }, [config.optanteSimples, config.simplesAnexo, config.rbt12, localPrestacao, determinarParametroIssEmissao]);
 
   const valores = useMemo(() => {
     const valorBruto = parseCurrency(prestacao.valorServico);
@@ -399,7 +404,6 @@ const Index = () => {
               <SidebarTrigger />
               <h2 className="text-base font-semibold text-foreground">{tabTitle}</h2>
             </div>
-
 
             <div className="flex items-center gap-3 shrink-0">
               {activeTab === 'prestador' && configValida && (
