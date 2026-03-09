@@ -169,7 +169,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <p className="text-xs font-bold text-primary mt-0.5">- {formatCurrency(kpis.issRetidoMes)}</p>
             </div>
             <div className="p-2 rounded-md bg-muted/50">
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Calculator className="w-3 h-3 text-destructive" />DAS a Pagar</p>
+              <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Calculator className="w-3 h-3 text-destructive" />A Recolher</p>
               <p className="text-xs font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasAPagar)}</p>
             </div>
           </div>
