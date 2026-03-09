@@ -44,7 +44,7 @@ const ParametrosTributariosSNCard: React.FC<Props> = () => {
           <div className="flex items-center gap-1.5">
             <Info className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
             <span className="text-[10px] text-muted-foreground">
-              Aplicados automaticamente na emissão da NFS-e conforme tomador e local de prestação.
+              Regra automática na emissão da nfse por tomador e local.
             </span>
           </div>
           <ul className="space-y-1.5">
