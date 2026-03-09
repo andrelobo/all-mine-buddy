@@ -203,5 +203,5 @@ export function useDashboardData(prestadorId: string | null, rbt12: number, cnae
     return { operacional, tributario, saldo: operacional - tributario };
   }, [kpis]);
 
-  return { loading, notas, splits, kpis, calculo, dadosMensais, analiseClientes, alertas, fluxoCaixa };
+  return { loading, notas, splits, tomadores, kpis, calculo, dadosMensais, analiseClientes, alertas, fluxoCaixa };
 }

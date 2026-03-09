@@ -29,12 +29,7 @@ const PIE_COLORS = [
 ];
 
 const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, cnaeAnexo, regime }) => {
-  const { loading, notas, kpis, calculo, dadosMensais, analiseClientes, alertas, fluxoCaixa, splits } = useDashboardData(prestadorId, rbt12, cnaeAnexo);
-  const tomadoresMap = useMemo(() => {
-    const map: Record<string, { nome: string; subTrib: boolean }> = {};
-    analiseClientes.forEach(c => { map[c.tomadorId] = { nome: c.nome, subTrib: false }; });
-    return map;
-  }, [analiseClientes]);
+  const { loading, notas, tomadores: tomadoresMap, kpis, calculo, dadosMensais, analiseClientes, alertas, fluxoCaixa, splits } = useDashboardData(prestadorId, rbt12, cnaeAnexo);
   const [simulacaoExtra, setSimulacaoExtra] = useState<string>('');
 
   const formatCurrencyInput = (value: string) => {
