@@ -93,11 +93,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
 
   return (
     <div className="space-y-4">
-      {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold text-foreground">{nomeEmpresa || 'Dashboard Financeiro'}</h1>
-        
-      </div>
 
       {/* ALERTAS */}
       {alertas.length > 0 && (
