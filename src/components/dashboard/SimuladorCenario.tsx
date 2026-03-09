@@ -20,10 +20,10 @@ const SimuladorCenario: React.FC<Props> = ({ rbt12, cnaeAnexo, faturamentoAtual 
   const diff = dasSimulado - (faturamentoAtual * (calcularSimplesAnexoIII(rbt12, cnaeAnexo).aliquotaEfetiva || 0));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div>
-        <label className="text-[10px] text-muted-foreground uppercase tracking-wide">Faturamento Simulado</label>
-        <p className="text-lg font-bold text-foreground">{formatCurrency(simulado)}</p>
+        <label className="text-[9px] text-muted-foreground uppercase tracking-wide">Faturamento Simulado</label>
+        <p className="text-base font-bold text-foreground tabular-nums">{formatCurrency(simulado)}</p>
       </div>
       <Slider
         value={[simulado]}
@@ -33,22 +33,22 @@ const SimuladorCenario: React.FC<Props> = ({ rbt12, cnaeAnexo, faturamentoAtual 
         step={100}
         className="w-full"
       />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <div>
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Alíq. Efetiva</p>
-          <p className="text-sm font-bold text-primary">{resultado.valido ? formatPercent(resultado.aliquotaEfetiva) : '–'}</p>
+          <p className="text-[9px] text-muted-foreground uppercase tracking-wide">Alíq. Efetiva</p>
+          <p className="text-xs font-bold text-primary tabular-nums">{resultado.valido ? formatPercent(resultado.aliquotaEfetiva) : '–'}</p>
         </div>
         <div>
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wide">DAS Estimado</p>
-          <p className="text-sm font-bold text-destructive">{formatCurrency(dasSimulado)}</p>
+          <p className="text-[9px] text-muted-foreground uppercase tracking-wide">DAS Estimado</p>
+          <p className="text-xs font-bold text-destructive tabular-nums">{formatCurrency(dasSimulado)}</p>
         </div>
         <div>
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Faixa</p>
-          <p className="text-sm font-bold text-foreground">{resultado.valido ? `${resultado.faixa?.faixa}ª` : '–'}</p>
+          <p className="text-[9px] text-muted-foreground uppercase tracking-wide">Faixa</p>
+          <p className="text-xs font-bold text-foreground">{resultado.valido ? `${resultado.faixa?.faixa}ª` : '–'}</p>
         </div>
         <div>
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Impacto</p>
-          <p className={`text-sm font-bold ${diff > 0 ? 'text-destructive' : 'text-primary'}`}>
+          <p className="text-[9px] text-muted-foreground uppercase tracking-wide">Impacto</p>
+          <p className={`text-xs font-bold tabular-nums ${diff > 0 ? 'text-destructive' : 'text-primary'}`}>
             {diff >= 0 ? '+' : ''}{formatCurrency(diff)}
           </p>
         </div>

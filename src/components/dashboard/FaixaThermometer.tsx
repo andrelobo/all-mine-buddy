@@ -99,24 +99,24 @@ const FaixaThermometer: React.FC<Props> = ({ rbt12, calculo }) => {
       </div>
 
       {/* Legend + info */}
-      <div className="flex-1 space-y-2">
-        <p className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wide">Faixas</p>
+      <div className="flex-1 space-y-1.5">
+        <p className="text-[9px] text-muted-foreground uppercase font-semibold tracking-wide">Faixas</p>
         {FAIXAS_ANEXO_III.map((f, i) => {
           const isAtual = faixaAtual?.faixa === f.faixa;
           return (
-            <div key={f.faixa} className={`flex items-center gap-2 text-xs ${isAtual ? 'font-bold' : ''}`}>
-              <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ backgroundColor: FAIXA_COLORS[i], opacity: isAtual ? 1 : 0.5 }} />
+            <div key={f.faixa} className={`flex items-center gap-1.5 text-[10px] ${isAtual ? 'font-bold' : ''}`}>
+              <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: FAIXA_COLORS[i], opacity: isAtual ? 1 : 0.5 }} />
               <span className={`flex-1 ${isAtual ? 'text-foreground' : 'text-muted-foreground'}`}>
                 {f.faixa}ª Faixa
               </span>
-              <span className="text-muted-foreground">{(f.aliquotaNominal * 100).toFixed(1)}%</span>
-              {isAtual && <span className="text-[8px] bg-accent text-accent-foreground px-1.5 py-0.5 rounded font-bold">ATUAL</span>}
+              <span className="text-muted-foreground tabular-nums">{(f.aliquotaNominal * 100).toFixed(1)}%</span>
+              {isAtual && <span className="text-[7px] bg-accent text-accent-foreground px-1 py-0.5 rounded font-bold">ATUAL</span>}
             </div>
           );
         })}
         {faixaAtual && (
-          <div className="pt-2 border-t border-border mt-1">
-            <p className="text-[10px] text-muted-foreground">
+          <div className="pt-1.5 border-t border-border mt-0.5">
+            <p className="text-[9px] text-muted-foreground">
               Margem: <span className={`font-bold ${falta < 50000 ? 'text-destructive' : 'text-accent'}`}>{formatCurrency(falta)}</span>
             </p>
           </div>
