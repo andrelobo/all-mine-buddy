@@ -107,12 +107,12 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         <DashboardCard title="Composição do DAS" headerColor="blue">
           {pieComposicao.length > 0 && kpis.faturamentoMes > 0 ? (
             <div className="flex items-center gap-4">
-              <div className="flex-1 h-48">
+              <div className="flex-1 aspect-square max-h-52">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPie>
                     <Pie
                       data={pieComposicao}
-                      cx="50%" cy="50%" outerRadius={85} innerRadius={32}
+                      cx="50%" cy="50%" outerRadius="80%" innerRadius="35%"
                       dataKey="value" nameKey="name"
                       labelLine={false} label={renderPieLabel}
                     >
