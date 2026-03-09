@@ -96,8 +96,9 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
     <div className="space-y-4">
       {/* HEADER */}
       <DashboardHeader
-        nomeEmpresa={nomeEmpresa || 'Empresa'}
+        nomeEmpresa="Burgus Ltda"
         titulo="Painel Fiscal Inteligente"
+        navItems={['O Prestador', 'Tomadores', 'DANFSE']}
         kpis={[
           { label: 'Receita', value: formatCurrency(kpis.faturamentoMes) },
           { label: 'Aliq. Efetiva', value: formatPercent(kpis.aliquotaEfetiva) },
