@@ -104,18 +104,17 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
 
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
-          <div className="h-full flex flex-col justify-between">
-            <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 flex-1">
-              <ResumoItem label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
-              <ResumoItem label="DAS Estimado" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
-              <ResumoItem label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
-              <ResumoItem label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
-              <ResumoItem label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
-              <ResumoItem label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
-            </div>
-            <div className="bg-destructive/10 rounded-md px-2 py-0.5 flex items-center justify-between mt-1">
-              <span className="text-[9px] font-semibold text-muted-foreground">A RECOLHER PGDAS</span>
-              <span className="text-base font-extrabold text-destructive tabular-nums">{formatCurrency(kpis.dasAPagar)}</span>
+          <div className="h-full flex flex-col justify-between gap-1">
+            <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
+            <FinRow label="DAS Estimado" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
+            <FinRow label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
+            <FinRow label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
+            <FinRow label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
+            <FinRow label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
+            <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold mt-auto">
+              <span className="shrink-0">A RECOLHER PGDAS</span>
+              <div className="flex-1" />
+              <span className="tabular-nums text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
             </div>
           </div>
         </DashboardCard>
