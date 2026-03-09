@@ -98,7 +98,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <ResumoItem label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
             </div>
             <div className="bg-destructive/10 rounded-md px-2.5 py-1.5 flex items-center justify-between">
-              <span className="text-[9px] font-semibold text-muted-foreground">A Recolher Pgdas</span>
+              <span className="text-[9px] font-semibold text-muted-foreground">PGDAS</span>
               <span className="text-base font-extrabold text-destructive tabular-nums">{formatCurrency(kpis.dasAPagar)}</span>
             </div>
           </div>
