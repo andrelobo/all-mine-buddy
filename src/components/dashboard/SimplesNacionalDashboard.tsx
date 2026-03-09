@@ -145,7 +145,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       </div>
 
       {/* 3: Termômetro de Faixa + 4: Simulador de Cenário */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
           <FaixaThermometer rbt12={rbt12} calculo={calculo} />
         </DashboardCard>
