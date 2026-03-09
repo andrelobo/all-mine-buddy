@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import {
-  DollarSign, TrendingUp, TrendingDown, Percent, ShieldCheck, AlertTriangle,
-  BarChart3, Wallet, Users, Gauge, Lightbulb, Clock, TrendingUp as TUp,
-} from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   LineChart, Line, BarChart, Bar, PieChart as RechartsPie, Pie, Cell,
@@ -15,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import SimplesNacionalDashboard from '@/components/dashboard/SimplesNacionalDashboard';
 import DashboardCard from '@/components/dashboard/DashboardCard';
-import KpiCard from '@/components/dashboard/KpiCard';
+import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import AlertBadges from '@/components/dashboard/AlertBadges';
 
 interface DashboardProps {
@@ -26,9 +23,12 @@ interface DashboardProps {
   regime: string | null;
 }
 
+const CHART_GREEN = 'hsl(160, 60%, 45%)';
+const CHART_GREEN_LIGHT = 'hsl(160, 50%, 65%)';
+
 const PIE_COLORS = [
-  'hsl(220, 70%, 50%)', 'hsl(160, 60%, 45%)', 'hsl(38, 92%, 50%)',
-  'hsl(0, 72%, 55%)', 'hsl(280, 60%, 55%)', 'hsl(190, 70%, 45%)',
+  'hsl(160, 60%, 45%)', 'hsl(160, 40%, 60%)', 'hsl(160, 30%, 72%)',
+  'hsl(38, 80%, 55%)', 'hsl(220, 60%, 55%)', 'hsl(280, 50%, 55%)',
 ];
 
 const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, cnaeAnexo, regime }) => {
@@ -50,6 +50,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
   if (loading) {
     return (
       <div className="space-y-4">
+        <Skeleton className="h-16 rounded-lg" />
         <div className="grid grid-cols-3 gap-3">
           {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-lg" />)}
         </div>
@@ -60,7 +61,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
 
   const pieData = analiseClientes.slice(0, 6).map(c => ({ name: c.nome.substring(0, 20), value: c.faturamento }));
 
-  // Build smart alerts
   const smartAlerts = [
     ...alertas,
     ...(kpis.faturamentoMes > 0 && dadosMensais.length >= 2 ? (() => {
@@ -77,29 +77,21 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
   ];
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
 
-      {/* TOP KPI BAR — Skale style */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <KpiCard
-          label={`Faturamento ${kpis.competenciaLabel}`}
-          value={formatCurrency(kpis.faturamentoMes)}
-          borderColor="blue"
-          accent="text-primary"
-        />
-        <KpiCard
-          label="Impostos Provisionados"
-          value={formatCurrency(kpis.dasEstimado)}
-          borderColor="red"
-          accent="text-destructive"
-        />
-        <KpiCard
-          label="Caixa Disponível"
-          value={formatCurrency(fluxoCaixa.saldo)}
-          borderColor="green"
-          accent={fluxoCaixa.saldo >= 0 ? 'text-accent' : 'text-destructive'}
-        />
-      </div>
+      {/* HEADER BAR — CredBusiness style */}
+      <DashboardHeader
+        nomeEmpresa={nomeEmpresa || 'Empresa'}
+        titulo="Painel Fiscal"
+        kpis={[
+          { label: 'Faturamento', value: formatCurrency(kpis.faturamentoMes) },
+          { label: 'DAS Estimado', value: formatCurrency(kpis.dasEstimado), accent: 'text-destructive-foreground' },
+          { label: 'Caixa Disponível', value: formatCurrency(fluxoCaixa.saldo) },
+        ]}
+      />
+
+      {/* ALERT BADGES */}
+      <AlertBadges alertas={smartAlerts} />
 
       {/* SIMPLES NACIONAL */}
       <SimplesNacionalDashboard
@@ -111,27 +103,25 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       />
 
       {/* SPLIT PAYMENT + FLUXO DE CAIXA */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Split de Impostos */}
-        <DashboardCard title="Split de Impostos" borderColor="green">
-          <div className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DashboardCard title="Split de Impostos">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Recebimentos do Mês</span>
-              <span className="text-lg font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</span>
+              <span className="text-xs text-muted-foreground">Recebimentos do Mês</span>
+              <span className="text-sm font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</span>
             </div>
             <div className="flex items-center justify-between bg-destructive/5 rounded-lg px-3 py-2">
-              <span className="text-sm text-muted-foreground">Separado para Impostos</span>
-              <span className="text-lg font-bold text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
+              <span className="text-xs text-muted-foreground">Separado para Impostos</span>
+              <span className="text-sm font-bold text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
             </div>
             <div className="flex items-center justify-between bg-accent/5 rounded-lg px-3 py-2">
-              <span className="text-sm font-medium text-muted-foreground">Disponível para Uso</span>
-              <span className="text-xl font-extrabold text-accent">{formatCurrency(fluxoCaixa.saldo)}</span>
+              <span className="text-xs font-medium text-muted-foreground">Disponível para Uso</span>
+              <span className="text-lg font-extrabold text-accent">{formatCurrency(fluxoCaixa.saldo)}</span>
             </div>
           </div>
         </DashboardCard>
 
-        {/* Financeiro */}
-        <DashboardCard title="Financeiro" borderColor="blue">
+        <DashboardCard title="Financeiro">
           <div className="space-y-3">
             <div className="grid grid-cols-3 gap-2">
               <div className="text-center p-2 rounded-lg bg-muted/50">
@@ -143,8 +133,8 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                 <p className="text-sm font-bold text-destructive">{formatCurrency(fluxoCaixa.tributario)}</p>
               </div>
               <div className="text-center p-2 rounded-lg bg-muted/50">
-                <p className="text-[10px] text-muted-foreground">Caixa Projetado</p>
-                <p className="text-sm font-bold text-primary">{formatCurrency(fluxoCaixa.saldo)}</p>
+                <p className="text-[10px] text-muted-foreground">Projetado</p>
+                <p className="text-sm font-bold text-foreground">{formatCurrency(fluxoCaixa.saldo)}</p>
               </div>
             </div>
             <div className="h-36">
@@ -154,17 +144,14 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                   <XAxis dataKey="label" tick={{ fontSize: 9 }} />
                   <YAxis tick={{ fontSize: 9 }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
                   <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                  <Line type="monotone" dataKey="faturamento" stroke="hsl(220, 70%, 50%)" name="Receita" strokeWidth={2} dot={{ r: 2 }} />
-                  <Line type="monotone" dataKey="tributoEstimado" stroke="hsl(0, 72%, 55%)" name="Tributo" strokeWidth={2} dot={{ r: 2 }} />
+                  <Line type="monotone" dataKey="faturamento" stroke={CHART_GREEN} name="Receita" strokeWidth={2} dot={{ r: 3, fill: CHART_GREEN }} />
+                  <Line type="monotone" dataKey="tributoEstimado" stroke="hsl(38, 80%, 55%)" name="Tributo" strokeWidth={2} dot={{ r: 3 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
         </DashboardCard>
       </div>
-
-      {/* ALERT BADGES — Skale style */}
-      <AlertBadges alertas={smartAlerts} />
 
       {/* MONITORAMENTO DE FAIXA */}
       {calculo.faixa && (() => {
@@ -182,7 +169,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         return (
           <DashboardCard
             title="Monitoramento de Faixa"
-            borderColor="orange"
             rightHeader={faltaProxima < 50000 && proximaFaixa ? (
               <Badge variant="outline" className="border-warning text-warning text-[9px]">⚠️ Próximo da mudança</Badge>
             ) : undefined}
@@ -192,7 +178,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                 <p className="text-xs text-muted-foreground">Faixa atual: <span className="font-bold text-foreground">{faixaAtual.faixa}ª</span> (até {formatCurrency(limiteSuperior)})</p>
                 {proximaFaixa && (
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Faltam <span className="font-bold text-primary">{formatCurrency(faltaProxima)}</span> para a {proximaFaixa.faixa}ª faixa
+                    Faltam <span className="font-bold text-accent">{formatCurrency(faltaProxima)}</span> para a {proximaFaixa.faixa}ª faixa
                   </p>
                 )}
               </div>
@@ -237,7 +223,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                       </div>
                       <div className="flex justify-between text-xs">
                         <span className="text-muted-foreground">Alíq.:</span>
-                        <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-primary'}`}>
+                        <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-accent'}`}>
                           {formatPercent(calculoSimulado.aliquotaEfetiva)}
                         </span>
                       </div>
@@ -256,9 +242,9 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         );
       })()}
 
-      {/* GRÁFICOS */}
+      {/* GRÁFICOS — ISS Retido + Faturamento por Cliente */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <DashboardCard title="ISS Retido por Mês" borderColor="green">
+        <DashboardCard title="ISS Retido por Mês">
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={dadosMensais}>
@@ -266,13 +252,13 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                 <XAxis dataKey="label" tick={{ fontSize: 10 }} />
                 <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
                 <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                <Bar dataKey="issRetido" fill="hsl(160, 60%, 45%)" name="ISS Retido" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="issRetido" fill={CHART_GREEN} name="ISS Retido" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </DashboardCard>
 
-        <DashboardCard title="Faturamento por Cliente" borderColor="blue">
+        <DashboardCard title="Faturamento por Cliente">
           <div className="h-48">
             {pieData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -291,8 +277,8 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         </DashboardCard>
       </div>
 
-      {/* ANÁLISE POR CLIENTE */}
-      <DashboardCard title="Clientes" borderColor="purple">
+      {/* CLIENTES */}
+      <DashboardCard title="Clientes">
         {analiseClientes.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
@@ -316,7 +302,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                     <td className="text-right py-2 px-2">{c.percentual.toFixed(1)}%</td>
                     <td className="text-center py-2 px-2">
                       <Badge variant={c.classificacao === 'A' ? 'default' : 'outline'} className={`text-[9px] ${
-                        c.classificacao === 'A' ? 'bg-accent' : c.classificacao === 'B' ? 'bg-primary' : ''
+                        c.classificacao === 'A' ? 'bg-accent' : ''
                       }`}>
                         {c.classificacao}
                       </Badge>
@@ -333,7 +319,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
 
       {/* Split table */}
       {splits.length > 0 && (
-        <DashboardCard title="Split Payment – Detalhamento" borderColor="green">
+        <DashboardCard title="Split Payment – Detalhamento">
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
