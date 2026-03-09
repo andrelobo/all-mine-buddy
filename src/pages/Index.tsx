@@ -402,9 +402,8 @@ const Index = () => {
           <header className="bg-[hsl(216,60%,16%)] sticky top-0 z-10 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-2">
             <div className="flex items-center gap-4 shrink-0">
               <SidebarTrigger className="text-white hover:text-white/80" />
-              <h2 className="text-sm font-bold text-white tracking-tight">
-                {prestador.nomeEmpresarial || prestador.nomeFantasia || 'Bürgus Ltda'}
-              </h2>
+              <div className="h-5 w-px bg-white/20" />
+              <span className="text-[10px] font-semibold text-white/50 uppercase tracking-widest">Painel Fiscal Inteligente</span>
             </div>
             <div className="flex items-center gap-1">
               {[
