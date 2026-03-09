@@ -169,9 +169,9 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <p className="text-xs font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasAPagar)}</p>
             </div>
             <div className="text-center p-2 rounded-md bg-muted/50">
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wide">Carga Tributária</p>
+              <p className="text-[9px] text-muted-foreground uppercase tracking-wide">Alíquota Efetiva</p>
               <p className="text-xs font-bold text-primary mt-0.5">
-                {kpis.faturamentoMes > 0 ? ((kpis.dasEstimado / kpis.faturamentoMes) * 100).toFixed(2) : '0,00'}%
+                {formatPercent(kpis.aliquotaEfetiva)}
               </p>
             </div>
           </div>
