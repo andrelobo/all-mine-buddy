@@ -13,11 +13,11 @@ const SimuladorCenario: React.FC<Props> = ({ rbt12, cnaeAnexo, faturamentoAtual 
 
   const resultado = useMemo(() => {
     const novoRbt12 = rbt12 - faturamentoAtual + simulado;
-    return calcularSimplesAnexoIII(novoRbt12);
-  }, [rbt12, faturamentoAtual, simulado]);
+    return calcularSimplesAnexoIII(novoRbt12, cnaeAnexo);
+  }, [rbt12, faturamentoAtual, simulado, cnaeAnexo]);
 
   const dasSimulado = resultado.valido ? simulado * resultado.aliquotaEfetiva : 0;
-  const diff = dasSimulado - (faturamentoAtual * (calcularSimplesAnexoIII(rbt12).aliquotaEfetiva || 0));
+  const diff = dasSimulado - (faturamentoAtual * (calcularSimplesAnexoIII(rbt12, cnaeAnexo).aliquotaEfetiva || 0));
 
   return (
     <div className="space-y-4">
