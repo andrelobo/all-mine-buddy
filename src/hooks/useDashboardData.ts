@@ -62,13 +62,13 @@ export function useDashboardData(prestadorId: string | null, rbt12: number, cnae
     const [notasRes, splitsRes, tomadoresRes] = await Promise.all([
       supabase.from('notas_fiscais').select('*').eq('prestador_id', prestadorId).order('data_emissao', { ascending: true }),
       supabase.from('split_payment').select('*').eq('prestador_id', prestadorId),
-      supabase.from('tomadores').select('id, nome_razao_social').eq('prestador_id', prestadorId),
+      supabase.from('tomadores').select('id, nome_razao_social, substituto_tributario').eq('prestador_id', prestadorId),
     ]);
     if (notasRes.data) setNotas(notasRes.data as NotaDashboard[]);
     if (splitsRes.data) setSplits(splitsRes.data as SplitPaymentRow[]);
     if (tomadoresRes.data) {
-      const map: Record<string, string> = {};
-      tomadoresRes.data.forEach((t: any) => { map[t.id] = t.nome_razao_social; });
+      const map: Record<string, { nome: string; subTrib: boolean }> = {};
+      tomadoresRes.data.forEach((t: any) => { map[t.id] = { nome: t.nome_razao_social, subTrib: !!t.substituto_tributario }; });
       setTomadores(map);
     }
     setLoading(false);
