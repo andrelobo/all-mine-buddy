@@ -122,19 +122,25 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                   </RechartsPie>
                 </ResponsiveContainer>
               </div>
-              <div className="w-32 space-y-1">
+              <div className="w-36 space-y-1">
                 {composicaoTributaria.map(c => (
                   <div key={c.tributo} className="flex items-center justify-between text-[9px]">
                     <div className="flex items-center gap-1">
                       <span className="w-2 h-2 rounded-sm shrink-0" style={{ backgroundColor: c.cor }} />
                       <span className="text-muted-foreground">{c.tributo}</span>
                     </div>
-                    <span className="font-bold text-foreground tabular-nums">{formatCurrency(c.valor)}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-muted-foreground tabular-nums">{formatPercent(c.aliquota)}</span>
+                      <span className="font-bold text-foreground tabular-nums">{formatCurrency(c.valor)}</span>
+                    </div>
                   </div>
                 ))}
                 <div className="border-t border-border pt-1 flex items-center justify-between text-[9px] font-bold">
                   <span>Total</span>
-                  <span className="text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="tabular-nums">{formatPercent(kpis.aliquotaEfetiva)}</span>
+                    <span className="text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</span>
+                  </div>
                 </div>
               </div>
             </div>
