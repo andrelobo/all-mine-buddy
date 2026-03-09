@@ -153,22 +153,27 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         <CardContent className="px-3 pb-3 pt-0">
           <div className="grid grid-cols-5 gap-2">
             <div className="text-center p-2 rounded-md bg-muted/50">
+              <DollarSign className="w-3.5 h-3.5 mx-auto text-primary mb-0.5" />
               <p className="text-[9px] text-muted-foreground uppercase tracking-wide">Faturamento</p>
               <p className="text-xs font-bold text-foreground mt-0.5">{formatCurrency(kpis.faturamentoMes)}</p>
             </div>
             <div className="text-center p-2 rounded-md bg-muted/50">
+              <Percent className="w-3.5 h-3.5 mx-auto text-primary mb-0.5" />
               <p className="text-[9px] text-muted-foreground uppercase tracking-wide">Alíquota Efetiva</p>
               <p className="text-xs font-bold text-primary mt-0.5">{formatPercent(kpis.aliquotaEfetiva)}</p>
             </div>
             <div className="text-center p-2 rounded-md bg-muted/50">
+              <Receipt className="w-3.5 h-3.5 mx-auto text-destructive mb-0.5" />
               <p className="text-[9px] text-muted-foreground uppercase tracking-wide">DAS Estimado</p>
               <p className="text-xs font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasEstimado)}</p>
             </div>
             <div className="text-center p-2 rounded-md bg-muted/50">
+              <ShieldCheck className="w-3.5 h-3.5 mx-auto text-primary mb-0.5" />
               <p className="text-[9px] text-muted-foreground uppercase tracking-wide">ISS Retido</p>
               <p className="text-xs font-bold text-primary mt-0.5">- {formatCurrency(kpis.issRetidoMes)}</p>
             </div>
             <div className="text-center p-2 rounded-md bg-muted/50">
+              <Calculator className="w-3.5 h-3.5 mx-auto text-destructive mb-0.5" />
               <p className="text-[9px] text-muted-foreground uppercase tracking-wide">DAS a Pagar</p>
               <p className="text-xs font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasAPagar)}</p>
             </div>
