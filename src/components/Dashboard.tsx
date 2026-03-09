@@ -186,6 +186,137 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
             )}
           </div>
         </DashboardCard>
+
+        {/* Receita por Cliente — Pie */}
+        <DashboardCard title="Composição de Receita por Cliente" headerColor="blue">
+          {pieClientes.length > 0 ? (
+            <div className="flex items-start gap-3">
+              <div className="flex-1 aspect-square max-h-44">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RechartsPie>
+                    <Pie
+                      data={pieClientes}
+                      cx="50%" cy="50%" outerRadius="78%" innerRadius="34%"
+                      dataKey="value" nameKey="name"
+                      labelLine={false}
+                      label={({ percent }) => percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''}
+                    >
+                      {pieClientes.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                    </Pie>
+                    <Tooltip formatter={(v: number) => formatCurrency(v)} />
+                  </RechartsPie>
+                </ResponsiveContainer>
+              </div>
+              <div className="w-40 space-y-1.5 pt-2">
+                {analiseClientes.slice(0, 6).map((c, i) => (
+                  <div key={c.tomadorId} className="flex items-center justify-between text-[10px]">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: PIE_COLORS[i % PIE_COLORS.length] }} />
+                      <span className="text-muted-foreground truncate max-w-[80px]">{c.nome}</span>
+                    </div>
+                    <span className="font-bold">{c.percentual.toFixed(0)}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-40 text-muted-foreground text-xs">Sem clientes</div>
+          )}
+        </DashboardCard>
+      </div>
+
+      {/* ROW: Simulador de Faixa + Análise de Clientes */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {/* Simulador */}
+        <DashboardCard title="Simulador de Cenário" headerColor="orange">
+          <div className="space-y-3">
+            <p className="text-[10px] text-muted-foreground">Simule o impacto de receita adicional na sua faixa do Simples Nacional.</p>
+            <div className="flex items-end gap-3">
+              <div className="flex-1">
+                <label className="text-[10px] text-muted-foreground">Faturamento adicional</label>
+                <div className="relative mt-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R$</span>
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="0,00"
+                    value={simulacaoExtra}
+                    onChange={e => setSimulacaoExtra(formatCurrencyInput(e.target.value))}
+                    className="h-8 text-sm pl-9"
+                  />
+                </div>
+              </div>
+              {calculoSimulado && (
+                <div className="flex-1 space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">RBT12 simulado:</span>
+                    <span className="font-bold">{formatCurrency(rbt12Simulado)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Faixa:</span>
+                    <span className={`font-bold ${mudouFaixa ? 'text-destructive' : ''}`}>
+                      {calculoSimulado.faixa?.faixa}ª {mudouFaixa && '⚠️'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Alíquota:</span>
+                    <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-accent'}`}>
+                      {formatPercent(calculoSimulado.aliquotaEfetiva)}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+            {mudouFaixa && (
+              <div className="p-2.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>
+                  <strong>Alerta:</strong> Mudança da {calculo.faixa!.faixa}ª para a {calculoSimulado!.faixa!.faixa}ª faixa.
+                  Alíquota efetiva: {formatPercent(calculo.aliquotaEfetiva)} → {formatPercent(calculoSimulado!.aliquotaEfetiva)}.
+                </span>
+              </div>
+            )}
+          </div>
+        </DashboardCard>
+
+        {/* Análise por Cliente — Tabela */}
+        <DashboardCard title="Análise por Cliente — Curva ABC" headerColor="default">
+          {analiseClientes.length > 0 ? (
+            <div className="overflow-x-auto max-h-48">
+              <table className="w-full text-[10px]">
+                <thead>
+                  <tr className="border-b text-muted-foreground">
+                    <th className="text-left py-1.5 px-1">Cliente</th>
+                    <th className="text-right py-1.5 px-1">Receita</th>
+                    <th className="text-right py-1.5 px-1">NFs</th>
+                    <th className="text-right py-1.5 px-1">%</th>
+                    <th className="text-center py-1.5 px-1">Curva</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {analiseClientes.map(c => (
+                    <tr key={c.tomadorId} className="border-b border-border/50">
+                      <td className="py-1.5 px-1 font-medium truncate max-w-[140px]">{c.nome}</td>
+                      <td className="text-right py-1.5 px-1">{formatCurrency(c.faturamento)}</td>
+                      <td className="text-right py-1.5 px-1">{c.quantidadeNf}</td>
+                      <td className="text-right py-1.5 px-1">{c.percentual.toFixed(1)}%</td>
+                      <td className="text-center py-1.5 px-1">
+                        <Badge
+                          variant={c.classificacao === 'A' ? 'default' : 'outline'}
+                          className={`text-[8px] ${c.classificacao === 'A' ? 'bg-accent' : c.classificacao === 'B' ? 'border-[hsl(38,80%,55%)] text-[hsl(38,80%,45%)]' : ''}`}
+                        >
+                          {c.classificacao}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-center text-sm text-muted-foreground py-4">Nenhuma nota emitida.</p>
+          )}
+        </DashboardCard>
       </div>
     </div>
   );
