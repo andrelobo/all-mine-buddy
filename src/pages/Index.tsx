@@ -164,6 +164,41 @@ const Index = () => {
     setUnsavedPrestador(true);
   }, [checkValidity]);
 
+  // Auto-save debounced: salva automaticamente após 2s de inatividade
+  const autoSaveTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (!unsavedPrestador) return;
+    if (!validateCNPJ(prestador.cnpj)) return;
+
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    autoSaveTimerRef.current = setTimeout(async () => {
+      const cfg = {
+        ...config,
+        regimeTributario: regime,
+        optanteSimples: regime === 'simples',
+        aliquotaSimples: aliquotaSN,
+        ctnCodigo: ctnSelecionado || '',
+        ctnDescricao, ctnItem,
+        cnaePrincipal: snCnaePrincipal,
+        cnaesLista,
+        configOperacionais,
+        rbt12: snRbt12,
+        simplesAnexo: snCnaeAnexo || 'III',
+        simplesFaixa: snCalculo.faixa?.faixa || null,
+        simplesAliquotaNominal: snCalculo.faixa?.aliquotaNominal || 0,
+        simplesParcalaDeduzir: snCalculo.faixa?.parcelaDeduzir || 0,
+        simplesAliquotaEfetiva: snCalculo.aliquotaEfetiva || 0,
+        simplesParametroIss: simplesParametroIss,
+      };
+      const result = await salvarPrestador(prestador, cfg);
+      if (result) setUnsavedPrestador(false);
+    }, 2000);
+
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+  }, [unsavedPrestador, prestador, config, regime, aliquotaSN, ctnSelecionado, ctnDescricao, ctnItem, snCnaePrincipal, cnaesLista, configOperacionais, snRbt12, snCnaeAnexo, snCalculo, simplesParametroIss, salvarPrestador]);
+
   const autosaveTomador = useCallback(() => {}, []);
 
   const handleSimplesDetected = useCallback((isOptante: boolean) => {
