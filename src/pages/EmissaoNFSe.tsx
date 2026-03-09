@@ -13,6 +13,7 @@ import DANFSePrint from '@/components/emissao/DANFSePrint';
 import ParametrosTributariosSNCard, { type ParametroISSOption } from '@/components/ParametrosTributariosSNCard';
 import { validateCNPJ, validateEmail } from '@/utils/validators';
 import { usePrestador } from '@/hooks/usePrestador';
+import { calcularSimplesAnexoIII } from '@/utils/simples-nacional';
 import { useNotasFiscais } from '@/hooks/useNotasFiscais';
 import { useTomadores } from '@/hooks/useTomadores';
 
@@ -110,17 +111,23 @@ const EmissaoNFSe: React.FC = () => {
     if (config.optanteSimples && config.simplesAnexo === 'III') {
       const param = determinarParametroIssEmissao(isSub, localPrestacao.municipio, localPrestacao.uf);
       setSimplesParametroIss(param);
-      if (param === 'iss_retencao_substituicao' || isSub) {
-        setPrestacao(prev => ({ ...prev, issRetido: true }));
+
+      if (isSub) {
+        // Auto-preencher alíquota com % ISS da tabela de apuração do Simples Nacional
+        const calculo = calcularSimplesAnexoIII(config.rbt12, config.simplesAnexo);
+        const issPercent = calculo.valido ? (calculo.issReferencia * 100).toFixed(2).replace('.', ',') : '';
+        setPrestacao(prev => ({ ...prev, issRetido: true, aliquota: issPercent }));
       } else {
-        setPrestacao(prev => ({ ...prev, issRetido: false }));
+        setPrestacao(prev => ({ ...prev, issRetido: false, aliquota: '' }));
       }
     } else if (isSub) {
-      setPrestacao(prev => ({ ...prev, issRetido: true }));
+      const calculo = calcularSimplesAnexoIII(config.rbt12, config.simplesAnexo || '');
+      const issPercent = calculo.valido ? (calculo.issReferencia * 100).toFixed(2).replace('.', ',') : '';
+      setPrestacao(prev => ({ ...prev, issRetido: true, aliquota: issPercent || prev.aliquota }));
     } else {
       setPrestacao(prev => ({ ...prev, issRetido: false, aliquota: config.optanteSimples ? '' : prev.aliquota }));
     }
-  }, [config.optanteSimples, config.simplesAnexo, localPrestacao, determinarParametroIssEmissao]);
+  }, [config.optanteSimples, config.simplesAnexo, config.rbt12, localPrestacao, determinarParametroIssEmissao]);
 
   const valores = useMemo(() => {
     const valorBruto = parseCurrency(prestacao.valorServico);
