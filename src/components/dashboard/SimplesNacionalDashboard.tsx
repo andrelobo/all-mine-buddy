@@ -92,49 +92,26 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
   return (
     <div className="space-y-2">
-      {/* Row 1: Financeiro + Termômetro */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-        <DashboardCard title={`PGDAS-D — ${kpis.competenciaLabel}`} headerColor="green">
-          <div className="h-full flex flex-col gap-1.5">
-            {/* Seção: Período e Enquadramento */}
-            <div className="bg-muted/30 rounded px-2 py-1">
-              <span className="text-[8px] text-muted-foreground uppercase tracking-wider font-semibold">Enquadramento</span>
-              <div className="grid grid-cols-3 gap-x-3 mt-1">
-                <FinField label="Período" value={kpis.competenciaLabel} />
-                <FinField label="Anexo" value={cnaeAnexo || 'III'} />
-                <FinField label="Faixa" value={calculo.valido ? `${calculo.faixa?.faixa}ª` : '–'} />
-              </div>
-            </div>
-
-            {/* Seção: RBT12 e Alíquotas */}
-            <div className="bg-muted/30 rounded px-2 py-1">
-              <span className="text-[8px] text-muted-foreground uppercase tracking-wider font-semibold">Cálculo</span>
-              <div className="grid grid-cols-2 gap-x-3 mt-1">
-                <FinField label="RBT12" value={formatCurrency(rbt12)} />
-                <FinField label="Alíq. Nominal" value={calculo.valido ? formatPercent(calculo.faixa?.aliquotaNominal ?? 0) : '–'} />
-                <FinField label="Parcela a Deduzir" value={calculo.valido ? formatCurrency(calculo.faixa?.parcelaDeduzir ?? 0) : '–'} />
-                <FinField label="Alíq. Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
-              </div>
-            </div>
-
-            {/* Seção: Apuração */}
-            <div className="bg-muted/30 rounded px-2 py-1">
-              <span className="text-[8px] text-muted-foreground uppercase tracking-wider font-semibold">Apuração</span>
-              <div className="flex flex-col gap-0.5 mt-1">
-                <FinRow label="Receita Bruta (PA)" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
-                <FinRow label="Tributo Devido" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
-                <FinRow label="(−) ISS Retido" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
-                <FinRow label="(−) Retenções" value={`(${formatCurrency(kpis.totalRetencoes)})`} accent="text-muted-foreground" />
-              </div>
-            </div>
-
-            {/* Rodapé: Valor a Recolher */}
+      {/* Row 1: Financeiro + Simulador + Termômetro */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+        <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
+          <div className="h-full flex flex-col justify-between gap-1">
+            <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
+            <FinRow label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
+            <FinRow label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
+            <FinRow label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
+            <FinRow label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
+            <FinRow label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
             <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold mt-auto">
-              <span className="shrink-0">VALOR A RECOLHER (DAS)</span>
+              <span className="shrink-0">A RECOLHER PGDAS</span>
               <div className="flex-1" />
               <span className="tabular-nums text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
             </div>
           </div>
+        </DashboardCard>
+
+        <DashboardCard title="Simulador de Cenário" headerColor="green">
+          <SimuladorCenario rbt12={rbt12} cnaeAnexo={cnaeAnexo} faturamentoAtual={kpis.faturamentoMes} />
         </DashboardCard>
 
         <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
@@ -195,14 +172,6 @@ const FinRow: React.FC<{ label: string; value: string; accent?: string }> = ({ l
     <span className="w-28 font-semibold text-muted-foreground shrink-0">{label}</span>
     <div className="flex-1" />
     <span className={`tabular-nums font-bold ${accent}`}>{value}</span>
-  </div>
-);
-
-/* Sub-component for PGDAS field (label + value stacked) */
-const FinField: React.FC<{ label: string; value: string; accent?: string }> = ({ label, value, accent = 'text-foreground' }) => (
-  <div className="py-0.5">
-    <span className="text-[7px] text-muted-foreground uppercase tracking-wide block">{label}</span>
-    <span className={`text-[10px] font-bold tabular-nums ${accent}`}>{value}</span>
   </div>
 );
 
