@@ -189,7 +189,7 @@ export function useDashboardData(prestadorId: string | null, rbt12: number, cnae
     if (kpis.margemLiquida < 20 && kpis.faturamentoMes > 0) {
       list.push({ tipo: 'danger', mensagem: `Margem líquida de ${kpis.margemLiquida.toFixed(1)}% está abaixo de 20%.` });
     }
-    const clienteConcentrado = analiseClientes.find(c => c.percentual > 40);
+    const clienteConcentrado = analiseClientes.find(c => c.percentual > 60);
     if (clienteConcentrado) {
       list.push({ tipo: 'warning', mensagem: `${clienteConcentrado.nome} concentra ${clienteConcentrado.percentual.toFixed(1)}% da receita.` });
     }
