@@ -68,17 +68,18 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     name: c.tributo,
     value: c.valor,
     percentual: c.percentual,
+    aliquota: c.aliquota,
   }));
 
-  const renderPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+  const renderPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, aliquota }: any) => {
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     if (percent < 0.05) return null;
     return (
-      <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={9} fontWeight="bold">
-        {`${(percent * 100).toFixed(0)}%`}
+      <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={8} fontWeight="bold">
+        {`${(aliquota * 100).toFixed(2)}%`}
       </text>
     );
   };
