@@ -18,6 +18,7 @@ import type { CalculoSimplesResult } from '@/utils/simples-nacional';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
+import SimplesNacionalDashboard from '@/components/dashboard/SimplesNacionalDashboard';
 
 interface DashboardProps {
   prestadorId: string | null;
