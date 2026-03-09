@@ -114,64 +114,65 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       {/* HEADER */}
       <SectionTitle icon={<Scale className="w-4 h-4" />} title="Apuração Simples Nacional" />
 
-      {/* APURAÇÃO DO PERÍODO - PRIMEIRO */}
-      <Card className="border-primary/30">
-        <CardHeader className="py-2 px-3">
-          <CardTitle className="text-xs font-semibold uppercase tracking-wide text-primary flex items-center gap-2">
-            <Calculator className="w-4 h-4" />
-            RBA {kpis.competenciaLabel}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="px-3 pb-3 pt-0">
-          <div className="grid grid-cols-6 gap-2">
-            <div className="p-2 rounded-md bg-muted/50">
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><DollarSign className="w-3 h-3 text-primary" />Faturamento</p>
-              <p className="text-xs font-bold text-foreground mt-0.5">{formatCurrency(kpis.faturamentoMes)}</p>
+      {/* RBA + PIZZA lado a lado */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        {/* RBA Card - 2 colunas */}
+        <Card className="border-primary/30 lg:col-span-2">
+          <CardHeader className="py-2 px-3">
+            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-primary flex items-center gap-2">
+              <Calculator className="w-4 h-4" />
+              RBA {kpis.competenciaLabel}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-3 pb-3 pt-0">
+            <div className="grid grid-cols-3 gap-2">
+              <div className="p-2 rounded-md bg-muted/50">
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><DollarSign className="w-3 h-3 text-primary" />Faturamento</p>
+                <p className="text-sm font-bold text-foreground mt-0.5">{formatCurrency(kpis.faturamentoMes)}</p>
+              </div>
+              <div className="p-2 rounded-md bg-muted/50">
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Percent className="w-3 h-3 text-primary" />Aliq. Efetiva</p>
+                <p className="text-sm font-bold text-primary mt-0.5">{formatPercent(kpis.aliquotaEfetiva)}</p>
+              </div>
+              <div className="p-2 rounded-md bg-muted/50">
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Scale className="w-3 h-3 text-primary" />Alíq. ISS</p>
+                <p className="text-sm font-bold text-primary mt-0.5">{calculo.valido ? formatPercent(calculo.issReferencia) : '–'}</p>
+              </div>
+              <div className="p-2 rounded-md bg-muted/50">
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Receipt className="w-3 h-3 text-destructive" />DAS Estimado</p>
+                <p className="text-sm font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasEstimado)}</p>
+              </div>
+              <div className="p-2 rounded-md bg-muted/50">
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-primary" />ISS Retido</p>
+                <p className="text-sm font-bold text-primary mt-0.5">- {formatCurrency(kpis.issRetidoMes)}</p>
+              </div>
+              <div className="p-2 rounded-md bg-muted/50">
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Calculator className="w-3 h-3 text-destructive" />A Recolher</p>
+                <p className="text-sm font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasAPagar)}</p>
+              </div>
             </div>
-            <div className="p-2 rounded-md bg-muted/50">
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Percent className="w-3 h-3 text-primary" />Aliq. Efetiva</p>
-              <p className="text-xs font-bold text-primary mt-0.5">{formatPercent(kpis.aliquotaEfetiva)}</p>
-            </div>
-            <div className="p-2 rounded-md bg-muted/50">
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Scale className="w-3 h-3 text-primary" />Alíq. ISS</p>
-              <p className="text-xs font-bold text-primary mt-0.5">{calculo.valido ? formatPercent(calculo.issReferencia) : '–'}</p>
-            </div>
-            <div className="p-2 rounded-md bg-muted/50">
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Receipt className="w-3 h-3 text-destructive" />DAS Estimado</p>
-              <p className="text-xs font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasEstimado)}</p>
-            </div>
-            <div className="p-2 rounded-md bg-muted/50">
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-primary" />ISS Retido</p>
-              <p className="text-xs font-bold text-primary mt-0.5">- {formatCurrency(kpis.issRetidoMes)}</p>
-            </div>
-            <div className="p-2 rounded-md bg-muted/50">
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wide flex items-center gap-1"><Calculator className="w-3 h-3 text-destructive" />A Recolher</p>
-              <p className="text-xs font-bold text-destructive mt-0.5">{formatCurrency(kpis.dasAPagar)}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      {/* COMPOSIÇÃO TRIBUTÁRIA + GRÁFICOS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        {/* Pizza composição */}
+        {/* Pizza composição - 1 coluna */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <CardHeader className="py-2 px-3">
+            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+              <PieIcon className="w-3.5 h-3.5" />
               Composição do DAS
             </CardTitle>
           </CardHeader>
-          <CardContent className="h-56 p-3">
+          <CardContent className="h-48 p-3 pt-0">
             {pieComposicao.length > 0 && kpis.faturamentoMes > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <RechartsPie>
                   <Pie
                     data={pieComposicao}
-                    cx="50%" cy="50%" outerRadius={75} innerRadius={40}
+                    cx="50%" cy="50%" outerRadius={65} innerRadius={35}
                     dataKey="value" nameKey="name"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     labelLine={false}
-                    style={{ fontSize: 9 }}
+                    style={{ fontSize: 8 }}
                   >
                     {pieComposicao.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                   </Pie>
@@ -183,6 +184,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             )}
           </CardContent>
         </Card>
+      </div>
 
         {/* Tabela composição detalhada */}
         <Card>
