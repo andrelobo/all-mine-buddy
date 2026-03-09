@@ -145,7 +145,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       </div>
 
       {/* Emissões do mês */}
-      <DashboardCard title={`Emissões ${kpis.competenciaLabel}`} headerColor="green">
+      <DashboardCard title={`NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
         <EmissoesResumoMini
           notas={notas}
           tomadores={tomadores}
