@@ -549,12 +549,8 @@ const Index = () => {
                       <TabelaAnexoIII faixaAtual={snCalculo.faixa?.faixa ?? null} />
                     )}
 
-                    {regime === 'simples' && snCnaeAnexo === 'III' && !snPermiteFatorR && (
-                      <ParametrosTributariosSNCard
-                        value={simplesParametroIss}
-                        onChange={(v) => { setSimplesParametroIss(v); setUnsavedPrestador(true); }}
-                        onAutosave={autosave}
-                      />
+                    {regime === 'simples' && (
+                      <ParametrosTributariosSNCard />
                     )}
 
                     <div className="flex justify-end pt-2">
