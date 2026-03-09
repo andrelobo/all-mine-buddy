@@ -92,8 +92,17 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
   return (
     <div className="space-y-2">
-      {/* 1: Resumo Tributário + 2: Composição DAS */}
+      {/* Row 1: NFSE + Financeiro */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+        <DashboardCard title={`NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
+          <EmissoesResumoMini
+            notas={notas}
+            tomadores={tomadores}
+            aliquotaEfetiva={kpis.aliquotaEfetiva}
+            mesCompetencia={kpis.mesCompetencia}
+          />
+        </DashboardCard>
+
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
           <div className="h-full flex flex-col justify-between">
             <div className="grid grid-cols-2 gap-x-2 flex-1">
@@ -109,6 +118,13 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <span className="text-base font-extrabold text-destructive tabular-nums">{formatCurrency(kpis.dasAPagar)}</span>
             </div>
           </div>
+        </DashboardCard>
+      </div>
+
+      {/* Row 2: Simulador + Partilha */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+        <DashboardCard title="Simulador de Cenário" headerColor="orange">
+          <SimuladorCenario rbt12={rbt12} cnaeAnexo={cnaeAnexo} faturamentoAtual={kpis.faturamentoMes} />
         </DashboardCard>
 
         <DashboardCard title="Partilha Pgdas" headerColor="blue">
@@ -144,26 +160,10 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
       </div>
 
-      {/* Emissões do mês */}
-      <DashboardCard title={`NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
-        <EmissoesResumoMini
-          notas={notas}
-          tomadores={tomadores}
-          aliquotaEfetiva={kpis.aliquotaEfetiva}
-          mesCompetencia={kpis.mesCompetencia}
-        />
+      {/* Termômetro de Faixa */}
+      <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
+        <FaixaThermometer rbt12={rbt12} calculo={calculo} />
       </DashboardCard>
-
-      {/* 3: Termômetro de Faixa + 4: Simulador de Cenário */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-        <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
-          <FaixaThermometer rbt12={rbt12} calculo={calculo} />
-        </DashboardCard>
-
-        <DashboardCard title="Simulador de Cenário" headerColor="default">
-          <SimuladorCenario rbt12={rbt12} cnaeAnexo={cnaeAnexo} faturamentoAtual={kpis.faturamentoMes} />
-        </DashboardCard>
-      </div>
     </div>
   );
 };
