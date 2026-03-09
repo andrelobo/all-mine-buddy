@@ -71,18 +71,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     aliquota: c.aliquota,
   }));
 
-  const renderPieLabel = ({ cx, cy, midAngle, outerRadius, aliquota, name }: any) => {
-    const RADIAN = Math.PI / 180;
-    const radius = outerRadius + 14;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-    const anchor = x > cx ? 'start' : 'end';
-    return (
-      <text x={x} y={y} fill="hsl(var(--foreground))" textAnchor={anchor} dominantBaseline="central" fontSize={8} fontWeight="600">
-        {`${name} ${(aliquota * 100).toFixed(2)}%`}
-      </text>
-    );
-  };
+  /* Labels are shown in the side legend instead of on the chart */
 
   return (
     <div className="space-y-2">
@@ -113,10 +102,9 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                   <RechartsPie>
                     <Pie
                       data={pieComposicao}
-                      cx="50%" cy="50%" outerRadius="58%" innerRadius="28%"
+                      cx="50%" cy="50%" outerRadius="78%" innerRadius="34%"
                       dataKey="value" nameKey="name"
-                      labelLine={{ stroke: 'hsl(var(--muted-foreground))', strokeWidth: 0.5 }}
-                      label={renderPieLabel}
+                      labelLine={false} label={false}
                     >
                       {pieComposicao.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                     </Pie>
