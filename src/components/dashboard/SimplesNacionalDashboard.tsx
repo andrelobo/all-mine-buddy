@@ -94,7 +94,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     <div className="space-y-2">
       {/* Row 1: NFSE + Financeiro */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-        <DashboardCard title={`NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
+        <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
           <EmissoesResumoMini
             notas={notas}
             tomadores={tomadores}
