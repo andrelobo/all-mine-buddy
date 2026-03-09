@@ -36,7 +36,7 @@ const EmissoesResumoMini: React.FC<Props> = ({ notas, tomadores, aliquotaEfetiva
       const das = Math.max(simples - issRet, 0);
       const percentual = totalGeral > 0 ? (vs / totalGeral) * 100 : 0;
 
-      return { dataFmt, nome, vs, issRet, aliqIss, simples, das, percentual };
+      return { dataFmt, nome, subTrib, vs, issRet, aliqIss, simples, das, percentual };
     });
   }, [notas, tomadores, aliquotaEfetiva, mesCompetencia]);
 
