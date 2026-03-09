@@ -194,7 +194,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                   <RechartsPie>
                     <Pie
                       data={pieClientes}
-                      cx="50%" cy="50%" outerRadius={85} innerRadius={30}
+                      cx="50%" cy="50%" outerRadius="78%" innerRadius="34%"
                       dataKey="value" nameKey="name"
                       labelLine={false}
                       label={({ percent }) => percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''}
