@@ -126,12 +126,11 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                   </div>
                 );
               })}
-              <div className="border-t border-border pt-1 flex items-center justify-between text-[9px] font-bold mt-auto">
-                <span>Total</span>
-                <div className="flex items-center gap-1.5">
-                  <span className="tabular-nums">{formatPercent(kpis.aliquotaEfetiva)}</span>
-                  <span className="text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</span>
-                </div>
+              <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold mt-auto">
+                <span className="w-10 shrink-0">Total</span>
+                <div className="flex-1" />
+                <span className="w-12 text-right tabular-nums">{formatPercent(kpis.aliquotaEfetiva)}</span>
+                <span className="w-16 text-right tabular-nums text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
               </div>
             </div>
           ) : (
