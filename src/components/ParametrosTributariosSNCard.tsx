@@ -32,7 +32,7 @@ const ParametrosTributariosSNCard: React.FC<Props> = () => {
       >
         <h2 className="section-title text-sm mb-0 flex items-center gap-1.5">
           <Scale className="w-4 h-4 text-primary" />
-          Parâmetros Tributários – Anexo III (sem Fator R)
+          Prestação de serviços, exceto para o exterior.
         </h2>
         <ChevronDown
           className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
