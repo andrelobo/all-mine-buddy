@@ -143,32 +143,32 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       </div>
 
       {/* APURAÇÃO DO PERÍODO */}
-      <Card>
+      <Card className="border-primary/30">
         <CardHeader className="pb-2">
-          <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-            <Receipt className="w-3.5 h-3.5" />
+          <CardTitle className="text-xs font-semibold uppercase tracking-wide text-primary flex items-center gap-2">
+            <Calculator className="w-4 h-4" />
             RBA {kpis.competenciaLabel}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-3">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <div>
+            <div className="text-center">
               <p className="text-[10px] text-muted-foreground uppercase">Receita Bruta</p>
-              <p className="text-sm font-bold">{formatCurrency(kpis.faturamentoMes)}</p>
+              <p className="text-sm font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</p>
             </div>
-            <div>
+            <div className="text-center">
               <p className="text-[10px] text-muted-foreground uppercase">DAS Estimado</p>
               <p className="text-sm font-bold text-destructive">{formatCurrency(kpis.dasEstimado)}</p>
             </div>
-            <div>
+            <div className="text-center">
               <p className="text-[10px] text-muted-foreground uppercase">ISS Retido</p>
-              <p className="text-sm font-bold text-green-600">- {formatCurrency(kpis.issRetidoMes)}</p>
+              <p className="text-sm font-bold text-primary">- {formatCurrency(kpis.issRetidoMes)}</p>
             </div>
-            <div>
+            <div className="text-center">
               <p className="text-[10px] text-muted-foreground uppercase">DAS a Pagar</p>
               <p className="text-sm font-bold text-destructive">{formatCurrency(kpis.dasAPagar)}</p>
             </div>
-            <div>
+            <div className="text-center">
               <p className="text-[10px] text-muted-foreground uppercase">Carga Tributária</p>
               <p className="text-sm font-bold text-primary">
                 {kpis.faturamentoMes > 0 ? ((kpis.dasEstimado / kpis.faturamentoMes) * 100).toFixed(2) : '0,00'}%
