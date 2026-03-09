@@ -198,4 +198,12 @@ const FinRow: React.FC<{ label: string; value: string; accent?: string }> = ({ l
   </div>
 );
 
+/* Sub-component for PGDAS field (label + value stacked) */
+const FinField: React.FC<{ label: string; value: string; accent?: string }> = ({ label, value, accent = 'text-foreground' }) => (
+  <div className="py-0.5">
+    <span className="text-[7px] text-muted-foreground uppercase tracking-wide block">{label}</span>
+    <span className={`text-[10px] font-bold tabular-nums ${accent}`}>{value}</span>
+  </div>
+);
+
 export default SimplesNacionalDashboard;
