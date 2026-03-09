@@ -95,17 +95,37 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       {/* Row 1: Financeiro + Termômetro */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
-          <div className="h-full flex flex-col justify-between gap-1">
-            <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
-            <FinRow label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
-            <FinRow label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
-            <FinRow label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
-            <FinRow label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
-            <FinRow label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
-            <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold mt-auto">
-              <span className="shrink-0">A RECOLHER PGDAS</span>
+          <div className="h-full flex gap-4">
+            {/* Coluna Esquerda: Receita */}
+            <div className="flex-1 flex flex-col gap-1">
+              <span className="text-[8px] text-muted-foreground uppercase tracking-wider font-semibold mb-0.5">Receita</span>
+              <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
+              <FinRow label="Base de Cálculo" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
+              <FinRow label="Alíq. Efetiva SN" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
+              <FinRow label="Alíq. ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
               <div className="flex-1" />
-              <span className="tabular-nums text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
+              <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold">
+                <span className="shrink-0">RECEITA LÍQUIDA</span>
+                <div className="flex-1" />
+                <span className="tabular-nums text-foreground">{formatCurrency(kpis.faturamentoMes - kpis.dasAPagar)}</span>
+              </div>
+            </div>
+
+            {/* Separador */}
+            <div className="w-px bg-border" />
+
+            {/* Coluna Direita: Tributos */}
+            <div className="flex-1 flex flex-col gap-1">
+              <span className="text-[8px] text-muted-foreground uppercase tracking-wider font-semibold mb-0.5">Tributos</span>
+              <FinRow label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
+              <FinRow label="(−) ISS Retido" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
+              <FinRow label="(−) Retenções" value={`(${formatCurrency(kpis.totalRetencoes)})`} accent="text-muted-foreground" />
+              <div className="flex-1" />
+              <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold">
+                <span className="shrink-0">A RECOLHER PGDAS</span>
+                <div className="flex-1" />
+                <span className="tabular-nums text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
+              </div>
             </div>
           </div>
         </DashboardCard>
