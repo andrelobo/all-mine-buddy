@@ -92,8 +92,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
   return (
     <div className="space-y-2">
-      {/* Row 1: Financeiro + Simulador + Termômetro */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+      {/* Row 1: Financeiro + Termômetro */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
           <div className="h-full flex flex-col justify-between gap-1">
             <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
