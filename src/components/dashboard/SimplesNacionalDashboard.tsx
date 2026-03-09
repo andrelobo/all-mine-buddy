@@ -71,15 +71,15 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     aliquota: c.aliquota,
   }));
 
-  const renderPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, aliquota }: any) => {
+  const renderPieLabel = ({ cx, cy, midAngle, outerRadius, aliquota, name }: any) => {
     const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const radius = outerRadius + 14;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
-    if (percent < 0.02) return null;
+    const anchor = x > cx ? 'start' : 'end';
     return (
-      <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={8} fontWeight="bold">
-        {`${(aliquota * 100).toFixed(2)}%`}
+      <text x={x} y={y} fill="hsl(var(--foreground))" textAnchor={anchor} dominantBaseline="central" fontSize={8} fontWeight="600">
+        {`${name} ${(aliquota * 100).toFixed(2)}%`}
       </text>
     );
   };
@@ -113,9 +113,10 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                   <RechartsPie>
                     <Pie
                       data={pieComposicao}
-                      cx="50%" cy="50%" outerRadius="78%" innerRadius="34%"
+                      cx="50%" cy="50%" outerRadius="58%" innerRadius="28%"
                       dataKey="value" nameKey="name"
-                      labelLine={false} label={renderPieLabel}
+                      labelLine={{ stroke: 'hsl(var(--muted-foreground))', strokeWidth: 0.5 }}
+                      label={renderPieLabel}
                     >
                       {pieComposicao.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                     </Pie>
