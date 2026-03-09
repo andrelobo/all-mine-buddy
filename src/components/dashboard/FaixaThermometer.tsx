@@ -10,97 +10,118 @@ interface Props {
 const FAIXA_COLORS = [
   'hsl(160, 60%, 50%)',
   'hsl(160, 50%, 60%)',
+  'hsl(80, 55%, 50%)',
   'hsl(38, 70%, 55%)',
-  'hsl(30, 80%, 50%)',
   'hsl(15, 70%, 50%)',
   'hsl(0, 65%, 50%)',
 ];
 
 const FaixaThermometer: React.FC<Props> = ({ rbt12, calculo }) => {
   const maxRbt = FAIXAS_ANEXO_III[FAIXAS_ANEXO_III.length - 1].limiteSuperior;
-  const posicaoPct = Math.min((rbt12 / maxRbt) * 100, 100);
   const faixaAtual = calculo.faixa;
 
+  // Gauge SVG params
+  const cx = 130;
+  const cy = 130;
+  const radius = 100;
+  const strokeWidth = 28;
+  const startAngle = 180; // left
+  const endAngle = 0; // right (semicircle)
+  const totalAngle = 180;
+
+  // Build arcs for each faixa
+  const faixaArcs = FAIXAS_ANEXO_III.map((f, i) => {
+    const startPct = f.limiteInferior / maxRbt;
+    const endPct = f.limiteSuperior / maxRbt;
+    const arcStart = startAngle - startPct * totalAngle;
+    const arcEnd = startAngle - endPct * totalAngle;
+    return { ...f, index: i, arcStart, arcEnd, color: FAIXA_COLORS[i] };
+  });
+
+  // Needle angle
+  const needlePct = Math.min(rbt12 / maxRbt, 1);
+  const needleAngle = startAngle - needlePct * totalAngle;
+  const needleRad = (needleAngle * Math.PI) / 180;
+  const needleLen = radius - 8;
+  const nx = cx + needleLen * Math.cos(needleRad);
+  const ny = cy - needleLen * Math.sin(needleRad);
+
+  const describeArc = (startA: number, endA: number, r: number) => {
+    const s = (startA * Math.PI) / 180;
+    const e = (endA * Math.PI) / 180;
+    const x1 = cx + r * Math.cos(s);
+    const y1 = cy - r * Math.sin(s);
+    const x2 = cx + r * Math.cos(e);
+    const y2 = cy - r * Math.sin(e);
+    const largeArc = Math.abs(startA - endA) > 180 ? 1 : 0;
+    return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`;
+  };
+
+  // Margem para próxima faixa
+  const falta = faixaAtual ? faixaAtual.limiteSuperior - rbt12 : 0;
+  const limiteInf = faixaAtual ? formatCurrency(faixaAtual.limiteInferior) : '';
+  const limiteSup = faixaAtual ? formatCurrency(faixaAtual.limiteSuperior) : '';
+
   return (
-    <div className="space-y-3">
-      {/* Thermometer bar */}
-      <div className="relative">
-        <div className="flex h-6 rounded-full overflow-hidden border border-border">
-          {FAIXAS_ANEXO_III.map((f, i) => {
-            const width = ((f.limiteSuperior - f.limiteInferior) / maxRbt) * 100;
-            const isAtual = faixaAtual?.faixa === f.faixa;
-            return (
-              <div
-                key={f.faixa}
-                className={`relative flex items-center justify-center text-[8px] font-bold text-white transition-all ${isAtual ? 'ring-2 ring-foreground ring-inset' : ''}`}
-                style={{ width: `${width}%`, backgroundColor: FAIXA_COLORS[i] }}
-                title={`${f.faixa}ª Faixa: ${formatCurrency(f.limiteInferior)} - ${formatCurrency(f.limiteSuperior)}`}
-              >
-                {f.faixa}ª
-              </div>
-            );
-          })}
+    <div className="flex items-center gap-6">
+      {/* Gauge */}
+      <div className="relative flex-shrink-0" style={{ width: 260, height: 155 }}>
+        <svg width="260" height="155" viewBox="0 0 260 155">
+          {/* Faixa arcs */}
+          {faixaArcs.map(f => (
+            <path
+              key={f.faixa}
+              d={describeArc(f.arcStart, f.arcEnd, radius)}
+              fill="none"
+              stroke={f.color}
+              strokeWidth={strokeWidth}
+              strokeLinecap="butt"
+              opacity={faixaAtual?.faixa === f.faixa ? 1 : 0.4}
+            />
+          ))}
+          {/* Needle */}
+          <line x1={cx} y1={cy} x2={nx} y2={ny} stroke="hsl(var(--foreground))" strokeWidth={2.5} strokeLinecap="round" />
+          <circle cx={cx} cy={cy} r={5} fill="hsl(var(--foreground))" />
+          <circle cx={cx} cy={cy} r={2.5} fill="hsl(var(--background))" />
+        </svg>
+        {/* Central value */}
+        <div className="absolute left-1/2 -translate-x-1/2" style={{ bottom: 8 }}>
+          <p className="text-xl font-black text-foreground text-center leading-none">{formatCurrency(rbt12)}</p>
+          <p className="text-[9px] text-muted-foreground text-center mt-0.5">RBT12</p>
         </div>
-        {/* Needle indicator */}
-        <div
-          className="absolute -top-1 w-0.5 h-8 bg-foreground rounded-full transition-all"
-          style={{ left: `${posicaoPct}%` }}
-        >
-          <div className="absolute -top-5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-foreground text-background text-[9px] font-bold px-1.5 py-0.5 rounded">
-            {formatCurrency(rbt12)}
-          </div>
-        </div>
+        {/* Min / Max labels */}
+        <span className="absolute left-1 text-[9px] text-muted-foreground font-medium" style={{ bottom: 0 }}>
+          {formatCurrency(0)}
+        </span>
+        <span className="absolute right-1 text-[9px] text-muted-foreground font-medium" style={{ bottom: 0 }}>
+          {formatCurrency(maxRbt)}
+        </span>
       </div>
 
-      {/* Faixa details */}
-      <div className="grid grid-cols-6 gap-1">
+      {/* Legend + info */}
+      <div className="flex-1 space-y-2">
+        <p className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wide">Faixas</p>
         {FAIXAS_ANEXO_III.map((f, i) => {
           const isAtual = faixaAtual?.faixa === f.faixa;
           return (
-            <div
-              key={f.faixa}
-              className={`text-center p-1.5 rounded text-[9px] ${isAtual ? 'bg-accent/15 ring-1 ring-accent font-bold' : 'bg-muted/50'}`}
-            >
-              <div className="font-bold" style={{ color: FAIXA_COLORS[i] }}>{(f.aliquotaNominal * 100).toFixed(1)}%</div>
-              <div className="text-muted-foreground mt-0.5">até {(f.limiteSuperior / 1000).toFixed(0)}k</div>
+            <div key={f.faixa} className={`flex items-center gap-2 text-xs ${isAtual ? 'font-bold' : ''}`}>
+              <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ backgroundColor: FAIXA_COLORS[i], opacity: isAtual ? 1 : 0.5 }} />
+              <span className={`flex-1 ${isAtual ? 'text-foreground' : 'text-muted-foreground'}`}>
+                {f.faixa}ª Faixa
+              </span>
+              <span className="text-muted-foreground">{(f.aliquotaNominal * 100).toFixed(1)}%</span>
+              {isAtual && <span className="text-[8px] bg-accent text-accent-foreground px-1.5 py-0.5 rounded font-bold">ATUAL</span>}
             </div>
           );
         })}
-      </div>
-
-      {/* Distance to next */}
-      {faixaAtual && (() => {
-        const proxima = FAIXAS_ANEXO_III.find(f => f.faixa === faixaAtual.faixa + 1);
-        const falta = faixaAtual.limiteSuperior - rbt12;
-        const progressoPct = ((rbt12 - faixaAtual.limiteInferior) / (faixaAtual.limiteSuperior - faixaAtual.limiteInferior)) * 100;
-        return (
-          <div className="flex items-center gap-3 text-xs">
-            <div className="flex-1">
-              <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-                <span>Faixa {faixaAtual.faixa}ª</span>
-                <span>{progressoPct.toFixed(0)}% utilizado</span>
-              </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all"
-                  style={{
-                    width: `${Math.min(progressoPct, 100)}%`,
-                    backgroundColor: progressoPct > 85 ? 'hsl(0, 65%, 50%)' : 'hsl(160, 60%, 45%)',
-                  }}
-                />
-              </div>
-            </div>
-            {proxima && (
-              <div className="text-right">
-                <span className="text-muted-foreground text-[10px]">Margem: </span>
-                <span className={`font-bold ${falta < 50000 ? 'text-destructive' : 'text-accent'}`}>
-                  {formatCurrency(falta)}
-                </span>
-              </div>
-            )}
+        {faixaAtual && (
+          <div className="pt-2 border-t border-border mt-1">
+            <p className="text-[10px] text-muted-foreground">
+              Margem: <span className={`font-bold ${falta < 50000 ? 'text-destructive' : 'text-accent'}`}>{formatCurrency(falta)}</span>
+            </p>
           </div>
-        );
-      })()}
+        )}
+      </div>
     </div>
   );
 };
