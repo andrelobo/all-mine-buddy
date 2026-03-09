@@ -25,8 +25,11 @@ interface Props {
     totalRetencoes: number;
     aliquotaEfetiva: number;
     competenciaLabel: string;
+    mesCompetencia: string;
   };
   dadosMensais: MesData[];
+  notas: NotaDashboard[];
+  tomadores: Record<string, string>;
 }
 
 const CHART_GREEN = 'hsl(160, 60%, 45%)';
