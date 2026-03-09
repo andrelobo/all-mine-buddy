@@ -77,7 +77,7 @@ const EmissoesResumoMini: React.FC<Props> = ({ notas, tomadores, aliquotaEfetiva
             </span>
             <span className="w-10 text-right text-muted-foreground">{fmt(aliquotaEfetiva * 100)}%</span>
             <span className="w-12 text-right font-bold text-destructive">{fmt(l.das)}</span>
-            <span className="w-8 text-right text-muted-foreground">{fmt(l.percentual)}%</span>
+            
           </div>
         ))}
 
