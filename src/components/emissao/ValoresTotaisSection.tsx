@@ -48,6 +48,7 @@ const ValoresTotaisSection: React.FC<Props> = ({
           <span className="text-xs text-primary">Valor Líquido</span>
           <p className="text-base font-bold text-primary">R$ {fmt(Math.max(0, valorLiquido))}</p>
         </div>
+      </div>
     </div>
   );
 };
