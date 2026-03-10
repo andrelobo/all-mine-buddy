@@ -68,6 +68,23 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange, prestad
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
+              {/* Gestor Tax */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={activeTab === 'notas'}
+                  onClick={() => onTabChange('notas')}
+                  tooltip="Gestor Tax"
+                  className={
+                    activeTab === 'notas'
+                      ? 'bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground'
+                      : ''
+                  }
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>Gestor Tax</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
               {/* O Prestador - com sub-itens */}
               <SidebarMenuItem>
                 <SidebarMenuButton
@@ -139,23 +156,6 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange, prestad
                 >
                   <Receipt className="w-4 h-4" />
                   <span>DANFSE</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              {/* Notas Fiscais */}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  isActive={activeTab === 'notas'}
-                  onClick={() => onTabChange('notas')}
-                  tooltip="Gestor Tax"
-                  className={
-                    activeTab === 'notas'
-                      ? 'bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground'
-                      : ''
-                  }
-                >
-                  <FileText className="w-4 h-4" />
-                  <span>Gestor Tax</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
