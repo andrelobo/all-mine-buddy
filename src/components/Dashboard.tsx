@@ -194,10 +194,10 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                 <p className="text-xs font-bold text-accent tabular-nums">{formatCurrency(fluxoCaixa.saldo)}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-accent" />
+            <div className="flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-accent" />
               <div className="flex-1">
-                <div className="h-3 bg-muted rounded-full overflow-hidden">
+                <div className="h-2.5 bg-muted rounded-full overflow-hidden">
                   <div
                     className="h-full bg-accent rounded-full transition-all"
                     style={{ width: `${kpis.faturamentoMes > 0 ? Math.min((kpis.dasEstimado / kpis.faturamentoMes) * 100, 100) : 0}%` }}
