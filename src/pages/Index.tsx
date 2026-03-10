@@ -455,14 +455,6 @@ const Index = () => {
                 </button>
               )}
 
-              {activeTab === 'emissao' && (
-                <div className="flex items-center gap-2 flex-nowrap">
-                  <button onClick={handleEmitir} disabled={savingNota} className="btn-primary flex items-center gap-2 text-sm py-2 whitespace-nowrap">
-                    {savingNota ? <Loader2 className="w-4 h-4 animate-spin shrink-0" /> : <FileOutput className="w-4 h-4 shrink-0" />}
-                    <span>Emitir</span>
-                  </button>
-                </div>
-              )}
             </div>
           </header>
 
