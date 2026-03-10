@@ -20,7 +20,7 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
   const maxReceita = Math.max(...top.map(c => c.faturamento));
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1.5">
       {top.map(c => {
         const tributo = c.faturamento * aliquotaEfetiva;
         const receitaPct = maxReceita > 0 ? (c.faturamento / maxReceita) * 100 : 0;
@@ -29,17 +29,17 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
         return (
           <div key={c.tomadorId} className="space-y-0.5">
             <div className="flex items-center justify-between">
-              <span className="text-[8px] font-semibold text-foreground truncate max-w-[60%]">{c.nome}</span>
-              <span className="text-[8px] text-muted-foreground">{c.percentual.toFixed(1)}%</span>
+              <span className="text-[8px] font-semibold text-foreground truncate max-w-[55%]">{c.nome}</span>
+              <span className="text-[8px] text-muted-foreground tabular-nums">{c.percentual.toFixed(1)}%</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <div className="flex-1 h-2.5 bg-muted/40 rounded-sm overflow-hidden">
+            <div className="flex items-center gap-1">
+              <div className="flex-1 h-2 bg-muted/40 rounded-sm overflow-hidden">
                 <div className="h-full rounded-sm transition-all" style={{ width: `${receitaPct}%`, backgroundColor: COR_RECEITA }} />
               </div>
               <span className="text-[7px] font-bold tabular-nums shrink-0" style={{ color: COR_RECEITA }}>{formatCurrency(c.faturamento)}</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <div className="flex-1 h-2 bg-muted/40 rounded-sm overflow-hidden">
+            <div className="flex items-center gap-1">
+              <div className="flex-1 h-1.5 bg-muted/40 rounded-sm overflow-hidden">
                 <div className="h-full rounded-sm transition-all" style={{ width: `${tributoPct}%`, backgroundColor: COR_TRIBUTO }} />
               </div>
               <span className="text-[7px] font-bold tabular-nums shrink-0" style={{ color: COR_TRIBUTO }}>
@@ -49,9 +49,9 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
           </div>
         );
       })}
-      <div className="flex items-center gap-3 pt-1 border-t border-border">
-        <span className="flex items-center gap-1 text-[8px] text-muted-foreground"><span className="w-2 h-2 rounded-sm inline-block" style={{ backgroundColor: COR_RECEITA }} /> Receita</span>
-        <span className="flex items-center gap-1 text-[8px] text-muted-foreground"><span className="w-2 h-2 rounded-sm inline-block" style={{ backgroundColor: COR_TRIBUTO }} /> Tributos</span>
+      <div className="flex items-center gap-3 pt-0.5 border-t border-border">
+        <span className="flex items-center gap-1 text-[7px] text-muted-foreground"><span className="w-1.5 h-1.5 rounded-sm inline-block" style={{ backgroundColor: COR_RECEITA }} /> Receita</span>
+        <span className="flex items-center gap-1 text-[7px] text-muted-foreground"><span className="w-1.5 h-1.5 rounded-sm inline-block" style={{ backgroundColor: COR_TRIBUTO }} /> Tributos</span>
       </div>
     </div>
   );
