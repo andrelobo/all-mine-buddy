@@ -260,10 +260,6 @@ const EmissaoNFSe: React.FC = () => {
               <Printer className="w-4 h-4" />
               <span className="hidden sm:inline">Visualizar</span>
             </button>
-            <button onClick={handleEmitir} disabled={savingNota} className="btn-primary flex items-center gap-2 text-sm py-2">
-              {savingNota ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileOutput className="w-4 h-4" />}
-              <span className="hidden sm:inline">Emitir</span>
-            </button>
           </div>
         </div>
       </header>
@@ -315,6 +311,13 @@ const EmissaoNFSe: React.FC = () => {
           retIr={valores.retIr}
           retInss={valores.retInss}
         />
+
+        <div className="flex justify-end pt-2 pb-4">
+          <button onClick={handleEmitir} disabled={savingNota} className="btn-primary flex items-center gap-2 text-sm py-2.5 px-6">
+            {savingNota ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileOutput className="w-4 h-4" />}
+            Emitir NFS-e
+          </button>
+        </div>
       </main>
 
       <DANFSePrint
