@@ -1,5 +1,5 @@
 import React from 'react';
-import { FAIXAS_ANEXO_III, formatCurrency } from '@/utils/simples-nacional';
+import { FAIXAS_ANEXO_III, formatCurrency, formatPercent, calcularSimplesAnexoIII } from '@/utils/simples-nacional';
 import type { CalculoSimplesResult } from '@/utils/simples-nacional';
 
 interface Props {
