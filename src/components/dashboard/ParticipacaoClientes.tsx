@@ -36,9 +36,9 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
   };
 
   return (
-    <div className="w-full" style={{ height: 190 }}>
+    <div className="w-full" style={{ height: 180 }}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={top} margin={{ top: 20, right: 50, bottom: 4, left: 0 }} barGap={2} barCategoryGap="20%">
+        <BarChart data={top} margin={{ top: 28, right: 8, bottom: 4, left: 0 }}>
           <XAxis
             dataKey="nome"
             tick={{ fontSize: 8, fill: 'hsl(var(--muted-foreground))' }}
@@ -50,23 +50,23 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
             tick={{ fontSize: 7, fill: 'hsl(var(--muted-foreground))' }}
             axisLine={false}
             tickLine={false}
-            width={36}
+            width={40}
             tickFormatter={(v: number) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
           <Legend
             iconSize={8}
-            wrapperStyle={{ fontSize: 9, paddingTop: 4 }}
+            wrapperStyle={{ fontSize: 9 }}
           />
           <Bar
             dataKey="receita"
             name="Receita"
             fill={COR_RECEITA}
             radius={[3, 3, 0, 0]}
-            barSize={10}
+            barSize={12}
             animationDuration={800}
             label={({ x, y, width, value }: any) => (
-              <text x={x + width / 2} y={y - 3} textAnchor="middle" fontSize={6} fontWeight="bold" fill={COR_RECEITA}>
+              <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={6} fontWeight="bold" fill="hsl(var(--muted-foreground))">
                 {formatCurrency(value)}
               </text>
             )}
@@ -76,11 +76,11 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
             name="Tributos"
             fill={COR_TRIBUTO}
             radius={[3, 3, 0, 0]}
-            barSize={10}
+            barSize={12}
             animationDuration={800}
             animationBegin={200}
-            label={({ x, y, width, value }: any) => (
-              <text x={x + width / 2} y={y - 3} textAnchor="middle" fontSize={6} fontWeight="bold" fill={COR_TRIBUTO}>
+            label={({ x, y, width, height, value }: any) => (
+              <text x={x + width + 2} y={y + height / 2 + 3} textAnchor="start" fontSize={6} fontWeight="bold" fill={COR_TRIBUTO}>
                 {formatCurrency(value)}
               </text>
             )}
