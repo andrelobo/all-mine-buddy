@@ -211,10 +211,6 @@ const PartilhaCollapsible: React.FC<{
                   <span className="w-12 text-right tabular-nums text-muted-foreground">{formatPercent(c.aliquota)}</span>
                   <span className="w-16 text-right tabular-nums font-bold text-foreground">{formatCurrency(c.valor)}</span>
                 </div>
-                {c.tributo === 'ISS' && issRetidoMes > 0 && (
-                  <div className="flex items-center gap-2 text-[8px] text-accent ml-12 mt-0.5">
-                    <span className="italic">ISS retido deduzido: ({formatCurrency(issRetidoMes)})</span>
-                  </div>
                 )}
               </div>
             );
