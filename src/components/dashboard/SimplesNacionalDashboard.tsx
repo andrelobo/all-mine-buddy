@@ -175,8 +175,9 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 };
 
 /* Sub-component for Financeiro rows */
-const FinRow: React.FC<{ label: string; value: string; accent?: string }> = ({ label, value, accent = 'text-foreground' }) => (
-  <div className="flex items-center gap-2 text-[9px]">
+const FinRow: React.FC<{ icon?: React.ReactNode; label: string; value: string; accent?: string }> = ({ icon, label, value, accent = 'text-foreground' }) => (
+  <div className="flex items-center gap-1.5 text-[9px]">
+    {icon && <span className="text-muted-foreground shrink-0">{icon}</span>}
     <span className="w-28 font-semibold text-muted-foreground shrink-0">{label}</span>
     <div className="flex-1" />
     <span className={`tabular-nums font-bold ${accent}`}>{value}</span>
