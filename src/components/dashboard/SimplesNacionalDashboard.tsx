@@ -14,6 +14,8 @@ import DashboardCard from './DashboardCard';
 import FaixaThermometer from './FaixaThermometer';
 import SimuladorCenario from './SimuladorCenario';
 import EmissoesResumoMini from './EmissoesResumoMini';
+import ParticipacaoClientes from './ParticipacaoClientes';
+import type { ClienteAnalise } from '@/hooks/useDashboardData';
 
 interface Props {
   rbt12: number;
@@ -32,6 +34,7 @@ interface Props {
   dadosMensais: MesData[];
   notas: NotaDashboard[];
   tomadores: Record<string, { nome: string; subTrib: boolean }>;
+  analiseClientes: ClienteAnalise[];
   simuladorContent?: React.ReactNode;
   splitPaymentContent?: React.ReactNode;
 }
@@ -43,7 +46,7 @@ const PIE_COLORS = [
   'hsl(38, 80%, 55%)', 'hsl(220, 60%, 55%)', 'hsl(280, 50%, 55%)',
 ];
 
-const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais, notas, tomadores, simuladorContent, splitPaymentContent }) => {
+const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais, notas, tomadores, analiseClientes, simuladorContent, splitPaymentContent }) => {
   const composicaoTributaria = useMemo(() => {
     if (!calculo.faixa || !calculo.valido) return [];
     const aliqEfetiva = calculo.aliquotaEfetiva;
@@ -141,15 +144,20 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
       </div>
 
-      {/* Row 3: Emitidas */}
-      <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
-        <EmissoesResumoMini
-          notas={notas}
-          tomadores={tomadores}
-          aliquotaEfetiva={kpis.aliquotaEfetiva}
-          mesCompetencia={kpis.mesCompetencia}
-        />
-      </DashboardCard>
+      {/* Row 3: Emitidas + Participação Clientes */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-start">
+        <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
+          <EmissoesResumoMini
+            notas={notas}
+            tomadores={tomadores}
+            aliquotaEfetiva={kpis.aliquotaEfetiva}
+            mesCompetencia={kpis.mesCompetencia}
+          />
+        </DashboardCard>
+        <DashboardCard title="Participação por Cliente" headerColor="blue">
+          <ParticipacaoClientes analiseClientes={analiseClientes} />
+        </DashboardCard>
+      </div>
     </div>
   );
 };
