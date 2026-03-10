@@ -15,6 +15,7 @@ import FaixaThermometer from './FaixaThermometer';
 import SimuladorCenario from './SimuladorCenario';
 import EmissoesResumoMini from './EmissoesResumoMini';
 import ParticipacaoClientes from './ParticipacaoClientes';
+import ServicosExecutados from './ServicosExecutados';
 import type { ClienteAnalise } from '@/hooks/useDashboardData';
 
 interface Props {
@@ -158,6 +159,11 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           <ParticipacaoClientes analiseClientes={analiseClientes} aliquotaEfetiva={kpis.aliquotaEfetiva} />
         </DashboardCard>
       </div>
+
+      {/* Row 4: Serviços Executados */}
+      <DashboardCard title={`Serviços Executados ${kpis.competenciaLabel.toUpperCase()}`} headerColor="orange">
+        <ServicosExecutados notas={notas} mesCompetencia={kpis.mesCompetencia} />
+      </DashboardCard>
     </div>
   );
 };
