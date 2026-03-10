@@ -68,12 +68,12 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange, prestad
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
-              {/* Gestor Tax */}
+              {/* Meu Gestor AI */}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   isActive={activeTab === 'notas'}
                   onClick={() => onTabChange('notas')}
-                  tooltip="Gestor Tax"
+                  tooltip="Meu Gestor AI"
                   className={
                     activeTab === 'notas'
                       ? 'bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground'
@@ -81,7 +81,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange, prestad
                   }
                 >
                   <FileText className="w-4 h-4" />
-                  <span>Gestor Tax</span>
+                  <span>Meu Gestor AI</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
