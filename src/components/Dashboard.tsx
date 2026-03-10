@@ -186,7 +186,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                   <p className="text-xs font-bold text-foreground tabular-nums">{formatCurrency(kpis.faturamentoMes)}</p>
                 </div>
                 <div className="text-center p-2 rounded-md bg-destructive/5">
-                  <p className="text-[8px] text-muted-foreground uppercase">Reservado</p>
+                  <p className="text-[8px] text-muted-foreground uppercase">Governo (R)</p>
                   <p className="text-xs font-bold text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</p>
                 </div>
                 <div className="text-center p-2 rounded-md bg-accent/5">
