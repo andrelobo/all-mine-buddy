@@ -125,7 +125,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         tomadores={tomadoresMap}
         simuladorContent={
           <div className="space-y-3">
-            <p className="text-[10px] text-muted-foreground">Simule o impacto de receita adicional na sua faixa do Simples Nacional.</p>
             <div className="flex flex-col sm:flex-row items-end gap-2">
               <div className="flex-1">
                 <label className="text-[10px] text-muted-foreground">Faturamento adicional</label>
