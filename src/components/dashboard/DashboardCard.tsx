@@ -1,4 +1,5 @@
 import React from 'react';
+import { GripVertical } from 'lucide-react';
 
 interface DashboardCardProps {
   title?: string;
@@ -7,6 +8,7 @@ interface DashboardCardProps {
   rightHeader?: React.ReactNode;
   headerColor?: 'blue' | 'green' | 'red' | 'orange' | 'default' | 'navy';
   icon?: React.ReactNode;
+  draggable?: boolean;
 }
 
 const headerColorMap: Record<string, string> = {
@@ -25,18 +27,20 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
   rightHeader,
   headerColor = 'default',
   icon,
+  draggable = false,
 }) => (
-  <div className={`rounded-xl border border-border bg-card shadow-md overflow-hidden flex flex-col ${className}`}>
+  <div className={`rounded-xl border border-border bg-card shadow-md overflow-hidden flex flex-col h-full ${className}`}>
     {title && (
-      <div className={`px-3 py-2 flex items-center justify-between gap-2 ${headerColorMap[headerColor]}`}>
+      <div className={`px-3 py-2 flex items-center justify-between gap-2 ${headerColorMap[headerColor]} ${draggable ? 'drag-handle cursor-grab active:cursor-grabbing' : ''}`}>
         <div className="flex items-center gap-2">
+          {draggable && <GripVertical className="w-3.5 h-3.5 opacity-50" />}
           {icon && <div className="w-5 h-5 flex items-center justify-center opacity-90">{icon}</div>}
           <h3 className="text-[11px] font-bold uppercase tracking-wider">{title}</h3>
         </div>
         {rightHeader && <div>{rightHeader}</div>}
       </div>
     )}
-    <div className="p-3 flex-1">{children}</div>
+    <div className="p-3 flex-1 overflow-auto">{children}</div>
   </div>
 );
 
