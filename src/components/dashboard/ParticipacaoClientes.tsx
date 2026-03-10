@@ -79,8 +79,8 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
             barSize={12}
             animationDuration={800}
             animationBegin={200}
-            label={({ x, y, width, value }: any) => (
-              <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={6} fontWeight="bold" fill="hsl(var(--muted-foreground))">
+            label={({ x, y, width, height, value }: any) => (
+              <text x={x + width + 2} y={y + height / 2 + 3} textAnchor="start" fontSize={6} fontWeight="bold" fill={COR_TRIBUTO}>
                 {formatCurrency(value)}
               </text>
             )}
