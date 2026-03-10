@@ -106,10 +106,11 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
   return (
     <div className="space-y-3">
       {/* KPI Summary Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
         <KpiBox label="Faturamento" value={formatCurrency(kpis.faturamentoMes)} color="green" icon={<DollarSign className="w-4 h-4" />} />
         <KpiBox label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} color="red" icon={<BarChart3 className="w-4 h-4" />} />
         <KpiBox label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} color="blue" icon={<Gauge className="w-4 h-4" />} />
+        <KpiBox label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} color="green" icon={<BarChart3 className="w-4 h-4" />} />
         <KpiBox label="A Recolher PGDAS" value={formatCurrency(kpis.dasAPagar)} color="orange" icon={<Shield className="w-4 h-4" />} />
       </div>
 
