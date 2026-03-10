@@ -240,8 +240,8 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         {/* Receita por Cliente — Pie */}
         <DashboardCard title="Composição de Receita por Cliente" headerColor="blue">
           {pieClientes.length > 0 ? (
-            <div className="flex items-start gap-3">
-              <div className="flex-1 aspect-square max-h-44">
+            <div className="flex items-start gap-2">
+              <div className="flex-1 aspect-square max-h-40">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPie>
                     <Pie
