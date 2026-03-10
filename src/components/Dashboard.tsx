@@ -182,7 +182,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
             <div className="space-y-2">
               <div className="grid grid-cols-3 gap-1.5">
                 <div className="text-center p-2 rounded-md bg-muted/50">
-                  <p className="text-[8px] text-muted-foreground uppercase">Recebido</p>
+                  <p className="text-[8px] text-muted-foreground uppercase">Receita Recebida</p>
                   <p className="text-xs font-bold text-foreground tabular-nums">{formatCurrency(kpis.faturamentoMes)}</p>
                 </div>
                 <div className="text-center p-2 rounded-md bg-destructive/5">
