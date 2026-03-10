@@ -41,10 +41,9 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
         <BarChart data={top} margin={{ top: 28, right: 8, bottom: 4, left: 0 }}>
           <XAxis
             dataKey="nome"
-            tick={{ fontSize: 8, fill: 'hsl(var(--muted-foreground))' }}
+            tick={false}
             axisLine={false}
             tickLine={false}
-            interval={0}
           />
           <YAxis
             tick={{ fontSize: 7, fill: 'hsl(var(--muted-foreground))' }}
@@ -65,11 +64,21 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
             radius={[3, 3, 0, 0]}
             barSize={12}
             animationDuration={800}
-            label={({ x, y, width, value }: any) => (
-              <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={6} fontWeight="bold" fill="hsl(var(--muted-foreground))">
-                {formatCurrency(value)}
-              </text>
-            )}
+            label={({ x, y, width, height, value, index }: any) => {
+              const entry = top[index];
+              return (
+                <g>
+                  <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={6} fontWeight="bold" fill="hsl(var(--muted-foreground))">
+                    {formatCurrency(value)}
+                  </text>
+                  {height > 12 && (
+                    <text x={x + width / 2} y={y + height / 2} textAnchor="middle" dominantBaseline="central" fontSize={6} fontWeight="bold" fill="white" transform={`rotate(-90, ${x + width / 2}, ${y + height / 2})`}>
+                      {entry?.nome}
+                    </text>
+                  )}
+                </g>
+              );
+            }}
           />
           <Bar
             dataKey="tributos"
