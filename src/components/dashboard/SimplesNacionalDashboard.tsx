@@ -34,6 +34,7 @@ interface Props {
   dadosMensais: MesData[];
   notas: NotaDashboard[];
   tomadores: Record<string, { nome: string; subTrib: boolean }>;
+  analiseClientes: ClienteAnalise[];
   simuladorContent?: React.ReactNode;
   splitPaymentContent?: React.ReactNode;
 }
