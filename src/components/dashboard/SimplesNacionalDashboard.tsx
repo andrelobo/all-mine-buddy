@@ -111,7 +111,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       </div>
 
       {/* Row 2: Apuração + Partilha | Termômetro */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
         <div className="flex flex-col gap-2">
           <DashboardCard title={`Apuração ${kpis.competenciaLabel}`} headerColor="green">
             <div className="flex flex-col gap-1">
