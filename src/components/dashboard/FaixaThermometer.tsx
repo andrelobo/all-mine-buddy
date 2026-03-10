@@ -1,5 +1,5 @@
 import React from 'react';
-import { FAIXAS_ANEXO_III, formatCurrency } from '@/utils/simples-nacional';
+import { FAIXAS_ANEXO_III, formatCurrency, formatPercent, calcularSimplesAnexoIII } from '@/utils/simples-nacional';
 import type { CalculoSimplesResult } from '@/utils/simples-nacional';
 
 interface Props {
@@ -90,13 +90,18 @@ const FaixaThermometer: React.FC<Props> = ({ rbt12, calculo }) => {
           <p className="text-[9px] text-muted-foreground uppercase font-semibold tracking-wide">Faixas</p>
           {FAIXAS_ANEXO_III.map((f, i) => {
             const isAtual = faixaAtual?.faixa === f.faixa;
+            // Compute alíquota efetiva for each faixa using midpoint
+            const midRbt = (f.limiteInferior + f.limiteSuperior) / 2 || 1;
+            const aliqEfetiva = isAtual && calculo.aliquotaEfetiva
+              ? calculo.aliquotaEfetiva
+              : ((midRbt * f.aliquotaNominal) - f.parcelaDeduzir) / midRbt;
             return (
               <div key={f.faixa} className={`flex items-center gap-1.5 text-[10px] ${isAtual ? 'font-bold' : ''}`}>
                 <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: FAIXA_COLORS[i], opacity: isAtual ? 1 : 0.5 }} />
                 <span className={`flex-1 ${isAtual ? 'text-foreground' : 'text-muted-foreground'}`}>
                   {f.faixa}ª Faixa
                 </span>
-                <span className="text-muted-foreground tabular-nums">{(f.aliquotaNominal * 100).toFixed(1)}%</span>
+                <span className="text-muted-foreground tabular-nums">{formatPercent(aliqEfetiva)}</span>
                 {isAtual && <span className="text-[7px] bg-accent text-accent-foreground px-1 py-0.5 rounded font-bold">ATUAL</span>}
               </div>
             );
