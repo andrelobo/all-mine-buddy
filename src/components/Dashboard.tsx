@@ -126,7 +126,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         simuladorContent={
           <div className="space-y-3">
             <p className="text-[10px] text-muted-foreground">Simule o impacto de receita adicional na sua faixa do Simples Nacional.</p>
-            <div className="flex items-end gap-3">
+            <div className="flex flex-col sm:flex-row items-end gap-2">
               <div className="flex-1">
                 <label className="text-[10px] text-muted-foreground">Faturamento adicional</label>
                 <div className="relative mt-1">
@@ -176,7 +176,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       />
 
       {/* ROW: Split Payment + Receita por Cliente */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         {/* Split Payment */}
         <DashboardCard title="Split Payment — Reserva Tributária" headerColor="green">
           <div className="space-y-2">
@@ -240,8 +240,8 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         {/* Receita por Cliente — Pie */}
         <DashboardCard title="Composição de Receita por Cliente" headerColor="blue">
           {pieClientes.length > 0 ? (
-            <div className="flex items-start gap-2">
-              <div className="flex-1 aspect-square max-h-40">
+            <div className="flex flex-col sm:flex-row items-start gap-2">
+              <div className="w-full sm:flex-1 aspect-square max-h-40">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPie>
                     <Pie
@@ -257,7 +257,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                   </RechartsPie>
                 </ResponsiveContainer>
               </div>
-              <div className="w-40 space-y-1.5 pt-2">
+              <div className="w-full sm:w-40 space-y-1.5 pt-2">
                 {analiseClientes.slice(0, 6).map((c, i) => (
                   <div key={c.tomadorId} className="flex items-center justify-between text-[10px]">
                     <div className="flex items-center gap-1.5">

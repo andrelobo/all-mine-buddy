@@ -63,10 +63,10 @@ const FaixaThermometer: React.FC<Props> = ({ rbt12, calculo }) => {
   const limiteSup = faixaAtual ? formatCurrency(faixaAtual.limiteSuperior) : '';
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-col sm:flex-row items-center gap-3">
       {/* Gauge */}
-      <div className="relative flex-shrink-0" style={{ width: 220, height: 130 }}>
-        <svg width="220" height="130" viewBox="0 0 220 130">
+      <div className="relative flex-shrink-0 w-full sm:w-auto max-w-[220px]" style={{ height: 130 }}>
+        <svg className="w-full h-full" viewBox="0 0 220 130" preserveAspectRatio="xMidYMid meet">
           {/* Faixa arcs */}
           {faixaArcs.map(f => (
             <path

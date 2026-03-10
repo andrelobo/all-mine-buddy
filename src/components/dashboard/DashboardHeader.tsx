@@ -9,9 +9,9 @@ interface Props {
 }
 
 const DashboardHeader: React.FC<Props> = ({ nomeEmpresa, titulo, kpis, navItems = [] }) => (
-  <div className="rounded-xl bg-[hsl(216,60%,16%)] text-white px-8 py-5 shadow-lg">
+  <div className="rounded-xl bg-[hsl(216,60%,16%)] text-white px-4 sm:px-8 py-4 sm:py-5 shadow-lg">
     {/* Top row: company + nav items */}
-    <div className="flex items-center justify-between mb-4">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
       <div className="flex items-center gap-4">
         <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
           <span className="text-base font-black text-accent">⚡</span>
@@ -35,10 +35,10 @@ const DashboardHeader: React.FC<Props> = ({ nomeEmpresa, titulo, kpis, navItems 
       )}
     </div>
     {/* Bottom row: KPIs */}
-    <div className="flex items-center gap-6 bg-white/5 rounded-lg px-6 py-3">
+    <div className="flex flex-wrap items-center gap-3 sm:gap-6 bg-white/5 rounded-lg px-3 sm:px-6 py-2 sm:py-3">
       {kpis.map((k, i) => (
         <React.Fragment key={i}>
-          {i > 0 && <div className="h-8 w-px bg-white/10" />}
+          {i > 0 && <div className="hidden sm:block h-8 w-px bg-white/10" />}
           <KpiCard label={k.label} value={k.value} accent={k.accent} />
         </React.Fragment>
       ))}
