@@ -31,6 +31,7 @@ interface Props {
   dadosMensais: MesData[];
   notas: NotaDashboard[];
   tomadores: Record<string, { nome: string; subTrib: boolean }>;
+  simuladorContent?: React.ReactNode;
 }
 
 const CHART_GREEN = 'hsl(160, 60%, 45%)';
@@ -40,7 +41,7 @@ const PIE_COLORS = [
   'hsl(38, 80%, 55%)', 'hsl(220, 60%, 55%)', 'hsl(280, 50%, 55%)',
 ];
 
-const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais, notas, tomadores }) => {
+const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais, notas, tomadores, simuladorContent }) => {
   const composicaoTributaria = useMemo(() => {
     if (!calculo.faixa || !calculo.valido) return [];
     const aliqEfetiva = calculo.aliquotaEfetiva;
@@ -92,8 +93,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
   return (
     <div className="space-y-2">
-      {/* Row 1: Financeiro + Emitidas */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+      {/* Row 1: Financeiro + Policia Federal + Emitidas */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
           <div className="h-full flex flex-col justify-between gap-1">
             <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
@@ -110,6 +111,10 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           </div>
         </DashboardCard>
 
+        <DashboardCard title="Policia Federal" headerColor="orange">
+          {simuladorContent}
+        </DashboardCard>
+
         <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
           <EmissoesResumoMini
             notas={notas}
@@ -120,7 +125,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
       </div>
 
-      {/* Row 2: Partilha (Simulado) + Termômetro */}
+      {/* Row 2: Partilha + Termômetro */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <DashboardCard title="Partilha Pgdas" headerColor="blue">
           {composicaoTributaria.length > 0 && kpis.faturamentoMes > 0 ? (
@@ -162,7 +167,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
   );
 };
 
-/* Sub-component for Financeiro rows — matches Partilha row style */
+/* Sub-component for Financeiro rows */
 const FinRow: React.FC<{ label: string; value: string; accent?: string }> = ({ label, value, accent = 'text-foreground' }) => (
   <div className="flex items-center gap-2 text-[9px]">
     <span className="w-28 font-semibold text-muted-foreground shrink-0">{label}</span>
