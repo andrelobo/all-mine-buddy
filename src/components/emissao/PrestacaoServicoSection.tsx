@@ -344,19 +344,17 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         </div>
       </div>
 
-      <div className="mt-3">
-        <label className="field-label flex items-center gap-1.5"><FileText className="w-4 h-4 text-primary" />Descrição do Serviço*</label>
+      <div className="mt-2">
+        <label className="field-label flex items-center gap-1.5"><FileText className="w-3.5 h-3.5 text-primary" />Descrição do Serviço*</label>
         <textarea
-          className="field-input min-h-[60px] resize-y"
+          className="field-input min-h-[50px] resize-y"
           placeholder="Descreva o serviço prestado conforme a NFS-e..."
           value={data.descricaoServico}
           onChange={(e) => update('descricaoServico', e.target.value)}
         />
       </div>
 
-
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
         <div>
           <label className="field-label flex items-center gap-1.5"><DollarSign className="w-4 h-4 text-primary" />Valor do Serviço (R$)*</label>
           <input
