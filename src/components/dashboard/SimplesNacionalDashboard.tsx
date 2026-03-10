@@ -32,6 +32,7 @@ interface Props {
   notas: NotaDashboard[];
   tomadores: Record<string, { nome: string; subTrib: boolean }>;
   simuladorContent?: React.ReactNode;
+  splitPaymentContent?: React.ReactNode;
 }
 
 const CHART_GREEN = 'hsl(160, 60%, 45%)';
@@ -41,7 +42,7 @@ const PIE_COLORS = [
   'hsl(38, 80%, 55%)', 'hsl(220, 60%, 55%)', 'hsl(280, 50%, 55%)',
 ];
 
-const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais, notas, tomadores, simuladorContent }) => {
+const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais, notas, tomadores, simuladorContent, splitPaymentContent }) => {
   const composicaoTributaria = useMemo(() => {
     if (!calculo.faixa || !calculo.valido) return [];
     const aliqEfetiva = calculo.aliquotaEfetiva;
@@ -93,11 +94,12 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
   return (
     <div className="space-y-2">
-      {/* Row 1: Policia Federal */}
-      <div className="w-1/2">
+      {/* Row 1: Policia Federal + Split Payment */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <DashboardCard title="Policia Federal" headerColor="orange">
           {simuladorContent}
         </DashboardCard>
+        {splitPaymentContent}
       </div>
 
       {/* Row 2: Financeiro + Emitidas */}

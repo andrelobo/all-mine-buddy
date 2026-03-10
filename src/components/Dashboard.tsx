@@ -177,71 +177,70 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
             )}
           </div>
         }
-      />
-
-      {/* ROW: Split Payment + Receita por Cliente */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        {/* Split Payment */}
-        <DashboardCard title="Split Payment — Reserva Tributária" headerColor="green">
-          <div className="space-y-2">
-            <div className="grid grid-cols-3 gap-1.5">
-              <div className="text-center p-2 rounded-md bg-muted/50">
-                <p className="text-[8px] text-muted-foreground uppercase">Recebido</p>
-                <p className="text-xs font-bold text-foreground tabular-nums">{formatCurrency(kpis.faturamentoMes)}</p>
-              </div>
-              <div className="text-center p-2 rounded-md bg-destructive/5">
-                <p className="text-[8px] text-muted-foreground uppercase">Reservado</p>
-                <p className="text-xs font-bold text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</p>
-              </div>
-              <div className="text-center p-2 rounded-md bg-accent/5">
-                <p className="text-[8px] text-muted-foreground uppercase">Liberado</p>
-                <p className="text-xs font-bold text-accent tabular-nums">{formatCurrency(fluxoCaixa.saldo)}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Shield className="w-3.5 h-3.5 text-accent" />
-              <div className="flex-1">
-                <div className="h-2.5 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-accent rounded-full transition-all"
-                    style={{ width: `${kpis.faturamentoMes > 0 ? Math.min((kpis.dasEstimado / kpis.faturamentoMes) * 100, 100) : 0}%` }}
-                  />
+        splitPaymentContent={
+          <DashboardCard title="Split Payment — Reserva Tributária" headerColor="green">
+            <div className="space-y-2">
+              <div className="grid grid-cols-3 gap-1.5">
+                <div className="text-center p-2 rounded-md bg-muted/50">
+                  <p className="text-[8px] text-muted-foreground uppercase">Recebido</p>
+                  <p className="text-xs font-bold text-foreground tabular-nums">{formatCurrency(kpis.faturamentoMes)}</p>
+                </div>
+                <div className="text-center p-2 rounded-md bg-destructive/5">
+                  <p className="text-[8px] text-muted-foreground uppercase">Reservado</p>
+                  <p className="text-xs font-bold text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</p>
+                </div>
+                <div className="text-center p-2 rounded-md bg-accent/5">
+                  <p className="text-[8px] text-muted-foreground uppercase">Liberado</p>
+                  <p className="text-xs font-bold text-accent tabular-nums">{formatCurrency(fluxoCaixa.saldo)}</p>
                 </div>
               </div>
-              <span className="text-[10px] font-bold text-accent">
-                {kpis.faturamentoMes > 0 ? ((kpis.dasEstimado / kpis.faturamentoMes) * 100).toFixed(1) : 0}% protegido
-              </span>
-            </div>
-            {splits.length > 0 && (
-              <div className="overflow-x-auto max-h-32">
-                <table className="w-full text-[10px]">
-                  <thead>
-                    <tr className="border-b text-muted-foreground">
-                      <th className="text-left py-1 px-1">NF</th>
-                      <th className="text-right py-1 px-1">Bruto</th>
-                      <th className="text-right py-1 px-1">Reservado</th>
-                      <th className="text-center py-1 px-1">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {splits.slice(0, 5).map(s => (
-                      <tr key={s.id} className="border-b border-border/50">
-                        <td className="py-1 px-1 font-mono">{s.nota_fiscal_id?.substring(0, 8)}</td>
-                        <td className="text-right py-1 px-1">{formatCurrency(s.valor_bruto)}</td>
-                        <td className="text-right py-1 px-1 text-destructive">{formatCurrency(s.valor_reservado)}</td>
-                        <td className="text-center py-1 px-1">
-                          <Badge variant={s.status === 'pago' ? 'default' : 'outline'} className="text-[8px]">{s.status}</Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="flex items-center gap-1.5">
+                <Shield className="w-3.5 h-3.5 text-accent" />
+                <div className="flex-1">
+                  <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-accent rounded-full transition-all"
+                      style={{ width: `${kpis.faturamentoMes > 0 ? Math.min((kpis.dasEstimado / kpis.faturamentoMes) * 100, 100) : 0}%` }}
+                    />
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold text-accent">
+                  {kpis.faturamentoMes > 0 ? ((kpis.dasEstimado / kpis.faturamentoMes) * 100).toFixed(1) : 0}% protegido
+                </span>
               </div>
-            )}
-          </div>
-        </DashboardCard>
+              {splits.length > 0 && (
+                <div className="overflow-x-auto max-h-32">
+                  <table className="w-full text-[10px]">
+                    <thead>
+                      <tr className="border-b text-muted-foreground">
+                        <th className="text-left py-1 px-1">NF</th>
+                        <th className="text-right py-1 px-1">Bruto</th>
+                        <th className="text-right py-1 px-1">Reservado</th>
+                        <th className="text-center py-1 px-1">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {splits.slice(0, 5).map(s => (
+                        <tr key={s.id} className="border-b border-border/50">
+                          <td className="py-1 px-1 font-mono">{s.nota_fiscal_id?.substring(0, 8)}</td>
+                          <td className="text-right py-1 px-1">{formatCurrency(s.valor_bruto)}</td>
+                          <td className="text-right py-1 px-1 text-destructive">{formatCurrency(s.valor_reservado)}</td>
+                          <td className="text-center py-1 px-1">
+                            <Badge variant={s.status === 'pago' ? 'default' : 'outline'} className="text-[8px]">{s.status}</Badge>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </DashboardCard>
+        }
+      />
 
-        {/* Receita por Cliente — Pie */}
+      {/* ROW: Receita por Cliente */}
+      <div className="grid grid-cols-1 gap-2">
         <DashboardCard title="Composição de Receita por Cliente" headerColor="blue">
           {pieClientes.length > 0 ? (
             <div className="flex flex-col sm:flex-row items-start gap-2">
