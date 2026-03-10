@@ -139,6 +139,10 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             issRetidoMes={kpis.issRetidoMes}
             faturamentoMes={kpis.faturamentoMes}
           />
+
+          <DashboardCard title={`Serviços Executados ${kpis.competenciaLabel.toUpperCase()}`} headerColor="orange">
+            <ServicosExecutados notas={notas} mesCompetencia={kpis.mesCompetencia} configOperacionais={configOperacionais} />
+          </DashboardCard>
         </div>
 
         <DashboardCard title="Termômetro Simples Nacional" headerColor="blue">
@@ -160,11 +164,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           <ParticipacaoClientes analiseClientes={analiseClientes} aliquotaEfetiva={kpis.aliquotaEfetiva} />
         </DashboardCard>
       </div>
-
-      {/* Row 4: Serviços Executados */}
-      <DashboardCard title={`Serviços Executados ${kpis.competenciaLabel.toUpperCase()}`} headerColor="orange">
-        <ServicosExecutados notas={notas} mesCompetencia={kpis.mesCompetencia} configOperacionais={configOperacionais} />
-      </DashboardCard>
     </div>
   );
 };
