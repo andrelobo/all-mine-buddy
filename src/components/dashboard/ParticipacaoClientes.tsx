@@ -35,7 +35,7 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
     );
   };
 
-  const chartHeight = Math.max(140, top.length * 36 + 40);
+  const chartHeight = Math.max(160, top.length * 44 + 40);
 
   return (
     <div className="w-full" style={{ height: chartHeight }}>
