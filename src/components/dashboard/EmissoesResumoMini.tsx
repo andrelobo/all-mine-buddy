@@ -54,7 +54,7 @@ const EmissoesResumoMini: React.FC<Props> = ({ notas, tomadores, aliquotaEfetiva
   );
 
   return (
-    <div className="h-full flex flex-col justify-between gap-1">
+    <div className="h-full flex flex-col justify-between gap-1 overflow-x-auto">
       {/* Header */}
       <div className="flex items-center gap-2 text-[9px] font-semibold text-muted-foreground uppercase">
         <span className="w-10 shrink-0">Data</span>
