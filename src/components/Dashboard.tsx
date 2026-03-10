@@ -276,7 +276,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       </div>
 
       {/* ROW: Análise de Clientes */}
-      <div className="grid grid-cols-1 lg:grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 gap-2">
         {/* Análise por Cliente — Tabela */}
         <DashboardCard title="Análise por Cliente — Curva ABC" headerColor="default">
           {analiseClientes.length > 0 ? (
