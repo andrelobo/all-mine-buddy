@@ -35,12 +35,12 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
     );
   };
 
-  const chartHeight = Math.max(160, top.length * 44 + 40);
+  const chartHeight = Math.max(120, top.length * 32 + 30);
 
   return (
     <div className="w-full" style={{ height: chartHeight }}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={top} layout="vertical" margin={{ top: 4, right: 60, bottom: 4, left: 4 }} barGap={1}>
+        <BarChart data={top} layout="vertical" margin={{ top: 4, right: 55, bottom: 2, left: 4 }} barGap={0}>
           <XAxis
             type="number"
             tick={{ fontSize: 7, fill: 'hsl(var(--muted-foreground))' }}
@@ -63,7 +63,7 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
             name="Receita"
             fill={COR_RECEITA}
             radius={[0, 3, 3, 0]}
-            barSize={10}
+            barSize={8}
             animationDuration={800}
             label={({ x, y, width, height, value, index }: any) => {
               const entry = top[index];
@@ -84,7 +84,7 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
             name="Tributos"
             fill={COR_TRIBUTO}
             radius={[0, 3, 3, 0]}
-            barSize={10}
+            barSize={8}
             animationDuration={800}
             animationBegin={200}
             label={({ x, y, width, height, value }: any) => (
