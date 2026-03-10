@@ -93,16 +93,16 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
   const mudouFaixa = calculoSimulado?.faixa && calculo.faixa && calculoSimulado.faixa.faixa !== calculo.faixa.faixa;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
 
       {/* SMART ALERTS */}
       {smartAlerts.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {smartAlerts.map((a, i) => (
             <Badge
               key={i}
               variant="outline"
-              className={`text-[10px] gap-1 py-1 ${
+              className={`text-[10px] gap-1 py-0.5 ${
                 a.tipo === 'danger' ? 'border-destructive text-destructive' :
                 a.tipo === 'warning' ? 'border-[hsl(38,80%,55%)] text-[hsl(38,80%,45%)]' :
                 a.tipo === 'success' ? 'border-accent text-accent' : 'border-primary text-primary'
@@ -176,28 +176,28 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       />
 
       {/* ROW: Split Payment + Receita por Cliente */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         {/* Split Payment */}
         <DashboardCard title="Split Payment — Reserva Tributária" headerColor="green">
-          <div className="space-y-3">
-            <div className="grid grid-cols-3 gap-2">
-              <div className="text-center p-2.5 rounded-lg bg-muted/50">
-                <p className="text-[9px] text-muted-foreground uppercase">Recebido</p>
-                <p className="text-sm font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</p>
+          <div className="space-y-2">
+            <div className="grid grid-cols-3 gap-1.5">
+              <div className="text-center p-2 rounded-md bg-muted/50">
+                <p className="text-[8px] text-muted-foreground uppercase">Recebido</p>
+                <p className="text-xs font-bold text-foreground tabular-nums">{formatCurrency(kpis.faturamentoMes)}</p>
               </div>
-              <div className="text-center p-2.5 rounded-lg bg-destructive/5">
-                <p className="text-[9px] text-muted-foreground uppercase">Reservado</p>
-                <p className="text-sm font-bold text-destructive">{formatCurrency(kpis.dasEstimado)}</p>
+              <div className="text-center p-2 rounded-md bg-destructive/5">
+                <p className="text-[8px] text-muted-foreground uppercase">Reservado</p>
+                <p className="text-xs font-bold text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</p>
               </div>
-              <div className="text-center p-2.5 rounded-lg bg-accent/5">
-                <p className="text-[9px] text-muted-foreground uppercase">Liberado</p>
-                <p className="text-sm font-bold text-accent">{formatCurrency(fluxoCaixa.saldo)}</p>
+              <div className="text-center p-2 rounded-md bg-accent/5">
+                <p className="text-[8px] text-muted-foreground uppercase">Liberado</p>
+                <p className="text-xs font-bold text-accent tabular-nums">{formatCurrency(fluxoCaixa.saldo)}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-accent" />
+            <div className="flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-accent" />
               <div className="flex-1">
-                <div className="h-3 bg-muted rounded-full overflow-hidden">
+                <div className="h-2.5 bg-muted rounded-full overflow-hidden">
                   <div
                     className="h-full bg-accent rounded-full transition-all"
                     style={{ width: `${kpis.faturamentoMes > 0 ? Math.min((kpis.dasEstimado / kpis.faturamentoMes) * 100, 100) : 0}%` }}
@@ -240,8 +240,8 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         {/* Receita por Cliente — Pie */}
         <DashboardCard title="Composição de Receita por Cliente" headerColor="blue">
           {pieClientes.length > 0 ? (
-            <div className="flex items-start gap-3">
-              <div className="flex-1 aspect-square max-h-44">
+            <div className="flex items-start gap-2">
+              <div className="flex-1 aspect-square max-h-40">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPie>
                     <Pie
@@ -276,7 +276,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       </div>
 
       {/* ROW: Análise de Clientes */}
-      <div className="grid grid-cols-1 lg:grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 gap-2">
         {/* Análise por Cliente — Tabela */}
         <DashboardCard title="Análise por Cliente — Curva ABC" headerColor="default">
           {analiseClientes.length > 0 ? (
