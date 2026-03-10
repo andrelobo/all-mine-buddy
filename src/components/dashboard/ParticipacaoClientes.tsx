@@ -40,7 +40,7 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
   return (
     <div className="w-full" style={{ height: chartHeight }}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={top} layout="vertical" margin={{ top: 4, right: 60, bottom: 4, left: 4 }} barGap={1}>
+        <BarChart data={top} layout="vertical" margin={{ top: 4, right: 55, bottom: 2, left: 4 }} barGap={0}>
           <XAxis
             type="number"
             tick={{ fontSize: 7, fill: 'hsl(var(--muted-foreground))' }}
