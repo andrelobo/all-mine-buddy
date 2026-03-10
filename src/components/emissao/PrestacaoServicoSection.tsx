@@ -196,12 +196,12 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
   };
 
   return (
-    <div className="section-card">
-      <h2 className="section-title">
-        <Briefcase className="w-5 h-5 text-primary" />
+    <div className="section-card p-2">
+      <h2 className="section-title text-xs mb-1">
+        <Briefcase className="w-4 h-4 text-primary" />
         Serviço Prestado
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
         {/* Serviços Favoritos */}
         <div ref={favoritosDropdownRef} className="relative">
           <label className="field-label flex items-center gap-1.5" style={{ color: 'hsl(43, 80%, 45%)' }}><Star className="w-4 h-4" fill="currentColor" />Serviços Favoritos</label>
