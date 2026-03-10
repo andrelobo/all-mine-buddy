@@ -29,7 +29,7 @@ const PIE_COLORS = [
   'hsl(340, 60%, 55%)', 'hsl(200, 50%, 55%)',
 ];
 
-const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, cnaeAnexo, regime }) => {
+const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, cnaeAnexo, regime, configOperacionais = [] }) => {
   const { loading, notas, tomadores: tomadoresMap, kpis, calculo, dadosMensais, analiseClientes, alertas, fluxoCaixa, splits } = useDashboardData(prestadorId, rbt12, cnaeAnexo);
   const [simulacaoExtra, setSimulacaoExtra] = useState<string>('');
 
