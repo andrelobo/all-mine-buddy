@@ -40,25 +40,25 @@ const PIE_COLORS = [
 
 const DEFAULT_LAYOUTS = {
   lg: [
-    { i: 'financeiro', x: 0, y: 0, w: 5, h: 2 },
-    { i: 'policia', x: 5, y: 0, w: 3, h: 2 },
-    { i: 'emitidas', x: 8, y: 0, w: 4, h: 2 },
-    { i: 'partilha', x: 0, y: 2, w: 6, h: 2 },
-    { i: 'termometro', x: 6, y: 2, w: 6, h: 2 },
+    { i: 'financeiro', x: 0, y: 0, w: 5, h: 4 },
+    { i: 'policia', x: 5, y: 0, w: 3, h: 4 },
+    { i: 'emitidas', x: 8, y: 0, w: 4, h: 4 },
+    { i: 'partilha', x: 0, y: 4, w: 6, h: 4 },
+    { i: 'termometro', x: 6, y: 4, w: 6, h: 4 },
   ],
   md: [
-    { i: 'financeiro', x: 0, y: 0, w: 4, h: 2 },
-    { i: 'policia', x: 4, y: 0, w: 4, h: 2 },
-    { i: 'emitidas', x: 0, y: 2, w: 4, h: 2 },
-    { i: 'partilha', x: 4, y: 2, w: 4, h: 2 },
-    { i: 'termometro', x: 0, y: 4, w: 8, h: 2 },
+    { i: 'financeiro', x: 0, y: 0, w: 4, h: 4 },
+    { i: 'policia', x: 4, y: 0, w: 4, h: 4 },
+    { i: 'emitidas', x: 0, y: 4, w: 4, h: 4 },
+    { i: 'partilha', x: 4, y: 4, w: 4, h: 4 },
+    { i: 'termometro', x: 0, y: 8, w: 8, h: 4 },
   ],
   sm: [
-    { i: 'financeiro', x: 0, y: 0, w: 6, h: 2 },
-    { i: 'policia', x: 0, y: 2, w: 6, h: 2 },
-    { i: 'emitidas', x: 0, y: 4, w: 6, h: 2 },
-    { i: 'partilha', x: 0, y: 6, w: 6, h: 2 },
-    { i: 'termometro', x: 0, y: 8, w: 6, h: 2 },
+    { i: 'financeiro', x: 0, y: 0, w: 6, h: 4 },
+    { i: 'policia', x: 0, y: 4, w: 6, h: 4 },
+    { i: 'emitidas', x: 0, y: 8, w: 6, h: 4 },
+    { i: 'partilha', x: 0, y: 12, w: 6, h: 4 },
+    { i: 'termometro', x: 0, y: 16, w: 6, h: 4 },
   ],
 };
 
@@ -106,11 +106,10 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
   return (
     <div className="space-y-3">
       {/* KPI Summary Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <KpiBox label="Faturamento" value={formatCurrency(kpis.faturamentoMes)} color="green" icon={<DollarSign className="w-4 h-4" />} />
         <KpiBox label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} color="red" icon={<BarChart3 className="w-4 h-4" />} />
         <KpiBox label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} color="blue" icon={<Gauge className="w-4 h-4" />} />
-        <KpiBox label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} color="green" icon={<BarChart3 className="w-4 h-4" />} />
         <KpiBox label="A Recolher PGDAS" value={formatCurrency(kpis.dasAPagar)} color="orange" icon={<Shield className="w-4 h-4" />} />
       </div>
 
@@ -143,7 +142,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         layouts={layouts}
         breakpoints={{ lg: 1024, md: 768, sm: 0 }}
         cols={{ lg: 12, md: 8, sm: 6 }}
-        rowHeight={100}
+        rowHeight={40}
         onLayoutChange={onLayoutChange}
         isDraggable={!locked}
         isResizable={!locked}
@@ -159,10 +158,10 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             draggable={!locked}
           >
             <div className="h-full flex flex-col justify-between gap-1.5">
-              <FinRow label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
               <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" bold />
               <FinRow label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
               <FinRow label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
+              <FinRow label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
               <FinRow label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
               <FinRow label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
               <div className="border-t-2 border-destructive/20 pt-2 flex items-center gap-2 text-[10px] font-bold mt-auto bg-destructive/5 -mx-3 -mb-3 px-3 py-2 rounded-b-lg">
