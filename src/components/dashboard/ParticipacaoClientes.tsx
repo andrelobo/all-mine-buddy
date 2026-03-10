@@ -59,7 +59,7 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes }) => {
             width={32}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
-          <Bar dataKey="percentual" radius={[4, 4, 0, 0]} animationDuration={800} animationBegin={100}>
+          <Bar dataKey="percentual" radius={[4, 4, 0, 0]} animationDuration={800} animationBegin={100} barSize={14}>
             {top.map((entry, idx) => (
               <Cell key={idx} fill={entry.cor} />
             ))}
