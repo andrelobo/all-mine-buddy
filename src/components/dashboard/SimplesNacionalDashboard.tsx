@@ -101,9 +101,9 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {/* Row 1: Policia Federal + Split Payment */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <DashboardCard title="Simulador Simples Nacional" headerColor="orange">
           {simuladorContent}
         </DashboardCard>
@@ -111,8 +111,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       </div>
 
       {/* Row 2: Apuração + Partilha | Termômetro */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-start">
-        <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
+        <div className="flex flex-col gap-3">
           <DashboardCard title={`Apuração ${kpis.competenciaLabel}`} headerColor="green">
             <div className="flex flex-col gap-1">
               <FinRow icon={<DollarSign className="w-3 h-3" />} label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
@@ -145,7 +145,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       </div>
 
       {/* Row 3: Emitidas + Participação Clientes */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
         <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
           <EmissoesResumoMini
             notas={notas}
