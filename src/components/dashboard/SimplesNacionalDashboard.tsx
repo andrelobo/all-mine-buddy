@@ -159,6 +159,11 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           <ParticipacaoClientes analiseClientes={analiseClientes} aliquotaEfetiva={kpis.aliquotaEfetiva} />
         </DashboardCard>
       </div>
+
+      {/* Row 4: Serviços Executados */}
+      <DashboardCard title={`Serviços Executados ${kpis.competenciaLabel.toUpperCase()}`} headerColor="orange">
+        <ServicosExecutados notas={notas} mesCompetencia={kpis.mesCompetencia} />
+      </DashboardCard>
     </div>
   );
 };
