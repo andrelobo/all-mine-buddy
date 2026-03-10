@@ -42,8 +42,8 @@ const DEFAULT_LAYOUTS = {
   lg: [
     { i: 'financeiro', x: 0, y: 0, w: 6, h: 4 },
     { i: 'emitidas', x: 6, y: 0, w: 6, h: 4 },
-    { i: 'policia', x: 0, y: 4, w: 4, h: 4 },
-    { i: 'partilha', x: 4, y: 4, w: 4, h: 4 },
+    { i: 'policia', x: 0, y: 4, w: 3, h: 4 },
+    { i: 'partilha', x: 3, y: 4, w: 5, h: 4 },
     { i: 'termometro', x: 8, y: 4, w: 4, h: 4 },
   ],
   md: [
