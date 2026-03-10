@@ -40,8 +40,8 @@ const PIE_COLORS = [
 
 const DEFAULT_LAYOUTS = {
   lg: [
-    { i: 'financeiro', x: 0, y: 0, w: 4, h: 5 },
-    { i: 'policia', x: 4, y: 0, w: 4, h: 5 },
+    { i: 'financeiro', x: 0, y: 0, w: 5, h: 5 },
+    { i: 'policia', x: 5, y: 0, w: 3, h: 5 },
     { i: 'emitidas', x: 8, y: 0, w: 4, h: 5 },
     { i: 'partilha', x: 0, y: 5, w: 6, h: 5 },
     { i: 'termometro', x: 6, y: 5, w: 6, h: 5 },
