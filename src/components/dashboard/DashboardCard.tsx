@@ -25,8 +25,8 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
 }) => (
   <div className={`rounded-lg border border-border bg-card shadow-sm overflow-hidden flex flex-col ${className}`}>
     {title && (
-      <div className={`px-3 py-1.5 flex items-center justify-between ${headerColorMap[headerColor]}`}>
-        <h3 className="text-[11px] font-bold uppercase tracking-wide">{title}</h3>
+      <div className={`px-3 py-1 flex items-center justify-between ${headerColorMap[headerColor]}`}>
+        <h3 className="text-[10px] font-bold uppercase tracking-wider">{title}</h3>
         {rightHeader && <div>{rightHeader}</div>}
       </div>
     )}
