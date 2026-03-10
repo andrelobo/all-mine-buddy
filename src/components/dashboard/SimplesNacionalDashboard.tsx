@@ -155,7 +155,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           />
         </DashboardCard>
         <DashboardCard title="Participação por Cliente" headerColor="blue">
-          <ParticipacaoClientes analiseClientes={analiseClientes} />
+          <ParticipacaoClientes analiseClientes={analiseClientes} aliquotaEfetiva={kpis.aliquotaEfetiva} />
         </DashboardCard>
       </div>
     </div>
