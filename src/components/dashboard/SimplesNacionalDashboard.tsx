@@ -36,6 +36,7 @@ interface Props {
   notas: NotaDashboard[];
   tomadores: Record<string, { nome: string; subTrib: boolean }>;
   analiseClientes: ClienteAnalise[];
+  configOperacionais?: { id: string; natureza: string; descricao: string }[];
   simuladorContent?: React.ReactNode;
   splitPaymentContent?: React.ReactNode;
 }
