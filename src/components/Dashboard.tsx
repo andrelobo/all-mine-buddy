@@ -164,6 +164,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                       {formatCurrency(parseCurrencyInput(simulacaoExtra) * (calculoSimulado.aliquotaEfetiva || 0))}
                     </span>
                   </div>
+                </div>
               )}
             </div>
             {mudouFaixa && (
