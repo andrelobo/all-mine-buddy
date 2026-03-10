@@ -96,7 +96,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     <div className="space-y-2">
       {/* Row 1: Policia Federal + Split Payment */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <DashboardCard title="Policia Federal" headerColor="orange">
+        <DashboardCard title="Simulador Simples Nacional" headerColor="orange">
           {simuladorContent}
         </DashboardCard>
         {splitPaymentContent}
