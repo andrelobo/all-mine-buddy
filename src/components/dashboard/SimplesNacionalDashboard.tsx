@@ -93,7 +93,12 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
   return (
     <div className="space-y-2">
-      {/* Row 1: Financeiro + Emitidas */}
+      {/* Row 1: Policia Federal */}
+      <DashboardCard title="Policia Federal" headerColor="orange">
+        {simuladorContent}
+      </DashboardCard>
+
+      {/* Row 2: Financeiro + Emitidas */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
           <div className="h-full flex flex-col justify-between gap-1">
@@ -120,11 +125,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           />
         </DashboardCard>
       </div>
-
-      {/* Row 2: Policia Federal */}
-      <DashboardCard title="Policia Federal" headerColor="orange">
-        {simuladorContent}
-      </DashboardCard>
 
       {/* Row 2: Partilha + Termômetro */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
