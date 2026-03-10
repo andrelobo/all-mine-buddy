@@ -278,7 +278,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       {/* ROW: Análise de Clientes */}
       <div className="grid grid-cols-1 lg:grid-cols-1 gap-3">
         {/* Análise por Cliente — Tabela */}
-        <DashboardCard title="Análise por Cliente — Curva ABC" headerColor="default">
+        <DashboardCard title="Análise por Cliente — Curva ABC" headerColor="navy" icon={<BarChart3 className="w-4 h-4" />}>
           {analiseClientes.length > 0 ? (
             <div className="overflow-x-auto max-h-48">
               <table className="w-full text-[10px]">
