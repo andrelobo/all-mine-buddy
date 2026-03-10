@@ -89,7 +89,7 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
             animationBegin={200}
             label={({ x, y, width, height, value }: any) => (
               <text x={x + width + 3} y={y + height / 2 + 1} textAnchor="start" dominantBaseline="central" fontSize={6} fontWeight="bold" fill={COR_TRIBUTO}>
-                {formatCurrency(value)}
+                {formatCurrency(value)} ({(aliquotaEfetiva * 100).toFixed(2)}%)
               </text>
             )}
           />
