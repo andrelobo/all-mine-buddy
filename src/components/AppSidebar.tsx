@@ -147,7 +147,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange, prestad
                 <SidebarMenuButton
                   isActive={activeTab === 'notas'}
                   onClick={() => onTabChange('notas')}
-                  tooltip="FinGest"
+                  tooltip="Gestor Tax"
                   className={
                     activeTab === 'notas'
                       ? 'bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground'
@@ -155,7 +155,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeTab, onTabChange, prestad
                   }
                 >
                   <FileText className="w-4 h-4" />
-                  <span>FinGest</span>
+                  <span>Gestor Tax</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
