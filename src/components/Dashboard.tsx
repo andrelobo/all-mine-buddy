@@ -127,7 +127,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
           <div className="space-y-3">
             <div className="flex flex-col sm:flex-row items-end gap-2">
               <div className="flex-1">
-                <label className="text-[10px] text-muted-foreground">Faturamento adicional</label>
+                <label className="text-[10px] text-muted-foreground">Projeção Financeira</label>
                 <div className="relative mt-1">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R$</span>
                   <Input
