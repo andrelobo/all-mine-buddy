@@ -105,8 +105,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
       {/* Row 2: Gestão Snë + Termômetro */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <DashboardCard title={`Apuração ${kpis.competenciaLabel}`} headerColor="green">
-          <div className="flex flex-col gap-0.5">
+        <DashboardCard title={`Apuração ${kpis.competenciaLabel}`} headerColor="green" className="[&>div:last-child]:p-1.5">
+          <div className="flex flex-col gap-0">
             <FinRow icon={<DollarSign className="w-3 h-3" />} label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
             <FinRow icon={<TrendingDown className="w-3 h-3" />} label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
             <FinRow icon={<Percent className="w-3 h-3" />} label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
