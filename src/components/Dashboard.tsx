@@ -168,11 +168,10 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
               )}
             </div>
             {mudouFaixa && (
-              <div className="p-2.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>
-                  <strong>Alerta:</strong> Mudança da {calculo.faixa!.faixa}ª para a {calculoSimulado!.faixa!.faixa}ª faixa.
-                  Alíquota efetiva: {formatPercent(calculo.aliquotaEfetiva)} → {formatPercent(calculoSimulado!.aliquotaEfetiva)}.
+              <div className="p-2 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-[10px] flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="whitespace-nowrap">
+                  <strong>Alerta:</strong> {calculo.faixa!.faixa}ª → {calculoSimulado!.faixa!.faixa}ª faixa | {formatPercent(calculo.aliquotaEfetiva)} → {formatPercent(calculoSimulado!.aliquotaEfetiva)}
                 </span>
               </div>
             )}
