@@ -176,10 +176,10 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       />
 
       {/* ROW: Split Payment + Receita por Cliente */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         {/* Split Payment */}
         <DashboardCard title="Split Payment — Reserva Tributária" headerColor="green">
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="grid grid-cols-3 gap-2">
               <div className="text-center p-2.5 rounded-lg bg-muted/50">
                 <p className="text-[9px] text-muted-foreground uppercase">Recebido</p>
