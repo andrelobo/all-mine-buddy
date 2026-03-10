@@ -130,7 +130,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           <PartilhaCollapsible
             composicaoTributaria={composicaoTributaria}
             aliquotaEfetiva={kpis.aliquotaEfetiva}
-            dasEstimado={kpis.dasEstimado}
+            dasAPagar={kpis.dasAPagar}
+            issRetidoMes={kpis.issRetidoMes}
             faturamentoMes={kpis.faturamentoMes}
           />
         </div>
