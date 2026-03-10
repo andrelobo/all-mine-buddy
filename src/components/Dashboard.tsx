@@ -178,11 +178,8 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
           </div>
         }
         splitPaymentContent={
-          <DashboardCard title="Split Payment LC nº 214/2025" headerColor="green">
+          <DashboardCard title="Split Payment LC nº 214/2025 — ⚠️ Em Implantação Bancária" headerColor="green">
             <div className="space-y-2">
-              <div className="p-2 rounded-md bg-[hsl(38,80%,55%)]/10 border border-[hsl(38,80%,55%)]/30 text-[hsl(38,80%,45%)] text-[10px] font-semibold text-center">
-                ⚠️ Em Implantação Bancária
-              </div>
               <div className="grid grid-cols-3 gap-1.5">
                 <div className="text-center p-2 rounded-md bg-muted/50">
                   <p className="text-[8px] text-muted-foreground uppercase">Receita Recebida</p>
