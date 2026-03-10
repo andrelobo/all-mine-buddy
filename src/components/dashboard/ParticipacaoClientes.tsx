@@ -1,81 +1,58 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
 import type { ClienteAnalise } from '@/hooks/useDashboardData';
 import { formatCurrency } from '@/utils/simples-nacional';
-
-const COR_RECEITA = 'hsl(220, 60%, 55%)';
-const COR_TRIBUTO = 'hsl(0, 65%, 50%)';
 
 interface Props {
   analiseClientes: ClienteAnalise[];
   aliquotaEfetiva?: number;
 }
 
+const COR_RECEITA = 'hsl(220, 60%, 55%)';
+const COR_TRIBUTO = 'hsl(0, 65%, 50%)';
+
 const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiva = 0 }) => {
-  const top = analiseClientes.slice(0, 6).map(c => ({
-    nome: c.nome.length > 10 ? c.nome.substring(0, 10) + '…' : c.nome,
-    nomeCompleto: c.nome,
-    receita: c.faturamento,
-    tributos: +(c.faturamento * aliquotaEfetiva).toFixed(2),
-    percentual: c.percentual,
-  }));
+  const top = analiseClientes.slice(0, 6);
 
   if (top.length === 0) {
     return <p className="text-[9px] text-muted-foreground text-center py-4">Sem dados de clientes</p>;
   }
 
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (!active || !payload?.[0]) return null;
-    const d = payload[0].payload;
-    return (
-      <div className="rounded-md border border-border bg-popover px-2.5 py-1.5 shadow-md text-[10px] space-y-0.5">
-        <p className="font-bold text-foreground">{d.nomeCompleto}</p>
-        <p style={{ color: COR_RECEITA }}>Receita: {formatCurrency(d.receita)}</p>
-        <p style={{ color: COR_TRIBUTO }}>Tributos: {formatCurrency(d.tributos)} ({(aliquotaEfetiva * 100).toFixed(2)}%)</p>
-        <p className="text-muted-foreground">Participação: {d.percentual.toFixed(1)}%</p>
-      </div>
-    );
-  };
+  const maxReceita = Math.max(...top.map(c => c.faturamento));
 
   return (
-    <div className="w-full" style={{ height: 160 }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={top} margin={{ top: 16, right: 4, bottom: 2, left: 0 }} barGap={1} barCategoryGap="20%">
-          <XAxis
-            dataKey="nome"
-            tick={{ fontSize: 7, fill: 'hsl(var(--muted-foreground))' }}
-            axisLine={false}
-            tickLine={false}
-            interval={0}
-          />
-          <YAxis
-            tick={{ fontSize: 7, fill: 'hsl(var(--muted-foreground))' }}
-            axisLine={false}
-            tickLine={false}
-            width={32}
-            tickFormatter={(v: number) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)}
-          />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
-          <Legend iconSize={6} wrapperStyle={{ fontSize: 8, paddingTop: 2 }} />
-          <Bar
-            dataKey="receita"
-            name="Receita"
-            fill={COR_RECEITA}
-            radius={[3, 3, 0, 0]}
-            barSize={10}
-            animationDuration={800}
-          />
-          <Bar
-            dataKey="tributos"
-            name="Tributos"
-            fill={COR_TRIBUTO}
-            radius={[3, 3, 0, 0]}
-            barSize={10}
-            animationDuration={800}
-            animationBegin={200}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+    <div className="flex flex-col gap-1.5">
+      {top.map(c => {
+        const tributo = c.faturamento * aliquotaEfetiva;
+        const receitaPct = maxReceita > 0 ? (c.faturamento / maxReceita) * 100 : 0;
+        const tributoPct = maxReceita > 0 ? (tributo / maxReceita) * 100 : 0;
+
+        return (
+          <div key={c.tomadorId} className="space-y-0.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[8px] font-semibold text-foreground truncate max-w-[55%]">{c.nome}</span>
+              <span className="text-[8px] text-muted-foreground tabular-nums">{c.percentual.toFixed(1)}%</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="flex-1 h-2 bg-muted/40 rounded-sm overflow-hidden">
+                <div className="h-full rounded-sm transition-all" style={{ width: `${receitaPct}%`, backgroundColor: COR_RECEITA }} />
+              </div>
+              <span className="text-[7px] font-bold tabular-nums shrink-0" style={{ color: COR_RECEITA }}>{formatCurrency(c.faturamento)}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="flex-1 h-1.5 bg-muted/40 rounded-sm overflow-hidden">
+                <div className="h-full rounded-sm transition-all" style={{ width: `${tributoPct}%`, backgroundColor: COR_TRIBUTO }} />
+              </div>
+              <span className="text-[7px] font-bold tabular-nums shrink-0" style={{ color: COR_TRIBUTO }}>
+                {formatCurrency(tributo)} ({(aliquotaEfetiva * 100).toFixed(2)}%)
+              </span>
+            </div>
+          </div>
+        );
+      })}
+      <div className="flex items-center gap-3 pt-0.5 border-t border-border">
+        <span className="flex items-center gap-1 text-[7px] text-muted-foreground"><span className="w-1.5 h-1.5 rounded-sm inline-block" style={{ backgroundColor: COR_RECEITA }} /> Receita</span>
+        <span className="flex items-center gap-1 text-[7px] text-muted-foreground"><span className="w-1.5 h-1.5 rounded-sm inline-block" style={{ backgroundColor: COR_TRIBUTO }} /> Tributos</span>
+      </div>
     </div>
   );
 };
