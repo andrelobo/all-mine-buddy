@@ -211,7 +211,6 @@ const PartilhaCollapsible: React.FC<{
                   <span className="w-12 text-right tabular-nums text-muted-foreground">{formatPercent(c.aliquota)}</span>
                   <span className="w-16 text-right tabular-nums font-bold text-foreground">{formatCurrency(c.valor)}</span>
                 </div>
-                )}
               </div>
             );
           })}
