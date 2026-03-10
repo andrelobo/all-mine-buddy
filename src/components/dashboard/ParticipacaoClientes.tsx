@@ -35,7 +35,7 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
     );
   };
 
-  const chartHeight = Math.max(140, top.length * 36 + 40);
+  const chartHeight = Math.max(160, top.length * 44 + 40);
 
   return (
     <div className="w-full" style={{ height: chartHeight }}>
@@ -51,10 +51,10 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
           <YAxis
             type="category"
             dataKey="nome"
-            tick={{ fontSize: 8, fill: 'hsl(var(--muted-foreground))' }}
+            tick={false}
             axisLine={false}
             tickLine={false}
-            width={80}
+            width={4}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
           <Legend iconSize={8} wrapperStyle={{ fontSize: 9 }} />
@@ -65,11 +65,19 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
             radius={[0, 3, 3, 0]}
             barSize={10}
             animationDuration={800}
-            label={({ x, y, width, height, value }: any) => (
-              <text x={x + width + 3} y={y + height / 2 + 1} textAnchor="start" dominantBaseline="central" fontSize={6} fontWeight="bold" fill={COR_RECEITA}>
-                {formatCurrency(value)}
-              </text>
-            )}
+            label={({ x, y, width, height, value, index }: any) => {
+              const entry = top[index];
+              return (
+                <g>
+                  <text x={x} y={y - 3} textAnchor="start" fontSize={7} fontWeight="bold" fill="hsl(var(--foreground))">
+                    {entry?.nome}
+                  </text>
+                  <text x={x + width + 3} y={y + height / 2 + 1} textAnchor="start" dominantBaseline="central" fontSize={6} fontWeight="bold" fill={COR_RECEITA}>
+                    {formatCurrency(value)}
+                  </text>
+                </g>
+              );
+            }}
           />
           <Bar
             dataKey="tributos"
