@@ -83,10 +83,6 @@ const FaixaThermometer: React.FC<Props> = ({ rbt12, calculo }) => {
             <circle cx={cx} cy={cy} r={4} fill="hsl(var(--foreground))" />
             <circle cx={cx} cy={cy} r={2} fill="hsl(var(--background))" />
           </svg>
-          <div className="absolute left-1/2 -translate-x-1/2" style={{ bottom: 6 }}>
-            <p className="text-base font-black text-foreground text-center leading-none tabular-nums">{formatCurrency(rbt12)}</p>
-            <p className="text-[8px] text-muted-foreground text-center mt-0.5">RBT12</p>
-          </div>
         </div>
 
         {/* Legend */}
