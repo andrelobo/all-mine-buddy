@@ -84,7 +84,7 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
             name="Tributos"
             fill={COR_TRIBUTO}
             radius={[0, 3, 3, 0]}
-            barSize={10}
+            barSize={8}
             animationDuration={800}
             animationBegin={200}
             label={({ x, y, width, height, value }: any) => (
