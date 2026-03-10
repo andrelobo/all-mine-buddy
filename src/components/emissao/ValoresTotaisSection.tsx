@@ -48,42 +48,6 @@ const ValoresTotaisSection: React.FC<Props> = ({
           <span className="text-xs text-primary">Valor Líquido</span>
           <p className="text-base font-bold text-primary">R$ {fmt(Math.max(0, valorLiquido))}</p>
         </div>
-      </div>
-
-      {/* Detalhamento */}
-      <div className="mt-3 pt-3 border-t border-border">
-        <p className="text-xs font-bold text-foreground mb-2">Detalhamento</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">ISS {issRetido ? '(retido)' : ''}</span>
-            <span className="font-medium text-foreground">R$ {fmt(issValor)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">PIS</span>
-            <span className="font-medium text-foreground">R$ {fmt(retPis)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">COFINS</span>
-            <span className="font-medium text-foreground">R$ {fmt(retCofins)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">CSLL</span>
-            <span className="font-medium text-foreground">R$ {fmt(retCsll)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">IR</span>
-            <span className="font-medium text-foreground">R$ {fmt(retIr)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">INSS</span>
-            <span className="font-medium text-foreground">R$ {fmt(retInss)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Desconto</span>
-            <span className="font-medium text-foreground">R$ {fmt(desconto)}</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
