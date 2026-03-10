@@ -4,7 +4,7 @@ import type { ClienteAnalise } from '@/hooks/useDashboardData';
 import { formatCurrency } from '@/utils/simples-nacional';
 
 const COR_RECEITA = 'hsl(220, 60%, 55%)';
-const COR_TRIBUTO = 'hsl(216, 60%, 35%)';
+const COR_TRIBUTO = 'hsl(0, 65%, 50%)';
 
 interface Props {
   analiseClientes: ClienteAnalise[];
