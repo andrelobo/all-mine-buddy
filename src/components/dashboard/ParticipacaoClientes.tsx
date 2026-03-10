@@ -63,7 +63,7 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
             name="Receita"
             fill={COR_RECEITA}
             radius={[0, 3, 3, 0]}
-            barSize={10}
+            barSize={8}
             animationDuration={800}
             label={({ x, y, width, height, value, index }: any) => {
               const entry = top[index];
