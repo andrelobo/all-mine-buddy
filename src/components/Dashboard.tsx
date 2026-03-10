@@ -124,35 +124,30 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         notas={notas}
         tomadores={tomadoresMap}
         simuladorContent={
-          <div className="space-y-1.5">
-            <p className="text-[9px] text-muted-foreground leading-tight">Simule o impacto de receita adicional na faixa do Simples.</p>
-            <div className="flex items-center gap-2">
-              <div className="flex-1">
-                <div className="relative">
-                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">R$</span>
-                  <Input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="0,00"
-                    value={simulacaoExtra}
-                    onChange={e => setSimulacaoExtra(formatCurrencyInput(e.target.value))}
-                    className="h-6 text-[10px] pl-7 py-0"
-                  />
-                </div>
-              </div>
-              {calculoSimulado && (
-                <>
-                  <span className="text-[9px] text-muted-foreground">RBT12: <span className="font-bold text-foreground">{formatCurrency(rbt12Simulado)}</span></span>
-                  <span className="text-[9px] text-muted-foreground">Faixa: <span className={`font-bold ${mudouFaixa ? 'text-destructive' : ''}`}>{calculoSimulado.faixa?.faixa}ª{mudouFaixa && ' ⚠️'}</span></span>
-                  <span className="text-[9px] text-muted-foreground">Alíq: <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-accent'}`}>{formatPercent(calculoSimulado.aliquotaEfetiva)}</span></span>
-                </>
-              )}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[9px] text-muted-foreground shrink-0">Simular:</span>
+            <div className="relative w-24 shrink-0">
+              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[9px] text-muted-foreground">R$</span>
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="0,00"
+                value={simulacaoExtra}
+                onChange={e => setSimulacaoExtra(formatCurrencyInput(e.target.value))}
+                className="h-5 text-[9px] pl-6 py-0"
+              />
             </div>
+            {calculoSimulado && (
+              <>
+                <span className="text-[9px] text-muted-foreground">RBT12: <span className="font-bold text-foreground">{formatCurrency(rbt12Simulado)}</span></span>
+                <span className="text-[9px] text-muted-foreground">Faixa: <span className={`font-bold ${mudouFaixa ? 'text-destructive' : ''}`}>{calculoSimulado.faixa?.faixa}ª{mudouFaixa && ' ⚠️'}</span></span>
+                <span className="text-[9px] text-muted-foreground">Alíq: <span className={`font-bold ${mudouFaixa ? 'text-destructive' : 'text-accent'}`}>{formatPercent(calculoSimulado.aliquotaEfetiva)}</span></span>
+              </>
+            )}
             {mudouFaixa && (
-              <div className="p-1.5 rounded bg-destructive/10 border border-destructive/20 text-destructive text-[9px] flex items-center gap-1.5">
-                <AlertTriangle className="w-3 h-3 flex-shrink-0" />
-                <span>Mudança {calculo.faixa!.faixa}ª → {calculoSimulado!.faixa!.faixa}ª faixa. Alíq: {formatPercent(calculo.aliquotaEfetiva)} → {formatPercent(calculoSimulado!.aliquotaEfetiva)}</span>
-              </div>
+              <span className="text-[9px] text-destructive font-semibold flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" /> {calculo.faixa!.faixa}ª→{calculoSimulado!.faixa!.faixa}ª
+              </span>
             )}
           </div>
         }
