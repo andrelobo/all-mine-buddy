@@ -20,6 +20,7 @@ interface DashboardProps {
   rbt12: number;
   cnaeAnexo: string;
   regime: string | null;
+  configOperacionais?: { id: string; natureza: string; descricao: string }[];
 }
 
 const PIE_COLORS = [
