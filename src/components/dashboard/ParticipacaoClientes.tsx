@@ -13,7 +13,7 @@ interface Props {
 
 const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiva = 0 }) => {
   const top = analiseClientes.slice(0, 6).map(c => ({
-    nome: c.nome.length > 12 ? c.nome.substring(0, 12) + '…' : c.nome,
+    nome: c.nome,
     nomeCompleto: c.nome,
     receita: c.faturamento,
     tributos: +(c.faturamento * aliquotaEfetiva).toFixed(2),
