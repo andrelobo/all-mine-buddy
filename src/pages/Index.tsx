@@ -477,6 +477,7 @@ const Index = () => {
                 rbt12={snRbt12}
                 cnaeAnexo={snCnaeAnexo || 'III'}
                 regime={regime}
+                configOperacionais={configOperacionais}
               />
             )}
 

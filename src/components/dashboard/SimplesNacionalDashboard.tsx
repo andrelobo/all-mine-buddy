@@ -36,6 +36,7 @@ interface Props {
   notas: NotaDashboard[];
   tomadores: Record<string, { nome: string; subTrib: boolean }>;
   analiseClientes: ClienteAnalise[];
+  configOperacionais?: { id: string; natureza: string; descricao: string }[];
   simuladorContent?: React.ReactNode;
   splitPaymentContent?: React.ReactNode;
 }
@@ -47,7 +48,7 @@ const PIE_COLORS = [
   'hsl(38, 80%, 55%)', 'hsl(220, 60%, 55%)', 'hsl(280, 50%, 55%)',
 ];
 
-const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais, notas, tomadores, analiseClientes, simuladorContent, splitPaymentContent }) => {
+const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais, notas, tomadores, analiseClientes, configOperacionais = [], simuladorContent, splitPaymentContent }) => {
   const composicaoTributaria = useMemo(() => {
     if (!calculo.faixa || !calculo.valido) return [];
     const aliqEfetiva = calculo.aliquotaEfetiva;
@@ -162,7 +163,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 
       {/* Row 4: Serviços Executados */}
       <DashboardCard title={`Serviços Executados ${kpis.competenciaLabel.toUpperCase()}`} headerColor="orange">
-        <ServicosExecutados notas={notas} mesCompetencia={kpis.mesCompetencia} />
+        <ServicosExecutados notas={notas} mesCompetencia={kpis.mesCompetencia} configOperacionais={configOperacionais} />
       </DashboardCard>
     </div>
   );
