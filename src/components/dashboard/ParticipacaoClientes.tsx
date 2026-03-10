@@ -59,7 +59,22 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes }) => {
             width={32}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
-          <Bar dataKey="percentual" radius={[4, 4, 0, 0]} animationDuration={800} animationBegin={100} barSize={14}>
+          <Bar dataKey="percentual" radius={[4, 4, 0, 0]} animationDuration={800} animationBegin={100} barSize={14}
+            label={({ x, y, width, value, index }: any) => {
+              const entry = top[index];
+              if (!entry) return null;
+              return (
+                <g>
+                  <text x={x + width / 2} y={y - 14} textAnchor="middle" fontSize={7} fontWeight="bold" fill="hsl(var(--foreground))">
+                    {entry.nome}
+                  </text>
+                  <text x={x + width / 2} y={y - 5} textAnchor="middle" fontSize={7} fill="hsl(var(--muted-foreground))">
+                    {value}%
+                  </text>
+                </g>
+              );
+            }}
+          >
             {top.map((entry, idx) => (
               <Cell key={idx} fill={entry.cor} />
             ))}
