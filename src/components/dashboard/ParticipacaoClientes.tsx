@@ -43,7 +43,7 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes }) => {
   return (
     <div className="w-full" style={{ height: Math.max(160, top.length * 10 + 60) }}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={top} margin={{ top: 8, right: 8, bottom: 4, left: 0 }}>
+        <BarChart data={top} margin={{ top: 28, right: 8, bottom: 4, left: 0 }}>
           <XAxis
             dataKey="nome"
             tick={{ fontSize: 8, fill: 'hsl(var(--muted-foreground))' }}
