@@ -14,6 +14,8 @@ import DashboardCard from './DashboardCard';
 import FaixaThermometer from './FaixaThermometer';
 import SimuladorCenario from './SimuladorCenario';
 import EmissoesResumoMini from './EmissoesResumoMini';
+import ParticipacaoClientes from './ParticipacaoClientes';
+import type { ClienteAnalise } from '@/hooks/useDashboardData';
 
 interface Props {
   rbt12: number;
