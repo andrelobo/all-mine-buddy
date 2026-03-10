@@ -146,7 +146,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
       </div>
 
-      {/* Row 3: Emitidas + Participação Clientes */}
+      {/* Row 3: Emitidas + Serviços Executados */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
         <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
           <EmissoesResumoMini
@@ -156,16 +156,14 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             mesCompetencia={kpis.mesCompetencia}
           />
         </DashboardCard>
-        <DashboardCard title="Participação por Cliente" headerColor="blue">
-          <ParticipacaoClientes analiseClientes={analiseClientes} aliquotaEfetiva={kpis.aliquotaEfetiva} />
-        </DashboardCard>
-      </div>
-
-      {/* Row 4: Serviços Executados */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <DashboardCard title={`Serviços Executados ${kpis.competenciaLabel.toUpperCase()}`} headerColor="orange">
-          <ServicosExecutados notas={notas} mesCompetencia={kpis.mesCompetencia} configOperacionais={configOperacionais} />
-        </DashboardCard>
+        <div className="flex flex-col gap-3">
+          <DashboardCard title={`Serviços Executados ${kpis.competenciaLabel.toUpperCase()}`} headerColor="orange">
+            <ServicosExecutados notas={notas} mesCompetencia={kpis.mesCompetencia} configOperacionais={configOperacionais} />
+          </DashboardCard>
+          <DashboardCard title="Participação por Cliente" headerColor="blue">
+            <ParticipacaoClientes analiseClientes={analiseClientes} aliquotaEfetiva={kpis.aliquotaEfetiva} />
+          </DashboardCard>
+        </div>
       </div>
     </div>
   );
