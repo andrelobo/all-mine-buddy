@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { DollarSign, TrendingDown, Percent, ShieldCheck, Scale, Receipt, Landmark } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { NotaDashboard } from '@/hooks/useDashboardData';
 import {
@@ -106,13 +107,14 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <DashboardCard title={`Financeiro ${kpis.competenciaLabel}`} headerColor="green">
           <div className="h-full flex flex-col justify-between gap-1">
-            <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
-            <FinRow label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
-            <FinRow label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
-            <FinRow label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
-            <FinRow label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
-            <FinRow label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
+            <FinRow icon={<DollarSign className="w-3 h-3" />} label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
+            <FinRow icon={<TrendingDown className="w-3 h-3" />} label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
+            <FinRow icon={<Percent className="w-3 h-3" />} label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
+            <FinRow icon={<ShieldCheck className="w-3 h-3" />} label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
+            <FinRow icon={<Scale className="w-3 h-3" />} label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
+            <FinRow icon={<Receipt className="w-3 h-3" />} label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
             <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold mt-auto">
+              <Landmark className="w-3 h-3 text-destructive" />
               <span className="shrink-0">A RECOLHER PGDAS</span>
               <div className="flex-1" />
               <span className="tabular-nums text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
@@ -173,8 +175,9 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
 };
 
 /* Sub-component for Financeiro rows */
-const FinRow: React.FC<{ label: string; value: string; accent?: string }> = ({ label, value, accent = 'text-foreground' }) => (
-  <div className="flex items-center gap-2 text-[9px]">
+const FinRow: React.FC<{ icon?: React.ReactNode; label: string; value: string; accent?: string }> = ({ icon, label, value, accent = 'text-foreground' }) => (
+  <div className="flex items-center gap-1.5 text-[9px]">
+    {icon && <span className="text-muted-foreground shrink-0">{icon}</span>}
     <span className="w-28 font-semibold text-muted-foreground shrink-0">{label}</span>
     <div className="flex-1" />
     <span className={`tabular-nums font-bold ${accent}`}>{value}</span>
