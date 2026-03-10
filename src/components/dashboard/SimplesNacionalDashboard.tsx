@@ -53,15 +53,19 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     const percCOFINS = 0.1282;
     const percPIS = 0.0278;
     const percCPP = 1 - percISS - percIRPJ - percCSLL - percCOFINS - percPIS;
+
+    const issCalculado = kpis.faturamentoMes * aliqEfetiva * percISS;
+    const issLiquido = Math.max(issCalculado - kpis.issRetidoMes, 0);
+
     return [
-      { tributo: 'ISS', percentual: percISS, aliquota: aliqEfetiva * percISS, valor: kpis.faturamentoMes * aliqEfetiva * percISS, cor: PIE_COLORS[0] },
+      { tributo: 'ISS', percentual: percISS, aliquota: aliqEfetiva * percISS, valor: issLiquido, valorBruto: issCalculado, issRetido: kpis.issRetidoMes, cor: PIE_COLORS[0] },
       { tributo: 'CPP', percentual: percCPP, aliquota: aliqEfetiva * percCPP, valor: kpis.faturamentoMes * aliqEfetiva * percCPP, cor: PIE_COLORS[1] },
       { tributo: 'IRPJ', percentual: percIRPJ, aliquota: aliqEfetiva * percIRPJ, valor: kpis.faturamentoMes * aliqEfetiva * percIRPJ, cor: PIE_COLORS[2] },
       { tributo: 'CSLL', percentual: percCSLL, aliquota: aliqEfetiva * percCSLL, valor: kpis.faturamentoMes * aliqEfetiva * percCSLL, cor: PIE_COLORS[3] },
       { tributo: 'COFINS', percentual: percCOFINS, aliquota: aliqEfetiva * percCOFINS, valor: kpis.faturamentoMes * aliqEfetiva * percCOFINS, cor: PIE_COLORS[4] },
       { tributo: 'PIS', percentual: percPIS, aliquota: aliqEfetiva * percPIS, valor: kpis.faturamentoMes * aliqEfetiva * percPIS, cor: PIE_COLORS[5] },
     ];
-  }, [calculo, kpis.faturamentoMes]);
+  }, [calculo, kpis.faturamentoMes, kpis.issRetidoMes]);
 
   const evolucaoMensal = useMemo(() => {
     return dadosMensais.map(m => ({
@@ -126,7 +130,8 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           <PartilhaCollapsible
             composicaoTributaria={composicaoTributaria}
             aliquotaEfetiva={kpis.aliquotaEfetiva}
-            dasEstimado={kpis.dasEstimado}
+            dasAPagar={kpis.dasAPagar}
+            issRetidoMes={kpis.issRetidoMes}
             faturamentoMes={kpis.faturamentoMes}
           />
         </div>
@@ -161,11 +166,12 @@ const FinRow: React.FC<{ icon?: React.ReactNode; label: string; value: string; a
 
 /* Sub-component for collapsible Partilha Pgdas */
 const PartilhaCollapsible: React.FC<{
-  composicaoTributaria: { tributo: string; percentual: number; aliquota: number; valor: number; cor: string }[];
+  composicaoTributaria: { tributo: string; percentual: number; aliquota: number; valor: number; valorBruto?: number; issRetido?: number; cor: string }[];
   aliquotaEfetiva: number;
-  dasEstimado: number;
+  dasAPagar: number;
+  issRetidoMes: number;
   faturamentoMes: number;
-}> = ({ composicaoTributaria, aliquotaEfetiva, dasEstimado, faturamentoMes }) => {
+}> = ({ composicaoTributaria, aliquotaEfetiva, dasAPagar, issRetidoMes, faturamentoMes }) => {
   const [aberto, setAberto] = useState(false);
 
   if (composicaoTributaria.length === 0 || faturamentoMes <= 0) return null;
@@ -181,10 +187,10 @@ const PartilhaCollapsible: React.FC<{
       </button>
       <div className="px-2 py-1.5">
         <div className="flex items-center gap-2 text-[9px] font-bold">
-          <span className="shrink-0">TOTAL PGDAS</span>
+          <span className="shrink-0">A RECOLHER PGDAS</span>
           <div className="flex-1" />
           <span className="w-12 text-right tabular-nums">{formatPercent(aliquotaEfetiva)}</span>
-          <span className="w-16 text-right tabular-nums text-destructive">{formatCurrency(dasEstimado)}</span>
+          <span className="w-16 text-right tabular-nums text-destructive">{formatCurrency(dasAPagar)}</span>
         </div>
       </div>
       {aberto && (
@@ -193,16 +199,23 @@ const PartilhaCollapsible: React.FC<{
             const maxPerc = Math.max(...composicaoTributaria.map(t => t.percentual));
             const barWidth = maxPerc > 0 ? (c.percentual / maxPerc) * 100 : 0;
             return (
-              <div key={c.tributo} className="flex items-center gap-2 text-[9px]">
-                <span className="w-10 font-semibold text-muted-foreground shrink-0">{c.tributo}</span>
-                <div className="flex-1 h-3.5 bg-muted/40 rounded-sm overflow-hidden relative">
-                  <div
-                    className="h-full rounded-sm transition-all"
-                    style={{ width: `${barWidth}%`, backgroundColor: c.cor }}
-                  />
+              <div key={c.tributo}>
+                <div className="flex items-center gap-2 text-[9px]">
+                  <span className="w-10 font-semibold text-muted-foreground shrink-0">{c.tributo}</span>
+                  <div className="flex-1 h-3.5 bg-muted/40 rounded-sm overflow-hidden relative">
+                    <div
+                      className="h-full rounded-sm transition-all"
+                      style={{ width: `${barWidth}%`, backgroundColor: c.cor }}
+                    />
+                  </div>
+                  <span className="w-12 text-right tabular-nums text-muted-foreground">{formatPercent(c.aliquota)}</span>
+                  <span className="w-16 text-right tabular-nums font-bold text-foreground">{formatCurrency(c.valor)}</span>
                 </div>
-                <span className="w-12 text-right tabular-nums text-muted-foreground">{formatPercent(c.aliquota)}</span>
-                <span className="w-16 text-right tabular-nums font-bold text-foreground">{formatCurrency(c.valor)}</span>
+                {c.tributo === 'ISS' && issRetidoMes > 0 && (
+                  <div className="flex items-center gap-2 text-[8px] text-accent ml-12 mt-0.5">
+                    <span className="italic">ISS retido deduzido: ({formatCurrency(issRetidoMes)})</span>
+                  </div>
+                )}
               </div>
             );
           })}
