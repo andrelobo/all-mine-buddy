@@ -3,41 +3,6 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import 'react-grid-layout/css/styles.css';
-@import 'react-resizable/css/styles.css';
-
-/* Grid layout customizations */
-.react-grid-item.react-grid-placeholder {
-  background: hsl(var(--primary) / 0.15) !important;
-  border: 2px dashed hsl(var(--primary) / 0.4) !important;
-  border-radius: 0.75rem;
-  opacity: 1 !important;
-}
-
-.react-grid-item > .react-resizable-handle {
-  background: none !important;
-  width: 14px !important;
-  height: 14px !important;
-}
-
-.react-grid-item > .react-resizable-handle::after {
-  border-right-color: hsl(var(--muted-foreground) / 0.4) !important;
-  border-bottom-color: hsl(var(--muted-foreground) / 0.4) !important;
-  width: 8px !important;
-  height: 8px !important;
-  right: 4px !important;
-  bottom: 4px !important;
-}
-
-.react-grid-item.react-draggable-dragging {
-  z-index: 50;
-  opacity: 0.9;
-  box-shadow: 0 20px 40px -10px hsl(var(--foreground) / 0.15);
-}
-
-.react-grid-item {
-  transition: all 200ms ease;
-}
 
 @layer base {
   :root {
