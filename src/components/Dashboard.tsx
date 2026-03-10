@@ -93,16 +93,16 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
   const mudouFaixa = calculoSimulado?.faixa && calculo.faixa && calculoSimulado.faixa.faixa !== calculo.faixa.faixa;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
 
       {/* SMART ALERTS */}
       {smartAlerts.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {smartAlerts.map((a, i) => (
             <Badge
               key={i}
               variant="outline"
-              className={`text-[10px] gap-1 py-1 ${
+              className={`text-[10px] gap-1 py-0.5 ${
                 a.tipo === 'danger' ? 'border-destructive text-destructive' :
                 a.tipo === 'warning' ? 'border-[hsl(38,80%,55%)] text-[hsl(38,80%,45%)]' :
                 a.tipo === 'success' ? 'border-accent text-accent' : 'border-primary text-primary'
