@@ -178,33 +178,33 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       {/* ROW: Split Payment + Receita por Cliente */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Split Payment */}
-        <DashboardCard title="Split Payment — Reserva Tributária" headerColor="green">
+        <DashboardCard title="Split Payment — Reserva Tributária" headerColor="green" icon={<Shield className="w-4 h-4" />}>
           <div className="space-y-3">
             <div className="grid grid-cols-3 gap-2">
-              <div className="text-center p-2.5 rounded-lg bg-muted/50">
-                <p className="text-[9px] text-muted-foreground uppercase">Recebido</p>
-                <p className="text-sm font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</p>
+              <div className="text-center p-3 rounded-lg bg-accent/5 border border-accent/10">
+                <p className="text-[9px] text-muted-foreground uppercase font-semibold">Recebido</p>
+                <p className="text-sm font-extrabold text-foreground tabular-nums">{formatCurrency(kpis.faturamentoMes)}</p>
               </div>
-              <div className="text-center p-2.5 rounded-lg bg-destructive/5">
-                <p className="text-[9px] text-muted-foreground uppercase">Reservado</p>
-                <p className="text-sm font-bold text-destructive">{formatCurrency(kpis.dasEstimado)}</p>
+              <div className="text-center p-3 rounded-lg bg-destructive/5 border border-destructive/10">
+                <p className="text-[9px] text-muted-foreground uppercase font-semibold">Reservado</p>
+                <p className="text-sm font-extrabold text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</p>
               </div>
-              <div className="text-center p-2.5 rounded-lg bg-accent/5">
-                <p className="text-[9px] text-muted-foreground uppercase">Liberado</p>
-                <p className="text-sm font-bold text-accent">{formatCurrency(fluxoCaixa.saldo)}</p>
+              <div className="text-center p-3 rounded-lg bg-primary/5 border border-primary/10">
+                <p className="text-[9px] text-muted-foreground uppercase font-semibold">Liberado</p>
+                <p className="text-sm font-extrabold text-primary tabular-nums">{formatCurrency(fluxoCaixa.saldo)}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-accent" />
               <div className="flex-1">
-                <div className="h-3 bg-muted rounded-full overflow-hidden">
+                <div className="h-3.5 bg-muted rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-accent rounded-full transition-all"
+                    className="h-full bg-gradient-to-r from-accent to-[hsl(160,50%,55%)] rounded-full transition-all"
                     style={{ width: `${kpis.faturamentoMes > 0 ? Math.min((kpis.dasEstimado / kpis.faturamentoMes) * 100, 100) : 0}%` }}
                   />
                 </div>
               </div>
-              <span className="text-[10px] font-bold text-accent">
+              <span className="text-[10px] font-bold text-accent tabular-nums">
                 {kpis.faturamentoMes > 0 ? ((kpis.dasEstimado / kpis.faturamentoMes) * 100).toFixed(1) : 0}% protegido
               </span>
             </div>
@@ -213,19 +213,19 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                 <table className="w-full text-[10px]">
                   <thead>
                     <tr className="border-b text-muted-foreground">
-                      <th className="text-left py-1 px-1">NF</th>
-                      <th className="text-right py-1 px-1">Bruto</th>
-                      <th className="text-right py-1 px-1">Reservado</th>
-                      <th className="text-center py-1 px-1">Status</th>
+                      <th className="text-left py-1.5 px-1 font-semibold">NF</th>
+                      <th className="text-right py-1.5 px-1 font-semibold">Bruto</th>
+                      <th className="text-right py-1.5 px-1 font-semibold">Reservado</th>
+                      <th className="text-center py-1.5 px-1 font-semibold">Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {splits.slice(0, 5).map(s => (
-                      <tr key={s.id} className="border-b border-border/50">
-                        <td className="py-1 px-1 font-mono">{s.nota_fiscal_id?.substring(0, 8)}</td>
-                        <td className="text-right py-1 px-1">{formatCurrency(s.valor_bruto)}</td>
-                        <td className="text-right py-1 px-1 text-destructive">{formatCurrency(s.valor_reservado)}</td>
-                        <td className="text-center py-1 px-1">
+                      <tr key={s.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                        <td className="py-1.5 px-1 font-mono">{s.nota_fiscal_id?.substring(0, 8)}</td>
+                        <td className="text-right py-1.5 px-1 tabular-nums">{formatCurrency(s.valor_bruto)}</td>
+                        <td className="text-right py-1.5 px-1 text-destructive tabular-nums">{formatCurrency(s.valor_reservado)}</td>
+                        <td className="text-center py-1.5 px-1">
                           <Badge variant={s.status === 'pago' ? 'default' : 'outline'} className="text-[8px]">{s.status}</Badge>
                         </td>
                       </tr>
