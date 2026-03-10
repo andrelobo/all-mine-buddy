@@ -239,44 +239,6 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         }
       />
 
-      {/* ROW: Receita por Cliente */}
-      <div className="grid grid-cols-1 gap-2">
-        <DashboardCard title="Composição de Receita por Cliente" headerColor="blue">
-          {pieClientes.length > 0 ? (
-            <div className="flex flex-col sm:flex-row items-start gap-2">
-              <div className="w-full sm:flex-1 aspect-square max-h-40">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RechartsPie>
-                    <Pie
-                      data={pieClientes}
-                      cx="50%" cy="50%" outerRadius="78%" innerRadius="34%"
-                      dataKey="value" nameKey="name"
-                      labelLine={false}
-                      label={({ percent }) => percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''}
-                    >
-                      {pieClientes.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-                    </Pie>
-                    <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                  </RechartsPie>
-                </ResponsiveContainer>
-              </div>
-              <div className="w-full sm:w-40 space-y-1.5 pt-2">
-                {analiseClientes.slice(0, 6).map((c, i) => (
-                  <div key={c.tomadorId} className="flex items-center justify-between text-[10px]">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: PIE_COLORS[i % PIE_COLORS.length] }} />
-                      <span className="text-muted-foreground truncate max-w-[80px]">{c.nome}</span>
-                    </div>
-                    <span className="font-bold">{c.percentual.toFixed(0)}%</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-40 text-muted-foreground text-xs">Sem clientes</div>
-          )}
-        </DashboardCard>
-      </div>
 
       {/* ROW: Análise de Clientes */}
       <div className="grid grid-cols-1 gap-2">
