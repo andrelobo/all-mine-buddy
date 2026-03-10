@@ -3,8 +3,8 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend
 import type { ClienteAnalise } from '@/hooks/useDashboardData';
 import { formatCurrency } from '@/utils/simples-nacional';
 
-const COR_RECEITA = 'hsl(160, 60%, 45%)';
-const COR_TRIBUTO = 'hsl(0, 65%, 50%)';
+const COR_RECEITA = 'hsl(220, 60%, 55%)';
+const COR_TRIBUTO = 'hsl(216, 60%, 35%)';
 
 interface Props {
   analiseClientes: ClienteAnalise[];
