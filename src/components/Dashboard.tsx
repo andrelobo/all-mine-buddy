@@ -178,7 +178,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
           </div>
         }
         splitPaymentContent={
-          <DashboardCard title="Split Payment LC 214/25 — ⚠️ Em processo bancário" headerColor="green">
+          <DashboardCard title="Split Payment LC 214/25" headerColor="green" rightHeader={<span className="text-[8px] font-semibold">⚠️ Em processo bancário</span>}>
             <div className="space-y-2">
               <div className="grid grid-cols-3 gap-1.5">
                 <div className="text-center p-2 rounded-md bg-muted/50">
