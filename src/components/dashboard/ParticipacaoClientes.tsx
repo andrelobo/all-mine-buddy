@@ -41,10 +41,9 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
         <BarChart data={top} margin={{ top: 28, right: 8, bottom: 4, left: 0 }}>
           <XAxis
             dataKey="nome"
-            tick={{ fontSize: 8, fill: 'hsl(var(--muted-foreground))' }}
+            tick={false}
             axisLine={false}
             tickLine={false}
-            interval={0}
           />
           <YAxis
             tick={{ fontSize: 7, fill: 'hsl(var(--muted-foreground))' }}
