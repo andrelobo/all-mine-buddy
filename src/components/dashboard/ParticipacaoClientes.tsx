@@ -79,6 +79,11 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
             barSize={12}
             animationDuration={800}
             animationBegin={200}
+            label={({ x, y, width, value }: any) => (
+              <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={6} fontWeight="bold" fill="hsl(var(--muted-foreground))">
+                {formatCurrency(value)}
+              </text>
+            )}
           />
         </BarChart>
       </ResponsiveContainer>
