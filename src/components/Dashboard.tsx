@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { AlertTriangle, TrendingUp, TrendingDown, Shield, DollarSign, Users } from 'lucide-react';
+import { AlertTriangle, TrendingUp, TrendingDown, Shield, DollarSign, Users, PieChart as PieIcon, BarChart3 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   PieChart as RechartsPie, Pie, Cell,
