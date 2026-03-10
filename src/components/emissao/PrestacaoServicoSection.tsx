@@ -397,7 +397,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       </div>
 
       {/* ISS Retido */}
-      <div className="mt-3 flex items-center gap-3">
+      <div className="mt-2 flex items-center gap-3">
         <label className="flex items-center gap-3 cursor-pointer select-none">
           <button
             type="button"
@@ -414,11 +414,11 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
 
       {/* Retenções Federais */}
       {mostrarRetencoesFederais && (
-        <div className="mt-3 pt-3 border-t border-border">
-          <label className="field-label mb-2 flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-primary" />Retenções Federais
+        <div className="mt-2 pt-2 border-t border-border">
+          <label className="field-label mb-1 flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-primary" />Retenções Federais
           </label>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
             {([
               ['retPis', 'PIS'],
               ['retCofins', 'COFINS'],

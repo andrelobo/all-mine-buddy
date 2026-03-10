@@ -210,14 +210,14 @@ const PrestadorSection: React.FC<Props> = ({ data, onChange, onAutosave, onSimpl
   };
 
   return (
-    <div className="section-card">
-      <h2 className="section-title">
-        <Building2 className="w-5 h-5 text-primary" />
+    <div className={compact ? 'section-card p-2' : 'section-card'}>
+      <h2 className={compact ? 'section-title text-xs mb-1' : 'section-title'}>
+        <Building2 className={compact ? 'w-4 h-4 text-primary' : 'w-5 h-5 text-primary'} />
         O Prestador
       </h2>
 
       {/* Identificação */}
-      <div className={`grid grid-cols-1 ${compact ? 'md:grid-cols-[1fr_1fr_3fr]' : 'md:grid-cols-[1fr_1fr_1fr_1fr]'} gap-4`}>
+      <div className={`grid grid-cols-1 ${compact ? 'md:grid-cols-[1fr_1fr_3fr] gap-2' : 'md:grid-cols-[1fr_1fr_1fr_1fr] gap-4'}`}>
         <div>
           <label className="field-label flex items-center gap-1"><FileText className="w-3.5 h-3.5" />CNPJ*</label>
           <div className="flex gap-2">
