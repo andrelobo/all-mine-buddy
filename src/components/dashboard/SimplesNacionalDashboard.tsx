@@ -122,7 +122,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           </div>
         </DashboardCard>
 
-        <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
+        <DashboardCard title="Termômetro Simples Nacional" headerColor="blue">
           <FaixaThermometer rbt12={rbt12} calculo={calculo} />
         </DashboardCard>
       </div>
