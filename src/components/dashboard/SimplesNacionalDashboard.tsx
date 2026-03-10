@@ -42,7 +42,7 @@ const PIE_COLORS = [
   'hsl(38, 80%, 55%)', 'hsl(220, 60%, 55%)', 'hsl(280, 50%, 55%)',
 ];
 
-const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais, notas, tomadores, simuladorContent }) => {
+const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, kpis, dadosMensais, notas, tomadores, simuladorContent, splitPaymentContent }) => {
   const composicaoTributaria = useMemo(() => {
     if (!calculo.faixa || !calculo.valido) return [];
     const aliqEfetiva = calculo.aliquotaEfetiva;
