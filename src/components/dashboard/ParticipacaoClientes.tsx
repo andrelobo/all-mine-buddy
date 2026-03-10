@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import type { ClienteAnalise } from '@/hooks/useDashboardData';
 import { formatCurrency } from '@/utils/simples-nacional';
 
@@ -13,7 +13,7 @@ interface Props {
 
 const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiva = 0 }) => {
   const top = analiseClientes.slice(0, 6).map(c => ({
-    nome: c.nome.length > 10 ? c.nome.substring(0, 10) + '…' : c.nome,
+    nome: c.nome.length > 12 ? c.nome.substring(0, 12) + '…' : c.nome,
     nomeCompleto: c.nome,
     receita: c.faturamento,
     tributos: +(c.faturamento * aliquotaEfetiva).toFixed(2),
@@ -35,61 +35,52 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
     );
   };
 
+  const chartHeight = Math.max(140, top.length * 36 + 40);
+
   return (
-    <div className="w-full" style={{ height: 180 }}>
+    <div className="w-full" style={{ height: chartHeight }}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={top} margin={{ top: 28, right: 8, bottom: 4, left: 0 }}>
+        <BarChart data={top} layout="vertical" margin={{ top: 4, right: 60, bottom: 4, left: 4 }} barGap={1}>
           <XAxis
-            dataKey="nome"
-            tick={false}
-            axisLine={false}
-            tickLine={false}
-          />
-          <YAxis
+            type="number"
             tick={{ fontSize: 7, fill: 'hsl(var(--muted-foreground))' }}
             axisLine={false}
             tickLine={false}
-            width={40}
             tickFormatter={(v: number) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
-          <Legend
-            iconSize={8}
-            wrapperStyle={{ fontSize: 9 }}
+          <YAxis
+            type="category"
+            dataKey="nome"
+            tick={{ fontSize: 8, fill: 'hsl(var(--muted-foreground))' }}
+            axisLine={false}
+            tickLine={false}
+            width={80}
           />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
+          <Legend iconSize={8} wrapperStyle={{ fontSize: 9 }} />
           <Bar
             dataKey="receita"
             name="Receita"
             fill={COR_RECEITA}
-            radius={[3, 3, 0, 0]}
-            barSize={12}
+            radius={[0, 3, 3, 0]}
+            barSize={10}
             animationDuration={800}
-            label={({ x, y, width, height, value, index }: any) => {
-              const entry = top[index];
-              return (
-                <g>
-                  <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={6} fontWeight="bold" fill="hsl(var(--muted-foreground))">
-                    {formatCurrency(value)}
-                  </text>
-                  {height > 12 && (
-                    <text x={x + width / 2} y={y + height / 2} textAnchor="middle" dominantBaseline="central" fontSize={6} fontWeight="bold" fill="white" transform={`rotate(-90, ${x + width / 2}, ${y + height / 2})`}>
-                      {entry?.nome}
-                    </text>
-                  )}
-                </g>
-              );
-            }}
+            label={({ x, y, width, height, value }: any) => (
+              <text x={x + width + 3} y={y + height / 2 + 1} textAnchor="start" dominantBaseline="central" fontSize={6} fontWeight="bold" fill={COR_RECEITA}>
+                {formatCurrency(value)}
+              </text>
+            )}
           />
           <Bar
             dataKey="tributos"
             name="Tributos"
             fill={COR_TRIBUTO}
-            radius={[3, 3, 0, 0]}
-            barSize={12}
+            radius={[0, 3, 3, 0]}
+            barSize={10}
             animationDuration={800}
             animationBegin={200}
             label={({ x, y, width, height, value }: any) => (
-              <text x={x + width + 2} y={y + height / 2 + 3} textAnchor="start" fontSize={6} fontWeight="bold" fill={COR_TRIBUTO}>
+              <text x={x + width + 3} y={y + height / 2 + 1} textAnchor="start" dominantBaseline="central" fontSize={6} fontWeight="bold" fill={COR_TRIBUTO}>
                 {formatCurrency(value)}
               </text>
             )}
