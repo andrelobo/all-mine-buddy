@@ -103,73 +103,73 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         {splitPaymentContent}
       </div>
 
-      {/* Row 2: Gestão Snë + Termômetro */}
+      {/* Row 2: Apuração + Partilha | Termômetro */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-start">
-        <DashboardCard title={`Apuração ${kpis.competenciaLabel}`} headerColor="green">
-          <div className="flex flex-col gap-1">
-            <FinRow icon={<DollarSign className="w-3 h-3" />} label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
-            <FinRow icon={<TrendingDown className="w-3 h-3" />} label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
-            <FinRow icon={<Percent className="w-3 h-3" />} label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
-            <FinRow icon={<ShieldCheck className="w-3 h-3" />} label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
-            <FinRow icon={<Scale className="w-3 h-3" />} label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
-            <FinRow icon={<Receipt className="w-3 h-3" />} label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
-            <div className="border-t border-border pt-0.5 flex items-center gap-2 text-[9px] font-bold mt-0.5">
-              <Landmark className="w-3 h-3 text-destructive" />
-              <span className="shrink-0">A RECOLHER PGDAS</span>
-              <div className="flex-1" />
-              <span className="tabular-nums text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
+        <div className="flex flex-col gap-2">
+          <DashboardCard title={`Apuração ${kpis.competenciaLabel}`} headerColor="green">
+            <div className="flex flex-col gap-1">
+              <FinRow icon={<DollarSign className="w-3 h-3" />} label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" />
+              <FinRow icon={<TrendingDown className="w-3 h-3" />} label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
+              <FinRow icon={<Percent className="w-3 h-3" />} label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
+              <FinRow icon={<ShieldCheck className="w-3 h-3" />} label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
+              <FinRow icon={<Scale className="w-3 h-3" />} label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
+              <FinRow icon={<Receipt className="w-3 h-3" />} label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
+              <div className="border-t border-border pt-0.5 flex items-center gap-2 text-[9px] font-bold mt-0.5">
+                <Landmark className="w-3 h-3 text-destructive" />
+                <span className="shrink-0">A RECOLHER PGDAS</span>
+                <div className="flex-1" />
+                <span className="tabular-nums text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
+              </div>
             </div>
-          </div>
-        </DashboardCard>
+          </DashboardCard>
+
+          <DashboardCard title="Partilha Pgdas" headerColor="blue">
+            {composicaoTributaria.length > 0 && kpis.faturamentoMes > 0 ? (
+              <div className="flex flex-col gap-1">
+                {composicaoTributaria.map(c => {
+                  const maxPerc = Math.max(...composicaoTributaria.map(t => t.percentual));
+                  const barWidth = maxPerc > 0 ? (c.percentual / maxPerc) * 100 : 0;
+                  return (
+                    <div key={c.tributo} className="flex items-center gap-2 text-[9px]">
+                      <span className="w-10 font-semibold text-muted-foreground shrink-0">{c.tributo}</span>
+                      <div className="flex-1 h-3.5 bg-muted/40 rounded-sm overflow-hidden relative">
+                        <div
+                          className="h-full rounded-sm transition-all"
+                          style={{ width: `${barWidth}%`, backgroundColor: c.cor }}
+                        />
+                      </div>
+                      <span className="w-12 text-right tabular-nums text-muted-foreground">{formatPercent(c.aliquota)}</span>
+                      <span className="w-16 text-right tabular-nums font-bold text-foreground">{formatCurrency(c.valor)}</span>
+                    </div>
+                  );
+                })}
+                <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold mt-0.5">
+                  <span className="shrink-0">TOTAL PGDAS</span>
+                  <div className="flex-1" />
+                  <span className="w-12 text-right tabular-nums">{formatPercent(kpis.aliquotaEfetiva)}</span>
+                  <span className="w-16 text-right tabular-nums text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full text-muted-foreground text-xs">Sem dados para exibir</div>
+            )}
+          </DashboardCard>
+        </div>
 
         <DashboardCard title="Termômetro Simples Nacional" headerColor="blue">
           <FaixaThermometer rbt12={rbt12} calculo={calculo} />
         </DashboardCard>
       </div>
 
-      {/* Row 3: Emitidas + Partilha */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
-          <EmissoesResumoMini
-            notas={notas}
-            tomadores={tomadores}
-            aliquotaEfetiva={kpis.aliquotaEfetiva}
-            mesCompetencia={kpis.mesCompetencia}
-          />
-        </DashboardCard>
-
-        <DashboardCard title="Partilha Pgdas" headerColor="blue">
-          {composicaoTributaria.length > 0 && kpis.faturamentoMes > 0 ? (
-            <div className="h-full flex flex-col justify-between gap-1">
-              {composicaoTributaria.map(c => {
-                const maxPerc = Math.max(...composicaoTributaria.map(t => t.percentual));
-                const barWidth = maxPerc > 0 ? (c.percentual / maxPerc) * 100 : 0;
-                return (
-                  <div key={c.tributo} className="flex items-center gap-2 text-[9px]">
-                    <span className="w-10 font-semibold text-muted-foreground shrink-0">{c.tributo}</span>
-                    <div className="flex-1 h-3.5 bg-muted/40 rounded-sm overflow-hidden relative">
-                      <div
-                        className="h-full rounded-sm transition-all"
-                        style={{ width: `${barWidth}%`, backgroundColor: c.cor }}
-                      />
-                    </div>
-                    <span className="w-12 text-right tabular-nums text-muted-foreground">{formatPercent(c.aliquota)}</span>
-                    <span className="w-16 text-right tabular-nums font-bold text-foreground">{formatCurrency(c.valor)}</span>
-                  </div>
-                );
-              })}
-              <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold mt-auto">
-                <span className="shrink-0">TOTAL PGDAS</span>
-                <div className="flex-1" />
-                <span className="w-12 text-right tabular-nums">{formatPercent(kpis.aliquotaEfetiva)}</span>
-                <span className="w-16 text-right tabular-nums text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-full text-muted-foreground text-xs">Sem dados para exibir</div>
-          )}
-        </DashboardCard>
-      </div>
+      {/* Row 3: Emitidas */}
+      <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
+        <EmissoesResumoMini
+          notas={notas}
+          tomadores={tomadores}
+          aliquotaEfetiva={kpis.aliquotaEfetiva}
+          mesCompetencia={kpis.mesCompetencia}
+        />
+      </DashboardCard>
     </div>
   );
 };
