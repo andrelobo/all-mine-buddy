@@ -51,10 +51,10 @@ const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiv
           <YAxis
             type="category"
             dataKey="nome"
-            tick={{ fontSize: 8, fill: 'hsl(var(--muted-foreground))' }}
+            tick={false}
             axisLine={false}
             tickLine={false}
-            width={80}
+            width={4}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
           <Legend iconSize={8} wrapperStyle={{ fontSize: 9 }} />
