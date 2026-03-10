@@ -126,6 +126,12 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           <DashboardCard title="Partilha Pgdas" headerColor="blue">
             {composicaoTributaria.length > 0 && kpis.faturamentoMes > 0 ? (
               <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2 text-[9px] font-bold pb-1 border-b border-border">
+                  <span className="shrink-0">TOTAL PGDAS</span>
+                  <div className="flex-1" />
+                  <span className="w-12 text-right tabular-nums">{formatPercent(kpis.aliquotaEfetiva)}</span>
+                  <span className="w-16 text-right tabular-nums text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
+                </div>
                 {composicaoTributaria.map(c => {
                   const maxPerc = Math.max(...composicaoTributaria.map(t => t.percentual));
                   const barWidth = maxPerc > 0 ? (c.percentual / maxPerc) * 100 : 0;
@@ -143,12 +149,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
                     </div>
                   );
                 })}
-                <div className="border-t border-border pt-1 flex items-center gap-2 text-[9px] font-bold mt-0.5">
-                  <span className="shrink-0">TOTAL PGDAS</span>
-                  <div className="flex-1" />
-                  <span className="w-12 text-right tabular-nums">{formatPercent(kpis.aliquotaEfetiva)}</span>
-                  <span className="w-16 text-right tabular-nums text-destructive">{formatCurrency(kpis.dasEstimado)}</span>
-                </div>
               </div>
             ) : (
               <div className="flex items-center justify-center h-full text-muted-foreground text-xs">Sem dados para exibir</div>
