@@ -105,7 +105,7 @@ const FaixaThermometer: React.FC<Props> = ({ rbt12, calculo }) => {
       </div>
 
       {/* RBT12 values aligned below */}
-      <div className="border-t border-border pt-1.5 grid grid-cols-3 gap-2 text-center">
+      <div className="grid grid-cols-3 gap-2 text-center -mt-1">
         <div>
           <p className="text-[8px] text-muted-foreground uppercase">Limite Inferior</p>
           <p className="text-[10px] font-bold text-foreground tabular-nums">{faixaAtual ? formatCurrency(faixaAtual.limiteInferior) : '–'}</p>
