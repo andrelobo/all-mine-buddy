@@ -123,6 +123,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         dadosMensais={dadosMensais}
         notas={notas}
         tomadores={tomadoresMap}
+        analiseClientes={analiseClientes}
         simuladorContent={
           <div className="space-y-3">
             <div className="flex flex-col sm:flex-row items-end gap-2">
