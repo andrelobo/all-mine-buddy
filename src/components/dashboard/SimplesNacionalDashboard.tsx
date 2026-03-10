@@ -159,4 +159,57 @@ const FinRow: React.FC<{ icon?: React.ReactNode; label: string; value: string; a
   </div>
 );
 
+/* Sub-component for collapsible Partilha Pgdas */
+const PartilhaCollapsible: React.FC<{
+  composicaoTributaria: { tributo: string; percentual: number; aliquota: number; valor: number; cor: string }[];
+  aliquotaEfetiva: number;
+  dasEstimado: number;
+  faturamentoMes: number;
+}> = ({ composicaoTributaria, aliquotaEfetiva, dasEstimado, faturamentoMes }) => {
+  const [aberto, setAberto] = useState(false);
+
+  if (composicaoTributaria.length === 0 || faturamentoMes <= 0) return null;
+
+  return (
+    <div className="rounded-lg border border-border bg-card shadow-sm overflow-hidden">
+      <button
+        onClick={() => setAberto(!aberto)}
+        className="w-full px-3 py-1 flex items-center justify-between bg-[hsl(220,60%,50%)] text-white"
+      >
+        <h3 className="text-[10px] font-bold uppercase tracking-wider">Partilha Pgdas</h3>
+        {aberto ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+      </button>
+      <div className="px-2 py-1.5">
+        <div className="flex items-center gap-2 text-[9px] font-bold">
+          <span className="shrink-0">TOTAL PGDAS</span>
+          <div className="flex-1" />
+          <span className="w-12 text-right tabular-nums">{formatPercent(aliquotaEfetiva)}</span>
+          <span className="w-16 text-right tabular-nums text-destructive">{formatCurrency(dasEstimado)}</span>
+        </div>
+      </div>
+      {aberto && (
+        <div className="px-2 pb-2 flex flex-col gap-1">
+          {composicaoTributaria.map(c => {
+            const maxPerc = Math.max(...composicaoTributaria.map(t => t.percentual));
+            const barWidth = maxPerc > 0 ? (c.percentual / maxPerc) * 100 : 0;
+            return (
+              <div key={c.tributo} className="flex items-center gap-2 text-[9px]">
+                <span className="w-10 font-semibold text-muted-foreground shrink-0">{c.tributo}</span>
+                <div className="flex-1 h-3.5 bg-muted/40 rounded-sm overflow-hidden relative">
+                  <div
+                    className="h-full rounded-sm transition-all"
+                    style={{ width: `${barWidth}%`, backgroundColor: c.cor }}
+                  />
+                </div>
+                <span className="w-12 text-right tabular-nums text-muted-foreground">{formatPercent(c.aliquota)}</span>
+                <span className="w-16 text-right tabular-nums font-bold text-foreground">{formatCurrency(c.valor)}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default SimplesNacionalDashboard;
