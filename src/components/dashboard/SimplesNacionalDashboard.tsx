@@ -123,11 +123,11 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
               <FinRow icon={<ShieldCheck className="w-3 h-3" />} label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
               <FinRow icon={<Scale className="w-3 h-3" />} label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
               <FinRow icon={<Receipt className="w-3 h-3" />} label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
-              <div className="border-t border-border pt-0.5 flex items-center gap-2 text-[9px] font-bold mt-0.5">
-                <Landmark className="w-3 h-3 text-destructive" />
-                <span className="shrink-0">A RECOLHER PGDAS</span>
+              <div className="border-t border-border pt-0.5 flex items-center gap-2 text-[9px] font-bold mt-0.5 text-destructive">
+                <Landmark className="w-3 h-3" />
+                <span className="shrink-0 font-extrabold">A RECOLHER PGDAS</span>
                 <div className="flex-1" />
-                <span className="tabular-nums text-destructive">{formatCurrency(kpis.dasAPagar)}</span>
+                <span className="tabular-nums font-extrabold">{formatCurrency(kpis.dasAPagar)}</span>
               </div>
             </div>
           </DashboardCard>
