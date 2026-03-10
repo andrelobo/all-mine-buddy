@@ -1,100 +1,58 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import type { ClienteAnalise } from '@/hooks/useDashboardData';
 import { formatCurrency } from '@/utils/simples-nacional';
-
-const COR_RECEITA = 'hsl(220, 60%, 55%)';
-const COR_TRIBUTO = 'hsl(0, 65%, 50%)';
 
 interface Props {
   analiseClientes: ClienteAnalise[];
   aliquotaEfetiva?: number;
 }
 
+const COR_RECEITA = 'hsl(220, 60%, 55%)';
+const COR_TRIBUTO = 'hsl(0, 65%, 50%)';
+
 const ParticipacaoClientes: React.FC<Props> = ({ analiseClientes, aliquotaEfetiva = 0 }) => {
-  const top = analiseClientes.slice(0, 6).map(c => ({
-    nome: c.nome,
-    nomeCompleto: c.nome,
-    receita: c.faturamento,
-    tributos: +(c.faturamento * aliquotaEfetiva).toFixed(2),
-  }));
+  const top = analiseClientes.slice(0, 6);
 
   if (top.length === 0) {
     return <p className="text-[9px] text-muted-foreground text-center py-4">Sem dados de clientes</p>;
   }
 
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (!active || !payload?.[0]) return null;
-    const d = payload[0].payload;
-    return (
-      <div className="rounded-md border border-border bg-popover px-2.5 py-1.5 shadow-md text-[10px] space-y-0.5">
-        <p className="font-bold text-foreground">{d.nomeCompleto}</p>
-        <p style={{ color: COR_RECEITA }}>Receita: {formatCurrency(d.receita)}</p>
-        <p style={{ color: COR_TRIBUTO }}>Tributos: {formatCurrency(d.tributos)}</p>
-      </div>
-    );
-  };
-
-  const chartHeight = Math.max(120, top.length * 32 + 30);
+  const maxReceita = Math.max(...top.map(c => c.faturamento));
 
   return (
-    <div className="w-full" style={{ height: chartHeight }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={top} layout="vertical" margin={{ top: 4, right: 55, bottom: 2, left: 4 }} barGap={0}>
-          <XAxis
-            type="number"
-            tick={{ fontSize: 7, fill: 'hsl(var(--muted-foreground))' }}
-            axisLine={false}
-            tickLine={false}
-            tickFormatter={(v: number) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)}
-          />
-          <YAxis
-            type="category"
-            dataKey="nome"
-            tick={false}
-            axisLine={false}
-            tickLine={false}
-            width={4}
-          />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
-          <Legend iconSize={8} wrapperStyle={{ fontSize: 9 }} />
-          <Bar
-            dataKey="receita"
-            name="Receita"
-            fill={COR_RECEITA}
-            radius={[0, 3, 3, 0]}
-            barSize={8}
-            animationDuration={800}
-            label={({ x, y, width, height, value, index }: any) => {
-              const entry = top[index];
-              return (
-                <g>
-                  <text x={x} y={y - 3} textAnchor="start" fontSize={7} fontWeight="bold" fill="hsl(var(--foreground))">
-                    {entry?.nome}
-                  </text>
-                  <text x={x + width + 3} y={y + height / 2 + 1} textAnchor="start" dominantBaseline="central" fontSize={6} fontWeight="bold" fill={COR_RECEITA}>
-                    {formatCurrency(value)}
-                  </text>
-                </g>
-              );
-            }}
-          />
-          <Bar
-            dataKey="tributos"
-            name="Tributos"
-            fill={COR_TRIBUTO}
-            radius={[0, 3, 3, 0]}
-            barSize={8}
-            animationDuration={800}
-            animationBegin={200}
-            label={({ x, y, width, height, value }: any) => (
-              <text x={x + width + 3} y={y + height / 2 + 1} textAnchor="start" dominantBaseline="central" fontSize={6} fontWeight="bold" fill={COR_TRIBUTO}>
-                {formatCurrency(value)} ({(aliquotaEfetiva * 100).toFixed(2)}%)
-              </text>
-            )}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+    <div className="flex flex-col gap-2">
+      {top.map(c => {
+        const tributo = c.faturamento * aliquotaEfetiva;
+        const receitaPct = maxReceita > 0 ? (c.faturamento / maxReceita) * 100 : 0;
+        const tributoPct = maxReceita > 0 ? (tributo / maxReceita) * 100 : 0;
+
+        return (
+          <div key={c.tomadorId} className="space-y-0.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[8px] font-semibold text-foreground truncate max-w-[60%]">{c.nome}</span>
+              <span className="text-[8px] text-muted-foreground">{c.percentual.toFixed(1)}%</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="flex-1 h-2.5 bg-muted/40 rounded-sm overflow-hidden">
+                <div className="h-full rounded-sm transition-all" style={{ width: `${receitaPct}%`, backgroundColor: COR_RECEITA }} />
+              </div>
+              <span className="text-[7px] font-bold tabular-nums shrink-0" style={{ color: COR_RECEITA }}>{formatCurrency(c.faturamento)}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="flex-1 h-2 bg-muted/40 rounded-sm overflow-hidden">
+                <div className="h-full rounded-sm transition-all" style={{ width: `${tributoPct}%`, backgroundColor: COR_TRIBUTO }} />
+              </div>
+              <span className="text-[7px] font-bold tabular-nums shrink-0" style={{ color: COR_TRIBUTO }}>
+                {formatCurrency(tributo)} ({(aliquotaEfetiva * 100).toFixed(2)}%)
+              </span>
+            </div>
+          </div>
+        );
+      })}
+      <div className="flex items-center gap-3 pt-1 border-t border-border">
+        <span className="flex items-center gap-1 text-[8px] text-muted-foreground"><span className="w-2 h-2 rounded-sm inline-block" style={{ backgroundColor: COR_RECEITA }} /> Receita</span>
+        <span className="flex items-center gap-1 text-[8px] text-muted-foreground"><span className="w-2 h-2 rounded-sm inline-block" style={{ backgroundColor: COR_TRIBUTO }} /> Tributos</span>
+      </div>
     </div>
   );
 };
