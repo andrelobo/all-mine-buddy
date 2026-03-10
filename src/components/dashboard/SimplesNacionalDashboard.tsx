@@ -126,7 +126,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
       </div>
 
       {/* Row 2: Partilha + Termômetro */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <DashboardCard title="Partilha Pgdas" headerColor="blue">
           {composicaoTributaria.length > 0 && kpis.faturamentoMes > 0 ? (
             <div className="h-full flex flex-col justify-between gap-1">

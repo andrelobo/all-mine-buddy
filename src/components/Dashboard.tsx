@@ -257,7 +257,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                   </RechartsPie>
                 </ResponsiveContainer>
               </div>
-              <div className="w-40 space-y-1.5 pt-2">
+              <div className="w-full sm:w-40 space-y-1.5 pt-2">
                 {analiseClientes.slice(0, 6).map((c, i) => (
                   <div key={c.tomadorId} className="flex items-center justify-between text-[10px]">
                     <div className="flex items-center gap-1.5">
