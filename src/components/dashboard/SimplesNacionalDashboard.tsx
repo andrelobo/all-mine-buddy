@@ -32,6 +32,7 @@ interface Props {
   notas: NotaDashboard[];
   tomadores: Record<string, { nome: string; subTrib: boolean }>;
   simuladorContent?: React.ReactNode;
+  splitPaymentContent?: React.ReactNode;
 }
 
 const CHART_GREEN = 'hsl(160, 60%, 45%)';
