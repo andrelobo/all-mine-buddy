@@ -196,12 +196,12 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
   };
 
   return (
-    <div className="section-card">
-      <h2 className="section-title">
-        <Briefcase className="w-5 h-5 text-primary" />
+    <div className="section-card p-2">
+      <h2 className="section-title text-xs mb-1">
+        <Briefcase className="w-4 h-4 text-primary" />
         Serviço Prestado
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
         {/* Serviços Favoritos */}
         <div ref={favoritosDropdownRef} className="relative">
           <label className="field-label flex items-center gap-1.5" style={{ color: 'hsl(43, 80%, 45%)' }}><Star className="w-4 h-4" fill="currentColor" />Serviços Favoritos</label>
@@ -344,19 +344,17 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
         </div>
       </div>
 
-      <div className="mt-3">
-        <label className="field-label flex items-center gap-1.5"><FileText className="w-4 h-4 text-primary" />Descrição do Serviço*</label>
+      <div className="mt-2">
+        <label className="field-label flex items-center gap-1.5"><FileText className="w-3.5 h-3.5 text-primary" />Descrição do Serviço*</label>
         <textarea
-          className="field-input min-h-[60px] resize-y"
+          className="field-input min-h-[50px] resize-y"
           placeholder="Descreva o serviço prestado conforme a NFS-e..."
           value={data.descricaoServico}
           onChange={(e) => update('descricaoServico', e.target.value)}
         />
       </div>
 
-
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
         <div>
           <label className="field-label flex items-center gap-1.5"><DollarSign className="w-4 h-4 text-primary" />Valor do Serviço (R$)*</label>
           <input
@@ -399,7 +397,7 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
       </div>
 
       {/* ISS Retido */}
-      <div className="mt-3 flex items-center gap-3">
+      <div className="mt-2 flex items-center gap-3">
         <label className="flex items-center gap-3 cursor-pointer select-none">
           <button
             type="button"
@@ -416,11 +414,11 @@ const PrestacaoServicoSection: React.FC<Props> = ({ data, onChange, mostrarReten
 
       {/* Retenções Federais */}
       {mostrarRetencoesFederais && (
-        <div className="mt-3 pt-3 border-t border-border">
-          <label className="field-label mb-2 flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-primary" />Retenções Federais
+        <div className="mt-2 pt-2 border-t border-border">
+          <label className="field-label mb-1 flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-primary" />Retenções Federais
           </label>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
             {([
               ['retPis', 'PIS'],
               ['retCofins', 'COFINS'],

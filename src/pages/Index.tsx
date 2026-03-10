@@ -765,8 +765,8 @@ const Index = () => {
                   </div>
                 )}
                 {/* Card superior: Competência, Data, NFS-e, DPS, Série DPS */}
-                <div className="section-card p-3">
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                <div className="section-card p-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                     <div>
                       <label className="field-label">Competência</label>
                       <input

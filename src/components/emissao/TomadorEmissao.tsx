@@ -217,17 +217,17 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange, onTomadorSelecionado,
   };
 
   return (
-    <div className="section-card">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="section-title mb-0">
-          <Users className="w-5 h-5 text-primary" />
+    <div className="section-card p-2">
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="section-title text-xs mb-0">
+          <Users className="w-4 h-4 text-primary" />
           Tomador(a)
         </h2>
         <div className="relative" ref={dropdownRef}>
           <button
             type="button"
             onClick={() => setShowDropdown(!showDropdown)}
-            className="flex items-center gap-1 text-[11px] py-1 px-2 rounded-md border border-[hsl(144,72%,28%)] text-[hsl(144,72%,28%)] hover:bg-[hsl(144,72%,28%)]/10 transition-colors font-bold animate-pulse"
+            className="flex items-center gap-1 text-[11px] py-0.5 px-2 rounded-md border border-[hsl(144,72%,28%)] text-[hsl(144,72%,28%)] hover:bg-[hsl(144,72%,28%)]/10 transition-colors font-bold animate-pulse"
           >
             <Search className="w-3.5 h-3.5" />
             Selecione ({tomadoresCadastrados.length})
@@ -256,7 +256,7 @@ const TomadorEmissao: React.FC<Props> = ({ data, onChange, onTomadorSelecionado,
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_3fr] gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_3fr] gap-2">
         <div>
           <label className="field-label flex items-center gap-1">
             <FileText className="w-3.5 h-3.5" />CNPJ/CPF*

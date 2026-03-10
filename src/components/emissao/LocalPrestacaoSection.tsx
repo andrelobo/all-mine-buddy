@@ -77,9 +77,9 @@ const LocalPrestacaoSection: React.FC<Props> = ({ data, onChange }) => {
   );
 
   return (
-    <div className="section-card">
-      <h2 className="section-title">
-        <MapPin className="w-5 h-5 text-primary" />
+    <div className="section-card p-2">
+      <h2 className="section-title text-xs mb-1">
+        <MapPin className="w-4 h-4 text-primary" />
         Local da Prestação do Serviço
       </h2>
 

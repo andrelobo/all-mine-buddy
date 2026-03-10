@@ -25,13 +25,13 @@ const ValoresTotaisSection: React.FC<Props> = ({
   const valorLiquido = valorBruto - desconto - totalRetencoes;
 
   return (
-    <div className="section-card">
-      <h2 className="section-title">
-        <Calculator className="w-5 h-5 text-primary" />
+    <div className="section-card p-2">
+      <h2 className="section-title text-xs mb-1">
+        <Calculator className="w-4 h-4 text-primary" />
         Valores e Totais
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         <div className="p-2.5 rounded-lg bg-muted/30 border border-border">
           <span className="text-xs text-muted-foreground">Valor Bruto</span>
           <p className="text-base font-bold text-foreground">R$ {fmt(valorBruto)}</p>
