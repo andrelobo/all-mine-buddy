@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { DollarSign, TrendingDown, Percent, ShieldCheck, Scale, Receipt, Landmark, ChevronDown, ChevronUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { NotaDashboard } from '@/hooks/useDashboardData';
