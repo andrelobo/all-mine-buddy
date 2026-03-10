@@ -53,15 +53,19 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
     const percCOFINS = 0.1282;
     const percPIS = 0.0278;
     const percCPP = 1 - percISS - percIRPJ - percCSLL - percCOFINS - percPIS;
+
+    const issCalculado = kpis.faturamentoMes * aliqEfetiva * percISS;
+    const issLiquido = Math.max(issCalculado - kpis.issRetidoMes, 0);
+
     return [
-      { tributo: 'ISS', percentual: percISS, aliquota: aliqEfetiva * percISS, valor: kpis.faturamentoMes * aliqEfetiva * percISS, cor: PIE_COLORS[0] },
+      { tributo: 'ISS', percentual: percISS, aliquota: aliqEfetiva * percISS, valor: issLiquido, valorBruto: issCalculado, issRetido: kpis.issRetidoMes, cor: PIE_COLORS[0] },
       { tributo: 'CPP', percentual: percCPP, aliquota: aliqEfetiva * percCPP, valor: kpis.faturamentoMes * aliqEfetiva * percCPP, cor: PIE_COLORS[1] },
       { tributo: 'IRPJ', percentual: percIRPJ, aliquota: aliqEfetiva * percIRPJ, valor: kpis.faturamentoMes * aliqEfetiva * percIRPJ, cor: PIE_COLORS[2] },
       { tributo: 'CSLL', percentual: percCSLL, aliquota: aliqEfetiva * percCSLL, valor: kpis.faturamentoMes * aliqEfetiva * percCSLL, cor: PIE_COLORS[3] },
       { tributo: 'COFINS', percentual: percCOFINS, aliquota: aliqEfetiva * percCOFINS, valor: kpis.faturamentoMes * aliqEfetiva * percCOFINS, cor: PIE_COLORS[4] },
       { tributo: 'PIS', percentual: percPIS, aliquota: aliqEfetiva * percPIS, valor: kpis.faturamentoMes * aliqEfetiva * percPIS, cor: PIE_COLORS[5] },
     ];
-  }, [calculo, kpis.faturamentoMes]);
+  }, [calculo, kpis.faturamentoMes, kpis.issRetidoMes]);
 
   const evolucaoMensal = useMemo(() => {
     return dadosMensais.map(m => ({
