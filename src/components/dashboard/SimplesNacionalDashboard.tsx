@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { DollarSign, TrendingDown, Percent, ShieldCheck, Scale, Receipt, Landmark } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { NotaDashboard } from '@/hooks/useDashboardData';
 import {
