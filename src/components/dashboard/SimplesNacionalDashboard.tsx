@@ -103,7 +103,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         {splitPaymentContent}
       </div>
 
-      {/* Row 2: Financeiro + Emitidas */}
+      {/* Row 2: Gestão Snë + Termômetro */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <DashboardCard title="Gestão Snë" headerColor="green">
           <div className="h-full flex flex-col justify-between gap-1">
@@ -122,6 +122,13 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           </div>
         </DashboardCard>
 
+        <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
+          <FaixaThermometer rbt12={rbt12} calculo={calculo} />
+        </DashboardCard>
+      </div>
+
+      {/* Row 3: Emitidas + Partilha */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
           <EmissoesResumoMini
             notas={notas}
@@ -130,10 +137,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             mesCompetencia={kpis.mesCompetencia}
           />
         </DashboardCard>
-      </div>
 
-      {/* Row 2: Partilha + Termômetro */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <DashboardCard title="Partilha Pgdas" headerColor="blue">
           {composicaoTributaria.length > 0 && kpis.faturamentoMes > 0 ? (
             <div className="h-full flex flex-col justify-between gap-1">
@@ -164,10 +168,6 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
           ) : (
             <div className="flex items-center justify-center h-full text-muted-foreground text-xs">Sem dados para exibir</div>
           )}
-        </DashboardCard>
-
-        <DashboardCard title="Termômetro de Faixa — Simples Nacional" headerColor="blue">
-          <FaixaThermometer rbt12={rbt12} calculo={calculo} />
         </DashboardCard>
       </div>
     </div>
