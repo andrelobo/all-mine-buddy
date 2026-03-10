@@ -144,15 +144,20 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
         </DashboardCard>
       </div>
 
-      {/* Row 3: Emitidas */}
-      <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
-        <EmissoesResumoMini
-          notas={notas}
-          tomadores={tomadores}
-          aliquotaEfetiva={kpis.aliquotaEfetiva}
-          mesCompetencia={kpis.mesCompetencia}
-        />
-      </DashboardCard>
+      {/* Row 3: Emitidas + Participação Clientes */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-start">
+        <DashboardCard title={`EMITIDAS NFSE ${kpis.competenciaLabel.toUpperCase()}`} headerColor="green">
+          <EmissoesResumoMini
+            notas={notas}
+            tomadores={tomadores}
+            aliquotaEfetiva={kpis.aliquotaEfetiva}
+            mesCompetencia={kpis.mesCompetencia}
+          />
+        </DashboardCard>
+        <DashboardCard title="Participação por Cliente" headerColor="blue">
+          <ParticipacaoClientes analiseClientes={analiseClientes} />
+        </DashboardCard>
+      </div>
     </div>
   );
 };
