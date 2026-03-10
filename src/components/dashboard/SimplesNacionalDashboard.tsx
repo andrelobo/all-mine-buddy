@@ -94,9 +94,11 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
   return (
     <div className="space-y-2">
       {/* Row 1: Policia Federal */}
-      <DashboardCard title="Policia Federal" headerColor="orange">
-        {simuladorContent}
-      </DashboardCard>
+      <div className="w-1/2">
+        <DashboardCard title="Policia Federal" headerColor="orange">
+          {simuladorContent}
+        </DashboardCard>
+      </div>
 
       {/* Row 2: Financeiro + Emitidas */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
