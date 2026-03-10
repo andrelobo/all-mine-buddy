@@ -125,6 +125,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         notas={notas}
         tomadores={tomadoresMap}
         analiseClientes={analiseClientes}
+        configOperacionais={configOperacionais}
         simuladorContent={
           <div className="space-y-3">
             <div className="flex flex-col sm:flex-row items-end gap-2">
