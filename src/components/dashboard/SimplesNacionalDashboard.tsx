@@ -158,10 +158,10 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
             draggable={!locked}
           >
             <div className="h-full flex flex-col justify-between gap-1.5">
+              <FinRow label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
               <FinRow label="Faturamento Bruto" value={formatCurrency(kpis.faturamentoMes)} accent="text-foreground" bold />
               <FinRow label="Tributos Estimados" value={formatCurrency(kpis.dasEstimado)} accent="text-destructive" />
               <FinRow label="Alíquota Efetiva" value={formatPercent(kpis.aliquotaEfetiva)} accent="text-primary" />
-              <FinRow label="Retido ISS (T)" value={`(${formatCurrency(kpis.issRetidoMes)})`} accent="text-accent" />
               <FinRow label="Alíquota ISS" value={calculo.valido ? formatPercent(calculo.issReferencia) : '–'} accent="text-foreground" />
               <FinRow label="Retenções" value={formatCurrency(kpis.totalRetencoes)} accent="text-muted-foreground" />
               <div className="border-t-2 border-destructive/20 pt-2 flex items-center gap-2 text-[10px] font-bold mt-auto bg-destructive/5 -mx-3 -mb-3 px-3 py-2 rounded-b-lg">
