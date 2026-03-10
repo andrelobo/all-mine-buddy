@@ -158,7 +158,12 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
                       {formatPercent(calculoSimulado.aliquotaEfetiva)}
                     </span>
                   </div>
-                </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Valor Simulado:</span>
+                    <span className="font-bold text-destructive">
+                      {formatCurrency(parseCurrencyInput(simulacaoExtra) * (calculoSimulado.aliquotaEfetiva || 0))}
+                    </span>
+                  </div>
               )}
             </div>
             {mudouFaixa && (
