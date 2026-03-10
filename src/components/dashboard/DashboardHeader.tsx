@@ -35,7 +35,7 @@ const DashboardHeader: React.FC<Props> = ({ nomeEmpresa, titulo, kpis, navItems 
       )}
     </div>
     {/* Bottom row: KPIs */}
-    <div className="flex items-center gap-6 bg-white/5 rounded-lg px-6 py-3">
+    <div className="flex flex-wrap items-center gap-3 sm:gap-6 bg-white/5 rounded-lg px-3 sm:px-6 py-2 sm:py-3">
       {kpis.map((k, i) => (
         <React.Fragment key={i}>
           {i > 0 && <div className="h-8 w-px bg-white/10" />}
