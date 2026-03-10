@@ -180,18 +180,18 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
         {/* Split Payment */}
         <DashboardCard title="Split Payment — Reserva Tributária" headerColor="green">
           <div className="space-y-2">
-            <div className="grid grid-cols-3 gap-2">
-              <div className="text-center p-2.5 rounded-lg bg-muted/50">
-                <p className="text-[9px] text-muted-foreground uppercase">Recebido</p>
-                <p className="text-sm font-bold text-foreground">{formatCurrency(kpis.faturamentoMes)}</p>
+            <div className="grid grid-cols-3 gap-1.5">
+              <div className="text-center p-2 rounded-md bg-muted/50">
+                <p className="text-[8px] text-muted-foreground uppercase">Recebido</p>
+                <p className="text-xs font-bold text-foreground tabular-nums">{formatCurrency(kpis.faturamentoMes)}</p>
               </div>
-              <div className="text-center p-2.5 rounded-lg bg-destructive/5">
-                <p className="text-[9px] text-muted-foreground uppercase">Reservado</p>
-                <p className="text-sm font-bold text-destructive">{formatCurrency(kpis.dasEstimado)}</p>
+              <div className="text-center p-2 rounded-md bg-destructive/5">
+                <p className="text-[8px] text-muted-foreground uppercase">Reservado</p>
+                <p className="text-xs font-bold text-destructive tabular-nums">{formatCurrency(kpis.dasEstimado)}</p>
               </div>
-              <div className="text-center p-2.5 rounded-lg bg-accent/5">
-                <p className="text-[9px] text-muted-foreground uppercase">Liberado</p>
-                <p className="text-sm font-bold text-accent">{formatCurrency(fluxoCaixa.saldo)}</p>
+              <div className="text-center p-2 rounded-md bg-accent/5">
+                <p className="text-[8px] text-muted-foreground uppercase">Liberado</p>
+                <p className="text-xs font-bold text-accent tabular-nums">{formatCurrency(fluxoCaixa.saldo)}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
