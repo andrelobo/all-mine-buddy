@@ -228,7 +228,7 @@ const Dashboard: React.FC<DashboardProps> = ({ prestadorId, nomeEmpresa, rbt12, 
       {/* ROW: Simulador de Faixa + Análise de Clientes */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Simulador */}
-        <DashboardCard title="Simulador de Cenário" headerColor="orange">
+        <DashboardCard title="Policia Federal" headerColor="orange">
           <div className="space-y-3">
             <p className="text-[10px] text-muted-foreground">Simule o impacto de receita adicional na sua faixa do Simples Nacional.</p>
             <div className="flex items-end gap-3">
