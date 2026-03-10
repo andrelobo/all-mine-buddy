@@ -101,7 +101,7 @@ const SimplesNacionalDashboard: React.FC<Props> = ({ rbt12, cnaeAnexo, calculo, 
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {/* Row 1: Policia Federal + Split Payment */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <DashboardCard title="Simulador Simples Nacional" headerColor="orange">
